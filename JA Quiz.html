@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>일본어 단어 암기 · 시험</title>
+<!-- 모바일 홈 화면 추가 시 전체화면 앱처럼 동작 -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="JA Quiz">
+<meta name="theme-color" content="#3b5bdb">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%233b5bdb'/%3E%3Ctext x='90' y='120' font-size='96' text-anchor='middle' fill='white' font-family='sans-serif'%3E日%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b5bdb'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='sans-serif'%3E日%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1c2330; --muted:#6b7280;
+    --line:#e3e7ef; --brand:#3b5bdb; --brand-ink:#fff; --accent:#f0f4ff;
+    --ok:#13854e; --ok-bg:#e6f6ec; --bad:#c0392b; --bad-bg:#fdecea;
+    --shadow:0 2px 10px rgba(20,30,60,.07);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo",
+      "Malgun Gothic","Hiragino Sans","Noto Sans CJK KR",sans-serif;
+    background:var(--bg); color:var(--ink);
+    font-size:clamp(15px,1.6vw,17px); line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 14px 60px}
+  header{position:sticky;top:0;z-index:30;background:var(--bg);padding-top:12px}
+  h1{font-size:clamp(18px,2.4vw,22px);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  h1 .em{font-size:1.2em}
+  nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  nav button{
+    flex:0 0 auto;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);padding:9px 14px;border-radius:999px;font-size:.95em;
+    cursor:pointer;white-space:nowrap;font-weight:600;
+  }
+  nav button.active{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+  section{display:none;animation:fade .2s ease}
+  section.active{display:block}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:var(--shadow);padding:16px;margin:14px 0}
+  .card h2{margin:0 0 4px;font-size:1.15em}
+  .card .sub{color:var(--muted);font-size:.9em;margin:0 0 12px}
+  label{font-weight:600;font-size:.92em;display:block;margin:10px 0 4px}
+  .calcbox{margin-top:12px;padding:12px 14px;background:var(--accent);border-radius:10px;
+    font-size:.92em;line-height:1.6}
+  /* 학습 통계 + 일정 목록 */
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 10px}
+  .stat{flex:1 1 90px;background:var(--accent);border-radius:12px;padding:12px 8px;text-align:center}
+  .stat b{display:block;font-size:1.5em;line-height:1.15;color:var(--brand)}
+  .stat span{font-size:.8em;color:var(--muted)}
+  .grp-title{font-weight:800;margin:16px 0 4px;font-size:.95em}
+  .dayrow-wrap{border-bottom:1px solid var(--line)}
+  .dayrow-wrap>summary{display:flex;align-items:center;gap:10px;cursor:pointer;
+    list-style:none;padding:10px 2px}
+  .dayrow-wrap>summary::-webkit-details-marker{display:none}
+  .dinfo{flex:1;min-width:0}
+  .daybar{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:5px}
+  .daybar>i{display:block;height:100%;background:var(--brand)}
+  .ddel{flex:0 0 auto;border:none;background:var(--bad-bg);color:var(--bad);border-radius:8px;
+    padding:7px 12px;cursor:pointer;font-weight:700;font-size:.85em}
+  .wchip{display:inline-block;padding:4px 9px;margin:2px;border-radius:8px;background:var(--accent);
+    font-size:.9em;cursor:pointer;border:1px solid transparent}
+  .wchip:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  /* 캘린더 뷰 */
+  .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
+  .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
+  .calnav #calLabel{min-width:110px;text-align:center}
+  .calnav #calToday{font-size:.85em;color:var(--brand)}
+  .calhead,.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .calhead{margin-bottom:4px}
+  .calhcell{text-align:center;font-size:.78em;font-weight:700;color:var(--muted);padding:2px 0}
+  .calhcell.sun{color:#dc2626} .calhcell.sat{color:#2563eb}
+  .calcell{min-height:52px;border:1px solid var(--line);border-radius:8px;padding:3px 4px;
+    display:flex;flex-direction:column;gap:2px;overflow:hidden}
+  .calcell.empty{border:none;background:transparent}
+  .calcell .cnum{font-size:.82em;font-weight:700}
+  .calcell.sun .cnum{color:#dc2626} .calcell.sat .cnum{color:#2563eb}
+  .calcell.has{cursor:pointer;background:var(--accent)}
+  .calcell.done{background:var(--ok-bg)}
+  .calcell.today{border-color:var(--brand);border-width:2px;padding:2px 3px}   /* 오늘: 파란 테두리 */
+  .calcell.sel{outline:3px solid #f59e0b;outline-offset:-3px;box-shadow:0 0 0 1px #f59e0b inset} /* 선택: 주황 */
+  .calcell.today .cnum::after{content:"·오늘";font-size:.85em;color:var(--brand);font-weight:700}
+  .calcell.past{opacity:.6}
+  .calcell .cinfo{font-size:.74em;font-weight:700;color:var(--brand);line-height:1.1}
+  .calcell.done .cinfo{color:var(--ok)}
+  .calcell.partial{background:#fff7e6}            /* 부분 진행: 옅은 주황 */
+  .calcell.partial .cinfo{color:#b45309}
+  .calcell .cbar{height:4px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:1px}
+  .calcell .cbar>i{display:block;height:100%;background:#f59e0b}
+  /* 일정 수정 펼치기 헤더 */
+  #editPanel>summary{list-style:none;cursor:pointer;background:var(--accent);color:var(--brand);
+    border:1px solid var(--brand);border-radius:10px;padding:11px 14px;font-weight:700;
+    display:flex;align-items:center;gap:8px}
+  #editPanel>summary::-webkit-details-marker{display:none}
+  #editPanel>summary::before{content:"▸";transition:transform .15s}
+  #editPanel[open]>summary::before{transform:rotate(90deg)}
+  #editPanel[open]>summary{margin-bottom:12px}
+  /* 설정 접기/펼치기 헤더 */
+  summary.setsum{list-style:none;cursor:pointer;background:var(--accent);color:var(--brand);
+    border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-weight:700;
+    display:flex;align-items:center;gap:8px}
+  summary.setsum::-webkit-details-marker{display:none}
+  summary.setsum::before{content:"▸";transition:transform .15s}
+  details[open]>summary.setsum::before{transform:rotate(90deg)}
+  details[open]>summary.setsum{margin-bottom:12px}
+  .daydetail{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:#fff}
+  .daydetail .ddel{border:none;background:var(--bad-bg);color:var(--bad);border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700;font-size:.85em}
+  label.chk{display:flex;align-items:center;gap:8px;cursor:pointer}
+  label.chk input{width:auto;height:18px}
+  input,select,button,textarea{font:inherit}
+  input[type=range]{width:100%;height:34px;accent-color:var(--brand);cursor:pointer;margin:2px 0}
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;
+    background:#fff;color:var(--ink)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row>div{flex:1 1 160px;min-width:0}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    background:var(--brand);color:var(--brand-ink);border:none;padding:11px 16px;
+    border-radius:10px;font-weight:700;cursor:pointer;min-height:44px}
+  .btn.sec{background:var(--accent);color:var(--brand)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow>.btn{flex:1 1 140px}   /* 버튼 폭맞춤: 한 줄에서 균등하게 채움 */
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--accent);
+    color:var(--brand);font-size:.78em;font-weight:700;margin-right:4px}
+  .muted{color:var(--muted)}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{background:var(--accent);position:sticky;top:0;cursor:pointer;font-size:.9em}
+  #dbTable th{text-align:center}   /* DB 표 헤더 중앙정렬 */
+  /* DB 셀값 중앙정렬 (한글 뜻 4번째 열만 좌측) */
+  #dbTable td{text-align:center}
+  #dbTable td:nth-child(4){text-align:left}
+  td.jp{font-size:1.05em}
+  tr:last-child td{border-bottom:none}
+  .check{width:18px;height:18px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .toolbar input,.toolbar select{width:auto;flex:1 1 120px;min-width:120px}
+  .count{font-weight:700}
+  /* flashcard */
+  .flash{min-height:300px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:24px 16px}
+  .stage-tag{font-size:.85em;color:var(--muted);font-weight:700;margin-bottom:14px}
+  .jp-big{font-size:clamp(34px,8vw,56px);font-weight:800;margin:6px 0}
+  .hira{font-size:clamp(22px,5vw,34px);color:var(--brand);font-weight:700;margin:4px 0}
+  .ko{font-size:clamp(18px,4vw,24px);margin:8px 0}
+  /* 예문: 상하(세로)만 중앙 흐름, 좌우는 왼쪽 정렬 */
+  .ex{font-size:clamp(16px,3.6vw,20px);color:#374151;margin:6px 0;
+    text-align:left;align-self:stretch;width:100%}
+  .meaning-pick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+  .meaning-pick button{border:1px solid var(--line);background:#fff;border-radius:999px;
+    padding:7px 13px;cursor:pointer}
+  .meaning-pick button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .speakbtn{margin-top:14px;border:1px solid var(--brand);background:var(--accent);color:var(--brand);
+    border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:.95em}
+  .speakbtn:active{background:var(--brand);color:#fff}
+  .progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0}
+  .progress>i{display:block;height:100%;background:var(--brand);width:0;transition:width .25s}
+  /* quiz */
+  /* 문제는 상하좌우 중앙정렬 */
+  .qcenter{min-height:140px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;margin-bottom:8px}
+  .qprompt{font-size:clamp(20px,5vw,30px);font-weight:800;text-align:center;margin:6px 0 4px}
+  .qhira{text-align:center;color:var(--brand);font-weight:700;margin-bottom:6px}
+  .choices{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+  .choice{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;
+    text-align:center;cursor:pointer;font-size:1.02em;min-height:54px;
+    display:flex;align-items:center;justify-content:center}
+  .choice:hover{border-color:var(--brand)}
+  .choice.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+  .choice.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+  .feedback{margin-top:12px;font-weight:700;text-align:center}
+  .feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+  .scorebar{font-weight:700}
+  /* print sheet */
+  .sheet{background:#fff;color:#000;border:1px solid var(--line);border-radius:8px;padding:22px}
+  .sheet h3{margin:0 0 2px}
+  .sheet .head{display:flex;justify-content:space-between;border-bottom:2px solid #000;
+    padding-bottom:8px;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+  .sheet table{font-size:1em}
+  .sheet th,.sheet td{border:1px solid #999;white-space:normal;vertical-align:top}
+  .sheet tr:last-child td{border-bottom:1px solid #999}  /* 마지막 문제 하단선 복구 */
+  .blank{display:inline-block;min-width:90px;border-bottom:1.5px solid #000;height:1.3em}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;
+    color:#fff;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;
+    z-index:100;font-size:.9em;pointer-events:none}
+  .toast.show{opacity:.95}
+  .empty{text-align:center;color:var(--muted);padding:40px 10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg button{background:#fff;border:none;padding:9px 14px;cursor:pointer;font-weight:600}
+  .seg button.on{background:var(--brand);color:#fff}
+  .seg.seg-full{display:flex;width:100%}
+  .seg.seg-full button{flex:1}
+  .seg.disabled{opacity:.45;pointer-events:none}
+  details summary{cursor:pointer;font-weight:600;margin:8px 0}
+  /* 품사 배지 (암기·퀴즈·문법 공통 색) */
+  .posbadge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78em;
+    font-weight:800;white-space:nowrap;letter-spacing:.02em}
+  /* 문법 탭 카드 */
+  .gsec-title{font-weight:800;font-size:1.12em;margin:20px 2px 2px}
+  /* 문법 상단 바로가기 */
+  .gnavbar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+  .gchip{border-radius:999px;padding:5px 12px;font-size:.82em;font-weight:800;cursor:pointer;white-space:nowrap}
+  /* 접이식 문법 카드 */
+  .gcard{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--gc,#64748b);
+    border-radius:var(--r);box-shadow:var(--shadow);margin:12px 0;overflow:hidden;scroll-margin-top:128px}
+  details.gcard>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+    font-size:1.08em;font-weight:800;padding:14px 16px;flex-wrap:wrap}
+  details.gcard>summary::-webkit-details-marker{display:none}
+  details.gcard>summary::after{content:"▸";margin-left:auto;color:var(--gc,var(--brand));transition:transform .15s}
+  details.gcard[open]>summary::after{transform:rotate(90deg)}
+  .gcard .ghead{display:flex;align-items:center;gap:10px;font-size:1.1em;font-weight:800;margin-bottom:6px;flex-wrap:wrap}
+  .gcard .en,.gcard summary .en{color:var(--muted);font-size:.72em;font-weight:600}
+  .gtitle{font-weight:800}
+  .gbody{padding:0 16px 16px}
+  .gcard p.gdesc{margin:6px 0;font-size:.95em;line-height:1.6;color:#374151}
+  .gtip{background:var(--accent);border-radius:10px;padding:10px 12px;font-size:.9em;margin:10px 0;line-height:1.55}
+  .gtip b{color:var(--gc,var(--brand))}
+  .gex{margin:8px 0;display:flex;flex-direction:column;gap:3px;font-size:.95em}
+  .gex .jp{font-weight:800}
+  .gex .ghira{color:var(--gc,var(--brand));font-weight:700;font-size:.92em}
+  /* 표: 배경 폭에 맞춰 줄바꿈 */
+  .gtable{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86em;table-layout:fixed}
+  .gtable th,.gtable td{border:1px solid var(--line);padding:6px 8px;text-align:center;
+    white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+  .gtable th{background:var(--accent);width:32%}
+  .gsub-title{font-weight:800;font-size:.95em;margin:14px 2px 2px;color:var(--gc,var(--brand))}
+  .gnote{background:var(--accent);border-radius:8px;padding:8px 10px;font-size:.85em;margin-top:8px;line-height:1.5}
+  /* 문법 인쇄지 (A4 2단) */
+  .gsheet{column-count:2;column-gap:12px;color:#000}
+  .gsheet h3{column-span:all;text-align:center;margin:0 0 8px}
+  .gpsec{column-span:all;font-weight:800;font-size:.95rem;margin:8px 0 3px;border-bottom:2px solid #000;break-after:avoid}
+  .gpitem{break-inside:avoid;border:1px solid #888;border-left:4px solid var(--gc,#888);border-radius:5px;
+    padding:5px 7px;margin:0 0 7px}
+  .gphead{font-weight:800;font-size:.82rem;margin-bottom:2px}
+  .gpen{font-weight:500;color:#555;font-size:.82em}
+  .gptip{font-size:.72rem;color:#222;margin:2px 0;line-height:1.35}
+  .gpsub{font-weight:700;font-size:.72rem;margin:3px 0 1px}
+  .gptable{width:100%;border-collapse:collapse;margin-top:2px}
+  .gptable th,.gptable td{border:1px solid #aaa;padding:1px 4px;font-size:.68rem;vertical-align:top;
+    text-align:left;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+  .gptable th{width:36%;background:#f1f5f9;font-weight:700}
+  @media(max-width:560px){.gsheet{column-count:1}}
+  .posbadge.tap{cursor:pointer}
+  /* 맨 위로 플로팅 버튼 */
+  .totop{position:fixed;right:16px;bottom:20px;z-index:90;width:46px;height:46px;border-radius:50%;
+    border:none;background:var(--brand);color:#fff;font-size:1.3em;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 18px rgba(20,30,60,.3)}
+  .totop[hidden]{display:none}
+  .manual{margin-top:14px}
+  .manbody{padding-top:6px}
+  .manbody code{background:var(--accent);padding:1px 5px;border-radius:5px;font-size:.9em}
+  /* 문법 팝업 */
+  .modal[hidden]{display:none}
+  .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.5)}
+  .modal-box{position:relative;background:var(--card);border-radius:16px;max-width:560px;width:100%;
+    max-height:85vh;overflow:auto;padding:16px 16px 18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .modal-box .gcard{margin:0}
+  .modal-close{position:absolute;top:10px;right:10px;border:none;background:var(--accent);color:var(--ink);
+    border-radius:999px;width:34px;height:34px;cursor:pointer;font-weight:700;font-size:.95em;z-index:1}
+  @media print{
+    body{background:#fff}
+    header,nav,.noprint,.toast{display:none !important}
+    .wrap{max-width:none;padding:0}
+    section{display:none !important}
+    section.active{display:block !important}
+    .card{box-shadow:none;border:none;margin:0;padding:0}
+    .sheet{border:none;padding:0}
+    .answer-sheet{page-break-before:always}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="em">🇯🇵</span> 일본어 단어 암기 · 시험</h1>
+    <nav id="nav">
+      <button data-tab="db" class="active">단어 DB</button>
+      <button data-tab="schedule">일정</button>
+      <button data-tab="memorize">암기</button>
+      <button data-tab="quiz">퀴즈</button>
+      <button data-tab="print">시험지 인쇄</button>
+      <button data-tab="grammar">문법</button>
+    </nav>
+  </header>
+
+  <!-- ============ DB ============ -->
+  <section id="db" class="active">
+    <div class="card">
+      <h2>단어 데이터베이스</h2>
+      <p class="sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
+      <label>단어장 이름 (이 데이터셋을 구분하는 이름)</label>
+      <input type="text" id="dbName" placeholder="예: JLPT N4 단어장">
+      <div class="toolbar noprint" style="margin-top:10px">
+        <input id="dbSearch" type="text" placeholder="검색 (漢字·ひらがな·뜻)">
+        <select id="dbPos"><option value="">품사 전체</option></select>
+        <select id="dbLevel"><option value="">레벨 전체</option></select>
+        <button class="btn sec" id="selAll">검색결과 전체선택</button>
+        <button class="btn ghost" id="selNone">전체해제</button>
+      </div>
+      <p class="muted" style="margin:0 0 8px">
+        선택됨 <span class="count" id="selCount">0</span> /
+        표시 <span class="count" id="shownCount">0</span> 개
+      </p>
+      <div class="tablewrap">
+        <table id="dbTable">
+          <thead><tr>
+            <th style="width:34px"></th>
+            <th data-sort="kanji">漢字</th>
+            <th data-sort="hiragana">ひらがな</th>
+            <th data-sort="korean">한글 뜻</th>
+            <th data-sort="level">레벨</th>
+            <th data-sort="pos">품사</th>
+          </tr></thead>
+          <tbody id="dbBody"></tbody>
+        </table>
+      </div>
+      <div class="btnrow noprint">
+        <button class="btn" id="expBtn">📤 내보내기 (.json)</button>
+        <button class="btn sec" id="impBtn">📥 가져오기</button>
+        <input type="file" id="impFile" accept="application/json,.json" style="display:none">
+        <button class="btn ghost" id="resetBtn">초기화(샘플로)</button>
+        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)">내부 데이터 전체 삭제</button>
+      </div>
+      <details class="manual noprint">
+        <summary class="setsum">📄 JSON 단어장 파일 만드는 법</summary>
+        <div class="manbody">
+          <p class="gdesc">엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 내 단어장이 됩니다. 가장 쉬운 방법은 <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것입니다.</p>
+          <table class="gtable"><tbody>
+            <tr><th>name</th><td>단어장 이름 (선택)</td></tr>
+            <tr><th>kanji</th><td>간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
+            <tr><th>hiragana</th><td>읽는 법 (히라가나)</td></tr>
+            <tr><th>korean</th><td>한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
+            <tr><th>level</th><td>레벨 (예: N5, N4) — 자유</td></tr>
+            <tr><th>pos</th><td>품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
+            <tr><th>example</th><td>예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
+          </tbody></table>
+          <div class="gnote" style="white-space:pre-wrap;font-family:monospace;font-size:.8em">{
+  "version": 1,
+  "name": "JLPT N5 단어장",
+  "words": [
+    { "id": 1, "kanji": "教える", "hiragana": "おしえる",
+      "korean": "가르치다,알려주다", "level": "N5", "pos": "2그룹동사",
+      "example": "日本語を教える。,道を教える。" }
+  ]
+}</div>
+          <p class="gdesc" style="font-size:.85em;color:var(--muted)">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
+        </div>
+      </details>
+      <div class="btnrow noprint">
+        <button class="btn sec" id="installBtn">📲 홈 화면에 추가</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <section id="schedule">
+    <div class="card">
+     <details id="schedSettings" open>
+      <summary class="setsum">⚙️ 일정 만들기 (기간·개수·분량)</summary>
+      <p class="sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
+      <div class="row">
+        <div><label>시작일</label><input type="date" id="sStart"></div>
+        <div><label>마지막일</label><input type="date" id="sEnd"></div>
+      </div>
+      <div class="row">
+        <div><label>품사 필터</label><select id="sPos"></select></div>
+        <div><label>레벨 필터</label><select id="sLevel"></select></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> 단어 DB에서 체크한 단어만 사용 (위 필터 무시)</label>
+      <label>추출 순서</label>
+      <select id="sOrder">
+        <option value="random">무작위</option>
+        <option value="order">DB 순서대로</option>
+      </select>
+      <label>외울 단어 개수: <b id="sCountLabel">0</b> / <span id="sCountMax">0</span>개</label>
+      <input type="range" id="sCount" min="1" max="1" value="1">
+      <label>주말 비중 (평일 대비)</label>
+      <div class="seg seg-full" id="sWeightSeg">
+        <button type="button" data-w="auto" class="on">자동</button>
+        <button type="button" data-w="2">2배</button>
+        <button type="button" data-w="3">3배</button>
+        <button type="button" data-w="4">4배</button>
+      </div>
+      <div class="row">
+        <div><label>평일 분량</label><input type="number" id="sWdCap" min="1" value="2"></div>
+        <div><label>주말 분량</label><input type="number" id="sWeCap" min="1" value="4"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="sManual" autocomplete="off"> 분량 직접 수정 (자동 계산 끄기)</label>
+      <div id="sCalc" class="calcbox"></div>
+      <div class="btnrow">
+        <button class="btn" id="genSchedule">일정 생성</button>
+      </div>
+     </details>
+    </div>
+    <div class="card" id="scheduleResult" style="display:none">
+      <h2>학습 현황</h2>
+      <div id="statsPanel"></div>
+      <details id="editPanel" style="display:none">
+        <summary>✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)</summary>
+        <div class="row">
+          <div><label>시작일</label><input type="date" id="eStart"></div>
+          <div><label>종료일</label><input type="date" id="eEnd"></div>
+        </div>
+        <label>외울 단어 개수: <b id="eCountLabel">0</b> / <span id="eCountMax">0</span>개</label>
+        <input type="range" id="eCount" min="1" max="1" value="1">
+        <div class="muted" style="font-size:.8em">미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.</div>
+        <div class="btnrow"><button class="btn" id="eApply">다시 배치</button></div>
+      </details>
+      <div class="calnav">
+        <button id="calPrev" type="button">◀</button>
+        <b id="calLabel"></b>
+        <button id="calNext" type="button">▶</button>
+        <button id="calToday" type="button">오늘</button>
+      </div>
+      <div id="calendar"></div>
+      <div id="dayDetail"></div>
+    </div>
+  </section>
+
+  <!-- ============ MEMORIZE ============ -->
+  <section id="memorize">
+    <div class="card noprint">
+     <details id="memSettings" open>
+      <summary class="setsum">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
+      <p class="sub">단계별로 진행합니다. 1단계에서 모든 단어의 뜻+ひらがな를 다 본 뒤,
+        2단계(ひらがな+漢字), 3단계(예문)로 넘어갑니다.</p>
+      <label>학습 범위</label>
+      <div class="seg seg-full" id="mScopeSeg">
+        <button type="button" data-v="today" class="on">오늘 분량</button>
+        <button type="button" data-v="date">날짜</button>
+        <button type="button" data-v="selected">선택 단어</button>
+        <button type="button" data-v="all">전체</button>
+      </div>
+      <div id="mDateWrap" style="display:none"><label>날짜</label><select id="mDate"></select></div>
+      <label>학습 방식</label>
+      <div class="seg seg-full" id="mModeSeg">
+        <button type="button" data-v="asis" class="on">일정대로</button>
+        <button type="button" data-v="ahead">선행학습 (이어서 더)</button>
+      </div>
+      <div id="mAheadWrap" style="display:none">
+        <label>학습한 단어의 이후 일정</label>
+        <div class="seg seg-full" id="mAfterSeg">
+          <button type="button" data-v="keep" class="on">유지</button>
+          <button type="button" data-v="edit">학습분 제외</button>
+        </div>
+      </div>
+      <label>단어 수: <b id="mCountLabel">0</b> / <span id="mCountMax">0</span>개</label>
+      <input type="range" id="mCount" min="1" max="1" value="1">
+      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> 🔊 카드 자동 읽기 (발음·TTS)</label>
+      <div class="btnrow"><button class="btn" id="startMem">시작</button></div>
+     </details>
+    </div>
+    <div class="card" id="memStage" style="display:none">
+      <div class="progress"><i id="memBar"></i></div>
+      <p class="muted" style="text-align:center" id="memCounter"></p>
+      <div class="flash" id="flash"></div>
+      <div class="btnrow noprint" id="memNav" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 400px; margin: 0 auto;">
+        <button class="btn ghost" id="memPrev" style="width: 48%;">◀ 이전 단어</button>
+        <button class="btn" id="memNext" style="width: 48%;">다음 단어 ▶</button>
+        <button class="btn sec" id="memPrevStage" style="width: 48%;">⏮ 이전 단계</button>
+        <button class="btn sec" id="memSkip" style="width: 48%;">다음 단계 ⏭</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz">
+    <div class="card noprint">
+     <details id="quizSettings" open>
+      <summary class="setsum">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
+      <p class="sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
+      <label>출제 범위</label>
+      <div class="seg seg-full" id="qScopeSeg">
+        <button type="button" data-v="today" class="on">오늘 분량</button>
+        <button type="button" data-v="date">날짜</button>
+        <button type="button" data-v="selected">선택 단어</button>
+        <button type="button" data-v="all">전체</button>
+      </div>
+      <div id="qDateWrap" style="display:none"><label>날짜</label><select id="qDate"></select></div>
+      <div class="row" style="align-items:flex-end">
+        <div><label>문제 (보여줄 것)</label>
+          <select id="qPromptField">
+            <option value="kanji">漢字</option>
+            <option value="hira">ひらがな</option>
+            <option value="korean">한글 뜻</option>
+          </select>
+        </div>
+        <div style="flex:0 0 auto"><label>&nbsp;</label>
+          <button class="btn ghost" id="qSwap" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
+        </div>
+        <div><label>정답 (맞힐 것)</label>
+          <select id="qAnswerField">
+            <option value="korean">한글 뜻</option>
+            <option value="hira">ひらがな</option>
+            <option value="kanji">漢字</option>
+          </select>
+        </div>
+      </div>
+      <div class="btnrow"><button class="btn" id="startQuiz">시작</button></div>
+     </details>
+    </div>
+    <div class="card" id="quizArea" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span class="pill" id="quizPhase">4지선다</span>
+        <span class="scorebar" id="quizScore"></span>
+      </div>
+      <div class="progress"><i id="quizBar"></i></div>
+      <div id="quizBody" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- ============ PRINT ============ -->
+  <section id="print">
+    <div class="card noprint">
+      <h2>인쇄</h2>
+      <label>인쇄 종류</label>
+      <div class="seg seg-full" id="pTypeSeg">
+        <button type="button" data-v="exam" class="on">단어 시험지</button>
+        <button type="button" data-v="grammar">문법 정리</button>
+      </div>
+      <div id="examOpts">
+        <p class="sub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
+        <div class="row">
+          <div><label>출제 범위</label>
+            <select id="pScope">
+              <option value="today">오늘 분량</option>
+              <option value="date">날짜 선택</option>
+              <option value="selected">선택한 단어 전체</option>
+              <option value="all">전체 단어</option>
+            </select>
+          </div>
+          <div id="pDateWrap" style="display:none"><label>날짜</label><select id="pDate"></select></div>
+          <div><label>제목</label><input type="text" id="pTitle" value="일본어 단어 시험"></div>
+        </div>
+        <label>문항 수: <b id="pCountLabel">0</b> / <span id="pCountMax">0</span>개</label>
+        <input type="range" id="pCount" min="1" max="1" value="1">
+      </div>
+      <div id="grammarOpts" style="display:none">
+        <p class="sub">전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)</p>
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="genSheet">시험지 생성</button>
+        <button class="btn sec" id="doPrint" disabled>🖨️ 인쇄</button>
+      </div>
+    </div>
+    <div id="sheetOut"></div>
+  </section>
+
+  <!-- ============ GRAMMAR ============ -->
+  <section id="grammar">
+    <div class="card">
+      <h2>일본어 품사 · 문법 한눈에 📚</h2>
+      <p class="sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
+      <div class="gnavbar" id="gNav"></div>
+      <div class="btnrow"><button class="btn sec" id="gExpandAll">전부 열기</button></div>
+    </div>
+    <div id="grammarBody"></div>
+  </section>
+</div>
+
+<button id="toTop" class="totop noprint" hidden title="맨 위로">↑</button>
+
+<div class="modal" id="gModal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" data-close title="닫기">✕</button>
+    <div id="gModalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script id="seed-data" type="application/json">
+{
+  "version": 1,
+  "words": [
+    { "id": 1, "kanji": "明ける", "hiragana": "あける", "korean": "날이 밝다,(기간이) 끝나다", "level": "N4", "pos": "2그룹동사", "example": "夜が明ける。,梅雨が明ける。" },
+    { "id": 2, "kanji": "上げる", "hiragana": "あげる", "korean": "올리다,(값을) 인상하다,주다", "level": "N5", "pos": "2그룹동사", "example": "手を上げる。,値段を上げる。,プレゼントを上げる。" },
+    { "id": 3, "kanji": "新しい", "hiragana": "あたらしい", "korean": "새롭다", "level": "N5", "pos": "い형용사", "example": "新しい靴を買った。" },
+    { "id": 4, "kanji": "暑い", "hiragana": "あつい", "korean": "덥다", "level": "N5", "pos": "い형용사", "example": "今日はとても暑い。" },
+    { "id": 5, "kanji": "言う", "hiragana": "いう", "korean": "말하다", "level": "N5", "pos": "1그룹동사", "example": "本当のことを言う。" },
+    { "id": 6, "kanji": "家", "hiragana": "いえ", "korean": "집", "level": "N5", "pos": "명사", "example": "家に帰る。" },
+    { "id": 7, "kanji": "忙しい", "hiragana": "いそがしい", "korean": "바쁘다", "level": "N4", "pos": "い형용사", "example": "今週は忙しい。" },
+    { "id": 8, "kanji": "歌", "hiragana": "うた", "korean": "노래", "level": "N5", "pos": "명사", "example": "歌を歌う。" },
+    { "id": 9, "kanji": "受ける", "hiragana": "うける", "korean": "받다,(시험을) 치르다", "level": "N4", "pos": "2그룹동사", "example": "電話を受ける。,試験を受ける。" },
+    { "id": 10, "kanji": "海", "hiragana": "うみ", "korean": "바다", "level": "N5", "pos": "명사", "example": "夏に海へ行く。" },
+    { "id": 11, "kanji": "大きい", "hiragana": "おおきい", "korean": "크다", "level": "N5", "pos": "い형용사", "example": "大きい荷物。" },
+    { "id": 12, "kanji": "教える", "hiragana": "おしえる", "korean": "가르치다,알려주다", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" },
+    { "id": 13, "kanji": "重い", "hiragana": "おもい", "korean": "무겁다", "level": "N4", "pos": "い형용사", "example": "この箱は重い。" },
+    { "id": 14, "kanji": "買う", "hiragana": "かう", "korean": "사다", "level": "N5", "pos": "1그룹동사", "example": "パンを買う。" },
+    { "id": 15, "kanji": "帰る", "hiragana": "かえる", "korean": "돌아가다,돌아오다", "level": "N5", "pos": "1그룹동사", "example": "家に帰る。,国に帰る。" },
+    { "id": 16, "kanji": "書く", "hiragana": "かく", "korean": "쓰다", "level": "N5", "pos": "1그룹동사", "example": "手紙を書く。" },
+    { "id": 17, "kanji": "学校", "hiragana": "がっこう", "korean": "학교", "level": "N5", "pos": "명사", "example": "学校に通う。" },
+    { "id": 18, "kanji": "考える", "hiragana": "かんがえる", "korean": "생각하다", "level": "N4", "pos": "2그룹동사", "example": "将来を考える。" },
+    { "id": 19, "kanji": "気持ち", "hiragana": "きもち", "korean": "기분,마음", "level": "N4", "pos": "명사", "example": "気持ちがいい。,気持ちを伝える。" },
+    { "id": 20, "kanji": "静か", "hiragana": "しずか", "korean": "조용하다", "level": "N5", "pos": "な형용사", "example": "静かな部屋。" },
+    { "id": 21, "kanji": "来る", "hiragana": "くる", "korean": "오다", "level": "N5", "pos": "3그룹동사", "example": "友達が来る。" },
+    { "id": 22, "kanji": "勉強する", "hiragana": "べんきょうする", "korean": "공부하다", "level": "N5", "pos": "3그룹동사", "example": "日本語を勉強する。" },
+    { "id": 23, "kanji": "そして", "hiragana": "そして", "korean": "그리고", "level": "N5", "pos": "접속사", "example": "ご飯を食べた。そして寝た。" },
+    { "id": 24, "kanji": "でも", "hiragana": "でも", "korean": "하지만,그래도", "level": "N5", "pos": "접속사", "example": "高いです。でも買います。" },
+    { "id": 25, "kanji": "とても", "hiragana": "とても", "korean": "매우", "level": "N5", "pos": "부사", "example": "とても楽しい。" },
+    { "id": 26, "kanji": "ゆっくり", "hiragana": "ゆっくり", "korean": "천천히", "level": "N4", "pos": "부사", "example": "ゆっくり話す。" }
+  ]
+}
+</script>
+
+<script>
+"use strict";
+/* ====================== 상태 & 저장 ====================== */
+const LS_KEY = "jaquiz.v1";
+const SEED = JSON.parse(document.getElementById("seed-data").textContent);
+
+let state = {
+  words: [],           // {id,kanji,hiragana,korean,level,pos,example, meanings:[{korean,example}]}
+  selected: [],        // ids
+  schedule: {},        // { "2026-06-18": [ids...] }
+  settings: {},
+  progress: {},        // { id: {done, date} }
+  dbName: "샘플 데이터" // 현재 단어장(DB) 이름
+};
+
+function load(){
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e){}
+  if(saved && Array.isArray(saved.words) && saved.words.length){
+    state = Object.assign(state, saved);
+  } else {
+    state.words = SEED.words.slice();
+  }
+  state.selected = state.selected || [];
+  state.schedule = state.schedule || {};
+  state.progress = state.progress || {};
+  state.dbName = state.dbName || "샘플 데이터";
+  normalizeWords();
+}
+function save(){
+  const out = {
+    version:1, name:state.dbName, words:state.words.map(stripDerived),
+    selected:state.selected, schedule:state.schedule,
+    settings:state.settings, progress:state.progress
+  };
+  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast("저장 공간 부족"); }
+}
+function stripDerived(w){
+  const {meanings, ...rest} = w; return rest;
+}
+function normalizeWords(){
+  state.words.forEach((w,i)=>{
+    if(w.id==null) w.id = i+1;
+    w.meanings = deriveMeanings(w.korean, w.example);
+  });
+}
+// 한글 뜻과 예문을 뜻별로 1:1 매칭. 예문 구분자가 ASCII 콤마가 아니어도(IME 입력 「、」「，」)
+// 뜻 개수에 맞게 견고하게 분리한다.
+function deriveMeanings(koreanStr, exampleStr){
+  const ko = String(koreanStr||"").split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  let ex = String(exampleStr||"").split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  // 예문이 뜻보다 적게 쪼개졌으면(=구분자가 콤마가 아님) 「、」 또는 「。」로 재시도.
+  // 정확히 뜻 개수와 같을 때만 채택해 문장 내부 구두점 오분리를 방지.
+  if(ko.length>1 && ex.length<ko.length){
+    for(const d of ["、","。"]){
+      if(String(exampleStr).indexOf(d)<0) continue;
+      const alt=String(exampleStr).split(d).map(s=>s.trim()).filter(Boolean);
+      if(alt.length===ko.length){ ex = d==="。" ? alt.map(s=>s+"。") : alt; break; }
+    }
+  }
+  return ko.length ? ko.map((k,idx)=>({korean:k, example:(ex[idx]||"").trim()}))
+                   : [{korean:"", example:(ex[0]||"").trim()}];
+}
+
+/* ====================== 유틸 ====================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1800); }
+function wordById(id){ return state.words.find(w=>w.id===id); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fmtDate(d){ // 로컬 기준 YYYY-MM-DD (toISOString의 UTC 밀림 방지)
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function todayStr(){ return fmtDate(new Date()); }
+function normAns(s){ return String(s||"").trim().toLowerCase().replace(/[。\.\s]/g,"").replace(/[、,]/g,""); }
+// 세그먼트 토글 헬퍼
+function segVal(id){ const b=document.querySelector('#'+id+' .on'); return b?b.dataset.v:''; }
+function bindSeg(id, after){
+  $("#"+id).addEventListener("click",e=>{
+    const b=e.target.closest("button[data-v]"); if(!b) return;
+    $$("#"+id+" button").forEach(x=>x.classList.toggle("on",x===b));
+    if(after) after();
+  });
+}
+// 품사 색상 + 배지 (암기·퀴즈·문법 공통)
+const POS_COLORS={
+  "1그룹동사":"#2563eb","2그룹동사":"#0d9488","3그룹동사":"#7c3aed",
+  "い형용사":"#ea580c","な형용사":"#db2777",
+  "명사":"#475569","부사":"#b45309","접속사":"#4f46e5"
+};
+function posColor(pos){ return POS_COLORS[pos] || "#64748b"; }
+function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos);
+  const style=`background:${c}1a;color:${c};border:1px solid ${c}59`;
+  return tap
+    ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="문법 보기" style="${style};cursor:pointer">${esc(pos)} ⓘ</span>`
+    : `<span class="posbadge" style="${style}">${esc(pos)}</span>`;
+}
+
+/* ====================== 문법 설명 ====================== */
+const GRAMMAR=[
+  {group:"동사 (動詞)", items:[
+    {pos:"1그룹동사", en:"五段동사 · u-verbs",
+     desc:"어미가 う단(く·ぐ·す·つ·ぬ·ぶ·む·る·う)으로 끝나는 동사. 활용할 때 어미가 あ·い·う·え·お 5단에 걸쳐 바뀝니다.",
+     tip:"る로 끝나도 る 앞이 あ·う·お단이면 1그룹(예: 帰る). 가능형은 어미 え단+る(書ける), 수동은 あ단+れる, 사역은 あ단+せる.",
+     ex:[{jp:"書く",hira:"かく",ko:"쓰다"},{jp:"飲む",hira:"のむ",ko:"마시다"},{jp:"買う",hira:"かう",ko:"사다"},{jp:"帰る",hira:"かえる",ko:"돌아가다 (예외)"}],
+     conj:[["기본형","書く"],["정중형 (~합니다)","書きます"],["부정형 (~않다)","書かない"],["과거형 (~했다)","書いた"],["수동형 (~당하다)","書かれる"],["사역형 (~시키다)","書かせる"],["て형 (~하고/해서)","書いて"],["가능형 (~할 수 있다)","書ける"],["의지형 (~하자)","書こう"]],
+     teTitle:"て형 변환 (음편 音便) — 어미에 따라 바뀜",
+     teRules:[["~く","いて · 書く→書いて"],["~ぐ","いで · 泳ぐ→泳いで"],["~う · つ · る","って · 買う→買って, 待つ→待って, 帰る→帰って"],["~ぬ · ぶ · む","んで · 死ぬ→死んで, 遊ぶ→遊んで, 飲む→飲んで"],["~す","して · 話す→話して"],["예외","行く → 行って(いって)"]],
+     teNote:"た형(과거)도 같은 음편 규칙으로 て→た · で→だ (書いて→書いた, 飲んで→飲んだ)."},
+    {pos:"2그룹동사", en:"一段동사 · ru-verbs",
+     desc:"る로 끝나고 る 앞이 い단 또는 え단인 동사. 활용이 규칙적이라 가장 쉽습니다.",
+     tip:"る를 떼고 ます·ない·よう를 붙입니다. 수동·가능은 られる(食べられる), 사역은 させる(食べさせる).",
+     ex:[{jp:"食べる",hira:"たべる",ko:"먹다"},{jp:"見る",hira:"みる",ko:"보다"},{jp:"教える",hira:"おしえる",ko:"가르치다"},{jp:"起きる",hira:"おきる",ko:"일어나다"}],
+     conj:[["기본형","食べる"],["정중형 (~합니다)","食べます"],["부정형 (~않다)","食べない"],["과거형 (~했다)","食べた"],["수동형 (~당하다)","食べられる"],["사역형 (~시키다)","食べさせる"],["て형 (~하고/해서)","食べて"],["가능형 (~할 수 있다)","食べられる"],["의지형 (~하자)","食べよう"]]},
+    {pos:"3그룹동사", en:"불규칙동사 · irregular",
+     desc:"する와 来る(くる) 단 두 개뿐인 불규칙 동사. ~する 형태의 합성동사도 포함됩니다(勉強する 등).",
+     tip:"활용을 통째로 외웁니다. 가능형은 する→できる(불규칙). 来る는 こ/き/く로 읽기가 바뀌니 주의.",
+     ex:[{jp:"する",hira:"する",ko:"하다"},{jp:"来る",hira:"くる",ko:"오다"},{jp:"勉強する",hira:"べんきょうする",ko:"공부하다"}],
+     conj:[["기본형","する · 来る(くる)"],["정중형 (~합니다)","します · 来ます(きます)"],["부정형 (~않다)","しない · 来ない(こない)"],["수동형 (~당하다)","される · 来られる(こられる)"],["사역형 (~시키다)","させる · 来させる(こさせる)"],["과거형 (~했다)","した · 来た(きた)"],["て형 (~하고/해서)","して · 来て(きて)"],["가능형 (~할 수 있다)","できる · 来られる(こられる)"],["의지형 (~하자)","しよう · 来よう(こよう)"]]}
+  ]},
+  {group:"형용사 (形容詞)", items:[
+    {pos:"い형용사", en:"い-adjective",
+     desc:"어미가 い로 끝나는 형용사. 명사를 그대로 수식합니다 (大きい家).",
+     tip:"부정은 い→くない (大きくない), 과거는 い→かった (大きかった). 부사형은 い→く(大きく).",
+     ex:[{jp:"大きい",hira:"おおきい",ko:"크다"},{jp:"暑い",hira:"あつい",ko:"덥다"},{jp:"新しい",hira:"あたらしい",ko:"새롭다"},{jp:"忙しい",hira:"いそがしい",ko:"바쁘다"}],
+     conj:[["기본형","大きい"],["명사 수식","大きい 家"],["정중형 (~です)","大きいです"],["부정형 (~지 않다)","大きくない"],["정중 부정형 (~지 않습니다)","大きくないです"],["과거형 (~했다)","大きかった"],["과거부정형 (~지 않았다)","大きくなかった"],["부사형 (~하게)","大きく"],["て형 (~하고/해서)","大きくて"]]},
+    {pos:"な형용사", en:"な-adjective · 形容動詞",
+     desc:"명사를 수식할 때 な가 붙는 형용사 (静かな部屋). 형용동사라고도 합니다.",
+     tip:"부정은 ~ではない (静かではない), 과거는 ~だった. 부사형은 ~に(静かに), 명사 수식은 ~な(静かな).",
+     ex:[{jp:"静か",hira:"しずか",ko:"조용하다"},{jp:"きれい",hira:"きれい",ko:"예쁘다·깨끗하다"},{jp:"元気",hira:"げんき",ko:"건강하다"},{jp:"便利",hira:"べんり",ko:"편리하다"}],
+     conj:[["기본형","静か"],["명사 수식","静かな 部屋"],["정중형 (~です)","静かです"],["부정형 (~지 않다)","静かではない"],["정중 부정형 (~지 않습니다)","静かではないです"],["과거형 (~했다)","静かだった"],["과거부정형 (~지 않았다)","静かではなかった"],["부사형 (~하게)","静かに"],["て형 (~하고/해서)","静かで"]]}
+  ]},
+  {group:"기타 품사", items:[
+    {pos:"명사", en:"名詞 · noun",
+     desc:"사람·사물·개념의 이름. 활용하지 않으며, だ·です가 붙어 서술어가 됩니다(家だ / 家です).",
+     tip:"조사(は·が·を·に…)와 함께 쓰여 문장 성분이 됩니다. の로 다른 명사를 수식(私の家).",
+     ex:[{jp:"家",hira:"いえ",ko:"집"},{jp:"学校",hira:"がっこう",ko:"학교"},{jp:"気持ち",hira:"きもち",ko:"기분·마음"}],
+     conj:[["기본형 (단정)","家だ"],["정중형 (~입니다)","家です"],["부정형 (~이 아니다)","家ではない"],["과거형 (~였다)","家だった"],["명사 수식 (の)","私の 家"]]},
+    {pos:"부사", en:"副詞 · adverb",
+     desc:"동사·형용사·문장 전체를 꾸며 정도·상태·빈도를 나타냅니다. 활용하지 않습니다.",
+     tip:"보통 꾸미는 말 바로 앞에 옵니다 (とても 楽しい / ゆっくり 話す).",
+     ex:[{jp:"とても",hira:"とても",ko:"매우"},{jp:"ゆっくり",hira:"ゆっくり",ko:"천천히"},{jp:"いつも",hira:"いつも",ko:"항상"}]},
+    {pos:"접속사", en:"接続詞 · conjunction",
+     desc:"앞뒤 문장이나 단어를 이어 주는 말. 보통 문장 맨 앞에 옵니다.",
+     tip:"そして(첨가)·でも/しかし(역접)·だから(이유)·それで(결과) 등 의미별로 익히세요.",
+     ex:[{jp:"そして",hira:"そして",ko:"그리고"},{jp:"でも",hira:"でも",ko:"하지만"},{jp:"だから",hira:"だから",ko:"그래서"}]},
+    {pos:"조사", en:"助詞 · particle",
+     desc:"명사·동사 뒤에 붙어 문장에서의 역할(주어·목적어·장소 등)을 정하는 기능어. 단독으로 쓰이지 않습니다.",
+     tip:"は(주제)·が(주어)·を(목적어)·に(시간·도착)·で(장소·수단)·へ(방향)·と(함께·인용)·も(도·역시).",
+     ex:[{jp:"私は学生です",hira:"わたしは…",ko:"나는 학생입니다 (は=주제)"},{jp:"パンを食べる",hira:"パンを…",ko:"빵을 먹다 (を=목적어)"},{jp:"学校に行く",hira:"がっこうに…",ko:"학교에 가다 (に=도착점)"}]}
+  ]},
+  {group:"필수 문법 표현", items:[
+    {title:"정중체 vs 보통체", color:"#7c3aed", en:"polite vs plain",
+     desc:"문장 끝맺음 스타일. です·ます체(정중)와 普通体(보통·반말)를 상황에 맞게 씁니다.",
+     tip:"공식·존댓말=정중체, 친구·일기·종속절 안=보통체. 동사·형용사·명사 모두 짝이 있습니다.",
+     ex:[{jp:"行きます / 行く",hira:"いきます / いく",ko:"갑니다 / 가다"},{jp:"学生です / 学生だ",hira:"…です / …だ",ko:"학생입니다 / 학생이다"}],
+     conj:[["동사","行きます ↔ 行く"],["い형용사","大きいです ↔ 大きい"],["な형용사","静かです ↔ 静かだ"],["명사","学生です ↔ 学生だ"]]},
+    {title:"지시어 こそあど", color:"#0891b2", en:"demonstratives",
+     desc:"가까운 것(こ)·상대 쪽(そ)·둘 다 먼 것(あ)·의문(ど)으로 묶어 외우는 지시 표현.",
+     tip:"こ=이, そ=그, あ=저, ど=어느. 끝 음만 바꿔 사물·명사수식·장소·방향으로 확장합니다.",
+     ex:[{jp:"これは本です",hira:"これは…",ko:"이것은 책입니다"},{jp:"その人",hira:"そのひと",ko:"그 사람"},{jp:"どこですか",hira:"どこ…",ko:"어디입니까"}],
+     conj:[["사물 (이것…)","これ · それ · あれ · どれ"],["명사 수식 (이…)","この · その · あの · どの"],["장소 (여기…)","ここ · そこ · あそこ · どこ"],["방향 (이쪽…)","こちら · そちら · あちら · どちら"]]},
+    {title:"가정·조건형 と・ば・たら・なら", color:"#0d9488", en:"conditionals",
+     desc:"‘만약 ~하면’을 나타내는 네 가지 조건 표현. 뉘앙스가 조금씩 다릅니다.",
+     tip:"と=항상·자연 결과, ば=일반 가정, たら=가장 폭넓음·완료 후, なら=주제·상대 말에 대한 가정.",
+     ex:[{jp:"押すと開く",hira:"おすと…",ko:"누르면 열린다 (と)"},{jp:"着いたら電話して",hira:"ついたら…",ko:"도착하면 전화해 (たら)"},{jp:"行くなら教えて",hira:"いくなら…",ko:"갈 거면 알려줘 (なら)"}],
+     conj:[["~と","항상·자연 결과 · 春になると咲く"],["~ば","일반 조건·가정 · 安ければ買う"],["~たら","완료 후·폭넓음 · 着いたら…"],["~なら","주제·상대 말 가정 · 君なら…"]]},
+    {title:"수수 표현 (주고받기)", color:"#db2777", en:"giving & receiving",
+     desc:"주고받음을 ‘방향’에 따라 다른 동사로 표현합니다. 시점(누가 누구에게)에 주의.",
+     tip:"あげる=(내가 남에게) 주다, くれる=(남이 나에게) 주다, もらう=(내가) 받다.",
+     ex:[{jp:"友達にあげる",hira:"…にあげる",ko:"친구에게 주다"},{jp:"母がくれる",hira:"ははが…",ko:"엄마가 (내게) 주다"},{jp:"先生にもらう",hira:"…にもらう",ko:"선생님께 받다"}],
+     conj:[["あげる","(내가/제3자가) 주다"],["くれる","(남이 나·내 쪽에) 주다"],["もらう","(내가) 받다"]]},
+    {title:"て형 활용 표현", color:"#2563eb", en:"te-form patterns",
+     desc:"동사 て형에 붙는 핵심 표현들. て형만 만들 줄 알면 표현이 크게 늘어납니다.",
+     tip:"~ている(진행·상태), ~てください(요청), ~てもいい(허가), ~てはいけない(금지), ~てから(~한 뒤).",
+     ex:[{jp:"食べている",hira:"たべて…",ko:"먹고 있다"},{jp:"見てください",hira:"みて…",ko:"봐 주세요"},{jp:"入ってはいけない",hira:"はいって…",ko:"들어가면 안 된다"}],
+     conj:[["~ている","~하고 있다 · 상태 · 食べている"],["~てください","~해 주세요 · 見てください"],["~てもいい","~해도 된다(허가) · 帰ってもいい"],["~てはいけない","~하면 안 된다(금지) · 入ってはいけない"],["~てから","~하고 나서 · 食べてから"]]}    
+  ]}
+];
+function gKey(it){ return it.pos || it.title; }
+function gColor(it){ return it.pos ? posColor(it.pos) : (it.color||"#64748b"); }
+function gHeader(it){ return it.pos ? posBadge(it.pos) : `<span class="gtitle" style="color:${gColor(it)}">${esc(it.title)}</span>`; }
+function gBodyHtml(it){
+  return `<p class="gdesc">${esc(it.desc)}</p>
+    <div class="gtip">💡 <b>구분법·활용</b> · ${esc(it.tip)}</div>
+    <div class="gex">${it.ex.map(e=>`<div><span class="jp">${esc(e.jp)}</span> <span class="ghira">${esc(e.hira)}</span> — ${esc(e.ko)}</div>`).join("")}</div>
+    ${it.conj?`<table class="gtable"><tbody>${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>`:""}
+    ${it.teRules?`<div class="gsub-title">${esc(it.teTitle||"て형 변환")}</div>
+      <table class="gtable"><tbody>${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>
+      ${it.teNote?`<div class="gnote">📌 ${esc(it.teNote)}</div>`:""}`:""}`;
+}
+// 접이식 카드 (문법 탭). open=true면 펼친 채로
+function grammarCardHtml(it, open){
+  return `<details class="gcard" data-key="${esc(gKey(it))}"${open?" open":""} style="--gc:${gColor(it)}">
+    <summary>${gHeader(it)}<span class="en">${esc(it.en)}</span></summary>
+    <div class="gbody">${gBodyHtml(it)}</div>
+  </details>`;
+}
+function renderGrammar(){
+  const all=GRAMMAR.flatMap(g=>g.items);
+  $("#gNav").innerHTML = all.map(it=>{
+    const c=gColor(it);
+    return `<button type="button" class="gchip" data-go="${esc(gKey(it))}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(gKey(it))}</button>`;
+  }).join("");
+  $("#grammarBody").innerHTML = GRAMMAR.map(g=>
+    `<div class="gsec-title">${esc(g.group)}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
+  ).join("");
+}
+// 품사 배지 → 문법 팝업 (펼친 카드)
+function openGrammarPopup(pos){
+  const it=GRAMMAR.flatMap(g=>g.items).find(x=>x.pos===pos);
+  $("#gModalBody").innerHTML = it ? grammarCardHtml(it,true)
+    : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">이 품사의 문법 설명은 아직 없어요.</p></div>`;
+  $("#gModal").hidden=false;
+}
+// 상단 바로가기: 해당 카드 펼치고 제목부터 보이도록 이동 (sticky 헤더 높이만큼 보정)
+$("#gNav").addEventListener("click",e=>{
+  const b=e.target.closest("[data-go]"); if(!b) return;
+  const el=$(`#grammarBody details[data-key="${b.dataset.go}"]`);
+  if(!el) return;
+  el.open=true;
+  requestAnimationFrame(()=>{
+    const header=document.querySelector("header");
+    const off=(header?header.getBoundingClientRect().height:0)+12;
+    const y=el.getBoundingClientRect().top + window.pageYOffset - off;
+    window.scrollTo({top:Math.max(0,y), behavior:"smooth"});
+  });
+});
+// 맨 위로 플로팅 버튼 (스크롤 시 표시)
+(function(){
+  const tt=$("#toTop");
+  const onScroll=()=>{ tt.hidden = window.scrollY < 280; };
+  window.addEventListener("scroll", onScroll, {passive:true});
+  tt.addEventListener("click",()=>window.scrollTo({top:0, behavior:"smooth"}));
+  onScroll();
+})();
+// 전부 열기/접기
+let gAllOpen=false;
+$("#gExpandAll").addEventListener("click",()=>{
+  gAllOpen=!gAllOpen;
+  $$("#grammarBody details.gcard").forEach(d=>d.open=gAllOpen);
+  $("#gExpandAll").textContent=gAllOpen?"전부 접기":"전부 열기";
+});
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".posbadge.tap"); if(b){ openGrammarPopup(b.dataset.pos); return; }
+  if(e.target.closest("#gModal [data-close]")) $("#gModal").hidden=true;
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("#gModal").hidden=true; });
+// 홈 화면에 추가 (설치 가능하면 네이티브 프롬프트, 아니면 안내)
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; });
+$("#installBtn").addEventListener("click",async()=>{
+  if(deferredPrompt){ deferredPrompt.prompt(); try{ await deferredPrompt.userChoice; }catch(e){} deferredPrompt=null; return; }
+  $("#gModalBody").innerHTML=`<div class="gcard" style="border-left-color:var(--brand)">
+    <div class="gbody" style="padding:16px">
+      <div class="ghead" style="margin-bottom:8px">📲 홈 화면에 추가하는 법</div>
+      <p class="gdesc"><b>아이폰 (Safari)</b> — 하단 <b>공유</b> 버튼 → <b>"홈 화면에 추가"</b>.</p>
+      <p class="gdesc"><b>안드로이드 (Chrome)</b> — 우측 상단 <b>⋮ 메뉴</b> → <b>"홈 화면에 추가"</b>(또는 앱 설치).</p>
+      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ 카톡에서 받은 파일을 바로 연 경우(file://)엔 추가가 제한될 수 있어요. 항상 앱처럼 쓰려면 이 파일을 웹(GitHub Pages 등)에 올린 뒤 <b>그 주소</b>를 홈 화면에 추가하세요. 추가하면 日 아이콘으로 전체화면 실행됩니다.</p>
+    </div></div>`;
+  $("#gModal").hidden=false;
+});
+
+/* ====================== 탭 ====================== */
+$("#nav").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  showTab(b.dataset.tab);
+});
+function showTab(tab){
+  $$("#nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===tab));
+  $$("section").forEach(s=>s.classList.toggle("active",s.id===tab));
+  if(tab==="schedule") renderSchedule();   // 진행 통계 최신화
+  if(tab==="memorize") updateMemCount();   // 범위별 단어 수 최신화
+  if(tab==="print") updatePrintCount();    // 문항 수 최신화
+  if(location.hash.slice(1)!==tab) history.replaceState(null,"","#"+tab);
+}
+window.addEventListener("hashchange",()=>{ const t=location.hash.slice(1); if(t) showTab(t); });
+
+/* ====================== DB 화면 ====================== */
+let dbSort = {key:"id", dir:1};
+function refreshDbFilters(){
+  const pos=[...new Set(state.words.map(w=>w.pos).filter(Boolean))].sort();
+  const lvl=[...new Set(state.words.map(w=>w.level).filter(Boolean))].sort();
+  fillSelect($("#dbPos"), pos, "품사 전체");
+  fillSelect($("#dbLevel"), lvl, "레벨 전체");
+  fillSelect($("#sPos"), pos, "품사 전체");
+  fillSelect($("#sLevel"), lvl, "레벨 전체");
+}
+function fillSelect(sel, items, allLabel){
+  const cur=sel.value;
+  sel.innerHTML = (allLabel!==undefined && allLabel!=="" ? `<option value="">${allLabel}</option>` : (allLabel===""?"":""))
+    + items.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  if(allLabel==="") {} else if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
+}
+function dbFiltered(){
+  const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvl=$("#dbLevel").value;
+  let rows = state.words.filter(w=>{
+    if(pos && w.pos!==pos) return false;
+    if(lvl && w.level!==lvl) return false;
+    if(q){
+      const hay=normAns(w.kanji+w.hiragana+w.korean);
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const k=dbSort.key;
+  rows.sort((a,b)=> String(a[k]||"").localeCompare(String(b[k]||""),"ja")*dbSort.dir);
+  return rows;
+}
+function renderDb(){
+  const rows=dbFiltered();
+  const sel=new Set(state.selected);
+  $("#dbBody").innerHTML = rows.map(w=>`
+    <tr>
+      <td><input type="checkbox" class="check" data-id="${w.id}" ${sel.has(w.id)?"checked":""}></td>
+      <td class="jp">${esc(w.kanji)}</td>
+      <td class="jp">${esc(w.hiragana)}</td>
+      <td>${esc(w.korean)}</td>
+      <td>${esc(w.level)}</td>
+      <td>${esc(w.pos)}</td>
+    </tr>`).join("") || `<tr><td colspan="6" class="empty">단어가 없습니다</td></tr>`;
+  $("#shownCount").textContent=rows.length;
+  $("#selCount").textContent=state.selected.length;
+}
+$("#dbBody").addEventListener("change",e=>{
+  const cb=e.target.closest("input.check"); if(!cb) return;
+  const id=+cb.dataset.id, set=new Set(state.selected);
+  cb.checked?set.add(id):set.delete(id);
+  state.selected=[...set]; save(); $("#selCount").textContent=state.selected.length;
+});
+$("#dbSearch").addEventListener("input",renderDb);
+$("#dbPos").addEventListener("change",renderDb);
+$("#dbLevel").addEventListener("change",renderDb);
+$$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
+  const k=th.dataset.sort; dbSort.dir = (dbSort.key===k)? -dbSort.dir : 1; dbSort.key=k; renderDb();
+}));
+$("#selAll").addEventListener("click",()=>{
+  const set=new Set(state.selected); dbFiltered().forEach(w=>set.add(w.id));
+  state.selected=[...set]; save(); renderDb(); toast("검색결과를 선택에 추가");
+});
+$("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb(); });
+
+/* 가져오기/내보내기 */
+$("#expBtn").addEventListener("click",()=>{
+  const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
+    schedule:state.schedule, settings:state.settings, progress:state.progress};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast("내보내기 완료");
+});
+$("#impBtn").addEventListener("click",()=>$("#impFile").click());
+$("#impFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!Array.isArray(d.words)) throw 0;
+      state.words=d.words;
+      state.dbName = d.name || f.name.replace(/\.json$/i,"");   // 단어장 이름: JSON name 또는 파일명
+      state.selected=Array.isArray(d.selected)?d.selected:[];
+      state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
+      normalizeWords(); save(); refreshAll(); toast(`가져오기 완료: ${state.dbName} · ${state.words.length}개`);
+    }catch(err){ toast("올바른 JSON 파일이 아닙니다"); }
+  };
+  r.readAsText(f); e.target.value="";
+});
+$("#resetBtn").addEventListener("click",()=>{
+  if(!confirm("샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)")) return;
+  localStorage.removeItem(LS_KEY);
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:"샘플 데이터"};
+  normalizeWords(); save(); refreshAll(); toast("초기화 완료");
+});
+$("#wipeBtn").addEventListener("click",()=>{
+  if(!confirm("내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)")) return;
+  localStorage.removeItem(LS_KEY);
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:"(비어 있음)"};
+  save(); refreshAll(); toast("전체 삭제 완료");
+});
+$("#dbName").addEventListener("input",()=>{
+  state.dbName=$("#dbName").value.trim()||"이름 없는 단어장"; save();
+  if($("#scheduleResult").style.display!=="none") renderSchedule();  // 통계의 단어장 표시 갱신
+});
+
+/* ====================== 일정 ====================== */
+// 필터 조건에 맞는 단어 풀 (개수 슬라이더 적용 전)
+function schedPoolBase(){
+  if($("#sSelectedOnly").checked) return state.selected.map(wordById).filter(Boolean);
+  const pos=$("#sPos").value, lvl=$("#sLevel").value;
+  return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvl||w.level===lvl));
+}
+function updateSchedCount(){
+  const max=schedPoolBase().length;
+  const sc=$("#sCount");
+  sc.max=Math.max(1,max);
+  sc.value=Math.max(1,max);          // 풀이 바뀌면 기본값은 '전체'
+  sc.disabled=(max===0);
+  $("#sCountMax").textContent=max;
+  $("#sCountLabel").textContent=max;
+  updateSchedCalc();
+}
+// 기간 내 날짜 목록 (평일/주말 구분)
+function daysOf(start,end){
+  if(!start||!end||end<start) return null;
+  const days=[]; let d=new Date(start+"T00:00:00"); const last=new Date(end+"T00:00:00");
+  while(d<=last){ const dow=d.getDay(); days.push({date:fmtDate(d), weekend:(dow===0||dow===6)}); d.setDate(d.getDate()+1); }
+  return days;
+}
+function scheduleDays(){ return daysOf($("#sStart").value,$("#sEnd").value); }
+// 분량 합계가 개수에 가장 가까운 자동 배수(2·3·4)로 평일/주말 cap 계산
+function capsAuto(total, days){
+  const we=days.filter(d=>d.weekend).length, wd=days.length-we;
+  if(total<=0) return {x:0,y:0};
+  let best=null;
+  for(const k of [2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+  return best||{x:0,y:0};
+}
+// 단어 풀을 날짜에 평일 cap=x, 주말 cap=y로 순서대로 배치 (마지막 날은 더 적을 수 있음)
+function distributeInto(target, pool, days, x, y){
+  let i=0;
+  for(const day of days){
+    if(i>=pool.length) break;
+    const cap=day.weekend?y:x; if(cap<=0) continue;
+    const take=Math.min(cap, pool.length-i);
+    target[day.date]=pool.slice(i,i+take).map(w=>w.id); i+=take;
+  }
+  if(i<pool.length){ const last=Object.keys(target).sort().pop()||days[days.length-1].date;
+    target[last]=(target[last]||[]).concat(pool.slice(i).map(w=>w.id)); }
+}
+// 현재·예정(오늘 이후) 단어 풀 + 미배치 단어(미학습 우선)
+function editPoolWords(){
+  const today=todayStr();
+  const futureIds=[]; Object.keys(state.schedule).filter(d=>d>=today).sort()
+    .forEach(d=>state.schedule[d].forEach(id=>{ if(!futureIds.includes(id)) futureIds.push(id); }));
+  const scheduledSet=new Set(Object.values(state.schedule).flat());
+  const extra=state.words.filter(w=>!scheduledSet.has(w.id))
+    .sort((a,b)=>(isDone(a.id)?1:0)-(isDone(b.id)?1:0));
+  return futureIds.map(wordById).filter(Boolean).concat(extra);
+}
+function applyScheduleEdit(){
+  const days=daysOf($("#eStart").value,$("#eEnd").value);
+  if(!days){ toast("시작일·종료일을 확인하세요"); return; }
+  const today=todayStr();
+  let pool=editPoolWords();
+  if(!pool.length){ toast("재배치할 단어가 없습니다"); return; }
+  const count=Math.min(Math.max(1,+$("#eCount").value||pool.length), pool.length);
+  pool=pool.slice(0,count);
+  const c=capsAuto(pool.length, days);
+  Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });  // 미래만 비우고 재배치
+  const fresh={}; distributeInto(fresh, pool, days, c.x, c.y);
+  Object.keys(fresh).forEach(d=>state.schedule[d]=fresh[d]);
+  save(); renderSchedule();
+  toast(`재배치: ${Object.keys(fresh).length}일 · ${pool.length}단어`);
+}
+// 주말 비중 k(2·3·4)에 대한 분량: 주말 = 평일 × k, 합계 ≥ 개수가 되는 최소 평일 분량
+function capsForK(total, wd, we, k){
+  const weighted=wd + we*k; if(weighted<=0) return null;
+  const x=Math.max(1, Math.ceil(total/weighted));
+  return {x, y:k*x, weight:k, cap:x*weighted, over:x*weighted-total};
+}
+// 외울 개수 기반 평일/주말 하루 분량(최대값) 자동 계산.
+// 토글이 '자동'이면 분량 합계가 개수에 가장 가까운(동률 시 작은) 배수를 택하고, 숫자면 그 배수 사용.
+function computeCaps(total){
+  const days=scheduleDays(); if(!days) return null;
+  const we=days.filter(d=>d.weekend).length, wd=days.length-we;
+  if(total<=0) return {x:0, y:0, wd, we, weight:2, total, days, cap:0};
+  const seg=$("#sWeightSeg .on"); const mode=seg?seg.dataset.w:"auto";
+  let best=null;
+  if(mode==="auto"){
+    for(const k of [2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+  } else {
+    best=capsForK(total,wd,we,+mode);
+  }
+  if(!best) best={x:0,y:0,weight:2,cap:0};
+  return {x:best.x, y:best.y, wd, we, weight:best.weight, total, days, cap:best.cap};
+}
+function updateSchedCalc(){
+  const box=$("#sCalc"); if(!box) return;
+  const manual=$("#sManual").checked;
+  // 수동 모드에서만 평일/주말 분량 직접 입력 가능 (자동 모드에선 비중 토글만 사용)
+  $("#sWdCap").disabled=!manual; $("#sWeCap").disabled=!manual;
+  $("#sWeightSeg").classList.toggle("disabled",manual);
+  const days=scheduleDays();
+  if(!days){ box.innerHTML='<span class="muted">시작일·마지막일을 입력하세요</span>'; return; }
+  const we=days.filter(d=>d.weekend).length, wd=days.length-we;
+  if(!manual){
+    const total=Math.min(+$("#sCount").value||0, schedPoolBase().length);
+    const c=computeCaps(total);
+    if(c){ $("#sWdCap").value=c.x; $("#sWeCap").value=c.y; }
+    box.innerHTML = total
+      ? `자동 분량 → 평일 <b>${c.x}개</b> · 주말 <b>${c.y}개</b> <span class="muted">(주말 = 평일 ×${c.weight}${($("#sWeightSeg .on")||{}).dataset?.w==="auto"?" 자동":""}, 하루 최대)</span><br>`+
+        `분량 합계 <b>${c.cap}개</b> (외울 ${total}개) · 기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`
+      : '<span class="muted">외울 단어 개수를 1개 이상으로 설정하세요</span>';
+  } else {
+    box.innerHTML=`직접 입력한 분량 사용 → 평일 <b>${+$("#sWdCap").value||0}개</b> · 주말 <b>${+$("#sWeCap").value||0}개</b> <span class="muted">(하루 최대)</span><br>`+
+      `기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`;
+  }
+}
+$("#sSelectedOnly").addEventListener("change",()=>{
+  const sel=$("#sSelectedOnly").checked;
+  $("#sPos").disabled=sel; $("#sLevel").disabled=sel;   // 체크 단어만 쓸 땐 필터 비활성
+  updateSchedCount();
+});
+["#sPos","#sLevel"].forEach(s=>$(s).addEventListener("change",updateSchedCount));
+// 외울 개수·시작일·마지막일·주말 비중·분량·수동모드를 조작할 때마다 갱신
+$("#sCount").addEventListener("input",()=>{ $("#sCountLabel").textContent=$("#sCount").value; updateSchedCalc(); });
+["#sEnd","#sWdCap","#sWeCap"].forEach(s=>$(s).addEventListener("input",updateSchedCalc));
+// 시작일을 마지막일 뒤로 옮기면 마지막일을 시작일로 자동 보정
+$("#sStart").addEventListener("input",()=>{
+  $("#sEnd").min=$("#sStart").value;
+  if($("#sEnd").value && $("#sEnd").value<$("#sStart").value) $("#sEnd").value=$("#sStart").value;
+  updateSchedCalc();
+});
+$("#sWeightSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-w]"); if(!b) return;
+  $$("#sWeightSeg button").forEach(x=>x.classList.toggle("on",x===b));
+  updateSchedCalc();
+});
+$("#sManual").addEventListener("change",updateSchedCalc);
+$("#genSchedule").addEventListener("click",()=>{
+  if(!$("#sStart").value||!$("#sEnd").value){ toast("시작일과 마지막일을 입력하세요"); return; }
+  if($("#sEnd").value<$("#sStart").value){ toast("마지막일이 시작일보다 빠릅니다"); return; }
+  let pool=schedPoolBase();
+  if(!pool.length){ toast($("#sSelectedOnly").checked?"DB에서 체크한 단어가 없습니다":"조건에 맞는 단어가 없습니다"); return; }
+  if($("#sOrder").value==="random") pool=shuffle(pool);
+  const count=Math.min(Math.max(1,+$("#sCount").value||pool.length), pool.length);
+  pool=pool.slice(0,count);
+  const days=scheduleDays();
+  if(!days){ toast("시작일과 마지막일을 입력하세요"); return; }
+  const x=Math.max(0,Math.floor(+$("#sWdCap").value||0)), y=Math.max(0,Math.floor(+$("#sWeCap").value||0));
+  if(x<=0 && y<=0){ toast("평일/주말 분량을 1개 이상으로 설정하세요"); return; }
+  // 평일 cap=x, 주말 cap=y. 날짜 순으로 채우고 마지막 날은 더 적을 수 있음
+  const sched={}; let i=0;
+  for(const day of days){
+    if(i>=pool.length) break;
+    const cap = day.weekend ? y : x;
+    if(cap<=0) continue;
+    const take=Math.min(cap, pool.length-i);
+    sched[day.date]=pool.slice(i,i+take).map(w=>w.id); i+=take;
+  }
+  if(i<pool.length){ // 안전장치: 남으면 마지막 날에 추가
+    const lastDate=Object.keys(sched).sort().pop()||days[days.length-1].date;
+    sched[lastDate]=(sched[lastDate]||[]).concat(pool.slice(i).map(w=>w.id));
+  }
+  // 현재·예정(오늘 이후) 일정을 교체, 지난 기록은 레거시로 보존
+  const today=todayStr();
+  Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });
+  Object.keys(sched).forEach(d=>state.schedule[d]=sched[d]);
+  save(); renderSchedule();
+  $("#schedSettings").open=false;   // 생성하면 설정 접기
+  toast(`일정 생성: ${Object.keys(sched).length}일 · 평일 ${x}개/주말 ${y}개 · ${pool.length}단어`);
+});
+function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
+function studyDate(id){ return state.progress[id] && state.progress[id].date; }
+function renderSchedule(){
+  const box=$("#scheduleResult");
+  const dates=Object.keys(state.schedule).sort();
+  const today=todayStr();
+  const learnedWords=state.words.filter(w=>isDone(w.id));
+  if(!dates.length && !learnedWords.length){ box.style.display="none"; refreshDateSelects(); return; }
+  box.style.display="block";
+
+  /* ---- 학습 통계 (일정 + 일정 외 모두 포함) ---- */
+  const totalW=state.words.length, learned=learnedWords.length;
+  const todayLearned=learnedWords.filter(w=>studyDate(w.id)===today).length;
+  const studyDays=new Set(learnedWords.map(w=>studyDate(w.id)).filter(Boolean)).size;
+  const schedIds=dates.flatMap(d=>state.schedule[d]);
+  const schedSet=new Set(schedIds);
+  const schedDone=schedIds.filter(isDone).length;
+  const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
+  const offSched=learnedWords.filter(w=>!schedSet.has(w.id)).length;
+  $("#statsPanel").innerHTML=`
+    <div class="muted" style="margin:0 0 8px;font-size:.9em">📚 단어장: <b style="color:var(--ink)">${esc(state.dbName||"이름 없음")}</b> (총 ${totalW}단어)</div>
+    <div class="stats">
+      <div class="stat"><b>${learned}/${totalW}</b><span>학습한 단어</span></div>
+      <div class="stat"><b>${todayLearned}</b><span>오늘 학습</span></div>
+      <div class="stat"><b>${studyDays}</b><span>학습한 날</span></div>
+      ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>일정 진행</span></div>`:''}
+    </div>
+    <div class="muted" style="margin:-2px 0 4px;font-size:.88em">${schedIds.length
+      ? `일정 ${schedDone}/${schedIds.length}단어 완료 · 일정 외 학습 ${offSched}단어`
+      : `생성된 일정이 없습니다. 위에서 일정을 만들어 보세요. (일정 외 학습 ${offSched}단어 기록됨)`}</div>`;
+
+  /* ---- 캘린더 뷰 ---- */
+  const future=dates.filter(d=>d>=today);
+  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }  // 기본: 이번 달
+  if(selDate && !state.schedule[selDate]) selDate=null;
+  if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
+  renderCalendar(); renderDayDetail();
+
+  /* ---- 일정 수정 패널 기본값 (현재·예정 기준) ---- */
+  const ep=$("#editPanel");
+  if(future.length){
+    ep.style.display="block";
+    const ae=document.activeElement;
+    if(ae!==$("#eStart")) $("#eStart").value=future[0];
+    if(ae!==$("#eEnd")) $("#eEnd").value=future[future.length-1];
+    const poolMax=editPoolWords().length;
+    const futureWords=new Set(future.flatMap(d=>state.schedule[d])).size;
+    $("#eCount").max=Math.max(1,poolMax);
+    if(ae!==$("#eCount")) $("#eCount").value=Math.min(Math.max(1,futureWords),Math.max(1,poolMax));
+    $("#eCountMax").textContent=poolMax; $("#eCountLabel").textContent=$("#eCount").value;
+  } else ep.style.display="none";
+  refreshDateSelects();
+}
+$("#eCount").addEventListener("input",()=>{ $("#eCountLabel").textContent=$("#eCount").value; });
+$("#eStart").addEventListener("input",()=>{
+  $("#eEnd").min=$("#eStart").value;
+  if($("#eEnd").value && $("#eEnd").value<$("#eStart").value) $("#eEnd").value=$("#eStart").value;
+});
+$("#eApply").addEventListener("click",applyScheduleEdit);
+
+/* ====================== 캘린더 ====================== */
+let calRef=null, selDate=null;
+const WK=['일','월','화','수','목','금','토'];
+function renderCalendar(){
+  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }
+  const {y,m}=calRef, today=todayStr();
+  $("#calLabel").textContent=`${y}년 ${m+1}월`;
+  const startDow=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
+  const head=WK.map((d,i)=>`<div class="calhcell ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join("");
+  let cells="";
+  for(let i=0;i<startDow;i++) cells+=`<div class="calcell empty"></div>`;
+  for(let day=1;day<=daysInMonth;day++){
+    const ds=fmtDate(new Date(y,m,day)), dow=new Date(y,m,day).getDay();
+    const ids=state.schedule[ds];
+    const cls=['calcell'];
+    if(dow===0) cls.push('sun'); else if(dow===6) cls.push('sat');
+    if(ds===today) cls.push('today');
+    if(ds<today) cls.push('past');
+    if(ds===selDate) cls.push('sel');
+    let info="";
+    if(ids && ids.length){
+      cls.push('has'); const done=ids.filter(isDone).length;
+      const pct=Math.round(done/ids.length*100);
+      if(done===ids.length) cls.push('done');
+      else if(done>0) cls.push('partial');   // 부분 진행
+      const mark=done===ids.length?'✅':(done>0?'…':'');
+      info=`<div class="cinfo">${done}/${ids.length}${mark}</div>`+
+        (done>0&&done<ids.length?`<div class="cbar"><i style="width:${pct}%"></i></div>`:'');
+    }
+    cells+=`<div class="${cls.join(' ')}" data-cal="${ds}"><div class="cnum">${day}</div>${info}</div>`;
+  }
+  $("#calendar").innerHTML=`<div class="calhead">${head}</div><div class="calgrid">${cells}</div>`;
+}
+function renderDayDetail(){
+  const box=$("#dayDetail");
+  if(!selDate || !state.schedule[selDate]){ box.innerHTML=''; return; }
+  const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
+  const done=ids.filter(isDone).length;
+  const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
+  box.innerHTML=`<div class="daydetail">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <b>${selDate}</b> <span class="muted">${done}/${ids.length} 완료${selDate<todayStr()?' · 지난 기록':''}</span>
+      <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">이 날짜 삭제</button>
+    </div>
+    <div style="margin-top:8px">${chips}</div>
+    <div class="muted" style="font-size:.8em;margin-top:6px">칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택</div>
+  </div>`;
+}
+$("#calPrev").addEventListener("click",()=>{ calRef.m--; if(calRef.m<0){calRef.m=11;calRef.y--;} renderCalendar(); });
+$("#calNext").addEventListener("click",()=>{ calRef.m++; if(calRef.m>11){calRef.m=0;calRef.y++;} renderCalendar(); });
+$("#calToday").addEventListener("click",()=>{ const t=new Date(); calRef={y:t.getFullYear(),m:t.getMonth()}; renderCalendar(); });
+// 달력/상세: 날짜 선택 · 단어 제외 · 날짜 삭제
+$("#scheduleResult").addEventListener("click",e=>{
+  const del=e.target.closest("[data-deldate]");
+  if(del){ const d=del.dataset.deldate;
+    if(confirm(`${d} 일정을 삭제할까요?`)){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
+    return; }
+  const chip=e.target.closest(".wchip");
+  if(chip){ const d=chip.dataset.date, id=+chip.dataset.id;
+    state.schedule[d]=(state.schedule[d]||[]).filter(x=>x!==id);
+    if(!state.schedule[d].length){ delete state.schedule[d]; if(selDate===d) selDate=null; }
+    save(); renderSchedule(); return; }
+  const cell=e.target.closest('.calcell[data-cal]');
+  if(cell && state.schedule[cell.dataset.cal]){ selDate=cell.dataset.cal; renderCalendar(); renderDayDetail(); return; }
+});
+function refreshDateSelects(){
+  const dates=Object.keys(state.schedule).sort();
+  const opts=dates.map(d=>`<option value="${d}">${d} (${state.schedule[d].length})</option>`).join("");
+  ["#mDate","#qDate","#pDate"].forEach(sel=>{
+    const el=$(sel); const cur=el.value;
+    el.innerHTML=opts||`<option value="">일정 없음</option>`;
+    if([...el.options].some(o=>o.value===cur)) el.value=cur;
+  });
+}
+
+/* 범위 → 단어목록 */
+function wordsForScope(scope, dateVal){
+  if(scope==="all") return state.words.slice();
+  if(scope==="selected") return state.selected.map(wordById).filter(Boolean);
+  if(scope==="today"){
+    const ids=state.schedule[todayStr()];
+    return ids?ids.map(wordById).filter(Boolean):[];
+  }
+  if(scope==="date"){
+    const ids=state.schedule[dateVal];
+    return ids?ids.map(wordById).filter(Boolean):[];
+  }
+  return [];
+}
+
+/* ====================== 암기 (플래시카드) ====================== */
+let mem={list:[],idx:0,stage:0,meaningIdx:0};
+// 범위 + 학습 방식을 반영한 학습 대상 단어 목록(개수 슬라이더 적용 전)
+function memListFor(){
+  const scope=segVal('mScopeSeg'), mode=segVal('mModeSeg'), date=$("#mDate").value;
+  let list=wordsForScope(scope, date);
+  if(mode==="ahead" && (scope==="today"||scope==="date")){
+    // 선행학습: 해당 날짜부터 이후 모든 일정 단어를 이어서 (분량 이상으로 진행)
+    const base = scope==="today"? todayStr() : date;
+    const ids=[]; Object.keys(state.schedule).sort().filter(d=>d>=base)
+      .forEach(d=>state.schedule[d].forEach(id=>{ if(!ids.includes(id)) ids.push(id); }));
+    list=ids.map(wordById).filter(Boolean);
+  }
+  return list;
+}
+function updateMemCount(){
+  const max=memListFor().length;
+  const sc=$("#mCount");
+  sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
+  $("#mCountMax").textContent=max; $("#mCountLabel").textContent=max;
+}
+bindSeg("mScopeSeg",()=>{
+  $("#mDateWrap").style.display=segVal('mScopeSeg')==="date"?"block":"none";
+  updateMemCount();
+});
+bindSeg("mModeSeg",()=>{
+  $("#mAheadWrap").style.display=segVal('mModeSeg')==="ahead"?"block":"none";
+  updateMemCount();
+});
+bindSeg("mAfterSeg");
+$("#mDate").addEventListener("change",updateMemCount);
+$("#mCount").addEventListener("input",()=>{ $("#mCountLabel").textContent=$("#mCount").value; });
+$("#startMem").addEventListener("click",()=>{
+  let list=memListFor();
+  if(!list.length){ toast("학습할 단어가 없습니다"); return; }
+  const count=Math.min(Math.max(1,+$("#mCount").value||list.length), list.length);
+  list=list.slice(0,count);
+  // 선행학습 + '이후 일정에서 제외' 선택 시, 학습한 단어를 미래 일정에서 자동 제거
+  const adjustFuture = segVal('mModeSeg')==="ahead" && segVal('mAfterSeg')==="edit";
+  mem={list, idx:0, stage:0, meaningIdx:0, adjustFuture};
+  lastSpokenKey="";               // 자동 읽기 초기화
+  $("#memSettings").open=false;   // 시작하면 설정 접기
+  $("#memStage").style.display="block"; renderFlash();
+  $("#memStage").scrollIntoView({behavior:"smooth",block:"start"});
+});
+// 학습 완료 기록 + (선행학습 수정 모드면) 미래 일정에서 제외
+function markLearned(id){
+  state.progress[id]={done:true, date:todayStr()};
+  if(mem.adjustFuture){
+    const t=todayStr();
+    Object.keys(state.schedule).forEach(d=>{
+      if(d>t){ state.schedule[d]=state.schedule[d].filter(x=>x!==id); if(!state.schedule[d].length) delete state.schedule[d]; }
+    });
+  }
+}
+// 일본어 TTS (발음 읽어주기)
+function speakJa(text){
+  if(!text || !window.speechSynthesis) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(text));
+    u.lang="ja-JP"; u.rate=0.9;
+    const v=(speechSynthesis.getVoices()||[]).find(v=>/ja|japan/i.test(v.lang||""));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+let lastSpokenKey="";
+function maybeAutoRead(text){
+  if(!$("#mAutoRead").checked) return;
+  const key=mem.stage+":"+mem.idx;
+  if(key===lastSpokenKey) return;   // 같은 카드 재렌더(뜻 선택 등)는 다시 읽지 않음
+  lastSpokenKey=key; speakJa(text);
+}
+function renderFlash(){
+  const N=mem.list.length;
+  const w=mem.list[mem.idx]; if(!w) return;
+  mem.meaningIdx=Math.min(mem.meaningIdx, w.meanings.length-1);
+  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
+  $("#memCounter").textContent=`${stageNames[mem.stage]}  —  단어 ${mem.idx+1} / ${N}`;
+  $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*3)*100)+"%";
+  let html=`<div class="stage-tag">${stageNames[mem.stage]}</div>`;
+  if(w.pos) html+=`<div style="margin-bottom:8px">${posBadge(w.pos,true)}</div>`;   // 품사(터치 시 문법 팝업)
+  const multi = w.meanings.length>1;
+  const picker = multi ? `<div class="meaning-pick">`+w.meanings.map((m,i)=>
+      `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">뜻 ${i+1}</button>`).join("")+`</div>` : "";
+  if(mem.stage===0){
+    html+=`<div class="ko">${esc(w.korean)}</div><div class="hira">${esc(w.hiragana)}</div>`;
+  } else if(mem.stage===1){
+    html+=`<div class="hira">${esc(w.hiragana)}</div><div class="jp-big">${esc(w.kanji)}</div>`;
+  } else {
+    const m=w.meanings[mem.meaningIdx]||{};
+    html+=`<div class="jp-big">${esc(w.kanji)}</div><div class="hira">${esc(w.hiragana)}</div>`;
+    html+=picker;
+    html+=`<div class="ko">${esc(m.korean)}</div>`;
+    html+=`<div class="ex">${m.example?esc(m.example):'<span class="muted">예문 없음</span>'}</div>`;
+    // 마지막(예문) 단계에 도달한 단어는 즉시 학습 기록 (선행학습/분량 초과분도 바로바로 반영)
+    if(!isDone(w.id)){ markLearned(w.id); save(); }
+  }
+  const speakText = mem.stage===2 ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
+  html+=`<button class="speakbtn" data-text="${esc(speakText)}">🔊 발음 듣기</button>`;
+  $("#memNav").style.display="flex";
+  $("#flash").innerHTML=html;
+  const lastInStage = mem.idx===mem.list.length-1;
+  $("#memNext").textContent = !lastInStage ? "다음 단어 ▶" : "이 단계 마치기 ▶";
+  maybeAutoRead(speakText);
+}
+function renderStageEnd(){
+  const N=mem.list.length;
+  $("#memNav").style.display="none";   // 결정 화면 동안 하단 내비 숨김
+  $("#memBar").style.width=((mem.stage+1)*N/(N*3)*100)+"%";
+  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
+  const isLast = mem.stage===2;
+  $("#memCounter").textContent=`${stageNames[mem.stage]} 완료`;
+  $("#flash").innerHTML=`
+    <div class="stage-tag">이번 단계의 모든 단어(${N}개)를 다 봤어요</div>
+    <div class="ko">${isLast?"마지막 단계까지 끝냈어요!":"다음 단계로 넘어갈까요?"}</div>
+    <div class="btnrow" style="flex-direction:column;width:100%;max-width:340px;margin-top:18px">
+      <button class="btn" id="stageNext">${isLast?"완료 ✓":"다음 단계로 ▶"}</button>
+      <button class="btn sec" id="stageRetry">이 단계 다시 외우기 🔀</button>
+    </div>`;
+  $("#stageNext").addEventListener("click",()=>{
+    if(mem.stage<2){ mem.stage++; mem.idx=0; mem.meaningIdx=0; renderFlash(); }
+    else { mem.list.forEach(w=>markLearned(w.id)); save();
+      renderSchedule(); $("#memBar").style.width="100%"; toast("암기 완료! 🎉"); }
+  });
+  $("#stageRetry").addEventListener("click",()=>{
+    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast("무작위로 다시 시작");
+  });
+}
+$("#flash").addEventListener("click",e=>{
+  const sp=e.target.closest(".speakbtn"); if(sp){ speakJa(sp.dataset.text); return; }
+  const b=e.target.closest("button[data-mi]"); if(!b) return;
+  mem.meaningIdx=+b.dataset.mi; renderFlash();
+});
+$("#memPrev").addEventListener("click",()=>{
+  if(mem.idx>0){ mem.idx--; }
+  else if(mem.stage>0){ mem.stage--; mem.idx=mem.list.length-1; }
+  else return;
+  mem.meaningIdx=0; renderFlash();
+});
+$("#memNext").addEventListener("click",()=>{
+  // 같은 단계 안에서 모든 단어를 먼저 순회
+  if(mem.idx < mem.list.length-1){ mem.idx++; mem.meaningIdx=0; renderFlash(); return; }
+  // 단계의 마지막 단어 → 다음 단계 / 다시 외우기 선택 화면
+  renderStageEnd();
+});
+$("#memPrevStage").addEventListener("click",()=>{
+  // 이전 단계로 (현재 단어 유지)
+  if(mem.stage>0){ mem.stage--; mem.meaningIdx=0; renderFlash(); }
+  else toast("첫 단계입니다");
+});
+$("#memSkip").addEventListener("click",()=>{
+  // 다음 단계로 (현재 단어 유지). 마지막 단계면 완료 선택 화면
+  if(mem.stage<2){ mem.stage++; mem.meaningIdx=0; renderFlash(); }
+  else renderStageEnd();
+});
+
+/* ====================== 퀴즈 ====================== */
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean"};
+const FIELD_LABEL={kanji:"漢字",hira:"ひらがな",korean:"한글 뜻"};
+// 문제/정답으로 쓸 필드 값
+function wField(w,f){
+  if(f==="kanji") return w.kanji||w.hiragana;
+  if(f==="hira")  return w.hiragana;
+  return w.meanings.map(m=>m.korean).join(", ");
+}
+// 주관식 정답 허용값 (일본어는 漢字·ひらがな 모두 허용)
+function acceptFor(w,f){
+  if(f==="korean") return w.meanings.map(m=>m.korean);
+  if(f==="hira")   return [w.hiragana, w.kanji];
+  return [w.kanji, w.hiragana];
+}
+// 끝에서부터 공통 히라가나(오쿠리가나) 길이
+function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.length&&a[a.length-1-i]===b[b.length-1-i]) i++; return i; }
+// 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
+function pickDistractors(w, n){
+  const target=w.hiragana||"";
+  const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
+  const pool=state.words.filter(x=>x.id!==w.id);
+  const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
+  const others=byMatch(pool.filter(x=>x.pos!==w.pos));
+  return [...samePos, ...others].slice(0,n);   // 같은 품사가 부족하면 다른 품사로 보충
+}
+bindSeg("qScopeSeg",()=>{
+  $("#qDateWrap").style.display=segVal('qScopeSeg')==="date"?"block":"none";
+});
+// 정답 드롭다운에서 문제로 고른 항목은 제외
+function syncQuizAnswer(){
+  const pf=$("#qPromptField").value, cur=$("#qAnswerField").value;
+  const opts=[["korean","한글 뜻"],["hira","ひらがな"],["kanji","漢字"]].filter(([v])=>v!==pf);
+  $("#qAnswerField").innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join("");
+  $("#qAnswerField").value = opts.some(([v])=>v===cur) ? cur : opts[0][0];
+}
+$("#qPromptField").addEventListener("change",syncQuizAnswer);
+$("#qSwap").addEventListener("click",()=>{
+  const p=$("#qPromptField").value, a=$("#qAnswerField").value;
+  $("#qPromptField").value=a; syncQuizAnswer(); $("#qAnswerField").value=p;  // 서로 교환(유효)
+});
+syncQuizAnswer();
+$("#startQuiz").addEventListener("click",()=>{
+  const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
+  if(pf===af){ toast("문제와 정답을 서로 다른 항목으로 선택하세요"); return; }
+  const list=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
+  if(list.length<1){ toast("출제할 단어가 없습니다"); return; }
+  if(list.length<4) toast("단어가 4개 미만이라 보기가 적을 수 있어요");
+  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set()};
+  $("#quizSettings").open=false;   // 시작하면 설정 접기
+  $("#quizArea").style.display="block"; renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
+});
+// 퀴즈 정답 단어를 학습 기록(캘린더·통계 반영)
+function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
+function renderQuiz(){
+  const w=quiz.list[quiz.idx];
+  $("#quizPhase").textContent = `${quiz.phase==="mc"?"4지선다":"주관식"} · ${FIELD_LABEL[quiz.pf]}→${FIELD_LABEL[quiz.af]}`;
+  $("#quizScore").textContent = `점수 ${quiz.score} / ${quiz.list.length}`;
+  $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
+  let html=`<div class="qcenter">${w.pos?`<div style="margin-bottom:8px">${posBadge(w.pos,true)}</div>`:""}<div class="qprompt">${esc(wField(w,quiz.pf))}</div></div>`;
+  if(quiz.phase==="mc"){
+    // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
+    const optWords = shuffle([w, ...pickDistractors(w,3)]);
+    html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,quiz.af))}</button>`).join("")+`</div>`;
+    html+=`<div class="feedback" id="qfb"></div>`;
+  } else {
+    html+=`<input type="text" id="qInput" placeholder="${esc(FIELD_LABEL[quiz.af])} 입력" autocomplete="off">`;
+    html+=`<div class="btnrow"><button class="btn" id="qSubmit">제출</button></div>`;
+    html+=`<div class="feedback" id="qfb"></div>`;
+  }
+  $("#quizBody").innerHTML=html;
+  quiz.answered=false;
+  if(quiz.phase==="sa"){
+    const inp=$("#qInput"); inp.focus();
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter") submitSA(); });
+    $("#qSubmit").addEventListener("click",submitSA);
+  }
+}
+$("#quizBody").addEventListener("click",e=>{
+  const b=e.target.closest(".choice"); if(!b||quiz.answered||quiz.phase!=="mc") return;
+  quiz.answered=true;
+  const w=quiz.list[quiz.idx];
+  const ok = +b.dataset.id===w.id;
+  $$(".choice").forEach(c=>{
+    if(+c.dataset.id===w.id) c.classList.add("correct");
+    else if(c===b) c.classList.add("wrong");
+    c.disabled=true;
+  });
+  const ans = wField(w,quiz.af);
+  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,"정답!"); }
+  else { quiz.wrong.add(w.id); fb(false,"정답: "+ans); }
+  setTimeout(nextQuiz,900);
+});
+function submitSA(){
+  if(quiz.answered) return;
+  const w=quiz.list[quiz.idx];
+  const val=normAns($("#qInput").value);
+  if(!val){ toast("답을 입력하세요"); return; }
+  quiz.answered=true;
+  const accept = acceptFor(w,quiz.af);
+  const ok=accept.some(a=>normAns(a)===val || (normAns(a).length>1 && normAns(a).includes(val) && val.length>=2));
+  $("#qInput").disabled=true; $("#qSubmit").disabled=true;
+  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,"정답!"); }
+  else { quiz.wrong.add(w.id); fb(false,"정답: "+wField(w,quiz.af)); }
+  setTimeout(nextQuiz,1100);
+}
+function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
+function nextQuiz(){
+  if(quiz.idx<quiz.list.length-1){ quiz.idx++; renderQuiz(); return; }
+  // 페이즈 종료
+  if(quiz.phase==="mc"){
+    const mcScore=quiz.score;
+    alert(`4지선다 완료! ${mcScore} / ${quiz.list.length}\n이어서 주관식 시험을 시작합니다.`);
+    quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.list=shuffle(quiz.list); renderQuiz();
+  } else {
+    $("#quizBar").style.width="100%";
+    renderSchedule();   // 시험 결과를 캘린더·통계에 반영
+    quiz.finalWrong=[...quiz.wrong];
+    const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
+    const wrongHtml = wrong.length
+      ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">❌ 틀린 단어 ${wrong.length}개 (리스트 보기)</summary>
+          <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+          <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td></tr>`).join("")}</tbody></table></div></details>
+        <div class="btnrow"><button class="btn" onclick="retryWrong()">❌ 틀린 ${wrong.length}개만 다시 풀기</button></div>`
+      : `<p style="color:var(--ok);font-weight:700">전부 맞혔어요! 🎉</p>`;
+    $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">시험 종료 🎉</div>
+      <p style="text-align:center">주관식 점수: <b>${quiz.score} / ${quiz.list.length}</b></p>
+      ${wrongHtml}
+      <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">처음부터 다시</button></div>`;
+  }
+}
+// 틀린 단어만 다시 풀기 (4지선다 → 주관식)
+function retryWrong(){
+  const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
+  if(!list.length){ toast("다시 풀 단어가 없습니다"); return; }
+  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf:quiz.pf, af:quiz.af, wrong:new Set()};
+  renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ====================== 시험지 인쇄 ====================== */
+function updatePrintCount(){
+  const max=wordsForScope($("#pScope").value,$("#pDate").value).length;
+  const sc=$("#pCount");
+  sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
+  $("#pCountMax").textContent=max; $("#pCountLabel").textContent=max;
+}
+$("#pScope").addEventListener("change",()=>{
+  $("#pDateWrap").style.display=$("#pScope").value==="date"?"block":"none";
+  updatePrintCount();
+});
+$("#pDate").addEventListener("change",updatePrintCount);
+$("#pCount").addEventListener("input",()=>{ $("#pCountLabel").textContent=$("#pCount").value; });
+// 인쇄 종류: 시험지 / 문법
+bindSeg("pTypeSeg",()=>{
+  const g=segVal('pTypeSeg')==="grammar";
+  $("#examOpts").style.display=g?"none":"block";
+  $("#grammarOpts").style.display=g?"block":"none";
+  $("#genSheet").textContent=g?"문법 정리 생성":"시험지 생성";
+  $("#doPrint").disabled=true; $("#sheetOut").innerHTML="";
+});
+let lastSheetTitle="";
+// 해당 날짜가 일정의 몇 일차인지 (정렬된 일정 날짜 기준)
+function scheduleOrdinal(date){
+  const i=Object.keys(state.schedule).sort().indexOf(date);
+  return i<0?0:i+1;
+}
+// 문법 정리 인쇄지 (A4 2단)
+function genGrammarSheet(){
+  const pItem=it=>`<div class="gpitem" style="--gc:${gColor(it)}">
+    <div class="gphead">${esc(it.pos||it.title)} <span class="gpen">${esc(it.en)}</span></div>
+    <div class="gptip">${esc(it.tip)}</div>
+    ${it.conj?`<table class="gptable">${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
+    ${it.teRules?`<div class="gpsub">${esc(it.teTitle||"て형 변환")}</div><table class="gptable">${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
+  </div>`;
+  const body=GRAMMAR.map(g=>`<div class="gpsec">${esc(g.group)}</div>`+g.items.map(pItem).join("")).join("");
+  $("#sheetOut").innerHTML=`<div class="card sheet gsheet"><h3>일본어 문법 정리</h3>${body}</div>`;
+  lastSheetTitle="일본어 문법 정리";
+  document.title=lastSheetTitle;
+  $("#doPrint").disabled=false;
+  toast("문법 정리 생성 완료");
+}
+$("#genSheet").addEventListener("click",()=>{
+  if(segVal('pTypeSeg')==="grammar"){ genGrammarSheet(); return; }
+  let list=wordsForScope($("#pScope").value,$("#pDate").value);
+  if(!list.length){ toast("출제할 단어가 없습니다"); return; }
+  const count=Math.min(Math.max(1,+$("#pCount").value||list.length), list.length);
+  list=list.slice(0,count);
+  // 특정 날짜 범위면 제목에 'N일차' 자동 추가
+  const dchk = $("#pScope").value==="today" ? todayStr() : ($("#pScope").value==="date" ? $("#pDate").value : "");
+  const ord = dchk ? scheduleOrdinal(dchk) : 0;
+  const title=($("#pTitle").value||"일본어 단어 시험") + (ord ? ` ${ord}일차` : "");
+  lastSheetTitle=title;
+  document.title=title;   // 생성 즉시 문서 제목 반영 → PDF 저장 파일명 기본값
+  const fields=["kanji","hiragana","korean"]; const labels={kanji:"漢字",hiragana:"ひらがな",korean:"한글 뜻"};
+  const rows=list.map((w,i)=>{
+    const blankField=fields[Math.floor(Math.random()*fields.length)];
+    const cell=f=>{
+      let val = f==="korean"? w.meanings.map(m=>m.korean).join(", ") : w[f];
+      return f===blankField ? '<span class="blank"></span>' : esc(val);
+    };
+    return {i:i+1, kanji:cell("kanji"), hira:cell("hiragana"), ko:cell("korean"),
+      ans:{kanji:w.kanji,hira:w.hiragana,ko:w.meanings.map(m=>m.korean).join(", ")}};
+  });
+  const head=`<div class="head"><div><h3>${esc(title)}</h3>
+      <span class="muted">총 ${list.length}문항 · 빈칸을 채우세요</span></div>
+      <div>이름: ____________&nbsp;&nbsp;점수: ______</div></div>`;
+  const tbl=arr=>`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+    <tbody>${arr.map(r=>`<tr><td>${r.i}</td><td class="jp">${r.kanji}</td><td class="jp">${r.hira}</td><td>${r.ko}</td></tr>`).join("")}</tbody></table>`;
+  const ansTbl=`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td>${r.i}</td><td class="jp">${esc(r.ans.kanji)}</td><td class="jp">${esc(r.ans.hira)}</td><td>${esc(r.ans.ko)}</td></tr>`).join("")}</tbody></table>`;
+  $("#sheetOut").innerHTML=`
+    <div class="card sheet">${head}${tbl(rows)}</div>
+    <div class="card sheet answer-sheet noscreen" id="ansSheet" style="display:none">
+      <div class="head"><div><h3>${esc(title)} — 정답</h3></div></div>${ansTbl}</div>
+    <div class="card noprint">
+      <label><input type="checkbox" id="showAns"> 정답지도 인쇄에 포함</label>
+    </div>`;
+  $("#doPrint").disabled=false;
+  $("#showAns").addEventListener("change",e=>{
+    $("#ansSheet").style.display=e.target.checked?"block":"none";
+  });
+  toast("시험지 생성 완료");
+});
+$("#doPrint").addEventListener("click",()=>{
+  // PDF 저장 파일명 = 시험지 제목(일차 포함). 조기 원복하면 저장 대화상자에 반영 안 되므로 원복하지 않음
+  document.title=(lastSheetTitle||$("#pTitle").value||"일본어 단어 시험").trim();
+  window.print();
+});
+
+/* ====================== 초기화 ====================== */
+function resetSchedControls(){
+  // 브라우저의 체크박스 상태 복원으로 0/0에 고착되는 문제 방지
+  $("#sSelectedOnly").checked=false;
+  $("#sPos").disabled=false; $("#sLevel").disabled=false;
+}
+function refreshAll(){
+  refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
+  resetSchedControls(); updateSchedCount(); updateMemCount(); updatePrintCount();
+  $("#dbName").value=state.dbName||"";
+}
+// bfcache 복원 시에도 동기화
+window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
+load();
+refreshAll();
+// 기본 날짜 채우기
+$("#sStart").value=todayStr();
+(function(){ const d=new Date(); d.setDate(d.getDate()+13); $("#sEnd").value=fmtDate(d); })();
+updateSchedCalc();   // 기본 날짜 반영해 자동 분량 표시
+renderGrammar();     // 문법 탭 렌더
+if(Object.keys(state.schedule).length) $("#schedSettings").open=false;  // 일정 있으면 설정 접기
+const initTab=location.hash.slice(1);
+if(initTab && $("#"+initTab)) showTab(initTab);
+</script>
+</body>
+</html>
