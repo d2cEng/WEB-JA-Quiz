@@ -260,6 +260,16 @@
   .manual{margin-top:14px}
   .manbody{padding-top:6px}
   .manbody code{background:var(--accent);padding:1px 5px;border-radius:5px;font-size:.9em}
+  /* AI 프롬프트 생성 박스 */
+  .aibox{background:var(--accent);border-radius:10px;padding:12px;margin:6px 0 14px}
+  .aibox .aihd{font-weight:800;font-size:.95em;margin:0 0 4px}
+  .aibox .aidesc{font-size:.86em;color:#374151;margin:0 0 10px;line-height:1.55}
+  .aibox label{margin:0 0 4px}
+  .airow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+  .airow input{flex:1 1 180px}
+  .airow .btn{flex:0 0 auto;white-space:nowrap}
+  .aisteps{font-size:.82em;color:var(--muted);margin:10px 0 0;padding-left:18px;line-height:1.6}
+  .aisteps li{margin:2px 0}
   /* 문법 팝업 */
   .modal[hidden]{display:none}
   .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -336,7 +346,26 @@
       <details class="manual noprint">
         <summary class="setsum">📄 JSON 단어장 파일 만드는 법</summary>
         <div class="manbody">
-          <p class="gdesc">엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 내 단어장이 됩니다. 가장 쉬운 방법은 <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것입니다.</p>
+          <div class="aibox">
+            <p class="aihd">🤖 AI로 만들기 (가장 쉬움)</p>
+            <p class="aidesc">만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!</p>
+            <label for="aiTopic">단어장 주제</label>
+            <div class="airow">
+              <input type="text" id="aiTopic" placeholder="예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어">
+              <button type="button" class="btn" id="aiCopyBtn">📋 프롬프트 복사</button>
+            </div>
+            <label for="aiCount" style="margin-top:10px">단어 개수</label>
+            <div class="airow">
+              <input type="number" id="aiCount" min="1" max="200" value="30" inputmode="numeric">
+            </div>
+            <ol class="aisteps">
+              <li>주제·개수를 적고 <b>프롬프트 복사</b>를 누릅니다.</li>
+              <li>AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.</li>
+              <li>AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.</li>
+              <li>위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.</li>
+            </ol>
+          </div>
+          <p class="gdesc">직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.</p>
           <table class="gtable"><tbody>
             <tr><th>name</th><td>단어장 이름 (선택)</td></tr>
             <tr><th>kanji</th><td>간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
@@ -987,6 +1016,56 @@ $("#impFile").addEventListener("change",e=>{
   };
   r.readAsText(f); e.target.value="";
 });
+
+/* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
+function buildAiPrompt(topic, count){
+  return `당신은 일본어 단어장 데이터를 만드는 도우미입니다.
+"${topic}" 주제의 일본어 단어 ${count}개를 아래 JSON 형식에 정확히 맞춰 만들어 주세요.
+
+[출력 형식]
+{
+  "version": 1,
+  "name": "${topic}",
+  "words": [
+    { "kanji": "教える", "hiragana": "おしえる", "korean": "가르치다,알려주다", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" }
+  ]
+}
+
+[필드 규칙]
+- kanji: 한자 표기 (한자가 없는 단어면 히라가나와 동일하게 적음)
+- hiragana: 읽는 법 (히라가나)
+- korean: 한글 뜻. 뜻이 여러 개면 쉼표(,)로 구분
+- level: JLPT 레벨 (N5·N4·N3·N2·N1 중 추정해서 표기)
+- pos: 품사. 다음 중 하나로 표기 — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
+- example: 일본어 예문. korean에 뜻이 여러 개면 쉼표(,)로 같은 순서·같은 개수로 예문을 적음
+- id 필드는 넣지 마세요 (가져올 때 자동 부여됩니다).
+
+[주의]
+- 설명·인사말 없이 순수 JSON만 출력하세요.
+- 코드블록(\`\`\`) 표시 없이 { 로 시작해 } 로 끝나는 JSON 텍스트만 출력하세요.
+- korean과 example의 쉼표 개수를 반드시 일치시키세요.`;
+}
+$("#aiCopyBtn").addEventListener("click",async ()=>{
+  const topic=($("#aiTopic").value||"").trim();
+  if(!topic){ toast("단어장 주제를 입력하세요"); $("#aiTopic").focus(); return; }
+  let count=parseInt($("#aiCount").value,10);
+  if(!count||count<1) count=30;
+  if(count>200) count=200;
+  const text=buildAiPrompt(topic,count);
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("프롬프트 복사됨 · AI에 붙여넣으세요");
+  }catch(err){
+    // 클립보드 권한이 없거나 비보안 컨텍스트일 때의 대비책
+    const ta=document.createElement("textarea");
+    ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    toast(ok?"프롬프트 복사됨 · AI에 붙여넣으세요":"복사 실패 · 길게 눌러 직접 복사하세요");
+  }
+});
+
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm("샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)")) return;
   localStorage.removeItem(LS_KEY);
