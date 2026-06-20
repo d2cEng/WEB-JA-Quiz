@@ -1871,7 +1871,7 @@ $("#mDate").addEventListener("change",updateMemCount);
 $("#mCount").addEventListener("input",()=>{ $("#mCountLabel").textContent=$("#mCount").value; });
 $("#startMem").addEventListener("click",()=>{
   let list=memListFor();
-  if(!list.length){ toast("학습할 단어가 없습니다"); return; }
+  if(!list.length){ toast(t("toast_noMemWords")); return; }
   if(segVal('mOrderSeg')==="random") list=shuffle(list);   // 무작위 출제: 섞은 뒤 개수만큼
   const count=Math.min(Math.max(1,+$("#mCount").value||list.length), list.length);
   list=list.slice(0,count);
@@ -1887,9 +1887,9 @@ $("#startMem").addEventListener("click",()=>{
 function markLearned(id){
   state.progress[id]={done:true, date:todayStr()};
   if(mem.adjustFuture){
-    const t=todayStr();
+    const td=todayStr();
     Object.keys(state.schedule).forEach(d=>{
-      if(d>t){ state.schedule[d]=state.schedule[d].filter(x=>x!==id); if(!state.schedule[d].length) delete state.schedule[d]; }
+      if(d>td){ state.schedule[d]=state.schedule[d].filter(x=>x!==id); if(!state.schedule[d].length) delete state.schedule[d]; }
     });
   }
 }
@@ -1940,63 +1940,87 @@ function maybeAutoRead(text){
   if(key===lastSpokenKey) return;   // 같은 카드 재렌더(뜻 선택 등)는 다시 읽지 않음
   lastSpokenKey=key; speakJa(text);
 }
+// 암기 단계 정의 (4단계): 0 뜻+ひらがな · 1 ひらがな+漢字 · 2 漢字+뜻 · 3 예문
+const MEM_STAGES=4, MEM_LAST=MEM_STAGES-1;
+function memStageTag(i){ return t("stage"+(i+1)); }
+function memStageShort(i){ return t("stage"+(i+1)+"s"); }
 function renderFlash(){
   const N=mem.list.length;
   const w=mem.list[mem.idx]; if(!w) return;
   mem.meaningIdx=Math.min(mem.meaningIdx, w.meanings.length-1);
-  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
-  $("#memCounter").textContent=`${stageNames[mem.stage]}  —  단어 ${mem.idx+1} / ${N}`;
-  $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*3)*100)+"%";
-  let html=`<div class="stage-tag">${stageNames[mem.stage]}</div>`;
+  $("#memCounter").textContent=t("mem_counterWord",{stage:memStageTag(mem.stage), i:mem.idx+1, n:N});
+  $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*MEM_STAGES)*100)+"%";
+  let html=`<button class="dropword" data-drop>${esc(t("mem_dropWord"))}</button>`;
+  html+=`<div class="stage-tag">${esc(memStageTag(mem.stage))}</div>`;
   if(w.pos||w.level) html+=`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`;   // 품사(터치 시 문법 팝업) · 레벨
   const multi = w.meanings.length>1;
   const picker = multi ? `<div class="meaning-pick">`+w.meanings.map((m,i)=>
-      `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">뜻 ${i+1}</button>`).join("")+`</div>` : "";
+      `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">${esc(t("mem_meaningN",{i:i+1}))}</button>`).join("")+`</div>` : "";
   if(mem.stage===0){
+    // 뜻 → ひらがな (읽기 떠올리기)
     html+=`<div class="ko">${esc(w.korean)}</div><div class="hira">${esc(w.hiragana)}</div>`;
   } else if(mem.stage===1){
+    // ひらがな → 漢字
     html+=`<div class="hira">${esc(w.hiragana)}</div><div class="jp-big">${esc(w.kanji)}</div>`;
+  } else if(mem.stage===2){
+    // 漢字 → 뜻 (한자가 문제: 한자 보고 뜻 떠올리기)
+    html+=`<div class="jp-big">${esc(w.kanji)}</div><div class="ko">${esc(w.korean)}</div>`;
   } else {
+    // 예문
     const m=w.meanings[mem.meaningIdx]||{};
     html+=`<div class="jp-big">${esc(w.kanji)}</div><div class="hira">${esc(w.hiragana)}</div>`;
     html+=picker;
     html+=`<div class="ko">${esc(m.korean)}</div>`;
-    html+=`<div class="ex">${m.example?esc(m.example):'<span class="muted">예문 없음</span>'}</div>`;
+    html+=`<div class="ex">${m.example?esc(m.example):`<span class="muted">${esc(t("mem_noExample"))}</span>`}</div>`;
     // 마지막(예문) 단계에 도달한 단어는 즉시 학습 기록 (선행학습/분량 초과분도 바로바로 반영)
     if(!isDone(w.id)){ markLearned(w.id); save(); }
   }
-  const speakText = mem.stage===2 ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
-  html+=`<button class="speakbtn" data-text="${esc(speakText)}">🔊 발음 듣기</button>`;
+  const speakText = mem.stage===MEM_LAST ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
+  html+=`<button class="speakbtn" data-text="${esc(speakText)}">${esc(t("mem_listen"))}</button>`;
   $("#memNav").style.display="flex";
   $("#flash").innerHTML=html;
   const lastInStage = mem.idx===mem.list.length-1;
-  $("#memNext").textContent = !lastInStage ? "다음 단어 ▶" : "이 단계 마치기 ▶";
+  $("#memNext").textContent = !lastInStage ? t("mem_next") : t("mem_finishStage");
+  // 이전/다음 단계 버튼을 실제 단계 이름으로 표기
+  $("#memPrevStage").textContent = mem.stage>0 ? "⏮ "+memStageShort(mem.stage-1) : t("mem_prevStage");
+  $("#memSkip").textContent = mem.stage<MEM_LAST ? memStageShort(mem.stage+1)+" ⏭" : t("mem_skipLast");
   maybeAutoRead(speakText);
+}
+// 현재 보고 있는 단어를 학습 리스트에서 제외
+function dropCurrentWord(){
+  if(!mem.list.length) return;
+  mem.list.splice(mem.idx,1);
+  if(!mem.list.length){
+    $("#memStage").style.display="none"; $("#memSettings").open=true;
+    updateMemCount(); toast(t("toast_dropped")); return;
+  }
+  if(mem.idx>=mem.list.length) mem.idx=mem.list.length-1;
+  mem.meaningIdx=0; renderFlash(); toast(t("toast_dropped"));
 }
 function renderStageEnd(){
   const N=mem.list.length;
   $("#memNav").style.display="none";   // 결정 화면 동안 하단 내비 숨김
-  $("#memBar").style.width=((mem.stage+1)*N/(N*3)*100)+"%";
-  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
-  const isLast = mem.stage===2;
-  $("#memCounter").textContent=`${stageNames[mem.stage]} 완료`;
+  $("#memBar").style.width=((mem.stage+1)*N/(N*MEM_STAGES)*100)+"%";
+  const isLast = mem.stage===MEM_LAST;
+  $("#memCounter").textContent=t("mem_stageDone",{stage:memStageTag(mem.stage)});
   $("#flash").innerHTML=`
-    <div class="stage-tag">이번 단계의 모든 단어(${N}개)를 다 봤어요</div>
-    <div class="ko">${isLast?"마지막 단계까지 끝냈어요!":"다음 단계로 넘어갈까요?"}</div>
+    <div class="stage-tag">${esc(t("mem_stageAllSeen",{n:N}))}</div>
+    <div class="ko">${esc(isLast?t("mem_lastDone"):t("mem_goNext"))}</div>
     <div class="btnrow" style="flex-direction:column;width:100%;max-width:340px;margin-top:18px">
-      <button class="btn" id="stageNext">${isLast?"완료 ✓":"다음 단계로 ▶"}</button>
-      <button class="btn sec" id="stageRetry">이 단계 다시 외우기 🔀</button>
+      <button class="btn" id="stageNext">${esc(isLast?t("mem_complete"):t("mem_nextStage"))}</button>
+      <button class="btn sec" id="stageRetry">${esc(t("mem_retryStage"))}</button>
     </div>`;
   $("#stageNext").addEventListener("click",()=>{
-    if(mem.stage<2){ mem.stage++; mem.idx=0; mem.meaningIdx=0; renderFlash(); }
+    if(mem.stage<MEM_LAST){ mem.stage++; mem.idx=0; mem.meaningIdx=0; renderFlash(); }
     else { mem.list.forEach(w=>markLearned(w.id)); save();
-      renderSchedule(); $("#memBar").style.width="100%"; toast("암기 완료! 🎉"); }
+      renderSchedule(); $("#memBar").style.width="100%"; toast(t("toast_memDone")); }
   });
   $("#stageRetry").addEventListener("click",()=>{
-    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast("무작위로 다시 시작");
+    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast(t("toast_retryShuffle"));
   });
 }
 $("#flash").addEventListener("click",e=>{
+  if(e.target.closest("[data-drop]")){ dropCurrentWord(); return; }
   const sp=e.target.closest(".speakbtn"); if(sp){ speakJa(sp.dataset.text); return; }
   const b=e.target.closest("button[data-mi]"); if(!b) return;
   mem.meaningIdx=+b.dataset.mi; renderFlash();
@@ -2016,11 +2040,11 @@ $("#memNext").addEventListener("click",()=>{
 $("#memPrevStage").addEventListener("click",()=>{
   // 이전 단계로 (현재 단어 유지)
   if(mem.stage>0){ mem.stage--; mem.meaningIdx=0; renderFlash(); }
-  else toast("첫 단계입니다");
+  else toast(t("toast_firstStage"));
 });
 $("#memSkip").addEventListener("click",()=>{
   // 다음 단계로 (현재 단어 유지). 마지막 단계면 완료 선택 화면
-  if(mem.stage<2){ mem.stage++; mem.meaningIdx=0; renderFlash(); }
+  if(mem.stage<MEM_LAST){ mem.stage++; mem.meaningIdx=0; renderFlash(); }
   else renderStageEnd();
 });
 
