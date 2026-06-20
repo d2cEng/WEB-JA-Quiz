@@ -309,6 +309,12 @@
   /* 학습 현황: 일정 외 학습 강조 */
   .offsched{background:var(--accent);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:.9em;line-height:1.55}
   .offsched b{color:var(--brand)}
+  /* 곳곳에 배치하는 인라인 힌트 */
+  .tiphint{background:var(--accent);border:1px solid var(--line);border-radius:10px;
+    padding:9px 12px;margin:10px 0;font-size:.84em;color:#374151;line-height:1.55}
+  .tiphint b{color:var(--brand)}
+  /* 첫 단계 표시(이전 단계 없음) */
+  .btn.atedge{opacity:.55}
   @media print{
     body{background:#fff}
     header,nav,.noprint,.toast{display:none !important}
@@ -361,6 +367,7 @@
       <p class="muted" style="margin:0 0 8px">
         <span data-i18n="db_selectedPre">선택됨 </span><span class="count" id="selCount">0</span><span data-i18n="db_shownMid"> / 표시 </span><span class="count" id="shownCount">0</span><span data-i18n="db_unitSuf"> 개</span>
       </p>
+      <div class="tiphint" data-i18n="hint_db">💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.</div>
       <div class="tablewrap">
         <table id="dbTable">
           <thead><tr>
@@ -381,6 +388,7 @@
         <button class="btn ghost" id="resetBtn" data-i18n="db_reset">초기화(샘플로)</button>
         <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
+      <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
       <details class="manual noprint">
         <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
         <div class="manbody">
@@ -433,6 +441,7 @@
      <details id="schedSettings" open>
       <summary class="setsum" data-i18n="sch_settingsSummary">⚙️ 일정 만들기 (기간·개수·분량)</summary>
       <p class="sub" data-i18n="sch_sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
+      <div class="tiphint" data-i18n="hint_sch">💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.</div>
       <div class="row">
         <div><label data-i18n="sch_start">시작일</label><input type="date" id="sStart"></div>
         <div><label data-i18n="sch_end">마지막일</label><input type="date" id="sEnd"></div>
@@ -498,6 +507,7 @@
      <details id="memSettings" open>
       <summary class="setsum" data-i18n="mem_settingsSummary">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
       <p class="sub" data-i18n="mem_sub">단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.</p>
+      <div class="tiphint" data-i18n="hint_mem">💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.</div>
       <label data-i18n="mem_scope">학습 범위</label>
       <div class="seg seg-full" id="mScopeSeg">
         <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
@@ -548,6 +558,7 @@
      <details id="quizSettings" open>
       <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
       <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
+      <div class="tiphint" data-i18n="hint_quiz">💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.</div>
       <label data-i18n="quiz_scope">출제 범위</label>
       <div class="seg seg-full" id="qScopeSeg">
         <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
@@ -606,6 +617,7 @@
       </div>
       <div id="examOpts">
         <p class="sub" data-i18n="print_examSub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
+        <div class="tiphint" data-i18n="hint_print">💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.</div>
         <div class="row">
           <div><label data-i18n="print_scope">출제 범위</label>
             <select id="pScope">
@@ -638,6 +650,7 @@
       <h2 data-i18n="gram_title">일본어 품사 · 문법 한눈에 📚</h2>
       <p class="sub" data-i18n="gram_sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
       <div class="gnavbar" id="gNav"></div>
+      <div class="tiphint" data-i18n="hint_grammar">💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.</div>
       <div class="btnrow"><button class="btn sec" id="gExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
     <div id="grammarBody"></div>
@@ -749,7 +762,14 @@ const I18N = {
     mem_afterLabel:"학습한 단어의 이후 일정", mem_keep:"유지", mem_exclude:"학습분 제외",
     mem_orderLabel:"출제 순서", mem_countPre:"단어 수: ", mem_autoRead:"🔊 카드 자동 읽기 (발음·TTS)",
     btn_start:"시작", mem_prev:"◀ 이전 단어", mem_next:"다음 단어 ▶", mem_prevStage:"⏮ 이전 단계", mem_skip:"다음 단계 ⏭",
-    mem_finishStage:"이 단계 마치기 ▶", mem_skipLast:"마치기 ⏭", mem_dropWord:"이 단어 빼기 ✕",
+    mem_finishStage:"이 단계 마치기 ▶", mem_skipLast:"마치기 ⏭", mem_dropWord:"이 단어 빼기 ✕", mem_firstStageLabel:"⏮ 첫 단계 (처음)",
+    hint_db:"💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.",
+    hint_db2:"💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.",
+    hint_sch:"💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.",
+    hint_mem:"💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.",
+    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.",
+    hint_print:"💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.",
+    hint_grammar:"💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.",
     quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식으로 진행합니다.",
     quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
     quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
@@ -860,7 +880,14 @@ const I18N = {
     mem_afterLabel:"Future schedule for studied words", mem_keep:"Keep", mem_exclude:"Exclude studied",
     mem_orderLabel:"Order", mem_countPre:"Words: ", mem_autoRead:"🔊 Auto-read cards (TTS)",
     btn_start:"Start", mem_prev:"◀ Prev word", mem_next:"Next word ▶", mem_prevStage:"⏮ Prev stage", mem_skip:"Next stage ⏭",
-    mem_finishStage:"Finish this stage ▶", mem_skipLast:"Finish ⏭", mem_dropWord:"Remove this word ✕",
+    mem_finishStage:"Finish this stage ▶", mem_skipLast:"Finish ⏭", mem_dropWord:"Remove this word ✕", mem_firstStageLabel:"⏮ First stage (start)",
+    hint_db:"💡 <b>Checked</b> words become the targets for Memorize/Quiz/Schedule. Try <b>Select all results</b> after searching/sorting.",
+    hint_db2:"💡 To move to another device, <b>Export</b> a backup and <b>Import</b> it on the new one. Progress and settings are saved automatically.",
+    hint_sch:"💡 Leave the weekend weight on <b>Auto</b> to auto-calculate the weekday/weekend load for your target count. Tap a date/word on the calendar to edit.",
+    hint_mem:"💡 Learn in 4 stages (meaning+ひらがな → ひらがな+漢字 → <b>漢字+meaning</b> → example). Use <b>Remove this word ✕</b> on a card to drop ones you know.",
+    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer, and you can retry only the words you missed.",
+    hint_print:"💡 One of 漢字·ひらがな·meaning is randomly blanked per row. You can also print the <b>answer key</b>.",
+    hint_grammar:"💡 Tap a <b>part-of-speech badge</b> in Memorize/Quiz to instantly pop up its grammar. Use the chips above to jump between items.",
     quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer.",
     quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
     quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
@@ -1986,8 +2013,10 @@ function renderFlash(){
   $("#flash").innerHTML=html;
   const lastInStage = mem.idx===mem.list.length-1;
   $("#memNext").textContent = !lastInStage ? t("mem_next") : t("mem_finishStage");
-  // 이전/다음 단계 버튼을 실제 단계 이름으로 표기
-  $("#memPrevStage").textContent = mem.stage>0 ? "⏮ "+memStageShort(mem.stage-1) : t("mem_prevStage");
+  // 이전/다음 단계 버튼을 실제 단계 이름으로 표기 (첫 단계에선 '첫 단계'임을 명시)
+  const atFirst = mem.stage===0;
+  $("#memPrevStage").textContent = atFirst ? t("mem_firstStageLabel") : "⏮ "+memStageShort(mem.stage-1);
+  $("#memPrevStage").classList.toggle("atedge", atFirst);
   $("#memSkip").textContent = mem.stage<MEM_LAST ? memStageShort(mem.stage+1)+" ⏭" : t("mem_skipLast");
   maybeAutoRead(speakText);
 }
