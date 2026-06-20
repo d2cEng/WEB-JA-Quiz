@@ -775,6 +775,10 @@ const I18N = {
     toast_noChecked:"DB에서 체크한 단어가 없습니다", toast_noMatch:"조건에 맞는 단어가 없습니다",
     toast_schedGen:"일정 생성: {d}일 · 평일 {x}개/주말 {y}개 · {n}단어",
     toast_checkDates:"시작일·종료일을 확인하세요", toast_noRedistribute:"재배치할 단어가 없습니다", toast_redistributed:"재배치: {d}일 · {n}단어",
+    toast_setCapacity:"평일/주말 분량을 1개 이상으로 설정하세요",
+    calc_enterDates:"시작일·마지막일을 입력하세요", calc_setCount:"외울 단어 개수를 1개 이상으로 설정하세요", calc_autoSuffix:" 자동",
+    calc_auto:"자동 분량 → 평일 <b>{x}개</b> · 주말 <b>{y}개</b> <span class=\"muted\">(주말 = 평일 ×{weight}{autoSuffix}, 하루 최대)</span><br>분량 합계 <b>{cap}개</b> (외울 {total}개) · 기간 {days}일 (평일 {wd}일 · 주말 {we}일) · 마지막 날은 더 적을 수 있어요",
+    calc_manual:"직접 입력한 분량 사용 → 평일 <b>{x}개</b> · 주말 <b>{y}개</b> <span class=\"muted\">(하루 최대)</span><br>기간 {days}일 (평일 {wd}일 · 주말 {we}일) · 마지막 날은 더 적을 수 있어요",
     stats_wordbook:"📚 단어장: ", stats_totalWords:" (총 {n}단어)",
     stat_learned:"학습한 단어", stat_today:"오늘 학습", stat_days:"학습한 날", stat_schedProgress:"일정 진행",
     stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
@@ -881,6 +885,10 @@ const I18N = {
     toast_noChecked:"No words checked in the DB", toast_noMatch:"No words match the criteria",
     toast_schedGen:"Schedule created: {d} days · weekday {x}/weekend {y} · {n} words",
     toast_checkDates:"Check the start/end dates", toast_noRedistribute:"No words to redistribute", toast_redistributed:"Redistributed: {d} days · {n} words",
+    toast_setCapacity:"Set the weekday/weekend load to at least 1",
+    calc_enterDates:"Enter start and end dates", calc_setCount:"Set the number of words to learn to at least 1", calc_autoSuffix:" auto",
+    calc_auto:"Auto load → weekday <b>{x}</b> · weekend <b>{y}</b> <span class=\"muted\">(weekend = weekday ×{weight}{autoSuffix}, daily max)</span><br>Total <b>{cap}</b> (of {total} to learn) · {days} days ({wd} weekdays · {we} weekends) · the last day may have fewer",
+    calc_manual:"Manual load → weekday <b>{x}</b> · weekend <b>{y}</b> <span class=\"muted\">(daily max)</span><br>{days} days ({wd} weekdays · {we} weekends) · the last day may have fewer",
     stats_wordbook:"📚 Wordbook: ", stats_totalWords:" ({n} words total)",
     stat_learned:"Words learned", stat_today:"Learned today", stat_days:"Study days", stat_schedProgress:"Schedule progress",
     stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
@@ -1564,10 +1572,10 @@ function editPoolWords(){
 }
 function applyScheduleEdit(){
   const days=daysOf($("#eStart").value,$("#eEnd").value);
-  if(!days){ toast("시작일·종료일을 확인하세요"); return; }
+  if(!days){ toast(t("toast_checkDates")); return; }
   const today=todayStr();
   let pool=editPoolWords();
-  if(!pool.length){ toast("재배치할 단어가 없습니다"); return; }
+  if(!pool.length){ toast(t("toast_noRedistribute")); return; }
   const count=Math.min(Math.max(1,+$("#eCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
   const c=capsAuto(pool.length, days);
@@ -1575,7 +1583,7 @@ function applyScheduleEdit(){
   const fresh={}; distributeInto(fresh, pool, days, c.x, c.y);
   Object.keys(fresh).forEach(d=>state.schedule[d]=fresh[d]);
   save(); renderSchedule();
-  toast(`재배치: ${Object.keys(fresh).length}일 · ${pool.length}단어`);
+  toast(t("toast_redistributed",{d:Object.keys(fresh).length, n:pool.length}));
 }
 // 주말 비중 k(2·3·4)에 대한 분량: 주말 = 평일 × k, 합계 ≥ 개수가 되는 최소 평일 분량
 function capsForK(total, wd, we, k){
@@ -1606,19 +1614,18 @@ function updateSchedCalc(){
   $("#sWdCap").disabled=!manual; $("#sWeCap").disabled=!manual;
   $("#sWeightSeg").classList.toggle("disabled",manual);
   const days=scheduleDays();
-  if(!days){ box.innerHTML='<span class="muted">시작일·마지막일을 입력하세요</span>'; return; }
+  if(!days){ box.innerHTML=`<span class="muted">${esc(t("calc_enterDates"))}</span>`; return; }
   const we=days.filter(d=>d.weekend).length, wd=days.length-we;
   if(!manual){
     const total=Math.min(+$("#sCount").value||0, schedPoolBase().length);
     const c=computeCaps(total);
     if(c){ $("#sWdCap").value=c.x; $("#sWeCap").value=c.y; }
+    const autoSuffix=(($("#sWeightSeg .on")||{}).dataset?.w==="auto")?t("calc_autoSuffix"):"";
     box.innerHTML = total
-      ? `자동 분량 → 평일 <b>${c.x}개</b> · 주말 <b>${c.y}개</b> <span class="muted">(주말 = 평일 ×${c.weight}${($("#sWeightSeg .on")||{}).dataset?.w==="auto"?" 자동":""}, 하루 최대)</span><br>`+
-        `분량 합계 <b>${c.cap}개</b> (외울 ${total}개) · 기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`
-      : '<span class="muted">외울 단어 개수를 1개 이상으로 설정하세요</span>';
+      ? t("calc_auto",{x:c.x, y:c.y, weight:c.weight, autoSuffix, cap:c.cap, total, days:days.length, wd, we})
+      : `<span class="muted">${esc(t("calc_setCount"))}</span>`;
   } else {
-    box.innerHTML=`직접 입력한 분량 사용 → 평일 <b>${+$("#sWdCap").value||0}개</b> · 주말 <b>${+$("#sWeCap").value||0}개</b> <span class="muted">(하루 최대)</span><br>`+
-      `기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`;
+    box.innerHTML=t("calc_manual",{x:(+$("#sWdCap").value||0), y:(+$("#sWeCap").value||0), days:days.length, wd, we});
   }
 }
 $("#sSelectedOnly").addEventListener("change",()=>{
@@ -1643,17 +1650,17 @@ $("#sWeightSeg").addEventListener("click",e=>{
 });
 $("#sManual").addEventListener("change",updateSchedCalc);
 $("#genSchedule").addEventListener("click",()=>{
-  if(!$("#sStart").value||!$("#sEnd").value){ toast("시작일과 마지막일을 입력하세요"); return; }
-  if($("#sEnd").value<$("#sStart").value){ toast("마지막일이 시작일보다 빠릅니다"); return; }
+  if(!$("#sStart").value||!$("#sEnd").value){ toast(t("toast_enterDates")); return; }
+  if($("#sEnd").value<$("#sStart").value){ toast(t("toast_endBeforeStart")); return; }
   let pool=schedPoolBase();
-  if(!pool.length){ toast($("#sSelectedOnly").checked?"DB에서 체크한 단어가 없습니다":"조건에 맞는 단어가 없습니다"); return; }
+  if(!pool.length){ toast($("#sSelectedOnly").checked?t("toast_noChecked"):t("toast_noMatch")); return; }
   if($("#sOrder").value==="random") pool=shuffle(pool);
   const count=Math.min(Math.max(1,+$("#sCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
   const days=scheduleDays();
-  if(!days){ toast("시작일과 마지막일을 입력하세요"); return; }
+  if(!days){ toast(t("toast_enterDates")); return; }
   const x=Math.max(0,Math.floor(+$("#sWdCap").value||0)), y=Math.max(0,Math.floor(+$("#sWeCap").value||0));
-  if(x<=0 && y<=0){ toast("평일/주말 분량을 1개 이상으로 설정하세요"); return; }
+  if(x<=0 && y<=0){ toast(t("toast_setCapacity")); return; }
   // 평일 cap=x, 주말 cap=y. 날짜 순으로 채우고 마지막 날은 더 적을 수 있음
   const sched={}; let i=0;
   for(const day of days){
@@ -1673,7 +1680,7 @@ $("#genSchedule").addEventListener("click",()=>{
   Object.keys(sched).forEach(d=>state.schedule[d]=sched[d]);
   save(); renderSchedule();
   $("#schedSettings").open=false;   // 생성하면 설정 접기
-  toast(`일정 생성: ${Object.keys(sched).length}일 · 평일 ${x}개/주말 ${y}개 · ${pool.length}단어`);
+  toast(t("toast_schedGen",{d:Object.keys(sched).length, x, y, n:pool.length}));
 });
 function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
 function studyDate(id){ return state.progress[id] && state.progress[id].date; }
@@ -1695,20 +1702,21 @@ function renderSchedule(){
   const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
   const offSched=learnedWords.filter(w=>!schedSet.has(w.id)).length;
   $("#statsPanel").innerHTML=`
-    <div class="muted" style="margin:0 0 8px;font-size:.9em">📚 단어장: <b style="color:var(--ink)">${esc(state.dbName||"이름 없음")}</b> (총 ${totalW}단어)</div>
+    <div class="muted" style="margin:0 0 8px;font-size:.9em">${t("stats_wordbook")}<b style="color:var(--ink)">${esc(state.dbName||t("name_none"))}</b>${t("stats_totalWords",{n:totalW})}</div>
     <div class="stats">
-      <div class="stat"><b>${learned}/${totalW}</b><span>학습한 단어</span></div>
-      <div class="stat"><b>${todayLearned}</b><span>오늘 학습</span></div>
-      <div class="stat"><b>${studyDays}</b><span>학습한 날</span></div>
-      ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>일정 진행</span></div>`:''}
+      <div class="stat"><b>${learned}/${totalW}</b><span>${esc(t("stat_learned"))}</span></div>
+      <div class="stat"><b>${todayLearned}</b><span>${esc(t("stat_today"))}</span></div>
+      <div class="stat"><b>${studyDays}</b><span>${esc(t("stat_days"))}</span></div>
+      ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>${esc(t("stat_schedProgress"))}</span></div>`:''}
     </div>
     <div class="muted" style="margin:-2px 0 4px;font-size:.88em">${schedIds.length
-      ? `일정 ${schedDone}/${schedIds.length}단어 완료 · 일정 외 학습 ${offSched}단어`
-      : `생성된 일정이 없습니다. 위에서 일정을 만들어 보세요. (일정 외 학습 ${offSched}단어 기록됨)`}</div>`;
+      ? t("stats_schedLine",{done:schedDone, total:schedIds.length})
+      : t("stats_noSched")}</div>
+    <div class="offsched">${offSched>0 ? t("stats_offBody",{off:offSched}) : t("stats_offNone")}</div>`;
 
   /* ---- 캘린더 뷰 ---- */
   const future=dates.filter(d=>d>=today);
-  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }  // 기본: 이번 달
+  if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
   if(selDate && !state.schedule[selDate]) selDate=null;
   if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
   renderCalendar(); renderDayDetail();
@@ -1737,11 +1745,14 @@ $("#eApply").addEventListener("click",applyScheduleEdit);
 
 /* ====================== 캘린더 ====================== */
 let calRef=null, selDate=null;
-const WK=['일','월','화','수','목','금','토'];
+const WK_KO=['일','월','화','수','목','금','토'];
+const WK_EN=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MON_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function renderCalendar(){
-  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }
+  if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }
   const {y,m}=calRef, today=todayStr();
-  $("#calLabel").textContent=`${y}년 ${m+1}월`;
+  $("#calLabel").textContent = LANG==="en" ? `${MON_EN[m]} ${y}` : `${y}년 ${m+1}월`;
+  const WK = LANG==="en" ? WK_EN : WK_KO;
   const startDow=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
   const head=WK.map((d,i)=>`<div class="calhcell ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join("");
   let cells="";
@@ -1776,21 +1787,21 @@ function renderDayDetail(){
   const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <b>${selDate}</b> <span class="muted">${done}/${ids.length} 완료${selDate<todayStr()?' · 지난 기록':''}</span>
-      <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">이 날짜 삭제</button>
+      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:ids.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
+      <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">${esc(t("detail_deleteDate"))}</button>
     </div>
     <div style="margin-top:8px">${chips}</div>
-    <div class="muted" style="font-size:.8em;margin-top:6px">칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택</div>
+    <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_hint"))}</div>
   </div>`;
 }
 $("#calPrev").addEventListener("click",()=>{ calRef.m--; if(calRef.m<0){calRef.m=11;calRef.y--;} renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ calRef.m++; if(calRef.m>11){calRef.m=0;calRef.y++;} renderCalendar(); });
-$("#calToday").addEventListener("click",()=>{ const t=new Date(); calRef={y:t.getFullYear(),m:t.getMonth()}; renderCalendar(); });
+$("#calToday").addEventListener("click",()=>{ const nowD=new Date(); calRef={y:nowD.getFullYear(),m:nowD.getMonth()}; renderCalendar(); });
 // 달력/상세: 날짜 선택 · 단어 제외 · 날짜 삭제
 $("#scheduleResult").addEventListener("click",e=>{
   const del=e.target.closest("[data-deldate]");
   if(del){ const d=del.dataset.deldate;
-    if(confirm(`${d} 일정을 삭제할까요?`)){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
+    if(confirm(t("confirm_deleteDate",{d}))){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
     return; }
   const chip=e.target.closest(".wchip");
   if(chip){ const d=chip.dataset.date, id=+chip.dataset.id;
@@ -1805,7 +1816,7 @@ function refreshDateSelects(){
   const opts=dates.map(d=>`<option value="${d}">${d} (${state.schedule[d].length})</option>`).join("");
   ["#mDate","#qDate","#pDate"].forEach(sel=>{
     const el=$(sel); const cur=el.value;
-    el.innerHTML=opts||`<option value="">일정 없음</option>`;
+    el.innerHTML=opts||`<option value="">${esc(t("opt_noSchedule"))}</option>`;
     if([...el.options].some(o=>o.value===cur)) el.value=cur;
   });
 }
