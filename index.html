@@ -484,6 +484,11 @@
           <button type="button" data-v="edit">학습분 제외</button>
         </div>
       </div>
+      <label>출제 순서</label>
+      <div class="seg seg-full" id="mOrderSeg">
+        <button type="button" data-v="order" class="on">순서대로</button>
+        <button type="button" data-v="random">무작위</button>
+      </div>
       <label>단어 수: <b id="mCountLabel">0</b> / <span id="mCountMax">0</span>개</label>
       <input type="range" id="mCount" min="1" max="1" value="1">
       <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> 🔊 카드 자동 읽기 (발음·TTS)</label>
@@ -1428,11 +1433,13 @@ bindSeg("mModeSeg",()=>{
   updateMemCount();
 });
 bindSeg("mAfterSeg");
+bindSeg("mOrderSeg");
 $("#mDate").addEventListener("change",updateMemCount);
 $("#mCount").addEventListener("input",()=>{ $("#mCountLabel").textContent=$("#mCount").value; });
 $("#startMem").addEventListener("click",()=>{
   let list=memListFor();
   if(!list.length){ toast("학습할 단어가 없습니다"); return; }
+  if(segVal('mOrderSeg')==="random") list=shuffle(list);   // 무작위 출제: 섞은 뒤 개수만큼
   const count=Math.min(Math.max(1,+$("#mCount").value||list.length), list.length);
   list=list.slice(0,count);
   // 선행학습 + '이후 일정에서 제외' 선택 시, 학습한 단어를 미래 일정에서 자동 제거
