@@ -696,13 +696,254 @@
 const LS_KEY = "jaquiz.v1";
 const SEED = JSON.parse(document.getElementById("seed-data").textContent);
 
+/* ====================== 다국어 (i18n) ====================== */
+const LANG_KEY = "jaquiz.lang";
+let LANG = (function(){
+  let s=null; try{ s=localStorage.getItem(LANG_KEY); }catch(e){}
+  if(s==="ko"||s==="en") return s;
+  return (navigator.language||"").toLowerCase().startsWith("ko") ? "ko" : "en";
+})();
+const I18N = {
+  ko:{
+    appTitle:"일본어 단어 암기 · 시험", help_title:"도움말",
+    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법",
+    db_title:"단어 데이터베이스",
+    db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
+    db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
+    db_searchPh:"검색 (漢字·ひらがな·뜻)", pos_all:"품사 전체", level_all:"레벨 전체",
+    db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
+    db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
+    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
+    db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
+    db_manualSummary:"📄 JSON 단어장 파일 만드는 법",
+    ai_hd:"🤖 AI로 만들기 (가장 쉬움)",
+    ai_desc:"만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!",
+    ai_topicLabel:"단어장 주제", ai_topicPh:"예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어", ai_copyBtn:"📋 프롬프트 복사",
+    ai_step1:"주제를 적고 <b>프롬프트 복사</b>를 누릅니다.",
+    ai_step2:"AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.",
+    ai_step3:"AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.",
+    ai_step4:"위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.",
+    db_manualDesc:"직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.",
+    db_fld_name:"단어장 이름 (선택)", db_fld_kanji:"간지 표기 (한자 없으면 히라가나와 동일하게)",
+    db_fld_hira:"읽는 법 (히라가나)", db_fld_korean:"한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분",
+    db_fld_level:"레벨 (예: N5, N4) — 자유", db_fld_pos:"품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)",
+    db_fld_example:"예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로",
+    db_manualNote:"• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.",
+    db_install:"📲 홈 화면에 추가",
+    sch_settingsSummary:"⚙️ 일정 만들기 (기간·개수·분량)",
+    sch_sub:"기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.",
+    sch_start:"시작일", sch_end:"마지막일", sch_endDate:"종료일", sch_posFilter:"품사 필터", sch_levelFilter:"레벨 필터",
+    sch_selectedOnly:"단어 DB에서 체크한 단어만 사용 (위 필터 무시)", sch_orderLabel:"추출 순서",
+    order_random:"무작위", order_dbOrder:"DB 순서대로", order_seq:"순서대로",
+    sch_countPre:"외울 단어 개수: ", edit_countPre:"외울 단어 개수: ", unit_geSuf:"개",
+    sch_weekendWeight:"주말 비중 (평일 대비)", w_auto:"자동", w_2:"2배", w_3:"3배", w_4:"4배",
+    sch_wdCap:"평일 분량", sch_weCap:"주말 분량", sch_manual:"분량 직접 수정 (자동 계산 끄기)",
+    sch_gen:"일정 생성", sch_statusTitle:"학습 현황",
+    sch_editSummary:"✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)",
+    sch_editHint:"미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.",
+    sch_reapply:"다시 배치", cal_today:"오늘", cal_todayMark:"·오늘",
+    mem_settingsSummary:"⚙️ 암기 설정 (범위·방식·단어 수)",
+    mem_sub:"단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.",
+    mem_scope:"학습 범위", scope_today:"오늘 분량", scope_date:"날짜", scope_selected:"선택 단어", scope_all:"전체", lbl_date:"날짜",
+    mem_mode:"학습 방식", mem_asis:"일정대로", mem_ahead:"선행학습 (이어서 더)",
+    mem_afterLabel:"학습한 단어의 이후 일정", mem_keep:"유지", mem_exclude:"학습분 제외",
+    mem_orderLabel:"출제 순서", mem_countPre:"단어 수: ", mem_autoRead:"🔊 카드 자동 읽기 (발음·TTS)",
+    btn_start:"시작", mem_prev:"◀ 이전 단어", mem_next:"다음 단어 ▶", mem_prevStage:"⏮ 이전 단계", mem_skip:"다음 단계 ⏭",
+    mem_finishStage:"이 단계 마치기 ▶", mem_skipLast:"마치기 ⏭", mem_dropWord:"이 단어 빼기 ✕",
+    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식으로 진행합니다.",
+    quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
+    quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
+    field_kanji:"漢字", field_hira:"ひらがな", field_korean:"한글 뜻",
+    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식",
+    print_title:"인쇄", print_type:"인쇄 종류", print_exam:"단어 시험지", print_grammar:"문법 정리",
+    print_examSub:"ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.",
+    print_scope:"출제 범위", pscope_today:"오늘 분량", pscope_date:"날짜 선택", pscope_selected:"선택한 단어 전체", pscope_all:"전체 단어",
+    print_titleLabel:"제목", print_defaultTitle:"일본어 단어 시험", print_countPre:"문항 수: ",
+    print_grammarSub:"전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)",
+    print_genExam:"시험지 생성", print_genGrammar:"문법 정리 생성", print_do:"🖨️ 인쇄",
+    gram_title:"일본어 품사 · 문법 한눈에 📚",
+    gram_sub:"동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.",
+    gram_expandAll:"전부 열기", gram_collapseAll:"전부 접기", gram_tipLabel:"구분법·활용", gram_teDefault:"て형 변환",
+    gram_noExplain:"이 품사의 문법 설명은 아직 없어요.", modal_close:"닫기", totop_title:"맨 위로",
+    toast_storageFull:"저장 공간 부족", toast_selAdded:"검색결과를 선택에 추가", toast_exported:"내보내기 완료",
+    toast_imported:"가져오기 완료: {name} · {n}개", toast_badJson:"올바른 JSON 파일이 아닙니다",
+    toast_enterTopic:"단어장 주제를 입력하세요", toast_promptCopied:"프롬프트 복사됨 · AI에 붙여넣으세요", toast_copyFail:"복사 실패 · 길게 눌러 직접 복사하세요",
+    confirm_reset:"샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)", toast_reset:"초기화 완료", name_sample:"샘플 데이터",
+    confirm_wipe:"내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)", toast_wiped:"전체 삭제 완료",
+    name_empty:"(비어 있음)", name_unnamed:"이름 없는 단어장", name_none:"이름 없음",
+    toast_enterDates:"시작일과 마지막일을 입력하세요", toast_endBeforeStart:"마지막일이 시작일보다 빠릅니다",
+    toast_noChecked:"DB에서 체크한 단어가 없습니다", toast_noMatch:"조건에 맞는 단어가 없습니다",
+    toast_schedGen:"일정 생성: {d}일 · 평일 {x}개/주말 {y}개 · {n}단어",
+    toast_checkDates:"시작일·종료일을 확인하세요", toast_noRedistribute:"재배치할 단어가 없습니다", toast_redistributed:"재배치: {d}일 · {n}단어",
+    stats_wordbook:"📚 단어장: ", stats_totalWords:" (총 {n}단어)",
+    stat_learned:"학습한 단어", stat_today:"오늘 학습", stat_days:"학습한 날", stat_schedProgress:"일정 진행",
+    stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
+    stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
+    detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
+    detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
+    toast_noMemWords:"학습할 단어가 없습니다",
+    stage1:"1단계 · 뜻 + ひらがな", stage2:"2단계 · ひらがな + 漢字", stage3:"3단계 · 漢字 + 뜻", stage4:"4단계 · 예문",
+    stage1s:"뜻 + ひらがな", stage2s:"ひらがな + 漢字", stage3s:"漢字 + 뜻", stage4s:"예문",
+    mem_counterWord:"{stage}  —  단어 {i} / {n}", mem_meaningN:"뜻 {i}", mem_noExample:"예문 없음", mem_listen:"🔊 발음 듣기",
+    mem_stageDone:"{stage} 완료", mem_stageAllSeen:"이번 단계의 모든 단어({n}개)를 다 봤어요",
+    mem_lastDone:"마지막 단계까지 끝냈어요!", mem_goNext:"다음 단계로 넘어갈까요?",
+    mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
+    toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다", toast_dropped:"이 단어를 리스트에서 뺐어요",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"점수 {score} / {n}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", toast_enterAnswer:"답을 입력하세요",
+    alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
+    rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
+    rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
+    rq_typed:"내가 쓴 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
+    toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
+    sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
+    toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
+    sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
+    sheet_answerTitle:"{title} — 정답", sheet_includeAnswer:"정답지도 인쇄에 포함", toast_examSheet:"시험지 생성 완료",
+    help_modalTitle:"📖 사용법 한눈에 보기",
+    help_db_t:"① 단어 DB", help_db_b:"단어를 검색·정렬하고 <b>체크</b>로 암기 대상을 고릅니다. <b>가져오기/내보내기</b>로 나만의 단어장을 옮길 수 있어요. AI로 단어장을 만드는 법도 여기 있습니다.",
+    help_sch_t:"② 일정", help_sch_b:"시작일~마지막일과 하루 분량을 정하면 날짜별로 단어가 <b>자동 분배</b>됩니다. 달력에서 진행 상황을 한눈에 보고, 날짜·단어를 눌러 수정할 수 있어요.",
+    help_mem_t:"③ 암기 (플래시카드)", help_mem_b:"<b>뜻+ひらがな → ひらがな+漢字 → 漢字+뜻 → 예문</b> 4단계로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하고, 🔊로 발음을 들을 수 있어요.",
+    help_quiz_t:"④ 퀴즈", help_quiz_b:"<b>4지선다 → 주관식</b> 순서로 풉니다. 문제·정답 방향을 고정하거나 <b>무작위</b>로 섞을 수 있고, 틀린 단어만 다시 풀 수 있어요.",
+    help_print_t:"⑤ 시험지 인쇄", help_print_b:"漢字·ひらがな·뜻 중 무작위로 빈칸을 낸 <b>시험지</b>나 전체 <b>문법 정리</b>를 실제 프린터로 출력(또는 PDF 저장)합니다.",
+    help_grammar_t:"⑥ 문법", help_grammar_b:"동사 3그룹·형용사·필수 표현을 색깔 배지로 정리했어요. 암기·퀴즈의 <b>품사 배지</b>를 누르면 그 문법 설명이 바로 떠요.",
+    help_tip_t:"💾 저장 & 이동", help_tip_b:"진도와 설정은 <b>브라우저에 자동 저장</b>됩니다. 기기를 바꿀 땐 DB의 <b>내보내기</b>로 백업하고 새 기기에서 <b>가져오기</b> 하세요. 우측 상단에서 <b>언어</b>를 바꿀 수 있습니다."
+  },
+  en:{
+    appTitle:"Japanese Vocabulary · Quiz", help_title:"Help",
+    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar",
+    db_title:"Word database",
+    db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
+    db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
+    db_searchPh:"Search (漢字·ひらがな·meaning)", pos_all:"All parts of speech", level_all:"All levels",
+    db_selAll:"Select all results", db_selNone:"Clear all",
+    db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
+    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
+    db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
+    db_manualSummary:"📄 How to make a JSON wordbook file",
+    ai_hd:"🤖 Make it with AI (easiest)",
+    ai_desc:"Type the <b>wordbook topic</b> you want and press <b>Copy prompt</b>. Paste it into an AI like ChatGPT·Claude·Gemini and it will produce JSON in the format below. Save the result as a <b>.json</b> file and <b>📥 Import</b> it — done!",
+    ai_topicLabel:"Wordbook topic", ai_topicPh:"e.g. JLPT N4 verbs / business Japanese / travel phrases", ai_copyBtn:"📋 Copy prompt",
+    ai_step1:"Type a topic and press <b>Copy prompt</b>.",
+    ai_step2:"Paste it into an AI (ChatGPT·Claude·Gemini, etc.) and run.",
+    ai_step3:"Paste the AI's JSON into a text editor and save it as <code>topic.json</code>.",
+    ai_step4:"Load that file with <b>📥 Import</b> above.",
+    db_manualDesc:"To make one yourself, create a <b>.json</b> file in the format below (with Excel, a text editor, etc.) and load it with <b>📥 Import</b>. An easy way is to open an <b>📤 Export</b>ed file and just change the contents inside <code>words</code>.",
+    db_fld_name:"Wordbook name (optional)", db_fld_kanji:"Kanji spelling (same as hiragana if no kanji)",
+    db_fld_hira:"Reading (hiragana)", db_fld_korean:"Meaning — separate multiple meanings with a <b>comma (,)</b>",
+    db_fld_level:"Level (e.g. N5, N4) — free-form", db_fld_pos:"Part of speech (Group 1/2/3 verb · i-adj · na-adj · noun · adverb · conjunction…)",
+    db_fld_example:"Example — if multiple meanings, list in the same order separated by a <b>comma (,)</b>",
+    db_manualNote:"• <b>id</b> can be omitted (auto-assigned). • Match the number of commas in <b>korean</b> and <b>example</b> to link each meaning to its example 1:1. • Separators <code>、</code>·<code>，</code> are also recognized.",
+    db_install:"📲 Add to home screen",
+    sch_settingsSummary:"⚙️ Create schedule (period · count · daily load)",
+    sch_sub:"Set a period and a daily load to auto-distribute words by date.",
+    sch_start:"Start date", sch_end:"End date", sch_endDate:"End date", sch_posFilter:"Part-of-speech filter", sch_levelFilter:"Level filter",
+    sch_selectedOnly:"Use only words checked in the DB (ignore the filters above)", sch_orderLabel:"Selection order",
+    order_random:"Random", order_dbOrder:"DB order", order_seq:"In order",
+    sch_countPre:"Words to learn: ", edit_countPre:"Words to learn: ", unit_geSuf:"",
+    sch_weekendWeight:"Weekend weight (vs weekday)", w_auto:"Auto", w_2:"×2", w_3:"×3", w_4:"×4",
+    sch_wdCap:"Weekday load", sch_weCap:"Weekend load", sch_manual:"Edit load manually (turn off auto-calc)",
+    sch_gen:"Generate schedule", sch_statusTitle:"Learning status",
+    sch_editSummary:"✏️ Edit current/upcoming schedule — change dates and count (tap to expand)",
+    sch_editHint:"The future (today onward) schedule is re-distributed with the new settings. Past records and progress are kept.",
+    sch_reapply:"Re-distribute", cal_today:"Today", cal_todayMark:" ·today",
+    mem_settingsSummary:"⚙️ Memorize settings (scope · mode · count)",
+    mem_sub:"Proceed in stages: Stage 1 meaning+ひらがな → Stage 2 ひらがな+漢字 → Stage 3 漢字+meaning → Stage 4 examples.",
+    mem_scope:"Study scope", scope_today:"Today's load", scope_date:"Date", scope_selected:"Selected words", scope_all:"All", lbl_date:"Date",
+    mem_mode:"Study mode", mem_asis:"As scheduled", mem_ahead:"Study ahead (keep going)",
+    mem_afterLabel:"Future schedule for studied words", mem_keep:"Keep", mem_exclude:"Exclude studied",
+    mem_orderLabel:"Order", mem_countPre:"Words: ", mem_autoRead:"🔊 Auto-read cards (TTS)",
+    btn_start:"Start", mem_prev:"◀ Prev word", mem_next:"Next word ▶", mem_prevStage:"⏮ Prev stage", mem_skip:"Next stage ⏭",
+    mem_finishStage:"Finish this stage ▶", mem_skipLast:"Finish ⏭", mem_dropWord:"Remove this word ✕",
+    quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer.",
+    quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
+    quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
+    field_kanji:"Kanji", field_hira:"Hiragana", field_korean:"Meaning",
+    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer",
+    print_title:"Print", print_type:"Print type", print_exam:"Vocabulary test", print_grammar:"Grammar sheet",
+    print_examSub:"Randomly blanks out ひらがな·漢字·meaning and prints to a real printer.",
+    print_scope:"Scope", pscope_today:"Today's load", pscope_date:"Choose date", pscope_selected:"All selected words", pscope_all:"All words",
+    print_titleLabel:"Title", print_defaultTitle:"Japanese Vocabulary Test", print_countPre:"Questions: ",
+    print_grammarSub:"Prints all grammar compactly in <b>two columns</b> on A4 (with conjugation tables).",
+    print_genExam:"Generate test", print_genGrammar:"Generate grammar sheet", print_do:"🖨️ Print",
+    gram_title:"Japanese parts of speech & grammar at a glance 📚",
+    gram_sub:"3 verb groups, 2 adjective types, other parts of speech, and essential patterns. Same colors as the badges in Memorize/Quiz. Use the buttons below to jump.",
+    gram_expandAll:"Expand all", gram_collapseAll:"Collapse all", gram_tipLabel:"How to tell & conjugate", gram_teDefault:"Te-form change",
+    gram_noExplain:"No grammar explanation for this part of speech yet.", modal_close:"Close", totop_title:"To top",
+    toast_storageFull:"Storage full", toast_selAdded:"Added results to selection", toast_exported:"Export complete",
+    toast_imported:"Imported: {name} · {n} words", toast_badJson:"Not a valid JSON file",
+    toast_enterTopic:"Enter a wordbook topic", toast_promptCopied:"Prompt copied · paste it into an AI", toast_copyFail:"Copy failed · long-press to copy manually",
+    confirm_reset:"Reset to sample data? (imported words & progress will be deleted)", toast_reset:"Reset complete", name_sample:"Sample data",
+    confirm_wipe:"Delete all internal data?\nWords, schedule and progress will all be erased. (cannot be undone)", toast_wiped:"All data deleted",
+    name_empty:"(empty)", name_unnamed:"Untitled wordbook", name_none:"Untitled",
+    toast_enterDates:"Enter start and end dates", toast_endBeforeStart:"End date is before the start date",
+    toast_noChecked:"No words checked in the DB", toast_noMatch:"No words match the criteria",
+    toast_schedGen:"Schedule created: {d} days · weekday {x}/weekend {y} · {n} words",
+    toast_checkDates:"Check the start/end dates", toast_noRedistribute:"No words to redistribute", toast_redistributed:"Redistributed: {d} days · {n} words",
+    stats_wordbook:"📚 Wordbook: ", stats_totalWords:" ({n} words total)",
+    stat_learned:"Words learned", stat_today:"Learned today", stat_days:"Study days", stat_schedProgress:"Schedule progress",
+    stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
+    stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
+    detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
+    detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
+    toast_noMemWords:"No words to study",
+    stage1:"Stage 1 · meaning + ひらがな", stage2:"Stage 2 · ひらがな + 漢字", stage3:"Stage 3 · 漢字 + meaning", stage4:"Stage 4 · example",
+    stage1s:"meaning + ひらがな", stage2s:"ひらがな + 漢字", stage3s:"漢字 + meaning", stage4s:"example",
+    mem_counterWord:"{stage}  —  word {i} / {n}", mem_meaningN:"Meaning {i}", mem_noExample:"No example", mem_listen:"🔊 Listen",
+    mem_stageDone:"{stage} complete", mem_stageAllSeen:"You've seen all {n} words in this stage",
+    mem_lastDone:"You finished the final stage!", mem_goNext:"Move on to the next stage?",
+    mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
+    toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage", toast_dropped:"Removed this word from the list",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"Score {score} / {n}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", toast_enterAnswer:"Enter an answer",
+    alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
+    rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
+    rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
+    rq_typed:"Your answer", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
+    toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
+    sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
+    toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
+    sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
+    sheet_answerTitle:"{title} — Answers", sheet_includeAnswer:"Include answer key in print", toast_examSheet:"Test sheet generated",
+    help_modalTitle:"📖 How to use this app",
+    help_db_t:"① Words DB", help_db_b:"Search and sort words, then <b>check</b> the ones to memorize. Move your own wordbooks with <b>Import/Export</b>. You'll also find how to build a wordbook with AI here.",
+    help_sch_t:"② Schedule", help_sch_b:"Set start/end dates and a daily load and words are <b>auto-distributed</b> by date. See progress at a glance on the calendar and tap dates/words to edit.",
+    help_mem_t:"③ Memorize (flashcards)", help_mem_b:"Learn in 4 stages: <b>meaning+ひらがな → ひらがな+漢字 → 漢字+meaning → example</b>. Use <b>Remove this word ✕</b> to drop words you know, and 🔊 to hear pronunciation.",
+    help_quiz_t:"④ Quiz", help_quiz_b:"Solve <b>multiple choice → short answer</b>. Keep the prompt/answer direction fixed or <b>shuffle</b> it, and retry only the words you missed.",
+    help_print_t:"⑤ Print", help_print_b:"Print (or save as PDF) a <b>test sheet</b> with random blanks over 漢字·ひらがな·meaning, or a full <b>grammar summary</b>.",
+    help_grammar_t:"⑥ Grammar", help_grammar_b:"Verb groups, adjectives and essential patterns organized by color. Tap a <b>part-of-speech badge</b> in Memorize/Quiz to pop up its grammar.",
+    help_tip_t:"💾 Saving & moving", help_tip_b:"Progress and settings are <b>saved automatically in your browser</b>. To switch devices, <b>Export</b> from the DB and <b>Import</b> on the new one. Change <b>language</b> at the top right."
+  }
+};
+function t(key, vars){
+  const d=I18N[LANG]||I18N.ko;
+  let s=(d[key]!=null)?d[key]:(I18N.ko[key]!=null?I18N.ko[key]:key);
+  if(vars) s=s.replace(/\{(\w+)\}/g,(m,k)=>vars[k]!=null?vars[k]:m);
+  return s;
+}
+function applyI18n(){
+  document.documentElement.lang=LANG;
+  document.title=t("appTitle");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML=t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.placeholder=t(el.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el=>{ el.title=t(el.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-val]").forEach(el=>{
+    const nv=t(el.dataset.i18nVal);
+    if(el.value===""||el.value===el._i18nDefault) el.value=nv;
+    el._i18nDefault=nv;
+  });
+  document.documentElement.style.setProperty("--today-label", JSON.stringify(t("cal_todayMark")));
+}
+
 let state = {
   words: [],           // {id,kanji,hiragana,korean,level,pos,example, meanings:[{korean,example}]}
   selected: [],        // ids
   schedule: {},        // { "2026-06-18": [ids...] }
   settings: {},
   progress: {},        // { id: {done, date} }
-  dbName: "샘플 데이터" // 현재 단어장(DB) 이름
+  dbName: "" // 현재 단어장(DB) 이름
 };
 
 function load(){
@@ -716,7 +957,7 @@ function load(){
   state.selected = state.selected || [];
   state.schedule = state.schedule || {};
   state.progress = state.progress || {};
-  state.dbName = state.dbName || "샘플 데이터";
+  state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
 function save(){
@@ -725,7 +966,7 @@ function save(){
     selected:state.selected, schedule:state.schedule,
     settings:state.settings, progress:state.progress
   };
-  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast("저장 공간 부족"); }
+  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
 }
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
@@ -784,11 +1025,14 @@ const POS_COLORS={
   "명사":"#475569","부사":"#b45309","접속사":"#4f46e5"
 };
 function posColor(pos){ return POS_COLORS[pos] || "#64748b"; }
-function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos);
+// 품사 표시 라벨 (데이터 키는 한국어로 유지, 화면엔 언어별 라벨)
+const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle"};
+function posLabel(pos){ return (LANG==="en" && POS_LABELS_EN[pos]) ? POS_LABELS_EN[pos] : pos; }
+function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos); const lbl=posLabel(pos);
   const style=`background:${c}1a;color:${c};border:1px solid ${c}59`;
   return tap
-    ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="문법 보기" style="${style};cursor:pointer">${esc(pos)} ⓘ</span>`
-    : `<span class="posbadge" style="${style}">${esc(pos)}</span>`;
+    ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="${esc(t('help_grammar_t'))}" style="${style};cursor:pointer">${esc(lbl)} ⓘ</span>`
+    : `<span class="posbadge" style="${style}">${esc(lbl)}</span>`;
 }
 function levelBadge(level){ return level ? `<span class="lvlbadge">${esc(level)}</span>` : ""; }
 
@@ -873,17 +1117,90 @@ const GRAMMAR=[
      conj:[["~ている","~하고 있다 · 상태 · 食べている"],["~てください","~해 주세요 · 見てください"],["~てもいい","~해도 된다(허가) · 帰ってもいい"],["~てはいけない","~하면 안 된다(금지) · 入ってはいけない"],["~てから","~하고 나서 · 食べてから"]]}    
   ]}
 ];
+/* ---- 문법 영어 오버레이 (데이터 키는 한국어 유지) ---- */
+const GROUP_EN={"동사 (動詞)":"Verbs (動詞)","형용사 (形容詞)":"Adjectives (形容詞)","기타 품사":"Other parts of speech","필수 문법 표현":"Essential grammar patterns"};
+const TITLE_EN={"정중체 vs 보통체":"Polite vs Plain","지시어 こそあど":"Demonstratives (こそあど)","가정·조건형 と・ば・たら・なら":"Conditionals: と・ば・たら・なら","수수 표현 (주고받기)":"Giving & Receiving","て형 활용 표현":"Te-form patterns"};
+const CONJ_LABEL_EN={
+  "기본형":"Dictionary form","정중형 (~합니다)":"Polite (~masu)","부정형 (~않다)":"Negative (~nai)","과거형 (~했다)":"Past (~ta)",
+  "수동형 (~당하다)":"Passive","사역형 (~시키다)":"Causative","て형 (~하고/해서)":"Te-form","가능형 (~할 수 있다)":"Potential","의지형 (~하자)":"Volitional",
+  "명사 수식":"Modifies a noun","정중형 (~です)":"Polite (~desu)","부정형 (~지 않다)":"Negative","정중 부정형 (~지 않습니다)":"Polite negative",
+  "과거부정형 (~지 않았다)":"Past negative","부사형 (~하게)":"Adverbial",
+  "기본형 (단정)":"Plain (assertion)","정중형 (~입니다)":"Polite (~desu)","부정형 (~이 아니다)":"Negative","과거형 (~였다)":"Past","명사 수식 (の)":"Noun modifier (の)",
+  "동사":"Verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun",
+  "사물 (이것…)":"Things (this…)","명사 수식 (이…)":"Noun modifier (this…)","장소 (여기…)":"Place (here…)","방향 (이쪽…)":"Direction (this way…)"
+};
+const GRAMMAR_EN={
+  "1그룹동사":{desc:"Verbs whose dictionary form ends in an う-row sound (く·ぐ·す·つ·ぬ·ぶ·む·る·う). When conjugated, the ending shifts across all five rows あ·い·う·え·お.",
+    tip:"Even if it ends in る, it's Group 1 when the sound before る is in the あ/う/お row (e.g. 帰る). Potential = え-row + る (書ける), passive = あ-row + れる, causative = あ-row + せる.",
+    ko:["to write","to drink","to buy","to go back (exception)"],
+    teTitle:"Te-form (sound change 音便) — varies by ending",
+    teNote:"The past (た-form) follows the same sound-change rules: て→た · で→だ (書いて→書いた, 飲んで→飲んだ)."},
+  "2그룹동사":{desc:"Verbs ending in る where the sound before る is in the い-row or え-row. Their conjugation is regular and the easiest.",
+    tip:"Drop る and add ます·ない·よう. Passive/potential = られる (食べられる), causative = させる (食べさせる).",
+    ko:["to eat","to see","to teach","to get up"]},
+  "3그룹동사":{desc:"The only two irregular verbs, する and 来る (くる). Compound verbs ending in ~する are included too (勉強する, etc.).",
+    tip:"Memorize the conjugations whole. Potential of する is できる (irregular). Note 来る changes reading among こ/き/く.",
+    ko:["to do","to come","to study"]},
+  "い형용사":{desc:"Adjectives ending in い. They modify nouns directly (大きい家).",
+    tip:"Negative い→くない (大きくない), past い→かった (大きかった), adverb form い→く (大きく).",
+    ko:["big","hot","new","busy"]},
+  "な형용사":{desc:"Adjectives that take な when modifying a noun (静かな部屋). Also called adjectival nouns.",
+    tip:"Negative ~ではない (静かではない), past ~だった. Adverb form ~に (静かに), noun-modifying ~な (静かな).",
+    ko:["quiet","pretty / clean","healthy","convenient"]},
+  "명사":{desc:"Names of people, things and concepts. They don't conjugate; だ·です attach to make a predicate (家だ / 家です).",
+    tip:"Used with particles (は·が·を·に…) to form sentence parts. Modify another noun with の (私の家).",
+    ko:["house","school","feeling / heart"]},
+  "부사":{desc:"Modify verbs, adjectives or whole sentences to express degree, state or frequency. They don't conjugate.",
+    tip:"Usually placed right before the word they modify (とても 楽しい / ゆっくり 話す).",
+    ko:["very","slowly","always"]},
+  "접속사":{desc:"Words that connect sentences or words. Usually placed at the start of a sentence.",
+    tip:"Learn them by meaning: そして (adds), でも/しかし (contrast), だから (reason), それで (result).",
+    ko:["and","but","so / therefore"]},
+  "조사":{desc:"Function words attached after nouns/verbs that set their role (subject, object, place, etc.). Not used alone.",
+    tip:"は(topic)·が(subject)·を(object)·に(time/destination)·で(place/means)·へ(direction)·と(with/quote)·も(also).",
+    ko:["I am a student (は=topic)","eat bread (を=object)","go to school (に=destination)"]},
+  "정중체 vs 보통체":{desc:"Sentence-ending style. Use the です·ます (polite) style and the 普通体 (plain/casual) style as the situation requires.",
+    tip:"Formal/respectful = polite; friends, diaries, subordinate clauses = plain. Verbs, adjectives and nouns all have both.",
+    ko:["goes (polite / plain)","is a student (polite / plain)"]},
+  "지시어 こそあど":{desc:"Demonstratives grouped as near-speaker (こ), near-listener (そ), far from both (あ), and question (ど).",
+    tip:"こ=this, そ=that, あ=that over there, ど=which. Change only the last sound to extend to thing/noun-modifier/place/direction.",
+    ko:["This is a book","that person","where is it?"]},
+  "가정·조건형 と・ば・たら・なら":{desc:"Four ways to say 'if ~'. Each has a slightly different nuance.",
+    tip:"と=always/natural result, ば=general hypothesis, たら=most versatile/after completion, なら=topic or response to what someone said.",
+    ko:["press and it opens (と)","call me when you arrive (たら)","if you're going, let me know (なら)"],
+    conjVal:{"항상·자연 결과 · 春になると咲く":"Always/natural result · 春になると咲く","일반 조건·가정 · 安ければ買う":"General condition · 安ければ買う","완료 후·폭넓음 · 着いたら…":"After completion/versatile · 着いたら…","주제·상대 말 가정 · 君なら…":"Topic/response · 君なら…"}},
+  "수수 표현 (주고받기)":{desc:"Express giving/receiving with different verbs depending on direction. Watch who gives to whom.",
+    tip:"あげる = (I) give to someone, くれる = someone gives to me, もらう = (I) receive.",
+    ko:["give to a friend","mom gives (to me)","receive from the teacher"],
+    conjVal:{"(내가/제3자가) 주다":"(I / 3rd person) give","(남이 나·내 쪽에) 주다":"(someone) gives to me/my side","(내가) 받다":"(I) receive"}},
+  "て형 활용 표현":{desc:"Key patterns built on the verb te-form. Once you can make the te-form, your expressions expand a lot.",
+    tip:"~ている (progressive/state), ~てください (request), ~てもいい (permission), ~てはいけない (prohibition), ~てから (after ~).",
+    ko:["is eating","please look","you must not enter"],
+    conjVal:{"~하고 있다 · 상태 · 食べている":"~ing / state · 食べている","~해 주세요 · 見てください":"please ~ · 見てください","~해도 된다(허가) · 帰ってもいい":"may ~ (permission) · 帰ってもいい","~하면 안 된다(금지) · 入ってはいけない":"must not ~ · 入ってはいけない","~하고 나서 · 食べてから":"after ~ · 食べてから"}}
+};
 function gKey(it){ return it.pos || it.title; }
 function gColor(it){ return it.pos ? posColor(it.pos) : (it.color||"#64748b"); }
-function gHeader(it){ return it.pos ? posBadge(it.pos) : `<span class="gtitle" style="color:${gColor(it)}">${esc(it.title)}</span>`; }
+function gChipLabel(it){ return it.pos ? posLabel(it.pos) : gTitleLabel(it); }
+function gTitleLabel(it){ return (LANG==="en" && TITLE_EN[it.title]) ? TITLE_EN[it.title] : it.title; }
+function gGroupLabel(g){ return (LANG==="en" && GROUP_EN[g.group]) ? GROUP_EN[g.group] : g.group; }
+function gOv(it){ return GRAMMAR_EN[gKey(it)]; }
+function gDesc(it){ const o=gOv(it); return (LANG==="en"&&o&&o.desc)?o.desc:it.desc; }
+function gTip(it){ const o=gOv(it); return (LANG==="en"&&o&&o.tip)?o.tip:it.tip; }
+function gExKo(it,i){ const o=gOv(it); return (LANG==="en"&&o&&o.ko&&o.ko[i]!=null)?o.ko[i]:it.ex[i].ko; }
+function gTeTitle(it){ const o=gOv(it); if(LANG==="en"&&o&&o.teTitle) return o.teTitle; return it.teTitle||t("gram_teDefault"); }
+function gTeNote(it){ const o=gOv(it); return (LANG==="en"&&o&&o.teNote)?o.teNote:it.teNote; }
+function conjLabel(r){ return (LANG==="en" && CONJ_LABEL_EN[r[0]]) ? CONJ_LABEL_EN[r[0]] : r[0]; }
+function conjVal(it,r){ const o=gOv(it); return (LANG==="en"&&o&&o.conjVal&&o.conjVal[r[1]]) ? o.conjVal[r[1]] : r[1]; }
+function teLabel(r){ return (LANG==="en" && r[0]==="예외") ? "Exception" : r[0]; }
+function gHeader(it){ return it.pos ? posBadge(it.pos) : `<span class="gtitle" style="color:${gColor(it)}">${esc(gTitleLabel(it))}</span>`; }
 function gBodyHtml(it){
-  return `<p class="gdesc">${esc(it.desc)}</p>
-    <div class="gtip">💡 <b>구분법·활용</b> · ${esc(it.tip)}</div>
-    <div class="gex">${it.ex.map(e=>`<div><span class="jp">${esc(e.jp)}</span> <span class="ghira">${esc(e.hira)}</span> — ${esc(e.ko)}</div>`).join("")}</div>
-    ${it.conj?`<table class="gtable"><tbody>${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>`:""}
-    ${it.teRules?`<div class="gsub-title">${esc(it.teTitle||"て형 변환")}</div>
-      <table class="gtable"><tbody>${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>
-      ${it.teNote?`<div class="gnote">📌 ${esc(it.teNote)}</div>`:""}`:""}`;
+  return `<p class="gdesc">${esc(gDesc(it))}</p>
+    <div class="gtip">💡 <b>${esc(t('gram_tipLabel'))}</b> · ${esc(gTip(it))}</div>
+    <div class="gex">${it.ex.map((e,i)=>`<div><span class="jp">${esc(e.jp)}</span> <span class="ghira">${esc(e.hira)}</span> — ${esc(gExKo(it,i))}</div>`).join("")}</div>
+    ${it.conj?`<table class="gtable"><tbody>${it.conj.map(r=>`<tr><th>${esc(conjLabel(r))}</th><td class="jp">${esc(conjVal(it,r))}</td></tr>`).join("")}</tbody></table>`:""}
+    ${it.teRules?`<div class="gsub-title">${esc(gTeTitle(it))}</div>
+      <table class="gtable"><tbody>${it.teRules.map(r=>`<tr><th>${esc(teLabel(r))}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>
+      ${gTeNote(it)?`<div class="gnote">📌 ${esc(gTeNote(it))}</div>`:""}`:""}`;
 }
 // 접이식 카드 (문법 탭). open=true면 펼친 채로
 function grammarCardHtml(it, open){
@@ -896,17 +1213,34 @@ function renderGrammar(){
   const all=GRAMMAR.flatMap(g=>g.items);
   $("#gNav").innerHTML = all.map(it=>{
     const c=gColor(it);
-    return `<button type="button" class="gchip" data-go="${esc(gKey(it))}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(gKey(it))}</button>`;
+    return `<button type="button" class="gchip" data-go="${esc(gKey(it))}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(gChipLabel(it))}</button>`;
   }).join("");
   $("#grammarBody").innerHTML = GRAMMAR.map(g=>
-    `<div class="gsec-title">${esc(g.group)}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
+    `<div class="gsec-title">${esc(gGroupLabel(g))}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
   ).join("");
 }
 // 품사 배지 → 문법 팝업 (펼친 카드)
 function openGrammarPopup(pos){
   const it=GRAMMAR.flatMap(g=>g.items).find(x=>x.pos===pos);
   $("#gModalBody").innerHTML = it ? grammarCardHtml(it,true)
-    : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">이 품사의 문법 설명은 아직 없어요.</p></div>`;
+    : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">${esc(t('gram_noExplain'))}</p></div>`;
+  $("#gModal").hidden=false;
+}
+// 사용법 도움말 (힌트 카드)
+function openHelp(){
+  const cards=[
+    ["db","#3b5bdb"],["sch","#0d9488"],["mem","#7c3aed"],
+    ["quiz","#ea580c"],["print","#db2777"],["grammar","#0891b2"],["tip","#b45309"]
+  ];
+  $("#gModalBody").innerHTML = `<div class="modal-title">${esc(t('help_modalTitle'))}</div>
+    <div class="hintgrid">${cards.map(([k,c])=>{
+      const full=t('help_'+k+'_t'); const sp=full.indexOf(" ");
+      const icon=sp>0?full.slice(0,sp):full; const title=sp>0?full.slice(sp+1):"";
+      return `<div class="hintcard" style="--hc:${c}">
+        <div class="hicon">${esc(icon)}</div>
+        <div class="htxt"><p class="htitle">${esc(title)}</p><p class="hbody">${t('help_'+k+'_b')}</p></div>
+      </div>`;
+    }).join("")}</div>`;
   $("#gModal").hidden=false;
 }
 // 상단 바로가기: 해당 카드 펼치고 제목부터 보이도록 이동 (sticky 헤더 높이만큼 보정)
@@ -935,7 +1269,7 @@ let gAllOpen=false;
 $("#gExpandAll").addEventListener("click",()=>{
   gAllOpen=!gAllOpen;
   $$("#grammarBody details.gcard").forEach(d=>d.open=gAllOpen);
-  $("#gExpandAll").textContent=gAllOpen?"전부 접기":"전부 열기";
+  $("#gExpandAll").textContent=gAllOpen?t("gram_collapseAll"):t("gram_expandAll");
 });
 document.addEventListener("click",e=>{
   const b=e.target.closest(".posbadge.tap"); if(b){ openGrammarPopup(b.dataset.pos); return; }
@@ -947,15 +1281,34 @@ let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; });
 $("#installBtn").addEventListener("click",async()=>{
   if(deferredPrompt){ deferredPrompt.prompt(); try{ await deferredPrompt.userChoice; }catch(e){} deferredPrompt=null; return; }
-  $("#gModalBody").innerHTML=`<div class="gcard" style="border-left-color:var(--brand)">
-    <div class="gbody" style="padding:16px">
-      <div class="ghead" style="margin-bottom:8px">📲 홈 화면에 추가하는 법</div>
+  const ko=`<div class="ghead" style="margin-bottom:8px">📲 홈 화면에 추가하는 법</div>
       <p class="gdesc"><b>아이폰 (Safari)</b> — 하단 <b>공유</b> 버튼 → <b>"홈 화면에 추가"</b>.</p>
       <p class="gdesc"><b>안드로이드 (Chrome)</b> — 우측 상단 <b>⋮ 메뉴</b> → <b>"홈 화면에 추가"</b>(또는 앱 설치).</p>
-      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ 카톡에서 받은 파일을 바로 연 경우(file://)엔 추가가 제한될 수 있어요. 항상 앱처럼 쓰려면 이 파일을 웹(GitHub Pages 등)에 올린 뒤 <b>그 주소</b>를 홈 화면에 추가하세요. 추가하면 日 아이콘으로 전체화면 실행됩니다.</p>
-    </div></div>`;
+      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ 카톡에서 받은 파일을 바로 연 경우(file://)엔 추가가 제한될 수 있어요. 항상 앱처럼 쓰려면 이 파일을 웹(GitHub Pages 등)에 올린 뒤 <b>그 주소</b>를 홈 화면에 추가하세요. 추가하면 日 아이콘으로 전체화면 실행됩니다.</p>`;
+  const en=`<div class="ghead" style="margin-bottom:8px">📲 How to add to your home screen</div>
+      <p class="gdesc"><b>iPhone (Safari)</b> — tap the <b>Share</b> button → <b>"Add to Home Screen"</b>.</p>
+      <p class="gdesc"><b>Android (Chrome)</b> — top-right <b>⋮ menu</b> → <b>"Add to Home screen"</b> (or Install app).</p>
+      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ Adding may be restricted when you open a file directly (file://). To always use it like an app, host this file on the web (e.g. GitHub Pages) and add <b>that URL</b> to your home screen. It then launches full-screen with the 日 icon.</p>`;
+  $("#gModalBody").innerHTML=`<div class="gcard" style="border-left-color:var(--brand)"><div class="gbody" style="padding:16px">${LANG==="en"?en:ko}</div></div>`;
   $("#gModal").hidden=false;
 });
+// 도움말 버튼 + 언어 전환
+$("#helpBtn").addEventListener("click",openHelp);
+$("#langSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-lang]"); if(b) setLang(b.dataset.lang); });
+function setLang(lang){
+  if(lang!=="ko"&&lang!=="en") return;
+  LANG=lang; try{ localStorage.setItem(LANG_KEY,lang); }catch(e){}
+  $$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
+  applyI18n();
+  // 동적 콘텐츠 다시 그리기
+  refreshDbFilters(); syncQuizAnswer(); renderGrammar();
+  gAllOpen=false; if($("#gExpandAll")) $("#gExpandAll").textContent=t("gram_expandAll");
+  renderDb(); renderSchedule(); refreshDateSelects();
+  updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
+  $("#dbName").value=state.dbName||"";
+  if($("#memStage").style.display!=="none" && mem.list.length) renderFlash();
+  if($("#quizArea").style.display!=="none" && quiz.list.length) renderQuiz();
+}
 
 /* ====================== 탭 ====================== */
 $("#nav").addEventListener("click",e=>{
