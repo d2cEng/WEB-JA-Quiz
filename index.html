@@ -604,6 +604,10 @@
       </div>
       <div class="progress"><i id="quizBar"></i></div>
       <div id="quizBody" style="margin-top:14px"></div>
+      <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
+        <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
+        <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
+      </div>
     </div>
   </section>
 
@@ -2233,12 +2237,24 @@ function renderQuiz(){
   }
   $("#quizBody").innerHTML=html;
   quiz.answered=false;
+  // 객관식 ↔ 주관식 단계 토글 (서로 자유롭게 이동)
+  const seg=$("#quizPhaseSeg");
+  seg.style.display="flex";
+  $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
   if(quiz.phase==="sa"){
     const inp=$("#qInput"); inp.focus();
     inp.addEventListener("keydown",e=>{ if(e.key==="Enter") submitSA(); });
     $("#qSubmit").addEventListener("click",submitSA);
   }
 }
+// 객관식/주관식 단계 직접 이동 (선택한 단계를 처음부터 다시 풉니다)
+$("#quizPhaseSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
+  const ph=b.dataset.ph;
+  if(ph===quiz.phase) return;
+  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={};
+  renderQuiz();
+});
 $("#quizBody").addEventListener("click",e=>{
   const b=e.target.closest(".choice"); if(!b||quiz.answered||quiz.phase!=="mc") return;
   quiz.answered=true;
@@ -2283,6 +2299,7 @@ function nextQuiz(){
 // 주관식 시험 결과 화면 (틀린 단어 + 내가 쓴 답 + 맞음 처리)
 function renderQuizResults(){
   $("#quizBar").style.width="100%";
+  $("#quizPhaseSeg").style.display="none";   // 결과 화면에선 단계 토글 숨김
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
