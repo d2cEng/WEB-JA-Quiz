@@ -389,6 +389,7 @@
         <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
       <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
+      <div id="excludedPanel" class="noprint"></div>
       <details class="manual noprint">
         <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
         <div class="manbody">
@@ -743,6 +744,9 @@ const I18N = {
     db_fld_example:"예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로",
     db_manualNote:"• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.",
     db_install:"📲 홈 화면에 추가",
+    db_excludedSummary:"🚫 제외된 단어 {n}개 (암기에서 뺀 단어 · 눌러서 관리)",
+    db_excludedHint:"암기 카드에서 <b>뺀 단어</b>예요. 학습·퀴즈·시험지·일정에서 빠집니다. 실수로 뺐다면 <b>복원</b>으로 되돌리세요.",
+    db_restore:"↩︎ 복원", db_restoreAll:"전체 복원",
     sch_settingsSummary:"⚙️ 일정 만들기 (기간·개수·분량)",
     sch_sub:"기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.",
     sch_start:"시작일", sch_end:"마지막일", sch_endDate:"종료일", sch_posFilter:"품사 필터", sch_levelFilter:"레벨 필터",
@@ -812,7 +816,8 @@ const I18N = {
     mem_stageDone:"{stage} 완료", mem_stageAllSeen:"이번 단계의 모든 단어({n}개)를 다 봤어요",
     mem_lastDone:"마지막 단계까지 끝냈어요!", mem_goNext:"다음 단계로 넘어갈까요?",
     mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
-    toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다", toast_dropped:"이 단어를 리스트에서 뺐어요",
+    toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다",
+    toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"점수 {score} / {n}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
     fb_correct:"정답!", fb_answer:"정답: {ans}", toast_enterAnswer:"답을 입력하세요",
@@ -861,6 +866,9 @@ const I18N = {
     db_fld_example:"Example — if multiple meanings, list in the same order separated by a <b>comma (,)</b>",
     db_manualNote:"• <b>id</b> can be omitted (auto-assigned). • Match the number of commas in <b>korean</b> and <b>example</b> to link each meaning to its example 1:1. • Separators <code>、</code>·<code>，</code> are also recognized.",
     db_install:"📲 Add to home screen",
+    db_excludedSummary:"🚫 {n} excluded words (removed during memorizing · tap to manage)",
+    db_excludedHint:"These are words you <b>removed</b> on a flashcard. They are left out of study, quizzes, test sheets and schedules. Removed one by mistake? Press <b>Restore</b>.",
+    db_restore:"↩︎ Restore", db_restoreAll:"Restore all",
     sch_settingsSummary:"⚙️ Create schedule (period · count · daily load)",
     sch_sub:"Set a period and a daily load to auto-distribute words by date.",
     sch_start:"Start date", sch_end:"End date", sch_endDate:"End date", sch_posFilter:"Part-of-speech filter", sch_levelFilter:"Level filter",
@@ -930,7 +938,8 @@ const I18N = {
     mem_stageDone:"{stage} complete", mem_stageAllSeen:"You've seen all {n} words in this stage",
     mem_lastDone:"You finished the final stage!", mem_goNext:"Move on to the next stage?",
     mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
-    toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage", toast_dropped:"Removed this word from the list",
+    toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage",
+    toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"Score {score} / {n}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
     fb_correct:"Correct!", fb_answer:"Answer: {ans}", toast_enterAnswer:"Enter an answer",
@@ -983,6 +992,7 @@ let state = {
   schedule: {},        // { "2026-06-18": [ids...] }
   settings: {},
   progress: {},        // { id: {done, date} }
+  excluded: [],        // ids — 암기 중 '이 단어 빼기'로 제외한 단어 (DB에서 복원 가능)
   dbName: "" // 현재 단어장(DB) 이름
 };
 
@@ -997,6 +1007,7 @@ function load(){
   state.selected = state.selected || [];
   state.schedule = state.schedule || {};
   state.progress = state.progress || {};
+  state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1004,10 +1015,15 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress
+    settings:state.settings, progress:state.progress, excluded:state.excluded
   };
   try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
 }
+// 제외(암기 중 '이 단어 빼기') 단어 관리 — 단어 DB에서 복원 가능
+function isExcluded(id){ return (state.excluded||[]).includes(id); }
+function excludeWord(id){ if(!isExcluded(id)){ (state.excluded=state.excluded||[]).push(id); save(); } }
+function restoreWord(id){ state.excluded=(state.excluded||[]).filter(x=>x!==id); save(); }
+function notExcluded(w){ return !isExcluded(w.id); }
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
 }
@@ -1385,6 +1401,7 @@ function fillSelect(sel, items, allLabel){
 function dbFiltered(){
   const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvl=$("#dbLevel").value;
   let rows = state.words.filter(w=>{
+    if(isExcluded(w.id)) return false;   // 제외된 단어는 본 목록에서 숨기고 아래 '제외된 단어'에서 관리
     if(pos && w.pos!==pos) return false;
     if(lvl && w.level!==lvl) return false;
     if(q){
@@ -1411,6 +1428,33 @@ function renderDb(){
     </tr>`).join("") || `<tr><td colspan="6" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
+  renderExcluded();
+}
+// 제외된 단어 목록 (단어 DB 하단에서 따로 관리 · 복원)
+function renderExcluded(){
+  const box=$("#excludedPanel"); if(!box) return;
+  const words=(state.excluded||[]).map(wordById).filter(Boolean);
+  if(!words.length){ box.innerHTML=""; return; }
+  box.innerHTML=`<details class="manual noprint" open>
+    <summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("db_excludedSummary",{n:words.length}))}</summary>
+    <p class="muted" style="font-size:.85em;margin:8px 2px 6px">${t("db_excludedHint")}</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th></th></tr></thead>
+      <tbody>${words.map(w=>`<tr>
+        <td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.korean)}</td>
+        <td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" data-restore="${w.id}">${esc(t("db_restore"))}</button></td>
+      </tr>`).join("")}</tbody></table></div>
+    <div class="btnrow"><button class="btn ghost" id="restoreAll">${esc(t("db_restoreAll"))}</button></div>
+  </details>`;
+}
+$("#excludedPanel").addEventListener("click",e=>{
+  const rb=e.target.closest("[data-restore]");
+  if(rb){ restoreWord(+rb.dataset.restore); refreshExcludeAffected(); toast(t("toast_restored")); return; }
+  if(e.target.closest("#restoreAll")){ state.excluded=[]; save(); refreshExcludeAffected(); toast(t("toast_restoredAll")); }
+});
+// 제외/복원 후 영향받는 화면 갱신
+function refreshExcludeAffected(){
+  renderDb(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCount();
 }
 $("#dbBody").addEventListener("change",e=>{
   const cb=e.target.closest("input.check"); if(!cb) return;
@@ -1451,6 +1495,7 @@ $("#impFile").addEventListener("change",e=>{
       state.dbName = d.name || f.name.replace(/\.json$/i,"");   // 단어장 이름: JSON name 또는 파일명
       state.selected=Array.isArray(d.selected)?d.selected:[];
       state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
+      state.excluded=Array.isArray(d.excluded)?d.excluded:[];
       normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
     }catch(err){ toast(t("toast_badJson")); }
   };
@@ -1533,13 +1578,13 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_reset"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:t("name_sample")};
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_sample")};
   normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:t("name_empty")};
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_empty")};
   save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
@@ -1550,9 +1595,9 @@ $("#dbName").addEventListener("input",()=>{
 /* ====================== 일정 ====================== */
 // 필터 조건에 맞는 단어 풀 (개수 슬라이더 적용 전)
 function schedPoolBase(){
-  if($("#sSelectedOnly").checked) return state.selected.map(wordById).filter(Boolean);
+  if($("#sSelectedOnly").checked) return state.selected.map(wordById).filter(Boolean).filter(notExcluded);
   const pos=$("#sPos").value, lvl=$("#sLevel").value;
-  return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvl||w.level===lvl));
+  return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvl||w.level===lvl)).filter(notExcluded);
 }
 function updateSchedCount(){
   const max=schedPoolBase().length;
@@ -1855,17 +1900,13 @@ function refreshDateSelects(){
 
 /* 범위 → 단어목록 */
 function wordsForScope(scope, dateVal){
-  if(scope==="all") return state.words.slice();
-  if(scope==="selected") return state.selected.map(wordById).filter(Boolean);
-  if(scope==="today"){
-    const ids=state.schedule[todayStr()];
-    return ids?ids.map(wordById).filter(Boolean):[];
-  }
-  if(scope==="date"){
-    const ids=state.schedule[dateVal];
-    return ids?ids.map(wordById).filter(Boolean):[];
-  }
-  return [];
+  // 제외된 단어(암기 중 빼기)는 모든 학습 범위에서 빠집니다 (DB에서 복원 가능)
+  let out=[];
+  if(scope==="all") out=state.words.slice();
+  else if(scope==="selected") out=state.selected.map(wordById).filter(Boolean);
+  else if(scope==="today"){ const ids=state.schedule[todayStr()]; out=ids?ids.map(wordById).filter(Boolean):[]; }
+  else if(scope==="date"){ const ids=state.schedule[dateVal]; out=ids?ids.map(wordById).filter(Boolean):[]; }
+  return out.filter(notExcluded);
 }
 
 /* ====================== 암기 (플래시카드) ====================== */
@@ -1879,7 +1920,7 @@ function memListFor(){
     const base = scope==="today"? todayStr() : date;
     const ids=[]; Object.keys(state.schedule).sort().filter(d=>d>=base)
       .forEach(d=>state.schedule[d].forEach(id=>{ if(!ids.includes(id)) ids.push(id); }));
-    list=ids.map(wordById).filter(Boolean);
+    list=ids.map(wordById).filter(Boolean).filter(notExcluded);
   }
   return list;
 }
@@ -2020,10 +2061,14 @@ function renderFlash(){
   $("#memSkip").textContent = mem.stage<MEM_LAST ? memStageShort(mem.stage+1)+" ⏭" : t("mem_skipLast");
   maybeAutoRead(speakText);
 }
-// 현재 보고 있는 단어를 학습 리스트에서 제외
+// 현재 보고 있는 단어를 학습에서 제외 (단어 DB의 '제외된 단어'로 이동 · 복원 가능)
 function dropCurrentWord(){
   if(!mem.list.length) return;
+  const w=mem.list[mem.idx];
+  excludeWord(w.id);                 // 영구 제외 기록 (DB에서 복원 가능)
   mem.list.splice(mem.idx,1);
+  renderDb();                        // DB 탭의 목록·제외 패널 즉시 반영
+  updateQuizCount(); updatePrintCount(); updateSchedCount();   // 범위별 단어 수 최신화
   if(!mem.list.length){
     $("#memStage").style.display="none"; $("#memSettings").open=true;
     updateMemCount(); toast(t("toast_dropped")); return;
