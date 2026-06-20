@@ -1464,13 +1464,41 @@ function markLearned(id){
   }
 }
 // 일본어 TTS (발음 읽어주기)
+// 일본어 음성 중 가장 품질 좋은 것을 골라 캐싱한다.
+// (.find로 첫 음성을 쓰면 macOS에서 저품질 기본/노벨티 음성이 선택되는 문제 방지)
+let jaVoiceCache=null;
+function pickJaVoice(){
+  if(jaVoiceCache) return jaVoiceCache;
+  const all=speechSynthesis.getVoices()||[];
+  const ja=all.filter(v=>/ja|japan/i.test((v.lang||"")+" "+(v.name||"")));
+  if(!ja.length) return null;
+  // macOS 노벨티(장난) 음성 제외
+  const novelty=/eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|bahh|bells|boing|bubbles|cellos|jester|organ|superstar|trinoids|whisper|wobble|zarvox/i;
+  const usable=ja.filter(v=>!novelty.test(v.name||""));
+  const pool=usable.length?usable:ja;
+  const score=v=>{
+    const n=(v.name||"");
+    let s=0;
+    if(/premium|프리미엄/i.test(n)) s+=4;       // 최고 품질
+    if(/enhanced|향상/i.test(n)) s+=3;          // 고품질
+    if(/kyoko|otoya|o-?ren|hattori|sora/i.test(n)) s+=1; // 표준 일본어 음성 이름
+    if(v.localService) s+=1;                     // 로컬(오프라인) 음성 가산
+    return s;
+  };
+  jaVoiceCache=pool.slice().sort((a,b)=>score(b)-score(a))[0];
+  return jaVoiceCache;
+}
+// 음성 목록은 비동기로 로드되므로 갱신 시 캐시 무효화
+if(window.speechSynthesis){
+  speechSynthesis.addEventListener?.("voiceschanged",()=>{ jaVoiceCache=null; });
+}
 function speakJa(text){
   if(!text || !window.speechSynthesis) return;
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(String(text));
     u.lang="ja-JP"; u.rate=0.9;
-    const v=(speechSynthesis.getVoices()||[]).find(v=>/ja|japan/i.test(v.lang||""));
+    const v=pickJaVoice();
     if(v) u.voice=v;
     speechSynthesis.speak(u);
   }catch(e){}
