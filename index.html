@@ -1016,8 +1016,7 @@ $("#impFile").addEventListener("change",e=>{
 /* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
 function buildAiPrompt(topic){
   return `당신은 일본어 단어장 데이터를 만드는 도우미입니다.
-"${topic}" 주제의 일본어 단어를 아래 JSON 형식에 정확히 맞춰 만들어 주세요.
-
+"${topic}" 주제의 일본어 단어를 아래 JSON 형식에 정확히 맞춰 JSON 파일로 생성해 주세요.
 [출력 형식]
 {
   "version": 1,
@@ -1026,7 +1025,6 @@ function buildAiPrompt(topic){
     { "kanji": "教える", "hiragana": "おしえる", "korean": "가르치다,알려주다", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" }
   ]
 }
-
 [필드 규칙]
 - kanji: 한자 표기 (한자가 없는 단어면 히라가나와 동일하게 적음)
 - hiragana: 읽는 법 (히라가나)
@@ -1035,11 +1033,13 @@ function buildAiPrompt(topic){
 - pos: 품사. 다음 중 하나로 표기 — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
 - example: 일본어 예문. korean에 뜻이 여러 개면 쉼표(,)로 같은 순서·같은 개수로 예문을 적음
 - id 필드는 넣지 마세요 (가져올 때 자동 부여됩니다).
-
+[출력 방식]
+- 결과를 채팅 텍스트로 출력하지 말고, "${topic}.json" 이라는 이름의 파일로 생성하고 다운로드할 수 있게 제공하세요.
+- 파일 내용은 코드블록(\`\`\`)이나 설명·인사말 없이, { 로 시작해 } 로 끝나는 순수 JSON 텍스트만 담으세요.
+- 파일은 UTF-8 인코딩, 2칸 들여쓰기 형식으로 저장하세요.
 [주의]
-- 설명·인사말 없이 순수 JSON만 출력하세요.
-- 코드블록(\`\`\`) 표시 없이 { 로 시작해 } 로 끝나는 JSON 텍스트만 출력하세요.
-- korean과 example의 쉼표 개수를 반드시 일치시키세요.`;
+- korean과 example의 쉼표 개수를 반드시 일치시키세요.
+- 파일 생성 외의 부가 설명은 최소화하세요.`;
 }
 $("#aiCopyBtn").addEventListener("click",async ()=>{
   const topic=($("#aiTopic").value||"").trim();
