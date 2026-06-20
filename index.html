@@ -1611,7 +1611,7 @@ $("#startQuiz").addEventListener("click",()=>{
   const list=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
   if(list.length<1){ toast("출제할 단어가 없습니다"); return; }
   if(list.length<4) toast("단어가 4개 미만이라 보기가 적을 수 있어요");
-  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set()};
+  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set(), saTyped:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1667,7 +1667,7 @@ function submitSA(){
   const ok=accept.some(a=>normAns(a)===val || (normAns(a).length>1 && normAns(a).includes(val) && val.length>=2));
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,"정답!"); }
-  else { quiz.wrong.add(w.id); fb(false,"정답: "+wField(w,quiz.af)); }
+  else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,"정답: "+wField(w,quiz.af)); }
   setTimeout(nextQuiz,1100);
 }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
@@ -1677,23 +1677,40 @@ function nextQuiz(){
   if(quiz.phase==="mc"){
     const mcScore=quiz.score;
     alert(`4지선다 완료! ${mcScore} / ${quiz.list.length}\n이어서 주관식 시험을 시작합니다.`);
-    quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.list=shuffle(quiz.list); renderQuiz();
+    // 주관식 결과만 최종 틀린 단어로 집계(오타 정정 대상). 4지선다 오답은 초기화
+    quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.list=shuffle(quiz.list); renderQuiz();
   } else {
-    $("#quizBar").style.width="100%";
-    renderSchedule();   // 시험 결과를 캘린더·통계에 반영
-    quiz.finalWrong=[...quiz.wrong];
-    const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
-    const wrongHtml = wrong.length
-      ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">❌ 틀린 단어 ${wrong.length}개 (리스트 보기)</summary>
-          <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
-          <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td></tr>`).join("")}</tbody></table></div></details>
-        <div class="btnrow"><button class="btn" onclick="retryWrong()">❌ 틀린 ${wrong.length}개만 다시 풀기</button></div>`
-      : `<p style="color:var(--ok);font-weight:700">전부 맞혔어요! 🎉</p>`;
-    $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">시험 종료 🎉</div>
-      <p style="text-align:center">주관식 점수: <b>${quiz.score} / ${quiz.list.length}</b></p>
-      ${wrongHtml}
-      <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">처음부터 다시</button></div>`;
+    renderQuizResults();
   }
+}
+// 주관식 시험 결과 화면 (틀린 단어 + 내가 쓴 답 + 맞음 처리)
+function renderQuizResults(){
+  $("#quizBar").style.width="100%";
+  renderSchedule();   // 시험 결과를 캘린더·통계에 반영
+  quiz.finalWrong=[...quiz.wrong];
+  const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
+  const total=quiz.list.length;
+  const typed=w=>{ const t=quiz.saTyped&&quiz.saTyped[w.id]; return t? `<span style="color:var(--bad)">${esc(t)}</span>` : '<span class="muted">(빈칸)</span>'; };
+  const wrongHtml = wrong.length
+    ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">❌ 틀린 단어 ${wrong.length}개 (리스트 보기)</summary>
+        <p class="muted" style="margin:8px 2px 0;font-size:.85em">오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.</p>
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>漢字</th><th>ひらがな</th><th>한글 뜻</th><th>내가 쓴 답</th><th></th></tr></thead>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${typed(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">✅ 맞음 처리</button></td></tr>`).join("")}</tbody></table></div></details>
+      <div class="btnrow"><button class="btn" onclick="retryWrong()">❌ 틀린 ${wrong.length}개만 다시 풀기</button></div>`
+    : `<p style="color:var(--ok);font-weight:700">전부 맞혔어요! 🎉</p>`;
+  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">시험 종료 🎉</div>
+    <p style="text-align:center">주관식 점수: <b>${quiz.score} / ${total}</b></p>
+    ${wrongHtml}
+    <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">처음부터 다시</button></div>`;
+}
+// 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
+function markCorrect(id){
+  if(!quiz.wrong.has(id)) return;
+  quiz.wrong.delete(id);
+  quiz.score++;
+  quizMarkDone(id);
+  toast("정답으로 처리했어요");
+  renderQuizResults();
 }
 // 틀린 단어만 다시 풀기 (4지선다 → 주관식)
 function retryWrong(){
