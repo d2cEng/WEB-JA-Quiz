@@ -86,7 +86,7 @@
   .calcell.done{background:var(--ok-bg)}
   .calcell.today{border-color:var(--brand);border-width:2px;padding:2px 3px}   /* 오늘: 파란 테두리 */
   .calcell.sel{outline:3px solid #f59e0b;outline-offset:-3px;box-shadow:0 0 0 1px #f59e0b inset} /* 선택: 주황 */
-  .calcell.today .cnum::after{content:"·오늘";font-size:.85em;color:var(--brand);font-weight:700}
+  .calcell.today .cnum::after{content:var(--today-label,"·오늘");font-size:.85em;color:var(--brand);font-weight:700}
   .calcell.past{opacity:.6}
   .calcell .cinfo{font-size:.74em;font-weight:700;color:var(--brand);line-height:1.1}
   .calcell.done .cinfo{color:var(--ok)}
@@ -282,6 +282,39 @@
   .modal-box .gcard{margin:0}
   .modal-close{position:absolute;top:10px;right:10px;border:none;background:var(--accent);color:var(--ink);
     border-radius:999px;width:34px;height:34px;cursor:pointer;font-weight:700;font-size:.95em;z-index:1}
+  /* 상단 바: 제목 + 언어 전환 + 도움말 */
+  .topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .topbar h1{margin:0;flex:1 1 auto}
+  .topctl{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+  .langseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .langseg button{background:#fff;border:none;padding:6px 11px;cursor:pointer;font-weight:700;font-size:.82em;color:var(--muted)}
+  .langseg button.on{background:var(--brand);color:#fff}
+  .helpbtn{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:999px;
+    width:34px;height:34px;cursor:pointer;font-weight:800;font-size:1em;flex:0 0 auto}
+  /* 암기 카드: 단어 빼기 버튼 */
+  .dropword{position:absolute;top:10px;right:12px;border:1px solid var(--line);background:#fff;
+    color:var(--muted);border-radius:999px;padding:5px 11px;font-size:.78em;font-weight:700;cursor:pointer}
+  .dropword:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  .flash{position:relative}
+  /* 도움말 힌트 카드 */
+  .hintgrid{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .hintcard{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);
+    border-left:5px solid var(--hc,var(--brand));border-radius:12px;padding:12px 14px;background:#fff}
+  .hintcard .hicon{font-size:1.5em;line-height:1.1;flex:0 0 auto}
+  .hintcard .htxt{min-width:0}
+  .hintcard .htitle{font-weight:800;margin:0 0 3px;color:var(--hc,var(--brand))}
+  .hintcard .hbody{font-size:.9em;color:#374151;line-height:1.55;margin:0}
+  .hintcard .hbody b{color:var(--ink)}
+  .modal-title{font-size:1.15em;font-weight:800;margin:0 0 10px;padding-right:30px}
+  /* 학습 현황: 일정 외 학습 강조 */
+  .offsched{background:var(--accent);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:.9em;line-height:1.55}
+  .offsched b{color:var(--brand)}
+  /* 곳곳에 배치하는 인라인 힌트 */
+  .tiphint{background:var(--accent);border:1px solid var(--line);border-radius:10px;
+    padding:9px 12px;margin:10px 0;font-size:.84em;color:#374151;line-height:1.55}
+  .tiphint b{color:var(--brand)}
+  /* 첫 단계 표시(이전 단계 없음) */
+  .btn.atedge{opacity:.55}
   @media print{
     body{background:#fff}
     header,nav,.noprint,.toast{display:none !important}
@@ -297,82 +330,92 @@
 <body>
 <div class="wrap">
   <header>
-    <h1><span class="em">🇯🇵</span> 일본어 단어 암기 · 시험</h1>
+    <div class="topbar">
+      <h1><span class="em">🇯🇵</span> <span data-i18n="appTitle">일본어 단어 암기 · 시험</span></h1>
+      <div class="topctl">
+        <button class="helpbtn" id="helpBtn" data-i18n-title="help_title" title="도움말">❔</button>
+        <div class="langseg" id="langSeg">
+          <button type="button" data-lang="ko">한국어</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
     <nav id="nav">
-      <button data-tab="db" class="active">단어 DB</button>
-      <button data-tab="schedule">일정</button>
-      <button data-tab="memorize">암기</button>
-      <button data-tab="quiz">퀴즈</button>
-      <button data-tab="print">시험지 인쇄</button>
-      <button data-tab="grammar">문법</button>
+      <button data-tab="db" class="active" data-i18n="tab_db">단어 DB</button>
+      <button data-tab="schedule" data-i18n="tab_schedule">일정</button>
+      <button data-tab="memorize" data-i18n="tab_memorize">암기</button>
+      <button data-tab="quiz" data-i18n="tab_quiz">퀴즈</button>
+      <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
+      <button data-tab="grammar" data-i18n="tab_grammar">문법</button>
     </nav>
   </header>
 
   <!-- ============ DB ============ -->
   <section id="db" class="active">
     <div class="card">
-      <h2>단어 데이터베이스</h2>
-      <p class="sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
-      <label>단어장 이름 (이 데이터셋을 구분하는 이름)</label>
-      <input type="text" id="dbName" placeholder="예: JLPT N4 단어장">
+      <h2 data-i18n="db_title">단어 데이터베이스</h2>
+      <p class="sub" data-i18n="db_sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
+      <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
+      <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
       <div class="toolbar noprint" style="margin-top:10px">
-        <input id="dbSearch" type="text" placeholder="검색 (漢字·ひらがな·뜻)">
+        <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
         <select id="dbPos"><option value="">품사 전체</option></select>
         <select id="dbLevel"><option value="">레벨 전체</option></select>
-        <button class="btn sec" id="selAll">검색결과 전체선택</button>
-        <button class="btn ghost" id="selNone">전체해제</button>
+        <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
+        <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
       </div>
       <p class="muted" style="margin:0 0 8px">
-        선택됨 <span class="count" id="selCount">0</span> /
-        표시 <span class="count" id="shownCount">0</span> 개
+        <span data-i18n="db_selectedPre">선택됨 </span><span class="count" id="selCount">0</span><span data-i18n="db_shownMid"> / 표시 </span><span class="count" id="shownCount">0</span><span data-i18n="db_unitSuf"> 개</span>
       </p>
+      <div class="tiphint" data-i18n="hint_db">💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.</div>
       <div class="tablewrap">
         <table id="dbTable">
           <thead><tr>
             <th style="width:34px"></th>
-            <th data-sort="kanji">漢字</th>
-            <th data-sort="hiragana">ひらがな</th>
-            <th data-sort="korean">한글 뜻</th>
-            <th data-sort="level">레벨</th>
-            <th data-sort="pos">품사</th>
+            <th data-sort="kanji" data-i18n="th_kanji">漢字</th>
+            <th data-sort="hiragana" data-i18n="th_hira">ひらがな</th>
+            <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
+            <th data-sort="level" data-i18n="th_level">레벨</th>
+            <th data-sort="pos" data-i18n="th_pos">품사</th>
           </tr></thead>
           <tbody id="dbBody"></tbody>
         </table>
       </div>
       <div class="btnrow noprint">
-        <button class="btn" id="expBtn">📤 내보내기 (.json)</button>
-        <button class="btn sec" id="impBtn">📥 가져오기</button>
+        <button class="btn" id="expBtn" data-i18n="db_export">📤 내보내기 (.json)</button>
+        <button class="btn sec" id="impBtn" data-i18n="db_import">📥 가져오기</button>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
-        <button class="btn ghost" id="resetBtn">초기화(샘플로)</button>
-        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)">내부 데이터 전체 삭제</button>
+        <button class="btn ghost" id="resetBtn" data-i18n="db_reset">초기화(샘플로)</button>
+        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
+      <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
       <details class="manual noprint">
-        <summary class="setsum">📄 JSON 단어장 파일 만드는 법</summary>
+        <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
         <div class="manbody">
           <div class="aibox">
-            <p class="aihd">🤖 AI로 만들기 (가장 쉬움)</p>
-            <p class="aidesc">만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!</p>
-            <label for="aiTopic">단어장 주제</label>
+            <p class="aihd" data-i18n="ai_hd">🤖 AI로 만들기 (가장 쉬움)</p>
+            <p class="aidesc" data-i18n="ai_desc">만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!</p>
+            <label for="aiTopic" data-i18n="ai_topicLabel">단어장 주제</label>
             <div class="airow">
-              <input type="text" id="aiTopic" placeholder="예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어">
-              <button type="button" class="btn" id="aiCopyBtn">📋 프롬프트 복사</button>
+              <input type="text" id="aiTopic" data-i18n-ph="ai_topicPh" placeholder="예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어">
+              <button type="button" class="btn" id="aiCopyBtn" data-i18n="ai_copyBtn">📋 프롬프트 복사</button>
             </div>
             <ol class="aisteps">
-              <li>주제를 적고 <b>프롬프트 복사</b>를 누릅니다.</li>
-              <li>AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.</li>
-              <li>AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.</li>
-              <li>위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.</li>
+              <li data-i18n="ai_step1">주제를 적고 <b>프롬프트 복사</b>를 누릅니다.</li>
+              <li data-i18n="ai_step2">AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.</li>
+              <li data-i18n="ai_step3">AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.</li>
+              <li data-i18n="ai_step4">위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.</li>
             </ol>
           </div>
-          <p class="gdesc">직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.</p>
+          <p class="gdesc" data-i18n="db_manualDesc">직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.</p>
           <table class="gtable"><tbody>
-            <tr><th>name</th><td>단어장 이름 (선택)</td></tr>
-            <tr><th>kanji</th><td>간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
-            <tr><th>hiragana</th><td>읽는 법 (히라가나)</td></tr>
-            <tr><th>korean</th><td>한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
-            <tr><th>level</th><td>레벨 (예: N5, N4) — 자유</td></tr>
-            <tr><th>pos</th><td>품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
-            <tr><th>example</th><td>예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
+            <tr><th>name</th><td data-i18n="db_fld_name">단어장 이름 (선택)</td></tr>
+            <tr><th>kanji</th><td data-i18n="db_fld_kanji">간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
+            <tr><th>hiragana</th><td data-i18n="db_fld_hira">읽는 법 (히라가나)</td></tr>
+            <tr><th>korean</th><td data-i18n="db_fld_korean">한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
+            <tr><th>level</th><td data-i18n="db_fld_level">레벨 (예: N5, N4) — 자유</td></tr>
+            <tr><th>pos</th><td data-i18n="db_fld_pos">품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
+            <tr><th>example</th><td data-i18n="db_fld_example">예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
           </tbody></table>
           <div class="gnote" style="white-space:pre-wrap;font-family:monospace;font-size:.8em">{
   "version": 1,
@@ -383,11 +426,11 @@
       "example": "日本語を教える。,道を教える。" }
   ]
 }</div>
-          <p class="gdesc" style="font-size:.85em;color:var(--muted)">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
+          <p class="gdesc" style="font-size:.85em;color:var(--muted)" data-i18n="db_manualNote">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
         </div>
       </details>
       <div class="btnrow noprint">
-        <button class="btn sec" id="installBtn">📲 홈 화면에 추가</button>
+        <button class="btn sec" id="installBtn" data-i18n="db_install">📲 홈 화면에 추가</button>
       </div>
     </div>
   </section>
@@ -396,61 +439,62 @@
   <section id="schedule">
     <div class="card">
      <details id="schedSettings" open>
-      <summary class="setsum">⚙️ 일정 만들기 (기간·개수·분량)</summary>
-      <p class="sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
+      <summary class="setsum" data-i18n="sch_settingsSummary">⚙️ 일정 만들기 (기간·개수·분량)</summary>
+      <p class="sub" data-i18n="sch_sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
+      <div class="tiphint" data-i18n="hint_sch">💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.</div>
       <div class="row">
-        <div><label>시작일</label><input type="date" id="sStart"></div>
-        <div><label>마지막일</label><input type="date" id="sEnd"></div>
+        <div><label data-i18n="sch_start">시작일</label><input type="date" id="sStart"></div>
+        <div><label data-i18n="sch_end">마지막일</label><input type="date" id="sEnd"></div>
       </div>
       <div class="row">
-        <div><label>품사 필터</label><select id="sPos"></select></div>
-        <div><label>레벨 필터</label><select id="sLevel"></select></div>
+        <div><label data-i18n="sch_posFilter">품사 필터</label><select id="sPos"></select></div>
+        <div><label data-i18n="sch_levelFilter">레벨 필터</label><select id="sLevel"></select></div>
       </div>
-      <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> 단어 DB에서 체크한 단어만 사용 (위 필터 무시)</label>
-      <label>추출 순서</label>
+      <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> <span data-i18n="sch_selectedOnly">단어 DB에서 체크한 단어만 사용 (위 필터 무시)</span></label>
+      <label data-i18n="sch_orderLabel">추출 순서</label>
       <select id="sOrder">
-        <option value="random">무작위</option>
-        <option value="order">DB 순서대로</option>
+        <option value="random" data-i18n="order_random">무작위</option>
+        <option value="order" data-i18n="order_dbOrder">DB 순서대로</option>
       </select>
-      <label>외울 단어 개수: <b id="sCountLabel">0</b> / <span id="sCountMax">0</span>개</label>
+      <label><span data-i18n="sch_countPre">외울 단어 개수: </span><b id="sCountLabel">0</b> / <span id="sCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="sCount" min="1" max="1" value="1">
-      <label>주말 비중 (평일 대비)</label>
+      <label data-i18n="sch_weekendWeight">주말 비중 (평일 대비)</label>
       <div class="seg seg-full" id="sWeightSeg">
-        <button type="button" data-w="auto" class="on">자동</button>
-        <button type="button" data-w="2">2배</button>
-        <button type="button" data-w="3">3배</button>
-        <button type="button" data-w="4">4배</button>
+        <button type="button" data-w="auto" class="on" data-i18n="w_auto">자동</button>
+        <button type="button" data-w="2" data-i18n="w_2">2배</button>
+        <button type="button" data-w="3" data-i18n="w_3">3배</button>
+        <button type="button" data-w="4" data-i18n="w_4">4배</button>
       </div>
       <div class="row">
-        <div><label>평일 분량</label><input type="number" id="sWdCap" min="1" value="2"></div>
-        <div><label>주말 분량</label><input type="number" id="sWeCap" min="1" value="4"></div>
+        <div><label data-i18n="sch_wdCap">평일 분량</label><input type="number" id="sWdCap" min="1" value="2"></div>
+        <div><label data-i18n="sch_weCap">주말 분량</label><input type="number" id="sWeCap" min="1" value="4"></div>
       </div>
-      <label class="chk"><input type="checkbox" id="sManual" autocomplete="off"> 분량 직접 수정 (자동 계산 끄기)</label>
+      <label class="chk"><input type="checkbox" id="sManual" autocomplete="off"> <span data-i18n="sch_manual">분량 직접 수정 (자동 계산 끄기)</span></label>
       <div id="sCalc" class="calcbox"></div>
       <div class="btnrow">
-        <button class="btn" id="genSchedule">일정 생성</button>
+        <button class="btn" id="genSchedule" data-i18n="sch_gen">일정 생성</button>
       </div>
      </details>
     </div>
     <div class="card" id="scheduleResult" style="display:none">
-      <h2>학습 현황</h2>
+      <h2 data-i18n="sch_statusTitle">학습 현황</h2>
       <div id="statsPanel"></div>
       <details id="editPanel" style="display:none">
-        <summary>✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)</summary>
+        <summary data-i18n="sch_editSummary">✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)</summary>
         <div class="row">
-          <div><label>시작일</label><input type="date" id="eStart"></div>
-          <div><label>종료일</label><input type="date" id="eEnd"></div>
+          <div><label data-i18n="sch_start">시작일</label><input type="date" id="eStart"></div>
+          <div><label data-i18n="sch_endDate">종료일</label><input type="date" id="eEnd"></div>
         </div>
-        <label>외울 단어 개수: <b id="eCountLabel">0</b> / <span id="eCountMax">0</span>개</label>
+        <label><span data-i18n="edit_countPre">외울 단어 개수: </span><b id="eCountLabel">0</b> / <span id="eCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
         <input type="range" id="eCount" min="1" max="1" value="1">
-        <div class="muted" style="font-size:.8em">미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.</div>
-        <div class="btnrow"><button class="btn" id="eApply">다시 배치</button></div>
+        <div class="muted" style="font-size:.8em" data-i18n="sch_editHint">미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.</div>
+        <div class="btnrow"><button class="btn" id="eApply" data-i18n="sch_reapply">다시 배치</button></div>
       </details>
       <div class="calnav">
         <button id="calPrev" type="button">◀</button>
         <b id="calLabel"></b>
         <button id="calNext" type="button">▶</button>
-        <button id="calToday" type="button">오늘</button>
+        <button id="calToday" type="button" data-i18n="cal_today">오늘</button>
       </div>
       <div id="calendar"></div>
       <div id="dayDetail"></div>
@@ -461,38 +505,38 @@
   <section id="memorize">
     <div class="card noprint">
      <details id="memSettings" open>
-      <summary class="setsum">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
-      <p class="sub">단계별로 진행합니다. 1단계에서 모든 단어의 뜻+ひらがな를 다 본 뒤,
-        2단계(ひらがな+漢字), 3단계(예문)로 넘어갑니다.</p>
-      <label>학습 범위</label>
+      <summary class="setsum" data-i18n="mem_settingsSummary">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
+      <p class="sub" data-i18n="mem_sub">단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.</p>
+      <div class="tiphint" data-i18n="hint_mem">💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.</div>
+      <label data-i18n="mem_scope">학습 범위</label>
       <div class="seg seg-full" id="mScopeSeg">
-        <button type="button" data-v="today" class="on">오늘 분량</button>
-        <button type="button" data-v="date">날짜</button>
-        <button type="button" data-v="selected">선택 단어</button>
-        <button type="button" data-v="all">전체</button>
+        <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
+        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
+        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
+        <button type="button" data-v="all" data-i18n="scope_all">전체</button>
       </div>
-      <div id="mDateWrap" style="display:none"><label>날짜</label><select id="mDate"></select></div>
-      <label>학습 방식</label>
+      <div id="mDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="mDate"></select></div>
+      <label data-i18n="mem_mode">학습 방식</label>
       <div class="seg seg-full" id="mModeSeg">
-        <button type="button" data-v="asis" class="on">일정대로</button>
-        <button type="button" data-v="ahead">선행학습 (이어서 더)</button>
+        <button type="button" data-v="asis" class="on" data-i18n="mem_asis">일정대로</button>
+        <button type="button" data-v="ahead" data-i18n="mem_ahead">선행학습 (이어서 더)</button>
       </div>
       <div id="mAheadWrap" style="display:none">
-        <label>학습한 단어의 이후 일정</label>
+        <label data-i18n="mem_afterLabel">학습한 단어의 이후 일정</label>
         <div class="seg seg-full" id="mAfterSeg">
-          <button type="button" data-v="keep" class="on">유지</button>
-          <button type="button" data-v="edit">학습분 제외</button>
+          <button type="button" data-v="keep" class="on" data-i18n="mem_keep">유지</button>
+          <button type="button" data-v="edit" data-i18n="mem_exclude">학습분 제외</button>
         </div>
       </div>
-      <label>출제 순서</label>
+      <label data-i18n="mem_orderLabel">출제 순서</label>
       <div class="seg seg-full" id="mOrderSeg">
-        <button type="button" data-v="order" class="on">순서대로</button>
-        <button type="button" data-v="random">무작위</button>
+        <button type="button" data-v="order" class="on" data-i18n="order_seq">순서대로</button>
+        <button type="button" data-v="random" data-i18n="order_random">무작위</button>
       </div>
-      <label>단어 수: <b id="mCountLabel">0</b> / <span id="mCountMax">0</span>개</label>
+      <label><span data-i18n="mem_countPre">단어 수: </span><b id="mCountLabel">0</b> / <span id="mCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="mCount" min="1" max="1" value="1">
-      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> 🔊 카드 자동 읽기 (발음·TTS)</label>
-      <div class="btnrow"><button class="btn" id="startMem">시작</button></div>
+      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> <span data-i18n="mem_autoRead">🔊 카드 자동 읽기 (발음·TTS)</span></label>
+      <div class="btnrow"><button class="btn" id="startMem" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
     <div class="card" id="memStage" style="display:none">
@@ -500,10 +544,10 @@
       <p class="muted" style="text-align:center" id="memCounter"></p>
       <div class="flash" id="flash"></div>
       <div class="btnrow noprint" id="memNav" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 400px; margin: 0 auto;">
-        <button class="btn ghost" id="memPrev" style="width: 48%;">◀ 이전 단어</button>
-        <button class="btn" id="memNext" style="width: 48%;">다음 단어 ▶</button>
-        <button class="btn sec" id="memPrevStage" style="width: 48%;">⏮ 이전 단계</button>
-        <button class="btn sec" id="memSkip" style="width: 48%;">다음 단계 ⏭</button>
+        <button class="btn ghost" id="memPrev" style="width: 48%;" data-i18n="mem_prev">◀ 이전 단어</button>
+        <button class="btn" id="memNext" style="width: 48%;" data-i18n="mem_next">다음 단어 ▶</button>
+        <button class="btn sec" id="memPrevStage" style="width: 48%;" data-i18n="mem_prevStage">⏮ 이전 단계</button>
+        <button class="btn sec" id="memSkip" style="width: 48%;" data-i18n="mem_skip">다음 단계 ⏭</button>
       </div>
     </div>
   </section>
@@ -512,43 +556,49 @@
   <section id="quiz">
     <div class="card noprint">
      <details id="quizSettings" open>
-      <summary class="setsum">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
-      <p class="sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
-      <label>출제 범위</label>
+      <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
+      <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
+      <div class="tiphint" data-i18n="hint_quiz">💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.</div>
+      <label data-i18n="quiz_scope">출제 범위</label>
       <div class="seg seg-full" id="qScopeSeg">
-        <button type="button" data-v="today" class="on">오늘 분량</button>
-        <button type="button" data-v="date">날짜</button>
-        <button type="button" data-v="selected">선택 단어</button>
-        <button type="button" data-v="all">전체</button>
+        <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
+        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
+        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
+        <button type="button" data-v="all" data-i18n="scope_all">전체</button>
       </div>
-      <div id="qDateWrap" style="display:none"><label>날짜</label><select id="qDate"></select></div>
-      <div class="row" style="align-items:flex-end">
-        <div><label>문제 (보여줄 것)</label>
+      <div id="qDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="qDate"></select></div>
+      <label data-i18n="quiz_dir">출제 방향</label>
+      <div class="seg seg-full" id="qDirSeg">
+        <button type="button" data-v="fixed" class="on" data-i18n="quiz_dirFixed">고정</button>
+        <button type="button" data-v="random" data-i18n="quiz_dirRandom">무작위 (문제·정답 섞기)</button>
+      </div>
+      <div class="row" style="align-items:flex-end" id="qFieldRow">
+        <div><label data-i18n="quiz_promptField">문제 (보여줄 것)</label>
           <select id="qPromptField">
-            <option value="kanji">漢字</option>
-            <option value="hira">ひらがな</option>
-            <option value="korean">한글 뜻</option>
+            <option value="kanji" data-i18n="field_kanji">漢字</option>
+            <option value="hira" data-i18n="field_hira">ひらがな</option>
+            <option value="korean" data-i18n="field_korean">한글 뜻</option>
           </select>
         </div>
         <div style="flex:0 0 auto"><label>&nbsp;</label>
-          <button class="btn ghost" id="qSwap" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
+          <button class="btn ghost" id="qSwap" data-i18n-title="quiz_swapTitle" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
         </div>
-        <div><label>정답 (맞힐 것)</label>
+        <div><label data-i18n="quiz_answerField">정답 (맞힐 것)</label>
           <select id="qAnswerField">
-            <option value="korean">한글 뜻</option>
-            <option value="hira">ひらがな</option>
-            <option value="kanji">漢字</option>
+            <option value="korean" data-i18n="field_korean">한글 뜻</option>
+            <option value="hira" data-i18n="field_hira">ひらがな</option>
+            <option value="kanji" data-i18n="field_kanji">漢字</option>
           </select>
         </div>
       </div>
-      <label>출제 단어 수: <b id="qCountLabel">0</b> / <span id="qCountMax">0</span>개</label>
+      <label><span data-i18n="quiz_countPre">출제 단어 수: </span><b id="qCountLabel">0</b> / <span id="qCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="qCount" min="1" max="1" value="1">
-      <div class="btnrow"><button class="btn" id="startQuiz">시작</button></div>
+      <div class="btnrow"><button class="btn" id="startQuiz" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
     <div class="card" id="quizArea" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <span class="pill" id="quizPhase">4지선다</span>
+        <span class="pill" id="quizPhase" data-i18n="quiz_mc">4지선다</span>
         <span class="scorebar" id="quizScore"></span>
       </div>
       <div class="progress"><i id="quizBar"></i></div>
@@ -559,35 +609,36 @@
   <!-- ============ PRINT ============ -->
   <section id="print">
     <div class="card noprint">
-      <h2>인쇄</h2>
-      <label>인쇄 종류</label>
+      <h2 data-i18n="print_title">인쇄</h2>
+      <label data-i18n="print_type">인쇄 종류</label>
       <div class="seg seg-full" id="pTypeSeg">
-        <button type="button" data-v="exam" class="on">단어 시험지</button>
-        <button type="button" data-v="grammar">문법 정리</button>
+        <button type="button" data-v="exam" class="on" data-i18n="print_exam">단어 시험지</button>
+        <button type="button" data-v="grammar" data-i18n="print_grammar">문법 정리</button>
       </div>
       <div id="examOpts">
-        <p class="sub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
+        <p class="sub" data-i18n="print_examSub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
+        <div class="tiphint" data-i18n="hint_print">💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.</div>
         <div class="row">
-          <div><label>출제 범위</label>
+          <div><label data-i18n="print_scope">출제 범위</label>
             <select id="pScope">
-              <option value="today">오늘 분량</option>
-              <option value="date">날짜 선택</option>
-              <option value="selected">선택한 단어 전체</option>
-              <option value="all">전체 단어</option>
+              <option value="today" data-i18n="pscope_today">오늘 분량</option>
+              <option value="date" data-i18n="pscope_date">날짜 선택</option>
+              <option value="selected" data-i18n="pscope_selected">선택한 단어 전체</option>
+              <option value="all" data-i18n="pscope_all">전체 단어</option>
             </select>
           </div>
-          <div id="pDateWrap" style="display:none"><label>날짜</label><select id="pDate"></select></div>
-          <div><label>제목</label><input type="text" id="pTitle" value="일본어 단어 시험"></div>
+          <div id="pDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="pDate"></select></div>
+          <div><label data-i18n="print_titleLabel">제목</label><input type="text" id="pTitle" data-i18n-val="print_defaultTitle" value="일본어 단어 시험"></div>
         </div>
-        <label>문항 수: <b id="pCountLabel">0</b> / <span id="pCountMax">0</span>개</label>
+        <label><span data-i18n="print_countPre">문항 수: </span><b id="pCountLabel">0</b> / <span id="pCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
         <input type="range" id="pCount" min="1" max="1" value="1">
       </div>
       <div id="grammarOpts" style="display:none">
-        <p class="sub">전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)</p>
+        <p class="sub" data-i18n="print_grammarSub">전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)</p>
       </div>
       <div class="btnrow">
-        <button class="btn" id="genSheet">시험지 생성</button>
-        <button class="btn sec" id="doPrint" disabled>🖨️ 인쇄</button>
+        <button class="btn" id="genSheet" data-i18n="print_genExam">시험지 생성</button>
+        <button class="btn sec" id="doPrint" disabled data-i18n="print_do">🖨️ 인쇄</button>
       </div>
     </div>
     <div id="sheetOut"></div>
@@ -596,21 +647,22 @@
   <!-- ============ GRAMMAR ============ -->
   <section id="grammar">
     <div class="card">
-      <h2>일본어 품사 · 문법 한눈에 📚</h2>
-      <p class="sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
+      <h2 data-i18n="gram_title">일본어 품사 · 문법 한눈에 📚</h2>
+      <p class="sub" data-i18n="gram_sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
       <div class="gnavbar" id="gNav"></div>
-      <div class="btnrow"><button class="btn sec" id="gExpandAll">전부 열기</button></div>
+      <div class="tiphint" data-i18n="hint_grammar">💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.</div>
+      <div class="btnrow"><button class="btn sec" id="gExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
     <div id="grammarBody"></div>
   </section>
 </div>
 
-<button id="toTop" class="totop noprint" hidden title="맨 위로">↑</button>
+<button id="toTop" class="totop noprint" hidden data-i18n-title="totop_title" title="맨 위로">↑</button>
 
 <div class="modal" id="gModal" hidden>
   <div class="modal-backdrop" data-close></div>
   <div class="modal-box">
-    <button class="modal-close" data-close title="닫기">✕</button>
+    <button class="modal-close" data-close data-i18n-title="modal_close" title="닫기">✕</button>
     <div id="gModalBody"></div>
   </div>
 </div>
@@ -657,13 +709,281 @@
 const LS_KEY = "jaquiz.v1";
 const SEED = JSON.parse(document.getElementById("seed-data").textContent);
 
+/* ====================== 다국어 (i18n) ====================== */
+const LANG_KEY = "jaquiz.lang";
+let LANG = (function(){
+  let s=null; try{ s=localStorage.getItem(LANG_KEY); }catch(e){}
+  if(s==="ko"||s==="en") return s;
+  return (navigator.language||"").toLowerCase().startsWith("ko") ? "ko" : "en";
+})();
+const I18N = {
+  ko:{
+    appTitle:"일본어 단어 암기 · 시험", help_title:"도움말",
+    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법",
+    db_title:"단어 데이터베이스",
+    db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
+    db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
+    db_searchPh:"검색 (漢字·ひらがな·뜻)", pos_all:"품사 전체", level_all:"레벨 전체",
+    db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
+    db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
+    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
+    db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
+    db_manualSummary:"📄 JSON 단어장 파일 만드는 법",
+    ai_hd:"🤖 AI로 만들기 (가장 쉬움)",
+    ai_desc:"만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!",
+    ai_topicLabel:"단어장 주제", ai_topicPh:"예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어", ai_copyBtn:"📋 프롬프트 복사",
+    ai_step1:"주제를 적고 <b>프롬프트 복사</b>를 누릅니다.",
+    ai_step2:"AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.",
+    ai_step3:"AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.",
+    ai_step4:"위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.",
+    db_manualDesc:"직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.",
+    db_fld_name:"단어장 이름 (선택)", db_fld_kanji:"간지 표기 (한자 없으면 히라가나와 동일하게)",
+    db_fld_hira:"읽는 법 (히라가나)", db_fld_korean:"한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분",
+    db_fld_level:"레벨 (예: N5, N4) — 자유", db_fld_pos:"품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)",
+    db_fld_example:"예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로",
+    db_manualNote:"• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.",
+    db_install:"📲 홈 화면에 추가",
+    sch_settingsSummary:"⚙️ 일정 만들기 (기간·개수·분량)",
+    sch_sub:"기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.",
+    sch_start:"시작일", sch_end:"마지막일", sch_endDate:"종료일", sch_posFilter:"품사 필터", sch_levelFilter:"레벨 필터",
+    sch_selectedOnly:"단어 DB에서 체크한 단어만 사용 (위 필터 무시)", sch_orderLabel:"추출 순서",
+    order_random:"무작위", order_dbOrder:"DB 순서대로", order_seq:"순서대로",
+    sch_countPre:"외울 단어 개수: ", edit_countPre:"외울 단어 개수: ", unit_geSuf:"개",
+    sch_weekendWeight:"주말 비중 (평일 대비)", w_auto:"자동", w_2:"2배", w_3:"3배", w_4:"4배",
+    sch_wdCap:"평일 분량", sch_weCap:"주말 분량", sch_manual:"분량 직접 수정 (자동 계산 끄기)",
+    sch_gen:"일정 생성", sch_statusTitle:"학습 현황",
+    sch_editSummary:"✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)",
+    sch_editHint:"미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.",
+    sch_reapply:"다시 배치", cal_today:"오늘", cal_todayMark:"·오늘",
+    mem_settingsSummary:"⚙️ 암기 설정 (범위·방식·단어 수)",
+    mem_sub:"단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.",
+    mem_scope:"학습 범위", scope_today:"오늘 분량", scope_date:"날짜", scope_selected:"선택 단어", scope_all:"전체", lbl_date:"날짜",
+    mem_mode:"학습 방식", mem_asis:"일정대로", mem_ahead:"선행학습 (이어서 더)",
+    mem_afterLabel:"학습한 단어의 이후 일정", mem_keep:"유지", mem_exclude:"학습분 제외",
+    mem_orderLabel:"출제 순서", mem_countPre:"단어 수: ", mem_autoRead:"🔊 카드 자동 읽기 (발음·TTS)",
+    btn_start:"시작", mem_prev:"◀ 이전 단어", mem_next:"다음 단어 ▶", mem_prevStage:"⏮ 이전 단계", mem_skip:"다음 단계 ⏭",
+    mem_finishStage:"이 단계 마치기 ▶", mem_skipLast:"마치기 ⏭", mem_dropWord:"이 단어 빼기 ✕", mem_firstStageLabel:"⏮ 첫 단계 (처음)",
+    hint_db:"💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.",
+    hint_db2:"💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.",
+    hint_sch:"💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.",
+    hint_mem:"💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.",
+    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.",
+    hint_print:"💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.",
+    hint_grammar:"💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.",
+    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식으로 진행합니다.",
+    quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
+    quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
+    field_kanji:"漢字", field_hira:"ひらがな", field_korean:"한글 뜻",
+    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식",
+    print_title:"인쇄", print_type:"인쇄 종류", print_exam:"단어 시험지", print_grammar:"문법 정리",
+    print_examSub:"ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.",
+    print_scope:"출제 범위", pscope_today:"오늘 분량", pscope_date:"날짜 선택", pscope_selected:"선택한 단어 전체", pscope_all:"전체 단어",
+    print_titleLabel:"제목", print_defaultTitle:"일본어 단어 시험", print_countPre:"문항 수: ",
+    print_grammarSub:"전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)",
+    print_genExam:"시험지 생성", print_genGrammar:"문법 정리 생성", print_do:"🖨️ 인쇄",
+    gram_title:"일본어 품사 · 문법 한눈에 📚",
+    gram_sub:"동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.",
+    gram_expandAll:"전부 열기", gram_collapseAll:"전부 접기", gram_tipLabel:"구분법·활용", gram_teDefault:"て형 변환",
+    gram_noExplain:"이 품사의 문법 설명은 아직 없어요.", modal_close:"닫기", totop_title:"맨 위로",
+    toast_storageFull:"저장 공간 부족", toast_selAdded:"검색결과를 선택에 추가", toast_exported:"내보내기 완료",
+    toast_imported:"가져오기 완료: {name} · {n}개", toast_badJson:"올바른 JSON 파일이 아닙니다",
+    toast_enterTopic:"단어장 주제를 입력하세요", toast_promptCopied:"프롬프트 복사됨 · AI에 붙여넣으세요", toast_copyFail:"복사 실패 · 길게 눌러 직접 복사하세요",
+    confirm_reset:"샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)", toast_reset:"초기화 완료", name_sample:"샘플 데이터",
+    confirm_wipe:"내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)", toast_wiped:"전체 삭제 완료",
+    name_empty:"(비어 있음)", name_unnamed:"이름 없는 단어장", name_none:"이름 없음",
+    toast_enterDates:"시작일과 마지막일을 입력하세요", toast_endBeforeStart:"마지막일이 시작일보다 빠릅니다",
+    toast_noChecked:"DB에서 체크한 단어가 없습니다", toast_noMatch:"조건에 맞는 단어가 없습니다",
+    toast_schedGen:"일정 생성: {d}일 · 평일 {x}개/주말 {y}개 · {n}단어",
+    toast_checkDates:"시작일·종료일을 확인하세요", toast_noRedistribute:"재배치할 단어가 없습니다", toast_redistributed:"재배치: {d}일 · {n}단어",
+    toast_setCapacity:"평일/주말 분량을 1개 이상으로 설정하세요",
+    calc_enterDates:"시작일·마지막일을 입력하세요", calc_setCount:"외울 단어 개수를 1개 이상으로 설정하세요", calc_autoSuffix:" 자동",
+    calc_auto:"자동 분량 → 평일 <b>{x}개</b> · 주말 <b>{y}개</b> <span class=\"muted\">(주말 = 평일 ×{weight}{autoSuffix}, 하루 최대)</span><br>분량 합계 <b>{cap}개</b> (외울 {total}개) · 기간 {days}일 (평일 {wd}일 · 주말 {we}일) · 마지막 날은 더 적을 수 있어요",
+    calc_manual:"직접 입력한 분량 사용 → 평일 <b>{x}개</b> · 주말 <b>{y}개</b> <span class=\"muted\">(하루 최대)</span><br>기간 {days}일 (평일 {wd}일 · 주말 {we}일) · 마지막 날은 더 적을 수 있어요",
+    stats_wordbook:"📚 단어장: ", stats_totalWords:" (총 {n}단어)",
+    stat_learned:"학습한 단어", stat_today:"오늘 학습", stat_days:"학습한 날", stat_schedProgress:"일정 진행",
+    stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
+    stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
+    detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
+    detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
+    toast_noMemWords:"학습할 단어가 없습니다",
+    stage1:"1단계 · 뜻 + ひらがな", stage2:"2단계 · ひらがな + 漢字", stage3:"3단계 · 漢字 + 뜻", stage4:"4단계 · 예문",
+    stage1s:"뜻 + ひらがな", stage2s:"ひらがな + 漢字", stage3s:"漢字 + 뜻", stage4s:"예문",
+    mem_counterWord:"{stage}  —  단어 {i} / {n}", mem_meaningN:"뜻 {i}", mem_noExample:"예문 없음", mem_listen:"🔊 발음 듣기",
+    mem_stageDone:"{stage} 완료", mem_stageAllSeen:"이번 단계의 모든 단어({n}개)를 다 봤어요",
+    mem_lastDone:"마지막 단계까지 끝냈어요!", mem_goNext:"다음 단계로 넘어갈까요?",
+    mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
+    toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다", toast_dropped:"이 단어를 리스트에서 뺐어요",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"점수 {score} / {n}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
+    toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", toast_enterAnswer:"답을 입력하세요",
+    alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
+    rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
+    rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
+    rq_typed:"내가 쓴 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
+    toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
+    sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
+    toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
+    sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
+    sheet_answerTitle:"{title} — 정답", sheet_includeAnswer:"정답지도 인쇄에 포함", toast_examSheet:"시험지 생성 완료",
+    help_modalTitle:"📖 사용법 한눈에 보기",
+    help_db_t:"① 단어 DB", help_db_b:"단어를 검색·정렬하고 <b>체크</b>로 암기 대상을 고릅니다. <b>가져오기/내보내기</b>로 나만의 단어장을 옮길 수 있어요. AI로 단어장을 만드는 법도 여기 있습니다.",
+    help_sch_t:"② 일정", help_sch_b:"시작일~마지막일과 하루 분량을 정하면 날짜별로 단어가 <b>자동 분배</b>됩니다. 달력에서 진행 상황을 한눈에 보고, 날짜·단어를 눌러 수정할 수 있어요.",
+    help_mem_t:"③ 암기 (플래시카드)", help_mem_b:"<b>뜻+ひらがな → ひらがな+漢字 → 漢字+뜻 → 예문</b> 4단계로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하고, 🔊로 발음을 들을 수 있어요.",
+    help_quiz_t:"④ 퀴즈", help_quiz_b:"<b>4지선다 → 주관식</b> 순서로 풉니다. 문제·정답 방향을 고정하거나 <b>무작위</b>로 섞을 수 있고, 틀린 단어만 다시 풀 수 있어요.",
+    help_print_t:"⑤ 시험지 인쇄", help_print_b:"漢字·ひらがな·뜻 중 무작위로 빈칸을 낸 <b>시험지</b>나 전체 <b>문법 정리</b>를 실제 프린터로 출력(또는 PDF 저장)합니다.",
+    help_grammar_t:"⑥ 문법", help_grammar_b:"동사 3그룹·형용사·필수 표현을 색깔 배지로 정리했어요. 암기·퀴즈의 <b>품사 배지</b>를 누르면 그 문법 설명이 바로 떠요.",
+    help_tip_t:"💾 저장 & 이동", help_tip_b:"진도와 설정은 <b>브라우저에 자동 저장</b>됩니다. 기기를 바꿀 땐 DB의 <b>내보내기</b>로 백업하고 새 기기에서 <b>가져오기</b> 하세요. 우측 상단에서 <b>언어</b>를 바꿀 수 있습니다."
+  },
+  en:{
+    appTitle:"Japanese Vocabulary · Quiz", help_title:"Help",
+    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar",
+    db_title:"Word database",
+    db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
+    db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
+    db_searchPh:"Search (漢字·ひらがな·meaning)", pos_all:"All parts of speech", level_all:"All levels",
+    db_selAll:"Select all results", db_selNone:"Clear all",
+    db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
+    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
+    db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
+    db_manualSummary:"📄 How to make a JSON wordbook file",
+    ai_hd:"🤖 Make it with AI (easiest)",
+    ai_desc:"Type the <b>wordbook topic</b> you want and press <b>Copy prompt</b>. Paste it into an AI like ChatGPT·Claude·Gemini and it will produce JSON in the format below. Save the result as a <b>.json</b> file and <b>📥 Import</b> it — done!",
+    ai_topicLabel:"Wordbook topic", ai_topicPh:"e.g. JLPT N4 verbs / business Japanese / travel phrases", ai_copyBtn:"📋 Copy prompt",
+    ai_step1:"Type a topic and press <b>Copy prompt</b>.",
+    ai_step2:"Paste it into an AI (ChatGPT·Claude·Gemini, etc.) and run.",
+    ai_step3:"Paste the AI's JSON into a text editor and save it as <code>topic.json</code>.",
+    ai_step4:"Load that file with <b>📥 Import</b> above.",
+    db_manualDesc:"To make one yourself, create a <b>.json</b> file in the format below (with Excel, a text editor, etc.) and load it with <b>📥 Import</b>. An easy way is to open an <b>📤 Export</b>ed file and just change the contents inside <code>words</code>.",
+    db_fld_name:"Wordbook name (optional)", db_fld_kanji:"Kanji spelling (same as hiragana if no kanji)",
+    db_fld_hira:"Reading (hiragana)", db_fld_korean:"Meaning — separate multiple meanings with a <b>comma (,)</b>",
+    db_fld_level:"Level (e.g. N5, N4) — free-form", db_fld_pos:"Part of speech (Group 1/2/3 verb · i-adj · na-adj · noun · adverb · conjunction…)",
+    db_fld_example:"Example — if multiple meanings, list in the same order separated by a <b>comma (,)</b>",
+    db_manualNote:"• <b>id</b> can be omitted (auto-assigned). • Match the number of commas in <b>korean</b> and <b>example</b> to link each meaning to its example 1:1. • Separators <code>、</code>·<code>，</code> are also recognized.",
+    db_install:"📲 Add to home screen",
+    sch_settingsSummary:"⚙️ Create schedule (period · count · daily load)",
+    sch_sub:"Set a period and a daily load to auto-distribute words by date.",
+    sch_start:"Start date", sch_end:"End date", sch_endDate:"End date", sch_posFilter:"Part-of-speech filter", sch_levelFilter:"Level filter",
+    sch_selectedOnly:"Use only words checked in the DB (ignore the filters above)", sch_orderLabel:"Selection order",
+    order_random:"Random", order_dbOrder:"DB order", order_seq:"In order",
+    sch_countPre:"Words to learn: ", edit_countPre:"Words to learn: ", unit_geSuf:"",
+    sch_weekendWeight:"Weekend weight (vs weekday)", w_auto:"Auto", w_2:"×2", w_3:"×3", w_4:"×4",
+    sch_wdCap:"Weekday load", sch_weCap:"Weekend load", sch_manual:"Edit load manually (turn off auto-calc)",
+    sch_gen:"Generate schedule", sch_statusTitle:"Learning status",
+    sch_editSummary:"✏️ Edit current/upcoming schedule — change dates and count (tap to expand)",
+    sch_editHint:"The future (today onward) schedule is re-distributed with the new settings. Past records and progress are kept.",
+    sch_reapply:"Re-distribute", cal_today:"Today", cal_todayMark:" ·today",
+    mem_settingsSummary:"⚙️ Memorize settings (scope · mode · count)",
+    mem_sub:"Proceed in stages: Stage 1 meaning+ひらがな → Stage 2 ひらがな+漢字 → Stage 3 漢字+meaning → Stage 4 examples.",
+    mem_scope:"Study scope", scope_today:"Today's load", scope_date:"Date", scope_selected:"Selected words", scope_all:"All", lbl_date:"Date",
+    mem_mode:"Study mode", mem_asis:"As scheduled", mem_ahead:"Study ahead (keep going)",
+    mem_afterLabel:"Future schedule for studied words", mem_keep:"Keep", mem_exclude:"Exclude studied",
+    mem_orderLabel:"Order", mem_countPre:"Words: ", mem_autoRead:"🔊 Auto-read cards (TTS)",
+    btn_start:"Start", mem_prev:"◀ Prev word", mem_next:"Next word ▶", mem_prevStage:"⏮ Prev stage", mem_skip:"Next stage ⏭",
+    mem_finishStage:"Finish this stage ▶", mem_skipLast:"Finish ⏭", mem_dropWord:"Remove this word ✕", mem_firstStageLabel:"⏮ First stage (start)",
+    hint_db:"💡 <b>Checked</b> words become the targets for Memorize/Quiz/Schedule. Try <b>Select all results</b> after searching/sorting.",
+    hint_db2:"💡 To move to another device, <b>Export</b> a backup and <b>Import</b> it on the new one. Progress and settings are saved automatically.",
+    hint_sch:"💡 Leave the weekend weight on <b>Auto</b> to auto-calculate the weekday/weekend load for your target count. Tap a date/word on the calendar to edit.",
+    hint_mem:"💡 Learn in 4 stages (meaning+ひらがな → ひらがな+漢字 → <b>漢字+meaning</b> → example). Use <b>Remove this word ✕</b> on a card to drop ones you know.",
+    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer, and you can retry only the words you missed.",
+    hint_print:"💡 One of 漢字·ひらがな·meaning is randomly blanked per row. You can also print the <b>answer key</b>.",
+    hint_grammar:"💡 Tap a <b>part-of-speech badge</b> in Memorize/Quiz to instantly pop up its grammar. Use the chips above to jump between items.",
+    quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer.",
+    quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
+    quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
+    field_kanji:"Kanji", field_hira:"Hiragana", field_korean:"Meaning",
+    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer",
+    print_title:"Print", print_type:"Print type", print_exam:"Vocabulary test", print_grammar:"Grammar sheet",
+    print_examSub:"Randomly blanks out ひらがな·漢字·meaning and prints to a real printer.",
+    print_scope:"Scope", pscope_today:"Today's load", pscope_date:"Choose date", pscope_selected:"All selected words", pscope_all:"All words",
+    print_titleLabel:"Title", print_defaultTitle:"Japanese Vocabulary Test", print_countPre:"Questions: ",
+    print_grammarSub:"Prints all grammar compactly in <b>two columns</b> on A4 (with conjugation tables).",
+    print_genExam:"Generate test", print_genGrammar:"Generate grammar sheet", print_do:"🖨️ Print",
+    gram_title:"Japanese parts of speech & grammar at a glance 📚",
+    gram_sub:"3 verb groups, 2 adjective types, other parts of speech, and essential patterns. Same colors as the badges in Memorize/Quiz. Use the buttons below to jump.",
+    gram_expandAll:"Expand all", gram_collapseAll:"Collapse all", gram_tipLabel:"How to tell & conjugate", gram_teDefault:"Te-form change",
+    gram_noExplain:"No grammar explanation for this part of speech yet.", modal_close:"Close", totop_title:"To top",
+    toast_storageFull:"Storage full", toast_selAdded:"Added results to selection", toast_exported:"Export complete",
+    toast_imported:"Imported: {name} · {n} words", toast_badJson:"Not a valid JSON file",
+    toast_enterTopic:"Enter a wordbook topic", toast_promptCopied:"Prompt copied · paste it into an AI", toast_copyFail:"Copy failed · long-press to copy manually",
+    confirm_reset:"Reset to sample data? (imported words & progress will be deleted)", toast_reset:"Reset complete", name_sample:"Sample data",
+    confirm_wipe:"Delete all internal data?\nWords, schedule and progress will all be erased. (cannot be undone)", toast_wiped:"All data deleted",
+    name_empty:"(empty)", name_unnamed:"Untitled wordbook", name_none:"Untitled",
+    toast_enterDates:"Enter start and end dates", toast_endBeforeStart:"End date is before the start date",
+    toast_noChecked:"No words checked in the DB", toast_noMatch:"No words match the criteria",
+    toast_schedGen:"Schedule created: {d} days · weekday {x}/weekend {y} · {n} words",
+    toast_checkDates:"Check the start/end dates", toast_noRedistribute:"No words to redistribute", toast_redistributed:"Redistributed: {d} days · {n} words",
+    toast_setCapacity:"Set the weekday/weekend load to at least 1",
+    calc_enterDates:"Enter start and end dates", calc_setCount:"Set the number of words to learn to at least 1", calc_autoSuffix:" auto",
+    calc_auto:"Auto load → weekday <b>{x}</b> · weekend <b>{y}</b> <span class=\"muted\">(weekend = weekday ×{weight}{autoSuffix}, daily max)</span><br>Total <b>{cap}</b> (of {total} to learn) · {days} days ({wd} weekdays · {we} weekends) · the last day may have fewer",
+    calc_manual:"Manual load → weekday <b>{x}</b> · weekend <b>{y}</b> <span class=\"muted\">(daily max)</span><br>{days} days ({wd} weekdays · {we} weekends) · the last day may have fewer",
+    stats_wordbook:"📚 Wordbook: ", stats_totalWords:" ({n} words total)",
+    stat_learned:"Words learned", stat_today:"Learned today", stat_days:"Study days", stat_schedProgress:"Schedule progress",
+    stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
+    stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
+    detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
+    detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
+    toast_noMemWords:"No words to study",
+    stage1:"Stage 1 · meaning + ひらがな", stage2:"Stage 2 · ひらがな + 漢字", stage3:"Stage 3 · 漢字 + meaning", stage4:"Stage 4 · example",
+    stage1s:"meaning + ひらがな", stage2s:"ひらがな + 漢字", stage3s:"漢字 + meaning", stage4s:"example",
+    mem_counterWord:"{stage}  —  word {i} / {n}", mem_meaningN:"Meaning {i}", mem_noExample:"No example", mem_listen:"🔊 Listen",
+    mem_stageDone:"{stage} complete", mem_stageAllSeen:"You've seen all {n} words in this stage",
+    mem_lastDone:"You finished the final stage!", mem_goNext:"Move on to the next stage?",
+    mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
+    toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage", toast_dropped:"Removed this word from the list",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"Score {score} / {n}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
+    toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", toast_enterAnswer:"Enter an answer",
+    alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
+    rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
+    rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
+    rq_typed:"Your answer", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
+    toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
+    sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
+    toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
+    sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
+    sheet_answerTitle:"{title} — Answers", sheet_includeAnswer:"Include answer key in print", toast_examSheet:"Test sheet generated",
+    help_modalTitle:"📖 How to use this app",
+    help_db_t:"① Words DB", help_db_b:"Search and sort words, then <b>check</b> the ones to memorize. Move your own wordbooks with <b>Import/Export</b>. You'll also find how to build a wordbook with AI here.",
+    help_sch_t:"② Schedule", help_sch_b:"Set start/end dates and a daily load and words are <b>auto-distributed</b> by date. See progress at a glance on the calendar and tap dates/words to edit.",
+    help_mem_t:"③ Memorize (flashcards)", help_mem_b:"Learn in 4 stages: <b>meaning+ひらがな → ひらがな+漢字 → 漢字+meaning → example</b>. Use <b>Remove this word ✕</b> to drop words you know, and 🔊 to hear pronunciation.",
+    help_quiz_t:"④ Quiz", help_quiz_b:"Solve <b>multiple choice → short answer</b>. Keep the prompt/answer direction fixed or <b>shuffle</b> it, and retry only the words you missed.",
+    help_print_t:"⑤ Print", help_print_b:"Print (or save as PDF) a <b>test sheet</b> with random blanks over 漢字·ひらがな·meaning, or a full <b>grammar summary</b>.",
+    help_grammar_t:"⑥ Grammar", help_grammar_b:"Verb groups, adjectives and essential patterns organized by color. Tap a <b>part-of-speech badge</b> in Memorize/Quiz to pop up its grammar.",
+    help_tip_t:"💾 Saving & moving", help_tip_b:"Progress and settings are <b>saved automatically in your browser</b>. To switch devices, <b>Export</b> from the DB and <b>Import</b> on the new one. Change <b>language</b> at the top right."
+  }
+};
+function t(key, vars){
+  const d=I18N[LANG]||I18N.ko;
+  let s=(d[key]!=null)?d[key]:(I18N.ko[key]!=null?I18N.ko[key]:key);
+  if(vars) s=s.replace(/\{(\w+)\}/g,(m,k)=>vars[k]!=null?vars[k]:m);
+  return s;
+}
+function applyI18n(){
+  document.documentElement.lang=LANG;
+  document.title=t("appTitle");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML=t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.placeholder=t(el.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el=>{ el.title=t(el.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-val]").forEach(el=>{
+    const key=el.dataset.i18nVal, nv=t(key);
+    // 사용자가 직접 바꾸지 않았으면(빈값 또는 어느 언어든 기본값) 새 언어 기본값으로 교체
+    const isDefault = el.value==="" || el.value===el._i18nDefault
+      || el.value===(I18N.ko[key]) || el.value===(I18N.en[key]);
+    if(isDefault) el.value=nv;
+    el._i18nDefault=nv;
+  });
+  document.documentElement.style.setProperty("--today-label", JSON.stringify(t("cal_todayMark")));
+}
+
 let state = {
   words: [],           // {id,kanji,hiragana,korean,level,pos,example, meanings:[{korean,example}]}
   selected: [],        // ids
   schedule: {},        // { "2026-06-18": [ids...] }
   settings: {},
   progress: {},        // { id: {done, date} }
-  dbName: "샘플 데이터" // 현재 단어장(DB) 이름
+  dbName: "" // 현재 단어장(DB) 이름
 };
 
 function load(){
@@ -677,7 +997,7 @@ function load(){
   state.selected = state.selected || [];
   state.schedule = state.schedule || {};
   state.progress = state.progress || {};
-  state.dbName = state.dbName || "샘플 데이터";
+  state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
 function save(){
@@ -686,7 +1006,7 @@ function save(){
     selected:state.selected, schedule:state.schedule,
     settings:state.settings, progress:state.progress
   };
-  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast("저장 공간 부족"); }
+  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
 }
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
@@ -745,11 +1065,14 @@ const POS_COLORS={
   "명사":"#475569","부사":"#b45309","접속사":"#4f46e5"
 };
 function posColor(pos){ return POS_COLORS[pos] || "#64748b"; }
-function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos);
+// 품사 표시 라벨 (데이터 키는 한국어로 유지, 화면엔 언어별 라벨)
+const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle"};
+function posLabel(pos){ return (LANG==="en" && POS_LABELS_EN[pos]) ? POS_LABELS_EN[pos] : pos; }
+function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos); const lbl=posLabel(pos);
   const style=`background:${c}1a;color:${c};border:1px solid ${c}59`;
   return tap
-    ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="문법 보기" style="${style};cursor:pointer">${esc(pos)} ⓘ</span>`
-    : `<span class="posbadge" style="${style}">${esc(pos)}</span>`;
+    ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="${esc(t('help_grammar_t'))}" style="${style};cursor:pointer">${esc(lbl)} ⓘ</span>`
+    : `<span class="posbadge" style="${style}">${esc(lbl)}</span>`;
 }
 function levelBadge(level){ return level ? `<span class="lvlbadge">${esc(level)}</span>` : ""; }
 
@@ -834,17 +1157,90 @@ const GRAMMAR=[
      conj:[["~ている","~하고 있다 · 상태 · 食べている"],["~てください","~해 주세요 · 見てください"],["~てもいい","~해도 된다(허가) · 帰ってもいい"],["~てはいけない","~하면 안 된다(금지) · 入ってはいけない"],["~てから","~하고 나서 · 食べてから"]]}    
   ]}
 ];
+/* ---- 문법 영어 오버레이 (데이터 키는 한국어 유지) ---- */
+const GROUP_EN={"동사 (動詞)":"Verbs (動詞)","형용사 (形容詞)":"Adjectives (形容詞)","기타 품사":"Other parts of speech","필수 문법 표현":"Essential grammar patterns"};
+const TITLE_EN={"정중체 vs 보통체":"Polite vs Plain","지시어 こそあど":"Demonstratives (こそあど)","가정·조건형 と・ば・たら・なら":"Conditionals: と・ば・たら・なら","수수 표현 (주고받기)":"Giving & Receiving","て형 활용 표현":"Te-form patterns"};
+const CONJ_LABEL_EN={
+  "기본형":"Dictionary form","정중형 (~합니다)":"Polite (~masu)","부정형 (~않다)":"Negative (~nai)","과거형 (~했다)":"Past (~ta)",
+  "수동형 (~당하다)":"Passive","사역형 (~시키다)":"Causative","て형 (~하고/해서)":"Te-form","가능형 (~할 수 있다)":"Potential","의지형 (~하자)":"Volitional",
+  "명사 수식":"Modifies a noun","정중형 (~です)":"Polite (~desu)","부정형 (~지 않다)":"Negative","정중 부정형 (~지 않습니다)":"Polite negative",
+  "과거부정형 (~지 않았다)":"Past negative","부사형 (~하게)":"Adverbial",
+  "기본형 (단정)":"Plain (assertion)","정중형 (~입니다)":"Polite (~desu)","부정형 (~이 아니다)":"Negative","과거형 (~였다)":"Past","명사 수식 (の)":"Noun modifier (の)",
+  "동사":"Verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun",
+  "사물 (이것…)":"Things (this…)","명사 수식 (이…)":"Noun modifier (this…)","장소 (여기…)":"Place (here…)","방향 (이쪽…)":"Direction (this way…)"
+};
+const GRAMMAR_EN={
+  "1그룹동사":{desc:"Verbs whose dictionary form ends in an う-row sound (く·ぐ·す·つ·ぬ·ぶ·む·る·う). When conjugated, the ending shifts across all five rows あ·い·う·え·お.",
+    tip:"Even if it ends in る, it's Group 1 when the sound before る is in the あ/う/お row (e.g. 帰る). Potential = え-row + る (書ける), passive = あ-row + れる, causative = あ-row + せる.",
+    ko:["to write","to drink","to buy","to go back (exception)"],
+    teTitle:"Te-form (sound change 音便) — varies by ending",
+    teNote:"The past (た-form) follows the same sound-change rules: て→た · で→だ (書いて→書いた, 飲んで→飲んだ)."},
+  "2그룹동사":{desc:"Verbs ending in る where the sound before る is in the い-row or え-row. Their conjugation is regular and the easiest.",
+    tip:"Drop る and add ます·ない·よう. Passive/potential = られる (食べられる), causative = させる (食べさせる).",
+    ko:["to eat","to see","to teach","to get up"]},
+  "3그룹동사":{desc:"The only two irregular verbs, する and 来る (くる). Compound verbs ending in ~する are included too (勉強する, etc.).",
+    tip:"Memorize the conjugations whole. Potential of する is できる (irregular). Note 来る changes reading among こ/き/く.",
+    ko:["to do","to come","to study"]},
+  "い형용사":{desc:"Adjectives ending in い. They modify nouns directly (大きい家).",
+    tip:"Negative い→くない (大きくない), past い→かった (大きかった), adverb form い→く (大きく).",
+    ko:["big","hot","new","busy"]},
+  "な형용사":{desc:"Adjectives that take な when modifying a noun (静かな部屋). Also called adjectival nouns.",
+    tip:"Negative ~ではない (静かではない), past ~だった. Adverb form ~に (静かに), noun-modifying ~な (静かな).",
+    ko:["quiet","pretty / clean","healthy","convenient"]},
+  "명사":{desc:"Names of people, things and concepts. They don't conjugate; だ·です attach to make a predicate (家だ / 家です).",
+    tip:"Used with particles (は·が·を·に…) to form sentence parts. Modify another noun with の (私の家).",
+    ko:["house","school","feeling / heart"]},
+  "부사":{desc:"Modify verbs, adjectives or whole sentences to express degree, state or frequency. They don't conjugate.",
+    tip:"Usually placed right before the word they modify (とても 楽しい / ゆっくり 話す).",
+    ko:["very","slowly","always"]},
+  "접속사":{desc:"Words that connect sentences or words. Usually placed at the start of a sentence.",
+    tip:"Learn them by meaning: そして (adds), でも/しかし (contrast), だから (reason), それで (result).",
+    ko:["and","but","so / therefore"]},
+  "조사":{desc:"Function words attached after nouns/verbs that set their role (subject, object, place, etc.). Not used alone.",
+    tip:"は(topic)·が(subject)·を(object)·に(time/destination)·で(place/means)·へ(direction)·と(with/quote)·も(also).",
+    ko:["I am a student (は=topic)","eat bread (を=object)","go to school (に=destination)"]},
+  "정중체 vs 보통체":{desc:"Sentence-ending style. Use the です·ます (polite) style and the 普通体 (plain/casual) style as the situation requires.",
+    tip:"Formal/respectful = polite; friends, diaries, subordinate clauses = plain. Verbs, adjectives and nouns all have both.",
+    ko:["goes (polite / plain)","is a student (polite / plain)"]},
+  "지시어 こそあど":{desc:"Demonstratives grouped as near-speaker (こ), near-listener (そ), far from both (あ), and question (ど).",
+    tip:"こ=this, そ=that, あ=that over there, ど=which. Change only the last sound to extend to thing/noun-modifier/place/direction.",
+    ko:["This is a book","that person","where is it?"]},
+  "가정·조건형 と・ば・たら・なら":{desc:"Four ways to say 'if ~'. Each has a slightly different nuance.",
+    tip:"と=always/natural result, ば=general hypothesis, たら=most versatile/after completion, なら=topic or response to what someone said.",
+    ko:["press and it opens (と)","call me when you arrive (たら)","if you're going, let me know (なら)"],
+    conjVal:{"항상·자연 결과 · 春になると咲く":"Always/natural result · 春になると咲く","일반 조건·가정 · 安ければ買う":"General condition · 安ければ買う","완료 후·폭넓음 · 着いたら…":"After completion/versatile · 着いたら…","주제·상대 말 가정 · 君なら…":"Topic/response · 君なら…"}},
+  "수수 표현 (주고받기)":{desc:"Express giving/receiving with different verbs depending on direction. Watch who gives to whom.",
+    tip:"あげる = (I) give to someone, くれる = someone gives to me, もらう = (I) receive.",
+    ko:["give to a friend","mom gives (to me)","receive from the teacher"],
+    conjVal:{"(내가/제3자가) 주다":"(I / 3rd person) give","(남이 나·내 쪽에) 주다":"(someone) gives to me/my side","(내가) 받다":"(I) receive"}},
+  "て형 활용 표현":{desc:"Key patterns built on the verb te-form. Once you can make the te-form, your expressions expand a lot.",
+    tip:"~ている (progressive/state), ~てください (request), ~てもいい (permission), ~てはいけない (prohibition), ~てから (after ~).",
+    ko:["is eating","please look","you must not enter"],
+    conjVal:{"~하고 있다 · 상태 · 食べている":"~ing / state · 食べている","~해 주세요 · 見てください":"please ~ · 見てください","~해도 된다(허가) · 帰ってもいい":"may ~ (permission) · 帰ってもいい","~하면 안 된다(금지) · 入ってはいけない":"must not ~ · 入ってはいけない","~하고 나서 · 食べてから":"after ~ · 食べてから"}}
+};
 function gKey(it){ return it.pos || it.title; }
 function gColor(it){ return it.pos ? posColor(it.pos) : (it.color||"#64748b"); }
-function gHeader(it){ return it.pos ? posBadge(it.pos) : `<span class="gtitle" style="color:${gColor(it)}">${esc(it.title)}</span>`; }
+function gChipLabel(it){ return it.pos ? posLabel(it.pos) : gTitleLabel(it); }
+function gTitleLabel(it){ return (LANG==="en" && TITLE_EN[it.title]) ? TITLE_EN[it.title] : it.title; }
+function gGroupLabel(g){ return (LANG==="en" && GROUP_EN[g.group]) ? GROUP_EN[g.group] : g.group; }
+function gOv(it){ return GRAMMAR_EN[gKey(it)]; }
+function gDesc(it){ const o=gOv(it); return (LANG==="en"&&o&&o.desc)?o.desc:it.desc; }
+function gTip(it){ const o=gOv(it); return (LANG==="en"&&o&&o.tip)?o.tip:it.tip; }
+function gExKo(it,i){ const o=gOv(it); return (LANG==="en"&&o&&o.ko&&o.ko[i]!=null)?o.ko[i]:it.ex[i].ko; }
+function gTeTitle(it){ const o=gOv(it); if(LANG==="en"&&o&&o.teTitle) return o.teTitle; return it.teTitle||t("gram_teDefault"); }
+function gTeNote(it){ const o=gOv(it); return (LANG==="en"&&o&&o.teNote)?o.teNote:it.teNote; }
+function conjLabel(r){ return (LANG==="en" && CONJ_LABEL_EN[r[0]]) ? CONJ_LABEL_EN[r[0]] : r[0]; }
+function conjVal(it,r){ const o=gOv(it); return (LANG==="en"&&o&&o.conjVal&&o.conjVal[r[1]]) ? o.conjVal[r[1]] : r[1]; }
+function teLabel(r){ return (LANG==="en" && r[0]==="예외") ? "Exception" : r[0]; }
+function gHeader(it){ return it.pos ? posBadge(it.pos) : `<span class="gtitle" style="color:${gColor(it)}">${esc(gTitleLabel(it))}</span>`; }
 function gBodyHtml(it){
-  return `<p class="gdesc">${esc(it.desc)}</p>
-    <div class="gtip">💡 <b>구분법·활용</b> · ${esc(it.tip)}</div>
-    <div class="gex">${it.ex.map(e=>`<div><span class="jp">${esc(e.jp)}</span> <span class="ghira">${esc(e.hira)}</span> — ${esc(e.ko)}</div>`).join("")}</div>
-    ${it.conj?`<table class="gtable"><tbody>${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>`:""}
-    ${it.teRules?`<div class="gsub-title">${esc(it.teTitle||"て형 변환")}</div>
-      <table class="gtable"><tbody>${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>
-      ${it.teNote?`<div class="gnote">📌 ${esc(it.teNote)}</div>`:""}`:""}`;
+  return `<p class="gdesc">${esc(gDesc(it))}</p>
+    <div class="gtip">💡 <b>${esc(t('gram_tipLabel'))}</b> · ${esc(gTip(it))}</div>
+    <div class="gex">${it.ex.map((e,i)=>`<div><span class="jp">${esc(e.jp)}</span> <span class="ghira">${esc(e.hira)}</span> — ${esc(gExKo(it,i))}</div>`).join("")}</div>
+    ${it.conj?`<table class="gtable"><tbody>${it.conj.map(r=>`<tr><th>${esc(conjLabel(r))}</th><td class="jp">${esc(conjVal(it,r))}</td></tr>`).join("")}</tbody></table>`:""}
+    ${it.teRules?`<div class="gsub-title">${esc(gTeTitle(it))}</div>
+      <table class="gtable"><tbody>${it.teRules.map(r=>`<tr><th>${esc(teLabel(r))}</th><td class="jp">${esc(r[1])}</td></tr>`).join("")}</tbody></table>
+      ${gTeNote(it)?`<div class="gnote">📌 ${esc(gTeNote(it))}</div>`:""}`:""}`;
 }
 // 접이식 카드 (문법 탭). open=true면 펼친 채로
 function grammarCardHtml(it, open){
@@ -857,17 +1253,34 @@ function renderGrammar(){
   const all=GRAMMAR.flatMap(g=>g.items);
   $("#gNav").innerHTML = all.map(it=>{
     const c=gColor(it);
-    return `<button type="button" class="gchip" data-go="${esc(gKey(it))}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(gKey(it))}</button>`;
+    return `<button type="button" class="gchip" data-go="${esc(gKey(it))}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(gChipLabel(it))}</button>`;
   }).join("");
   $("#grammarBody").innerHTML = GRAMMAR.map(g=>
-    `<div class="gsec-title">${esc(g.group)}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
+    `<div class="gsec-title">${esc(gGroupLabel(g))}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
   ).join("");
 }
 // 품사 배지 → 문법 팝업 (펼친 카드)
 function openGrammarPopup(pos){
   const it=GRAMMAR.flatMap(g=>g.items).find(x=>x.pos===pos);
   $("#gModalBody").innerHTML = it ? grammarCardHtml(it,true)
-    : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">이 품사의 문법 설명은 아직 없어요.</p></div>`;
+    : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">${esc(t('gram_noExplain'))}</p></div>`;
+  $("#gModal").hidden=false;
+}
+// 사용법 도움말 (힌트 카드)
+function openHelp(){
+  const cards=[
+    ["db","#3b5bdb"],["sch","#0d9488"],["mem","#7c3aed"],
+    ["quiz","#ea580c"],["print","#db2777"],["grammar","#0891b2"],["tip","#b45309"]
+  ];
+  $("#gModalBody").innerHTML = `<div class="modal-title">${esc(t('help_modalTitle'))}</div>
+    <div class="hintgrid">${cards.map(([k,c])=>{
+      const full=t('help_'+k+'_t'); const sp=full.indexOf(" ");
+      const icon=sp>0?full.slice(0,sp):full; const title=sp>0?full.slice(sp+1):"";
+      return `<div class="hintcard" style="--hc:${c}">
+        <div class="hicon">${esc(icon)}</div>
+        <div class="htxt"><p class="htitle">${esc(title)}</p><p class="hbody">${t('help_'+k+'_b')}</p></div>
+      </div>`;
+    }).join("")}</div>`;
   $("#gModal").hidden=false;
 }
 // 상단 바로가기: 해당 카드 펼치고 제목부터 보이도록 이동 (sticky 헤더 높이만큼 보정)
@@ -896,7 +1309,7 @@ let gAllOpen=false;
 $("#gExpandAll").addEventListener("click",()=>{
   gAllOpen=!gAllOpen;
   $$("#grammarBody details.gcard").forEach(d=>d.open=gAllOpen);
-  $("#gExpandAll").textContent=gAllOpen?"전부 접기":"전부 열기";
+  $("#gExpandAll").textContent=gAllOpen?t("gram_collapseAll"):t("gram_expandAll");
 });
 document.addEventListener("click",e=>{
   const b=e.target.closest(".posbadge.tap"); if(b){ openGrammarPopup(b.dataset.pos); return; }
@@ -908,15 +1321,34 @@ let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; });
 $("#installBtn").addEventListener("click",async()=>{
   if(deferredPrompt){ deferredPrompt.prompt(); try{ await deferredPrompt.userChoice; }catch(e){} deferredPrompt=null; return; }
-  $("#gModalBody").innerHTML=`<div class="gcard" style="border-left-color:var(--brand)">
-    <div class="gbody" style="padding:16px">
-      <div class="ghead" style="margin-bottom:8px">📲 홈 화면에 추가하는 법</div>
+  const ko=`<div class="ghead" style="margin-bottom:8px">📲 홈 화면에 추가하는 법</div>
       <p class="gdesc"><b>아이폰 (Safari)</b> — 하단 <b>공유</b> 버튼 → <b>"홈 화면에 추가"</b>.</p>
       <p class="gdesc"><b>안드로이드 (Chrome)</b> — 우측 상단 <b>⋮ 메뉴</b> → <b>"홈 화면에 추가"</b>(또는 앱 설치).</p>
-      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ 카톡에서 받은 파일을 바로 연 경우(file://)엔 추가가 제한될 수 있어요. 항상 앱처럼 쓰려면 이 파일을 웹(GitHub Pages 등)에 올린 뒤 <b>그 주소</b>를 홈 화면에 추가하세요. 추가하면 日 아이콘으로 전체화면 실행됩니다.</p>
-    </div></div>`;
+      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ 카톡에서 받은 파일을 바로 연 경우(file://)엔 추가가 제한될 수 있어요. 항상 앱처럼 쓰려면 이 파일을 웹(GitHub Pages 등)에 올린 뒤 <b>그 주소</b>를 홈 화면에 추가하세요. 추가하면 日 아이콘으로 전체화면 실행됩니다.</p>`;
+  const en=`<div class="ghead" style="margin-bottom:8px">📲 How to add to your home screen</div>
+      <p class="gdesc"><b>iPhone (Safari)</b> — tap the <b>Share</b> button → <b>"Add to Home Screen"</b>.</p>
+      <p class="gdesc"><b>Android (Chrome)</b> — top-right <b>⋮ menu</b> → <b>"Add to Home screen"</b> (or Install app).</p>
+      <p class="gdesc" style="color:var(--muted);font-size:.86em">⚠️ Adding may be restricted when you open a file directly (file://). To always use it like an app, host this file on the web (e.g. GitHub Pages) and add <b>that URL</b> to your home screen. It then launches full-screen with the 日 icon.</p>`;
+  $("#gModalBody").innerHTML=`<div class="gcard" style="border-left-color:var(--brand)"><div class="gbody" style="padding:16px">${LANG==="en"?en:ko}</div></div>`;
   $("#gModal").hidden=false;
 });
+// 도움말 버튼 + 언어 전환
+$("#helpBtn").addEventListener("click",openHelp);
+$("#langSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-lang]"); if(b) setLang(b.dataset.lang); });
+function setLang(lang){
+  if(lang!=="ko"&&lang!=="en") return;
+  LANG=lang; try{ localStorage.setItem(LANG_KEY,lang); }catch(e){}
+  $$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
+  applyI18n();
+  // 동적 콘텐츠 다시 그리기
+  refreshDbFilters(); syncQuizAnswer(); renderGrammar();
+  gAllOpen=false; if($("#gExpandAll")) $("#gExpandAll").textContent=t("gram_expandAll");
+  renderDb(); renderSchedule(); refreshDateSelects();
+  updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
+  $("#dbName").value=state.dbName||"";
+  if($("#memStage").style.display!=="none" && mem.list.length) renderFlash();
+  if($("#quizArea").style.display!=="none" && quiz.list.length) renderQuiz();
+}
 
 /* ====================== 탭 ====================== */
 $("#nav").addEventListener("click",e=>{
@@ -939,10 +1371,10 @@ let dbSort = {key:"id", dir:1};
 function refreshDbFilters(){
   const pos=[...new Set(state.words.map(w=>w.pos).filter(Boolean))].sort();
   const lvl=[...new Set(state.words.map(w=>w.level).filter(Boolean))].sort();
-  fillSelect($("#dbPos"), pos, "품사 전체");
-  fillSelect($("#dbLevel"), lvl, "레벨 전체");
-  fillSelect($("#sPos"), pos, "품사 전체");
-  fillSelect($("#sLevel"), lvl, "레벨 전체");
+  fillSelect($("#dbPos"), pos, t("pos_all"));
+  fillSelect($("#dbLevel"), lvl, t("level_all"));
+  fillSelect($("#sPos"), pos, t("pos_all"));
+  fillSelect($("#sLevel"), lvl, t("level_all"));
 }
 function fillSelect(sel, items, allLabel){
   const cur=sel.value;
@@ -976,7 +1408,7 @@ function renderDb(){
       <td>${esc(w.korean)}</td>
       <td>${esc(w.level)}</td>
       <td>${esc(w.pos)}</td>
-    </tr>`).join("") || `<tr><td colspan="6" class="empty">단어가 없습니다</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="6" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
 }
@@ -994,7 +1426,7 @@ $$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
 }));
 $("#selAll").addEventListener("click",()=>{
   const set=new Set(state.selected); dbFiltered().forEach(w=>set.add(w.id));
-  state.selected=[...set]; save(); renderDb(); toast("검색결과를 선택에 추가");
+  state.selected=[...set]; save(); renderDb(); toast(t("toast_selAdded"));
 });
 $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb(); });
 
@@ -1005,7 +1437,7 @@ $("#expBtn").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast("내보내기 완료");
+  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast(t("toast_exported"));
 });
 $("#impBtn").addEventListener("click",()=>$("#impFile").click());
 $("#impFile").addEventListener("change",e=>{
@@ -1019,14 +1451,41 @@ $("#impFile").addEventListener("change",e=>{
       state.dbName = d.name || f.name.replace(/\.json$/i,"");   // 단어장 이름: JSON name 또는 파일명
       state.selected=Array.isArray(d.selected)?d.selected:[];
       state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
-      normalizeWords(); save(); refreshAll(); toast(`가져오기 완료: ${state.dbName} · ${state.words.length}개`);
-    }catch(err){ toast("올바른 JSON 파일이 아닙니다"); }
+      normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
+    }catch(err){ toast(t("toast_badJson")); }
   };
   r.readAsText(f); e.target.value="";
 });
 
 /* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
 function buildAiPrompt(topic){
+  if(LANG==="en"){
+    return `You are an assistant that builds Japanese vocabulary data.
+Create a JSON file of Japanese words on the topic "${topic}", exactly matching the JSON format below.
+[Output format]
+{
+  "version": 1,
+  "name": "${topic}",
+  "words": [
+    { "kanji": "教える", "hiragana": "おしえる", "korean": "to teach,to inform", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" }
+  ]
+}
+[Field rules]
+- kanji: kanji spelling (if the word has no kanji, write the same as hiragana)
+- hiragana: reading (in hiragana)
+- korean: the meaning in English. If there are several meanings, separate them with commas (,)
+- level: JLPT level (estimate one of N5·N4·N3·N2·N1)
+- pos: part of speech. Use one of these exact (Korean) keys — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
+- example: a Japanese example sentence. If korean has several meanings, give the same number of examples in the same order, separated by commas (,)
+- Do not include an id field (it is auto-assigned on import).
+[How to output]
+- Do not print the result as chat text; provide it as a downloadable file named "${topic}.json".
+- The file content must be pure JSON starting with { and ending with }, with no code block (\`\`\`), explanation or greeting.
+- Save it as UTF-8 with 2-space indentation.
+[Note]
+- The comma count in korean and example must match exactly.
+- Keep any extra explanation outside the file to a minimum.`;
+  }
   return `당신은 일본어 단어장 데이터를 만드는 도우미입니다.
 "${topic}" 주제의 일본어 단어를 아래 JSON 형식에 정확히 맞춰 JSON 파일로 생성해 주세요.
 [출력 형식]
@@ -1055,11 +1514,11 @@ function buildAiPrompt(topic){
 }
 $("#aiCopyBtn").addEventListener("click",async ()=>{
   const topic=($("#aiTopic").value||"").trim();
-  if(!topic){ toast("단어장 주제를 입력하세요"); $("#aiTopic").focus(); return; }
+  if(!topic){ toast(t("toast_enterTopic")); $("#aiTopic").focus(); return; }
   const text=buildAiPrompt(topic);
   try{
     await navigator.clipboard.writeText(text);
-    toast("프롬프트 복사됨 · AI에 붙여넣으세요");
+    toast(t("toast_promptCopied"));
   }catch(err){
     // 클립보드 권한이 없거나 비보안 컨텍스트일 때의 대비책
     const ta=document.createElement("textarea");
@@ -1067,24 +1526,24 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
     document.body.appendChild(ta); ta.focus(); ta.select();
     let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
     document.body.removeChild(ta);
-    toast(ok?"프롬프트 복사됨 · AI에 붙여넣으세요":"복사 실패 · 길게 눌러 직접 복사하세요");
+    toast(ok?t("toast_promptCopied"):t("toast_copyFail"));
   }
 });
 
 $("#resetBtn").addEventListener("click",()=>{
-  if(!confirm("샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)")) return;
+  if(!confirm(t("confirm_reset"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:"샘플 데이터"};
-  normalizeWords(); save(); refreshAll(); toast("초기화 완료");
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:t("name_sample")};
+  normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
-  if(!confirm("내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)")) return;
+  if(!confirm(t("confirm_wipe"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:"(비어 있음)"};
-  save(); refreshAll(); toast("전체 삭제 완료");
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:t("name_empty")};
+  save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
-  state.dbName=$("#dbName").value.trim()||"이름 없는 단어장"; save();
+  state.dbName=$("#dbName").value.trim()||t("name_unnamed"); save();
   if($("#scheduleResult").style.display!=="none") renderSchedule();  // 통계의 단어장 표시 갱신
 });
 
@@ -1145,10 +1604,10 @@ function editPoolWords(){
 }
 function applyScheduleEdit(){
   const days=daysOf($("#eStart").value,$("#eEnd").value);
-  if(!days){ toast("시작일·종료일을 확인하세요"); return; }
+  if(!days){ toast(t("toast_checkDates")); return; }
   const today=todayStr();
   let pool=editPoolWords();
-  if(!pool.length){ toast("재배치할 단어가 없습니다"); return; }
+  if(!pool.length){ toast(t("toast_noRedistribute")); return; }
   const count=Math.min(Math.max(1,+$("#eCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
   const c=capsAuto(pool.length, days);
@@ -1156,7 +1615,7 @@ function applyScheduleEdit(){
   const fresh={}; distributeInto(fresh, pool, days, c.x, c.y);
   Object.keys(fresh).forEach(d=>state.schedule[d]=fresh[d]);
   save(); renderSchedule();
-  toast(`재배치: ${Object.keys(fresh).length}일 · ${pool.length}단어`);
+  toast(t("toast_redistributed",{d:Object.keys(fresh).length, n:pool.length}));
 }
 // 주말 비중 k(2·3·4)에 대한 분량: 주말 = 평일 × k, 합계 ≥ 개수가 되는 최소 평일 분량
 function capsForK(total, wd, we, k){
@@ -1187,19 +1646,18 @@ function updateSchedCalc(){
   $("#sWdCap").disabled=!manual; $("#sWeCap").disabled=!manual;
   $("#sWeightSeg").classList.toggle("disabled",manual);
   const days=scheduleDays();
-  if(!days){ box.innerHTML='<span class="muted">시작일·마지막일을 입력하세요</span>'; return; }
+  if(!days){ box.innerHTML=`<span class="muted">${esc(t("calc_enterDates"))}</span>`; return; }
   const we=days.filter(d=>d.weekend).length, wd=days.length-we;
   if(!manual){
     const total=Math.min(+$("#sCount").value||0, schedPoolBase().length);
     const c=computeCaps(total);
     if(c){ $("#sWdCap").value=c.x; $("#sWeCap").value=c.y; }
+    const autoSuffix=(($("#sWeightSeg .on")||{}).dataset?.w==="auto")?t("calc_autoSuffix"):"";
     box.innerHTML = total
-      ? `자동 분량 → 평일 <b>${c.x}개</b> · 주말 <b>${c.y}개</b> <span class="muted">(주말 = 평일 ×${c.weight}${($("#sWeightSeg .on")||{}).dataset?.w==="auto"?" 자동":""}, 하루 최대)</span><br>`+
-        `분량 합계 <b>${c.cap}개</b> (외울 ${total}개) · 기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`
-      : '<span class="muted">외울 단어 개수를 1개 이상으로 설정하세요</span>';
+      ? t("calc_auto",{x:c.x, y:c.y, weight:c.weight, autoSuffix, cap:c.cap, total, days:days.length, wd, we})
+      : `<span class="muted">${esc(t("calc_setCount"))}</span>`;
   } else {
-    box.innerHTML=`직접 입력한 분량 사용 → 평일 <b>${+$("#sWdCap").value||0}개</b> · 주말 <b>${+$("#sWeCap").value||0}개</b> <span class="muted">(하루 최대)</span><br>`+
-      `기간 ${days.length}일 (평일 ${wd}일 · 주말 ${we}일) · 마지막 날은 더 적을 수 있어요`;
+    box.innerHTML=t("calc_manual",{x:(+$("#sWdCap").value||0), y:(+$("#sWeCap").value||0), days:days.length, wd, we});
   }
 }
 $("#sSelectedOnly").addEventListener("change",()=>{
@@ -1224,17 +1682,17 @@ $("#sWeightSeg").addEventListener("click",e=>{
 });
 $("#sManual").addEventListener("change",updateSchedCalc);
 $("#genSchedule").addEventListener("click",()=>{
-  if(!$("#sStart").value||!$("#sEnd").value){ toast("시작일과 마지막일을 입력하세요"); return; }
-  if($("#sEnd").value<$("#sStart").value){ toast("마지막일이 시작일보다 빠릅니다"); return; }
+  if(!$("#sStart").value||!$("#sEnd").value){ toast(t("toast_enterDates")); return; }
+  if($("#sEnd").value<$("#sStart").value){ toast(t("toast_endBeforeStart")); return; }
   let pool=schedPoolBase();
-  if(!pool.length){ toast($("#sSelectedOnly").checked?"DB에서 체크한 단어가 없습니다":"조건에 맞는 단어가 없습니다"); return; }
+  if(!pool.length){ toast($("#sSelectedOnly").checked?t("toast_noChecked"):t("toast_noMatch")); return; }
   if($("#sOrder").value==="random") pool=shuffle(pool);
   const count=Math.min(Math.max(1,+$("#sCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
   const days=scheduleDays();
-  if(!days){ toast("시작일과 마지막일을 입력하세요"); return; }
+  if(!days){ toast(t("toast_enterDates")); return; }
   const x=Math.max(0,Math.floor(+$("#sWdCap").value||0)), y=Math.max(0,Math.floor(+$("#sWeCap").value||0));
-  if(x<=0 && y<=0){ toast("평일/주말 분량을 1개 이상으로 설정하세요"); return; }
+  if(x<=0 && y<=0){ toast(t("toast_setCapacity")); return; }
   // 평일 cap=x, 주말 cap=y. 날짜 순으로 채우고 마지막 날은 더 적을 수 있음
   const sched={}; let i=0;
   for(const day of days){
@@ -1254,7 +1712,7 @@ $("#genSchedule").addEventListener("click",()=>{
   Object.keys(sched).forEach(d=>state.schedule[d]=sched[d]);
   save(); renderSchedule();
   $("#schedSettings").open=false;   // 생성하면 설정 접기
-  toast(`일정 생성: ${Object.keys(sched).length}일 · 평일 ${x}개/주말 ${y}개 · ${pool.length}단어`);
+  toast(t("toast_schedGen",{d:Object.keys(sched).length, x, y, n:pool.length}));
 });
 function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
 function studyDate(id){ return state.progress[id] && state.progress[id].date; }
@@ -1276,20 +1734,21 @@ function renderSchedule(){
   const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
   const offSched=learnedWords.filter(w=>!schedSet.has(w.id)).length;
   $("#statsPanel").innerHTML=`
-    <div class="muted" style="margin:0 0 8px;font-size:.9em">📚 단어장: <b style="color:var(--ink)">${esc(state.dbName||"이름 없음")}</b> (총 ${totalW}단어)</div>
+    <div class="muted" style="margin:0 0 8px;font-size:.9em">${t("stats_wordbook")}<b style="color:var(--ink)">${esc(state.dbName||t("name_none"))}</b>${t("stats_totalWords",{n:totalW})}</div>
     <div class="stats">
-      <div class="stat"><b>${learned}/${totalW}</b><span>학습한 단어</span></div>
-      <div class="stat"><b>${todayLearned}</b><span>오늘 학습</span></div>
-      <div class="stat"><b>${studyDays}</b><span>학습한 날</span></div>
-      ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>일정 진행</span></div>`:''}
+      <div class="stat"><b>${learned}/${totalW}</b><span>${esc(t("stat_learned"))}</span></div>
+      <div class="stat"><b>${todayLearned}</b><span>${esc(t("stat_today"))}</span></div>
+      <div class="stat"><b>${studyDays}</b><span>${esc(t("stat_days"))}</span></div>
+      ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>${esc(t("stat_schedProgress"))}</span></div>`:''}
     </div>
     <div class="muted" style="margin:-2px 0 4px;font-size:.88em">${schedIds.length
-      ? `일정 ${schedDone}/${schedIds.length}단어 완료 · 일정 외 학습 ${offSched}단어`
-      : `생성된 일정이 없습니다. 위에서 일정을 만들어 보세요. (일정 외 학습 ${offSched}단어 기록됨)`}</div>`;
+      ? t("stats_schedLine",{done:schedDone, total:schedIds.length})
+      : t("stats_noSched")}</div>
+    <div class="offsched">${offSched>0 ? t("stats_offBody",{off:offSched}) : t("stats_offNone")}</div>`;
 
   /* ---- 캘린더 뷰 ---- */
   const future=dates.filter(d=>d>=today);
-  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }  // 기본: 이번 달
+  if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
   if(selDate && !state.schedule[selDate]) selDate=null;
   if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
   renderCalendar(); renderDayDetail();
@@ -1318,11 +1777,14 @@ $("#eApply").addEventListener("click",applyScheduleEdit);
 
 /* ====================== 캘린더 ====================== */
 let calRef=null, selDate=null;
-const WK=['일','월','화','수','목','금','토'];
+const WK_KO=['일','월','화','수','목','금','토'];
+const WK_EN=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MON_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function renderCalendar(){
-  if(!calRef){ const t=new Date(); calRef={y:t.getFullYear(), m:t.getMonth()}; }
+  if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }
   const {y,m}=calRef, today=todayStr();
-  $("#calLabel").textContent=`${y}년 ${m+1}월`;
+  $("#calLabel").textContent = LANG==="en" ? `${MON_EN[m]} ${y}` : `${y}년 ${m+1}월`;
+  const WK = LANG==="en" ? WK_EN : WK_KO;
   const startDow=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
   const head=WK.map((d,i)=>`<div class="calhcell ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join("");
   let cells="";
@@ -1357,21 +1819,21 @@ function renderDayDetail(){
   const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <b>${selDate}</b> <span class="muted">${done}/${ids.length} 완료${selDate<todayStr()?' · 지난 기록':''}</span>
-      <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">이 날짜 삭제</button>
+      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:ids.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
+      <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">${esc(t("detail_deleteDate"))}</button>
     </div>
     <div style="margin-top:8px">${chips}</div>
-    <div class="muted" style="font-size:.8em;margin-top:6px">칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택</div>
+    <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_hint"))}</div>
   </div>`;
 }
 $("#calPrev").addEventListener("click",()=>{ calRef.m--; if(calRef.m<0){calRef.m=11;calRef.y--;} renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ calRef.m++; if(calRef.m>11){calRef.m=0;calRef.y++;} renderCalendar(); });
-$("#calToday").addEventListener("click",()=>{ const t=new Date(); calRef={y:t.getFullYear(),m:t.getMonth()}; renderCalendar(); });
+$("#calToday").addEventListener("click",()=>{ const nowD=new Date(); calRef={y:nowD.getFullYear(),m:nowD.getMonth()}; renderCalendar(); });
 // 달력/상세: 날짜 선택 · 단어 제외 · 날짜 삭제
 $("#scheduleResult").addEventListener("click",e=>{
   const del=e.target.closest("[data-deldate]");
   if(del){ const d=del.dataset.deldate;
-    if(confirm(`${d} 일정을 삭제할까요?`)){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
+    if(confirm(t("confirm_deleteDate",{d}))){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
     return; }
   const chip=e.target.closest(".wchip");
   if(chip){ const d=chip.dataset.date, id=+chip.dataset.id;
@@ -1386,7 +1848,7 @@ function refreshDateSelects(){
   const opts=dates.map(d=>`<option value="${d}">${d} (${state.schedule[d].length})</option>`).join("");
   ["#mDate","#qDate","#pDate"].forEach(sel=>{
     const el=$(sel); const cur=el.value;
-    el.innerHTML=opts||`<option value="">일정 없음</option>`;
+    el.innerHTML=opts||`<option value="">${esc(t("opt_noSchedule"))}</option>`;
     if([...el.options].some(o=>o.value===cur)) el.value=cur;
   });
 }
@@ -1441,7 +1903,7 @@ $("#mDate").addEventListener("change",updateMemCount);
 $("#mCount").addEventListener("input",()=>{ $("#mCountLabel").textContent=$("#mCount").value; });
 $("#startMem").addEventListener("click",()=>{
   let list=memListFor();
-  if(!list.length){ toast("학습할 단어가 없습니다"); return; }
+  if(!list.length){ toast(t("toast_noMemWords")); return; }
   if(segVal('mOrderSeg')==="random") list=shuffle(list);   // 무작위 출제: 섞은 뒤 개수만큼
   const count=Math.min(Math.max(1,+$("#mCount").value||list.length), list.length);
   list=list.slice(0,count);
@@ -1457,9 +1919,9 @@ $("#startMem").addEventListener("click",()=>{
 function markLearned(id){
   state.progress[id]={done:true, date:todayStr()};
   if(mem.adjustFuture){
-    const t=todayStr();
+    const td=todayStr();
     Object.keys(state.schedule).forEach(d=>{
-      if(d>t){ state.schedule[d]=state.schedule[d].filter(x=>x!==id); if(!state.schedule[d].length) delete state.schedule[d]; }
+      if(d>td){ state.schedule[d]=state.schedule[d].filter(x=>x!==id); if(!state.schedule[d].length) delete state.schedule[d]; }
     });
   }
 }
@@ -1510,63 +1972,89 @@ function maybeAutoRead(text){
   if(key===lastSpokenKey) return;   // 같은 카드 재렌더(뜻 선택 등)는 다시 읽지 않음
   lastSpokenKey=key; speakJa(text);
 }
+// 암기 단계 정의 (4단계): 0 뜻+ひらがな · 1 ひらがな+漢字 · 2 漢字+뜻 · 3 예문
+const MEM_STAGES=4, MEM_LAST=MEM_STAGES-1;
+function memStageTag(i){ return t("stage"+(i+1)); }
+function memStageShort(i){ return t("stage"+(i+1)+"s"); }
 function renderFlash(){
   const N=mem.list.length;
   const w=mem.list[mem.idx]; if(!w) return;
   mem.meaningIdx=Math.min(mem.meaningIdx, w.meanings.length-1);
-  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
-  $("#memCounter").textContent=`${stageNames[mem.stage]}  —  단어 ${mem.idx+1} / ${N}`;
-  $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*3)*100)+"%";
-  let html=`<div class="stage-tag">${stageNames[mem.stage]}</div>`;
+  $("#memCounter").textContent=t("mem_counterWord",{stage:memStageTag(mem.stage), i:mem.idx+1, n:N});
+  $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*MEM_STAGES)*100)+"%";
+  let html=`<button class="dropword" data-drop>${esc(t("mem_dropWord"))}</button>`;
+  html+=`<div class="stage-tag">${esc(memStageTag(mem.stage))}</div>`;
   if(w.pos||w.level) html+=`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`;   // 품사(터치 시 문법 팝업) · 레벨
   const multi = w.meanings.length>1;
   const picker = multi ? `<div class="meaning-pick">`+w.meanings.map((m,i)=>
-      `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">뜻 ${i+1}</button>`).join("")+`</div>` : "";
+      `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">${esc(t("mem_meaningN",{i:i+1}))}</button>`).join("")+`</div>` : "";
   if(mem.stage===0){
+    // 뜻 → ひらがな (읽기 떠올리기)
     html+=`<div class="ko">${esc(w.korean)}</div><div class="hira">${esc(w.hiragana)}</div>`;
   } else if(mem.stage===1){
+    // ひらがな → 漢字
     html+=`<div class="hira">${esc(w.hiragana)}</div><div class="jp-big">${esc(w.kanji)}</div>`;
+  } else if(mem.stage===2){
+    // 漢字 → 뜻 (한자가 문제: 한자 보고 뜻 떠올리기)
+    html+=`<div class="jp-big">${esc(w.kanji)}</div><div class="ko">${esc(w.korean)}</div>`;
   } else {
+    // 예문
     const m=w.meanings[mem.meaningIdx]||{};
     html+=`<div class="jp-big">${esc(w.kanji)}</div><div class="hira">${esc(w.hiragana)}</div>`;
     html+=picker;
     html+=`<div class="ko">${esc(m.korean)}</div>`;
-    html+=`<div class="ex">${m.example?esc(m.example):'<span class="muted">예문 없음</span>'}</div>`;
+    html+=`<div class="ex">${m.example?esc(m.example):`<span class="muted">${esc(t("mem_noExample"))}</span>`}</div>`;
     // 마지막(예문) 단계에 도달한 단어는 즉시 학습 기록 (선행학습/분량 초과분도 바로바로 반영)
     if(!isDone(w.id)){ markLearned(w.id); save(); }
   }
-  const speakText = mem.stage===2 ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
-  html+=`<button class="speakbtn" data-text="${esc(speakText)}">🔊 발음 듣기</button>`;
+  const speakText = mem.stage===MEM_LAST ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
+  html+=`<button class="speakbtn" data-text="${esc(speakText)}">${esc(t("mem_listen"))}</button>`;
   $("#memNav").style.display="flex";
   $("#flash").innerHTML=html;
   const lastInStage = mem.idx===mem.list.length-1;
-  $("#memNext").textContent = !lastInStage ? "다음 단어 ▶" : "이 단계 마치기 ▶";
+  $("#memNext").textContent = !lastInStage ? t("mem_next") : t("mem_finishStage");
+  // 이전/다음 단계 버튼을 실제 단계 이름으로 표기 (첫 단계에선 '첫 단계'임을 명시)
+  const atFirst = mem.stage===0;
+  $("#memPrevStage").textContent = atFirst ? t("mem_firstStageLabel") : "⏮ "+memStageShort(mem.stage-1);
+  $("#memPrevStage").classList.toggle("atedge", atFirst);
+  $("#memSkip").textContent = mem.stage<MEM_LAST ? memStageShort(mem.stage+1)+" ⏭" : t("mem_skipLast");
   maybeAutoRead(speakText);
+}
+// 현재 보고 있는 단어를 학습 리스트에서 제외
+function dropCurrentWord(){
+  if(!mem.list.length) return;
+  mem.list.splice(mem.idx,1);
+  if(!mem.list.length){
+    $("#memStage").style.display="none"; $("#memSettings").open=true;
+    updateMemCount(); toast(t("toast_dropped")); return;
+  }
+  if(mem.idx>=mem.list.length) mem.idx=mem.list.length-1;
+  mem.meaningIdx=0; renderFlash(); toast(t("toast_dropped"));
 }
 function renderStageEnd(){
   const N=mem.list.length;
   $("#memNav").style.display="none";   // 결정 화면 동안 하단 내비 숨김
-  $("#memBar").style.width=((mem.stage+1)*N/(N*3)*100)+"%";
-  const stageNames=["1단계 · 뜻 + ひらがな","2단계 · ひらがな + 漢字","3단계 · 예문"];
-  const isLast = mem.stage===2;
-  $("#memCounter").textContent=`${stageNames[mem.stage]} 완료`;
+  $("#memBar").style.width=((mem.stage+1)*N/(N*MEM_STAGES)*100)+"%";
+  const isLast = mem.stage===MEM_LAST;
+  $("#memCounter").textContent=t("mem_stageDone",{stage:memStageTag(mem.stage)});
   $("#flash").innerHTML=`
-    <div class="stage-tag">이번 단계의 모든 단어(${N}개)를 다 봤어요</div>
-    <div class="ko">${isLast?"마지막 단계까지 끝냈어요!":"다음 단계로 넘어갈까요?"}</div>
+    <div class="stage-tag">${esc(t("mem_stageAllSeen",{n:N}))}</div>
+    <div class="ko">${esc(isLast?t("mem_lastDone"):t("mem_goNext"))}</div>
     <div class="btnrow" style="flex-direction:column;width:100%;max-width:340px;margin-top:18px">
-      <button class="btn" id="stageNext">${isLast?"완료 ✓":"다음 단계로 ▶"}</button>
-      <button class="btn sec" id="stageRetry">이 단계 다시 외우기 🔀</button>
+      <button class="btn" id="stageNext">${esc(isLast?t("mem_complete"):t("mem_nextStage"))}</button>
+      <button class="btn sec" id="stageRetry">${esc(t("mem_retryStage"))}</button>
     </div>`;
   $("#stageNext").addEventListener("click",()=>{
-    if(mem.stage<2){ mem.stage++; mem.idx=0; mem.meaningIdx=0; renderFlash(); }
+    if(mem.stage<MEM_LAST){ mem.stage++; mem.idx=0; mem.meaningIdx=0; renderFlash(); }
     else { mem.list.forEach(w=>markLearned(w.id)); save();
-      renderSchedule(); $("#memBar").style.width="100%"; toast("암기 완료! 🎉"); }
+      renderSchedule(); $("#memBar").style.width="100%"; toast(t("toast_memDone")); }
   });
   $("#stageRetry").addEventListener("click",()=>{
-    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast("무작위로 다시 시작");
+    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast(t("toast_retryShuffle"));
   });
 }
 $("#flash").addEventListener("click",e=>{
+  if(e.target.closest("[data-drop]")){ dropCurrentWord(); return; }
   const sp=e.target.closest(".speakbtn"); if(sp){ speakJa(sp.dataset.text); return; }
   const b=e.target.closest("button[data-mi]"); if(!b) return;
   mem.meaningIdx=+b.dataset.mi; renderFlash();
@@ -1586,17 +2074,25 @@ $("#memNext").addEventListener("click",()=>{
 $("#memPrevStage").addEventListener("click",()=>{
   // 이전 단계로 (현재 단어 유지)
   if(mem.stage>0){ mem.stage--; mem.meaningIdx=0; renderFlash(); }
-  else toast("첫 단계입니다");
+  else toast(t("toast_firstStage"));
 });
 $("#memSkip").addEventListener("click",()=>{
   // 다음 단계로 (현재 단어 유지). 마지막 단계면 완료 선택 화면
-  if(mem.stage<2){ mem.stage++; mem.meaningIdx=0; renderFlash(); }
+  if(mem.stage<MEM_LAST){ mem.stage++; mem.meaningIdx=0; renderFlash(); }
   else renderStageEnd();
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean"};
-const FIELD_LABEL={kanji:"漢字",hira:"ひらがな",korean:"한글 뜻"};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed"};
+function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
+// 무작위 방향: 문제·정답을 서로 다른 필드로 임의 선택
+function randPair(){
+  const fs=["kanji","hira","korean"];
+  const pf=fs[Math.floor(Math.random()*fs.length)];
+  const rest=fs.filter(x=>x!==pf);
+  const af=rest[Math.floor(Math.random()*rest.length)];
+  return {pf,af};
+}
 // 문제/정답으로 쓸 필드 값
 function wField(w,f){
   if(f==="kanji") return w.kanji||w.hiragana;
@@ -1632,11 +2128,17 @@ bindSeg("qScopeSeg",()=>{
 });
 $("#qDate").addEventListener("change",updateQuizCount);
 $("#qCount").addEventListener("input",()=>{ $("#qCountLabel").textContent=$("#qCount").value; });
+// 출제 방향: 고정 / 무작위 (무작위면 문제·정답 선택 비활성)
+bindSeg("qDirSeg",()=>{
+  const rnd=segVal("qDirSeg")==="random";
+  $("#qFieldRow").style.opacity=rnd?".45":"";
+  $("#qPromptField").disabled=rnd; $("#qAnswerField").disabled=rnd; $("#qSwap").disabled=rnd;
+});
 // 정답 드롭다운에서 문제로 고른 항목은 제외
 function syncQuizAnswer(){
   const pf=$("#qPromptField").value, cur=$("#qAnswerField").value;
-  const opts=[["korean","한글 뜻"],["hira","ひらがな"],["kanji","漢字"]].filter(([v])=>v!==pf);
-  $("#qAnswerField").innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join("");
+  const opts=[["korean",fieldLabel("korean")],["hira",fieldLabel("hira")],["kanji",fieldLabel("kanji")]].filter(([v])=>v!==pf);
+  $("#qAnswerField").innerHTML=opts.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("");
   $("#qAnswerField").value = opts.some(([v])=>v===cur) ? cur : opts[0][0];
 }
 $("#qPromptField").addEventListener("change",syncQuizAnswer);
@@ -1646,14 +2148,18 @@ $("#qSwap").addEventListener("click",()=>{
 });
 syncQuizAnswer();
 $("#startQuiz").addEventListener("click",()=>{
+  const dir=segVal("qDirSeg")||"fixed";
   const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
-  if(pf===af){ toast("문제와 정답을 서로 다른 항목으로 선택하세요"); return; }
+  if(dir==="fixed" && pf===af){ toast(t("toast_diffFields")); return; }
   const pool=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
-  if(pool.length<1){ toast("출제할 단어가 없습니다"); return; }
+  if(pool.length<1){ toast(t("toast_noPrintWords")); return; }
   const count=Math.min(Math.max(1,+$("#qCount").value||pool.length), pool.length);
   const list=shuffle(pool).slice(0,count);   // 설정한 개수만큼 무작위로 출제
-  if(list.length<4) toast("단어가 4개 미만이라 보기가 적을 수 있어요");
-  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set(), saTyped:{}};
+  if(list.length<4) toast(t("toast_fewChoices"));
+  // 무작위 방향: 단어별로 문제·정답 쌍을 미리 정해 페이즈가 바뀌어도 일관되게 유지
+  let pairById=null;
+  if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(); }); }
+  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1662,18 +2168,22 @@ $("#startQuiz").addEventListener("click",()=>{
 function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
 function renderQuiz(){
   const w=quiz.list[quiz.idx];
-  $("#quizPhase").textContent = `${quiz.phase==="mc"?"4지선다":"주관식"} · ${FIELD_LABEL[quiz.pf]}→${FIELD_LABEL[quiz.af]}`;
-  $("#quizScore").textContent = `점수 ${quiz.score} / ${quiz.list.length}`;
+  // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
+  let pf=quiz.pf, af=quiz.af;
+  if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(); pf=p.pf; af=p.af; }
+  quiz.curPf=pf; quiz.curAf=af;
+  $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):t("quiz_sa")), pf:fieldLabel(pf), af:fieldLabel(af)});
+  $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
   $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
-  let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,quiz.pf))}</div></div>`;
+  let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
   if(quiz.phase==="mc"){
     // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
     const optWords = shuffle([w, ...pickDistractors(w,3)]);
-    html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,quiz.af))}</button>`).join("")+`</div>`;
+    html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,af))}</button>`).join("")+`</div>`;
     html+=`<div class="feedback" id="qfb"></div>`;
   } else {
-    html+=`<input type="text" id="qInput" placeholder="${esc(FIELD_LABEL[quiz.af])} 입력" autocomplete="off">`;
-    html+=`<div class="btnrow"><button class="btn" id="qSubmit">제출</button></div>`;
+    html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off">`;
+    html+=`<div class="btnrow"><button class="btn" id="qSubmit">${esc(t("quiz_submit"))}</button></div>`;
     html+=`<div class="feedback" id="qfb"></div>`;
   }
   $("#quizBody").innerHTML=html;
@@ -1694,22 +2204,22 @@ $("#quizBody").addEventListener("click",e=>{
     else if(c===b) c.classList.add("wrong");
     c.disabled=true;
   });
-  const ans = wField(w,quiz.af);
-  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,"정답!"); }
-  else { quiz.wrong.add(w.id); fb(false,"정답: "+ans); }
+  const ans = wField(w,quiz.curAf);
+  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
+  else { quiz.wrong.add(w.id); fb(false,t("fb_answer",{ans})); }
   setTimeout(nextQuiz,900);
 });
 function submitSA(){
   if(quiz.answered) return;
   const w=quiz.list[quiz.idx];
   const val=normAns($("#qInput").value);
-  if(!val){ toast("답을 입력하세요"); return; }
+  if(!val){ toast(t("toast_enterAnswer")); return; }
   quiz.answered=true;
-  const accept = acceptFor(w,quiz.af);
+  const accept = acceptFor(w,quiz.curAf);
   const ok=accept.some(a=>normAns(a)===val || (normAns(a).length>1 && normAns(a).includes(val) && val.length>=2));
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
-  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,"정답!"); }
-  else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,"정답: "+wField(w,quiz.af)); }
+  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
+  else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
   setTimeout(nextQuiz,1100);
 }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
@@ -1718,7 +2228,7 @@ function nextQuiz(){
   // 페이즈 종료
   if(quiz.phase==="mc"){
     const mcScore=quiz.score;
-    alert(`4지선다 완료! ${mcScore} / ${quiz.list.length}\n이어서 주관식 시험을 시작합니다.`);
+    alert(t("alert_mcDone",{score:mcScore, n:quiz.list.length}));
     // 주관식 결과만 최종 틀린 단어로 집계(오타 정정 대상). 4지선다 오답은 초기화
     quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.list=shuffle(quiz.list); renderQuiz();
   } else {
@@ -1732,18 +2242,18 @@ function renderQuizResults(){
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
-  const typed=w=>{ const t=quiz.saTyped&&quiz.saTyped[w.id]; return t? `<span style="color:var(--bad)">${esc(t)}</span>` : '<span class="muted">(빈칸)</span>'; };
+  const typed=w=>{ const tp=quiz.saTyped&&quiz.saTyped[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
   const wrongHtml = wrong.length
-    ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">❌ 틀린 단어 ${wrong.length}개 (리스트 보기)</summary>
-        <p class="muted" style="margin:8px 2px 0;font-size:.85em">오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.</p>
-        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>漢字</th><th>ひらがな</th><th>한글 뜻</th><th>내가 쓴 답</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${typed(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">✅ 맞음 처리</button></td></tr>`).join("")}</tbody></table></div></details>
-      <div class="btnrow"><button class="btn" onclick="retryWrong()">❌ 틀린 ${wrong.length}개만 다시 풀기</button></div>`
-    : `<p style="color:var(--ok);font-weight:700">전부 맞혔어요! 🎉</p>`;
-  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">시험 종료 🎉</div>
-    <p style="text-align:center">주관식 점수: <b>${quiz.score} / ${total}</b></p>
+    ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
+        <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(t("rq_typed"))}</th><th></th></tr></thead>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${typed(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+      <div class="btnrow"><button class="btn" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
+    : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
+  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(t("rq_examEnd"))}</div>
+    <p style="text-align:center">${t("rq_saScore",{score:quiz.score, total})}</p>
     ${wrongHtml}
-    <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">처음부터 다시</button></div>`;
+    <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
 function markCorrect(id){
@@ -1751,14 +2261,14 @@ function markCorrect(id){
   quiz.wrong.delete(id);
   quiz.score++;
   quizMarkDone(id);
-  toast("정답으로 처리했어요");
+  toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
 // 틀린 단어만 다시 풀기 (4지선다 → 주관식)
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
-  if(!list.length){ toast("다시 풀 단어가 없습니다"); return; }
-  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf:quiz.pf, af:quiz.af, wrong:new Set()};
+  if(!list.length){ toast(t("toast_noRetry")); return; }
+  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}};
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -1781,7 +2291,7 @@ bindSeg("pTypeSeg",()=>{
   const g=segVal('pTypeSeg')==="grammar";
   $("#examOpts").style.display=g?"none":"block";
   $("#grammarOpts").style.display=g?"block":"none";
-  $("#genSheet").textContent=g?"문법 정리 생성":"시험지 생성";
+  $("#genSheet").textContent=g?t("print_genGrammar"):t("print_genExam");
   $("#doPrint").disabled=true; $("#sheetOut").innerHTML="";
 });
 let lastSheetTitle="";
@@ -1793,31 +2303,31 @@ function scheduleOrdinal(date){
 // 문법 정리 인쇄지 (A4 2단)
 function genGrammarSheet(){
   const pItem=it=>`<div class="gpitem" style="--gc:${gColor(it)}">
-    <div class="gphead">${esc(it.pos||it.title)} <span class="gpen">${esc(it.en)}</span></div>
-    <div class="gptip">${esc(it.tip)}</div>
-    ${it.conj?`<table class="gptable">${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
-    ${it.teRules?`<div class="gpsub">${esc(it.teTitle||"て형 변환")}</div><table class="gptable">${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
+    <div class="gphead">${esc(it.pos?posLabel(it.pos):gTitleLabel(it))} <span class="gpen">${esc(it.en)}</span></div>
+    <div class="gptip">${esc(gTip(it))}</div>
+    ${it.conj?`<table class="gptable">${it.conj.map(r=>`<tr><th>${esc(conjLabel(r))}</th><td>${esc(conjVal(it,r))}</td></tr>`).join("")}</table>`:""}
+    ${it.teRules?`<div class="gpsub">${esc(gTeTitle(it))}</div><table class="gptable">${it.teRules.map(r=>`<tr><th>${esc(teLabel(r))}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
   </div>`;
-  const body=GRAMMAR.map(g=>`<div class="gpsec">${esc(g.group)}</div>`+g.items.map(pItem).join("")).join("");
-  $("#sheetOut").innerHTML=`<div class="card sheet gsheet"><h3>일본어 문법 정리</h3>${body}</div>`;
-  lastSheetTitle="일본어 문법 정리";
+  const body=GRAMMAR.map(g=>`<div class="gpsec">${esc(gGroupLabel(g))}</div>`+g.items.map(pItem).join("")).join("");
+  $("#sheetOut").innerHTML=`<div class="card sheet gsheet"><h3>${esc(t("sheet_grammarTitle"))}</h3>${body}</div>`;
+  lastSheetTitle=t("sheet_grammarTitle");
   document.title=lastSheetTitle;
   $("#doPrint").disabled=false;
-  toast("문법 정리 생성 완료");
+  toast(t("toast_grammarSheet"));
 }
 $("#genSheet").addEventListener("click",()=>{
   if(segVal('pTypeSeg')==="grammar"){ genGrammarSheet(); return; }
   let list=wordsForScope($("#pScope").value,$("#pDate").value);
-  if(!list.length){ toast("출제할 단어가 없습니다"); return; }
+  if(!list.length){ toast(t("toast_noPrintWords")); return; }
   const count=Math.min(Math.max(1,+$("#pCount").value||list.length), list.length);
   list=list.slice(0,count);
   // 특정 날짜 범위면 제목에 'N일차' 자동 추가
   const dchk = $("#pScope").value==="today" ? todayStr() : ($("#pScope").value==="date" ? $("#pDate").value : "");
   const ord = dchk ? scheduleOrdinal(dchk) : 0;
-  const title=($("#pTitle").value||"일본어 단어 시험") + (ord ? ` ${ord}일차` : "");
+  const title=($("#pTitle").value||t("print_defaultTitle")) + (ord ? t("print_dayOrdinal",{ord}) : "");
   lastSheetTitle=title;
   document.title=title;   // 생성 즉시 문서 제목 반영 → PDF 저장 파일명 기본값
-  const fields=["kanji","hiragana","korean"]; const labels={kanji:"漢字",hiragana:"ひらがな",korean:"한글 뜻"};
+  const fields=["kanji","hiragana","korean"];
   const rows=list.map((w,i)=>{
     const blankField=fields[Math.floor(Math.random()*fields.length)];
     const cell=f=>{
@@ -1827,29 +2337,30 @@ $("#genSheet").addEventListener("click",()=>{
     return {i:i+1, kanji:cell("kanji"), hira:cell("hiragana"), ko:cell("korean"),
       ans:{kanji:w.kanji,hira:w.hiragana,ko:w.meanings.map(m=>m.korean).join(", ")}};
   });
+  const colK=esc(fieldLabel("kanji")), colH=esc(fieldLabel("hira")), colKo=esc(fieldLabel("korean"));
   const head=`<div class="head"><div><h3>${esc(title)}</h3>
-      <span class="muted">총 ${list.length}문항 · 빈칸을 채우세요</span></div>
-      <div>이름: ____________&nbsp;&nbsp;점수: ______</div></div>`;
-  const tbl=arr=>`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+      <span class="muted">${esc(t("sheet_head",{n:list.length}))}</span></div>
+      <div>${t("sheet_nameScore")}</div></div>`;
+  const tbl=arr=>`<table><thead><tr><th style="width:36px">#</th><th>${colK}</th><th>${colH}</th><th>${colKo}</th></tr></thead>
     <tbody>${arr.map(r=>`<tr><td>${r.i}</td><td class="jp">${r.kanji}</td><td class="jp">${r.hira}</td><td>${r.ko}</td></tr>`).join("")}</tbody></table>`;
-  const ansTbl=`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+  const ansTbl=`<table><thead><tr><th style="width:36px">#</th><th>${colK}</th><th>${colH}</th><th>${colKo}</th></tr></thead>
     <tbody>${rows.map(r=>`<tr><td>${r.i}</td><td class="jp">${esc(r.ans.kanji)}</td><td class="jp">${esc(r.ans.hira)}</td><td>${esc(r.ans.ko)}</td></tr>`).join("")}</tbody></table>`;
   $("#sheetOut").innerHTML=`
     <div class="card sheet">${head}${tbl(rows)}</div>
     <div class="card sheet answer-sheet noscreen" id="ansSheet" style="display:none">
-      <div class="head"><div><h3>${esc(title)} — 정답</h3></div></div>${ansTbl}</div>
+      <div class="head"><div><h3>${esc(t("sheet_answerTitle",{title}))}</h3></div></div>${ansTbl}</div>
     <div class="card noprint">
-      <label><input type="checkbox" id="showAns"> 정답지도 인쇄에 포함</label>
+      <label class="chk"><input type="checkbox" id="showAns"> <span>${esc(t("sheet_includeAnswer"))}</span></label>
     </div>`;
   $("#doPrint").disabled=false;
   $("#showAns").addEventListener("change",e=>{
     $("#ansSheet").style.display=e.target.checked?"block":"none";
   });
-  toast("시험지 생성 완료");
+  toast(t("toast_examSheet"));
 });
 $("#doPrint").addEventListener("click",()=>{
   // PDF 저장 파일명 = 시험지 제목(일차 포함). 조기 원복하면 저장 대화상자에 반영 안 되므로 원복하지 않음
-  document.title=(lastSheetTitle||$("#pTitle").value||"일본어 단어 시험").trim();
+  document.title=(lastSheetTitle||$("#pTitle").value||t("print_defaultTitle")).trim();
   window.print();
 });
 
@@ -1867,6 +2378,9 @@ function refreshAll(){
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
 load();
+// 언어 적용 (정적 텍스트 + 언어 토글 활성화) — 동적 렌더 전에
+$$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===LANG));
+applyI18n();
 refreshAll();
 // 기본 날짜 채우기
 $("#sStart").value=todayStr();
