@@ -86,7 +86,7 @@
   .calcell.done{background:var(--ok-bg)}
   .calcell.today{border-color:var(--brand);border-width:2px;padding:2px 3px}   /* 오늘: 파란 테두리 */
   .calcell.sel{outline:3px solid #f59e0b;outline-offset:-3px;box-shadow:0 0 0 1px #f59e0b inset} /* 선택: 주황 */
-  .calcell.today .cnum::after{content:"·오늘";font-size:.85em;color:var(--brand);font-weight:700}
+  .calcell.today .cnum::after{content:var(--today-label,"·오늘");font-size:.85em;color:var(--brand);font-weight:700}
   .calcell.past{opacity:.6}
   .calcell .cinfo{font-size:.74em;font-weight:700;color:var(--brand);line-height:1.1}
   .calcell.done .cinfo{color:var(--ok)}
@@ -282,6 +282,33 @@
   .modal-box .gcard{margin:0}
   .modal-close{position:absolute;top:10px;right:10px;border:none;background:var(--accent);color:var(--ink);
     border-radius:999px;width:34px;height:34px;cursor:pointer;font-weight:700;font-size:.95em;z-index:1}
+  /* 상단 바: 제목 + 언어 전환 + 도움말 */
+  .topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .topbar h1{margin:0;flex:1 1 auto}
+  .topctl{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+  .langseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .langseg button{background:#fff;border:none;padding:6px 11px;cursor:pointer;font-weight:700;font-size:.82em;color:var(--muted)}
+  .langseg button.on{background:var(--brand);color:#fff}
+  .helpbtn{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:999px;
+    width:34px;height:34px;cursor:pointer;font-weight:800;font-size:1em;flex:0 0 auto}
+  /* 암기 카드: 단어 빼기 버튼 */
+  .dropword{position:absolute;top:10px;right:12px;border:1px solid var(--line);background:#fff;
+    color:var(--muted);border-radius:999px;padding:5px 11px;font-size:.78em;font-weight:700;cursor:pointer}
+  .dropword:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  .flash{position:relative}
+  /* 도움말 힌트 카드 */
+  .hintgrid{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .hintcard{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);
+    border-left:5px solid var(--hc,var(--brand));border-radius:12px;padding:12px 14px;background:#fff}
+  .hintcard .hicon{font-size:1.5em;line-height:1.1;flex:0 0 auto}
+  .hintcard .htxt{min-width:0}
+  .hintcard .htitle{font-weight:800;margin:0 0 3px;color:var(--hc,var(--brand))}
+  .hintcard .hbody{font-size:.9em;color:#374151;line-height:1.55;margin:0}
+  .hintcard .hbody b{color:var(--ink)}
+  .modal-title{font-size:1.15em;font-weight:800;margin:0 0 10px;padding-right:30px}
+  /* 학습 현황: 일정 외 학습 강조 */
+  .offsched{background:var(--accent);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:.9em;line-height:1.55}
+  .offsched b{color:var(--brand)}
   @media print{
     body{background:#fff}
     header,nav,.noprint,.toast{display:none !important}
@@ -297,82 +324,90 @@
 <body>
 <div class="wrap">
   <header>
-    <h1><span class="em">🇯🇵</span> 일본어 단어 암기 · 시험</h1>
+    <div class="topbar">
+      <h1><span class="em">🇯🇵</span> <span data-i18n="appTitle">일본어 단어 암기 · 시험</span></h1>
+      <div class="topctl">
+        <button class="helpbtn" id="helpBtn" data-i18n-title="help_title" title="도움말">❔</button>
+        <div class="langseg" id="langSeg">
+          <button type="button" data-lang="ko">한국어</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
     <nav id="nav">
-      <button data-tab="db" class="active">단어 DB</button>
-      <button data-tab="schedule">일정</button>
-      <button data-tab="memorize">암기</button>
-      <button data-tab="quiz">퀴즈</button>
-      <button data-tab="print">시험지 인쇄</button>
-      <button data-tab="grammar">문법</button>
+      <button data-tab="db" class="active" data-i18n="tab_db">단어 DB</button>
+      <button data-tab="schedule" data-i18n="tab_schedule">일정</button>
+      <button data-tab="memorize" data-i18n="tab_memorize">암기</button>
+      <button data-tab="quiz" data-i18n="tab_quiz">퀴즈</button>
+      <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
+      <button data-tab="grammar" data-i18n="tab_grammar">문법</button>
     </nav>
   </header>
 
   <!-- ============ DB ============ -->
   <section id="db" class="active">
     <div class="card">
-      <h2>단어 데이터베이스</h2>
-      <p class="sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
-      <label>단어장 이름 (이 데이터셋을 구분하는 이름)</label>
-      <input type="text" id="dbName" placeholder="예: JLPT N4 단어장">
+      <h2 data-i18n="db_title">단어 데이터베이스</h2>
+      <p class="sub" data-i18n="db_sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
+      <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
+      <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
       <div class="toolbar noprint" style="margin-top:10px">
-        <input id="dbSearch" type="text" placeholder="검색 (漢字·ひらがな·뜻)">
+        <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
         <select id="dbPos"><option value="">품사 전체</option></select>
         <select id="dbLevel"><option value="">레벨 전체</option></select>
-        <button class="btn sec" id="selAll">검색결과 전체선택</button>
-        <button class="btn ghost" id="selNone">전체해제</button>
+        <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
+        <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
       </div>
       <p class="muted" style="margin:0 0 8px">
-        선택됨 <span class="count" id="selCount">0</span> /
-        표시 <span class="count" id="shownCount">0</span> 개
+        <span data-i18n="db_selectedPre">선택됨 </span><span class="count" id="selCount">0</span><span data-i18n="db_shownMid"> / 표시 </span><span class="count" id="shownCount">0</span><span data-i18n="db_unitSuf"> 개</span>
       </p>
       <div class="tablewrap">
         <table id="dbTable">
           <thead><tr>
             <th style="width:34px"></th>
-            <th data-sort="kanji">漢字</th>
-            <th data-sort="hiragana">ひらがな</th>
-            <th data-sort="korean">한글 뜻</th>
-            <th data-sort="level">레벨</th>
-            <th data-sort="pos">품사</th>
+            <th data-sort="kanji" data-i18n="th_kanji">漢字</th>
+            <th data-sort="hiragana" data-i18n="th_hira">ひらがな</th>
+            <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
+            <th data-sort="level" data-i18n="th_level">레벨</th>
+            <th data-sort="pos" data-i18n="th_pos">품사</th>
           </tr></thead>
           <tbody id="dbBody"></tbody>
         </table>
       </div>
       <div class="btnrow noprint">
-        <button class="btn" id="expBtn">📤 내보내기 (.json)</button>
-        <button class="btn sec" id="impBtn">📥 가져오기</button>
+        <button class="btn" id="expBtn" data-i18n="db_export">📤 내보내기 (.json)</button>
+        <button class="btn sec" id="impBtn" data-i18n="db_import">📥 가져오기</button>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
-        <button class="btn ghost" id="resetBtn">초기화(샘플로)</button>
-        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)">내부 데이터 전체 삭제</button>
+        <button class="btn ghost" id="resetBtn" data-i18n="db_reset">초기화(샘플로)</button>
+        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
       <details class="manual noprint">
-        <summary class="setsum">📄 JSON 단어장 파일 만드는 법</summary>
+        <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
         <div class="manbody">
           <div class="aibox">
-            <p class="aihd">🤖 AI로 만들기 (가장 쉬움)</p>
-            <p class="aidesc">만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!</p>
-            <label for="aiTopic">단어장 주제</label>
+            <p class="aihd" data-i18n="ai_hd">🤖 AI로 만들기 (가장 쉬움)</p>
+            <p class="aidesc" data-i18n="ai_desc">만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!</p>
+            <label for="aiTopic" data-i18n="ai_topicLabel">단어장 주제</label>
             <div class="airow">
-              <input type="text" id="aiTopic" placeholder="예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어">
-              <button type="button" class="btn" id="aiCopyBtn">📋 프롬프트 복사</button>
+              <input type="text" id="aiTopic" data-i18n-ph="ai_topicPh" placeholder="예: JLPT N4 동사 / 비즈니스 일본어 / 여행 회화 단어">
+              <button type="button" class="btn" id="aiCopyBtn" data-i18n="ai_copyBtn">📋 프롬프트 복사</button>
             </div>
             <ol class="aisteps">
-              <li>주제를 적고 <b>프롬프트 복사</b>를 누릅니다.</li>
-              <li>AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.</li>
-              <li>AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.</li>
-              <li>위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.</li>
+              <li data-i18n="ai_step1">주제를 적고 <b>프롬프트 복사</b>를 누릅니다.</li>
+              <li data-i18n="ai_step2">AI(ChatGPT·Claude·Gemini 등)에 붙여넣고 실행합니다.</li>
+              <li data-i18n="ai_step3">AI가 준 JSON을 메모장에 붙여넣어 <code>주제.json</code>으로 저장합니다.</li>
+              <li data-i18n="ai_step4">위 <b>📥 가져오기</b>로 그 파일을 불러옵니다.</li>
             </ol>
           </div>
-          <p class="gdesc">직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.</p>
+          <p class="gdesc" data-i18n="db_manualDesc">직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.</p>
           <table class="gtable"><tbody>
-            <tr><th>name</th><td>단어장 이름 (선택)</td></tr>
-            <tr><th>kanji</th><td>간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
-            <tr><th>hiragana</th><td>읽는 법 (히라가나)</td></tr>
-            <tr><th>korean</th><td>한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
-            <tr><th>level</th><td>레벨 (예: N5, N4) — 자유</td></tr>
-            <tr><th>pos</th><td>품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
-            <tr><th>example</th><td>예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
+            <tr><th>name</th><td data-i18n="db_fld_name">단어장 이름 (선택)</td></tr>
+            <tr><th>kanji</th><td data-i18n="db_fld_kanji">간지 표기 (한자 없으면 히라가나와 동일하게)</td></tr>
+            <tr><th>hiragana</th><td data-i18n="db_fld_hira">읽는 법 (히라가나)</td></tr>
+            <tr><th>korean</th><td data-i18n="db_fld_korean">한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
+            <tr><th>level</th><td data-i18n="db_fld_level">레벨 (예: N5, N4) — 자유</td></tr>
+            <tr><th>pos</th><td data-i18n="db_fld_pos">품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
+            <tr><th>example</th><td data-i18n="db_fld_example">예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
           </tbody></table>
           <div class="gnote" style="white-space:pre-wrap;font-family:monospace;font-size:.8em">{
   "version": 1,
@@ -383,11 +418,11 @@
       "example": "日本語を教える。,道を教える。" }
   ]
 }</div>
-          <p class="gdesc" style="font-size:.85em;color:var(--muted)">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
+          <p class="gdesc" style="font-size:.85em;color:var(--muted)" data-i18n="db_manualNote">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
         </div>
       </details>
       <div class="btnrow noprint">
-        <button class="btn sec" id="installBtn">📲 홈 화면에 추가</button>
+        <button class="btn sec" id="installBtn" data-i18n="db_install">📲 홈 화면에 추가</button>
       </div>
     </div>
   </section>
@@ -396,61 +431,61 @@
   <section id="schedule">
     <div class="card">
      <details id="schedSettings" open>
-      <summary class="setsum">⚙️ 일정 만들기 (기간·개수·분량)</summary>
-      <p class="sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
+      <summary class="setsum" data-i18n="sch_settingsSummary">⚙️ 일정 만들기 (기간·개수·분량)</summary>
+      <p class="sub" data-i18n="sch_sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
       <div class="row">
-        <div><label>시작일</label><input type="date" id="sStart"></div>
-        <div><label>마지막일</label><input type="date" id="sEnd"></div>
+        <div><label data-i18n="sch_start">시작일</label><input type="date" id="sStart"></div>
+        <div><label data-i18n="sch_end">마지막일</label><input type="date" id="sEnd"></div>
       </div>
       <div class="row">
-        <div><label>품사 필터</label><select id="sPos"></select></div>
-        <div><label>레벨 필터</label><select id="sLevel"></select></div>
+        <div><label data-i18n="sch_posFilter">품사 필터</label><select id="sPos"></select></div>
+        <div><label data-i18n="sch_levelFilter">레벨 필터</label><select id="sLevel"></select></div>
       </div>
-      <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> 단어 DB에서 체크한 단어만 사용 (위 필터 무시)</label>
-      <label>추출 순서</label>
+      <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> <span data-i18n="sch_selectedOnly">단어 DB에서 체크한 단어만 사용 (위 필터 무시)</span></label>
+      <label data-i18n="sch_orderLabel">추출 순서</label>
       <select id="sOrder">
-        <option value="random">무작위</option>
-        <option value="order">DB 순서대로</option>
+        <option value="random" data-i18n="order_random">무작위</option>
+        <option value="order" data-i18n="order_dbOrder">DB 순서대로</option>
       </select>
-      <label>외울 단어 개수: <b id="sCountLabel">0</b> / <span id="sCountMax">0</span>개</label>
+      <label><span data-i18n="sch_countPre">외울 단어 개수: </span><b id="sCountLabel">0</b> / <span id="sCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="sCount" min="1" max="1" value="1">
-      <label>주말 비중 (평일 대비)</label>
+      <label data-i18n="sch_weekendWeight">주말 비중 (평일 대비)</label>
       <div class="seg seg-full" id="sWeightSeg">
-        <button type="button" data-w="auto" class="on">자동</button>
-        <button type="button" data-w="2">2배</button>
-        <button type="button" data-w="3">3배</button>
-        <button type="button" data-w="4">4배</button>
+        <button type="button" data-w="auto" class="on" data-i18n="w_auto">자동</button>
+        <button type="button" data-w="2" data-i18n="w_2">2배</button>
+        <button type="button" data-w="3" data-i18n="w_3">3배</button>
+        <button type="button" data-w="4" data-i18n="w_4">4배</button>
       </div>
       <div class="row">
-        <div><label>평일 분량</label><input type="number" id="sWdCap" min="1" value="2"></div>
-        <div><label>주말 분량</label><input type="number" id="sWeCap" min="1" value="4"></div>
+        <div><label data-i18n="sch_wdCap">평일 분량</label><input type="number" id="sWdCap" min="1" value="2"></div>
+        <div><label data-i18n="sch_weCap">주말 분량</label><input type="number" id="sWeCap" min="1" value="4"></div>
       </div>
-      <label class="chk"><input type="checkbox" id="sManual" autocomplete="off"> 분량 직접 수정 (자동 계산 끄기)</label>
+      <label class="chk"><input type="checkbox" id="sManual" autocomplete="off"> <span data-i18n="sch_manual">분량 직접 수정 (자동 계산 끄기)</span></label>
       <div id="sCalc" class="calcbox"></div>
       <div class="btnrow">
-        <button class="btn" id="genSchedule">일정 생성</button>
+        <button class="btn" id="genSchedule" data-i18n="sch_gen">일정 생성</button>
       </div>
      </details>
     </div>
     <div class="card" id="scheduleResult" style="display:none">
-      <h2>학습 현황</h2>
+      <h2 data-i18n="sch_statusTitle">학습 현황</h2>
       <div id="statsPanel"></div>
       <details id="editPanel" style="display:none">
-        <summary>✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)</summary>
+        <summary data-i18n="sch_editSummary">✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)</summary>
         <div class="row">
-          <div><label>시작일</label><input type="date" id="eStart"></div>
-          <div><label>종료일</label><input type="date" id="eEnd"></div>
+          <div><label data-i18n="sch_start">시작일</label><input type="date" id="eStart"></div>
+          <div><label data-i18n="sch_endDate">종료일</label><input type="date" id="eEnd"></div>
         </div>
-        <label>외울 단어 개수: <b id="eCountLabel">0</b> / <span id="eCountMax">0</span>개</label>
+        <label><span data-i18n="edit_countPre">외울 단어 개수: </span><b id="eCountLabel">0</b> / <span id="eCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
         <input type="range" id="eCount" min="1" max="1" value="1">
-        <div class="muted" style="font-size:.8em">미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.</div>
-        <div class="btnrow"><button class="btn" id="eApply">다시 배치</button></div>
+        <div class="muted" style="font-size:.8em" data-i18n="sch_editHint">미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.</div>
+        <div class="btnrow"><button class="btn" id="eApply" data-i18n="sch_reapply">다시 배치</button></div>
       </details>
       <div class="calnav">
         <button id="calPrev" type="button">◀</button>
         <b id="calLabel"></b>
         <button id="calNext" type="button">▶</button>
-        <button id="calToday" type="button">오늘</button>
+        <button id="calToday" type="button" data-i18n="cal_today">오늘</button>
       </div>
       <div id="calendar"></div>
       <div id="dayDetail"></div>
@@ -461,38 +496,37 @@
   <section id="memorize">
     <div class="card noprint">
      <details id="memSettings" open>
-      <summary class="setsum">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
-      <p class="sub">단계별로 진행합니다. 1단계에서 모든 단어의 뜻+ひらがな를 다 본 뒤,
-        2단계(ひらがな+漢字), 3단계(예문)로 넘어갑니다.</p>
-      <label>학습 범위</label>
+      <summary class="setsum" data-i18n="mem_settingsSummary">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
+      <p class="sub" data-i18n="mem_sub">단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.</p>
+      <label data-i18n="mem_scope">학습 범위</label>
       <div class="seg seg-full" id="mScopeSeg">
-        <button type="button" data-v="today" class="on">오늘 분량</button>
-        <button type="button" data-v="date">날짜</button>
-        <button type="button" data-v="selected">선택 단어</button>
-        <button type="button" data-v="all">전체</button>
+        <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
+        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
+        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
+        <button type="button" data-v="all" data-i18n="scope_all">전체</button>
       </div>
-      <div id="mDateWrap" style="display:none"><label>날짜</label><select id="mDate"></select></div>
-      <label>학습 방식</label>
+      <div id="mDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="mDate"></select></div>
+      <label data-i18n="mem_mode">학습 방식</label>
       <div class="seg seg-full" id="mModeSeg">
-        <button type="button" data-v="asis" class="on">일정대로</button>
-        <button type="button" data-v="ahead">선행학습 (이어서 더)</button>
+        <button type="button" data-v="asis" class="on" data-i18n="mem_asis">일정대로</button>
+        <button type="button" data-v="ahead" data-i18n="mem_ahead">선행학습 (이어서 더)</button>
       </div>
       <div id="mAheadWrap" style="display:none">
-        <label>학습한 단어의 이후 일정</label>
+        <label data-i18n="mem_afterLabel">학습한 단어의 이후 일정</label>
         <div class="seg seg-full" id="mAfterSeg">
-          <button type="button" data-v="keep" class="on">유지</button>
-          <button type="button" data-v="edit">학습분 제외</button>
+          <button type="button" data-v="keep" class="on" data-i18n="mem_keep">유지</button>
+          <button type="button" data-v="edit" data-i18n="mem_exclude">학습분 제외</button>
         </div>
       </div>
-      <label>출제 순서</label>
+      <label data-i18n="mem_orderLabel">출제 순서</label>
       <div class="seg seg-full" id="mOrderSeg">
-        <button type="button" data-v="order" class="on">순서대로</button>
-        <button type="button" data-v="random">무작위</button>
+        <button type="button" data-v="order" class="on" data-i18n="order_seq">순서대로</button>
+        <button type="button" data-v="random" data-i18n="order_random">무작위</button>
       </div>
-      <label>단어 수: <b id="mCountLabel">0</b> / <span id="mCountMax">0</span>개</label>
+      <label><span data-i18n="mem_countPre">단어 수: </span><b id="mCountLabel">0</b> / <span id="mCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="mCount" min="1" max="1" value="1">
-      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> 🔊 카드 자동 읽기 (발음·TTS)</label>
-      <div class="btnrow"><button class="btn" id="startMem">시작</button></div>
+      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> <span data-i18n="mem_autoRead">🔊 카드 자동 읽기 (발음·TTS)</span></label>
+      <div class="btnrow"><button class="btn" id="startMem" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
     <div class="card" id="memStage" style="display:none">
@@ -500,10 +534,10 @@
       <p class="muted" style="text-align:center" id="memCounter"></p>
       <div class="flash" id="flash"></div>
       <div class="btnrow noprint" id="memNav" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 400px; margin: 0 auto;">
-        <button class="btn ghost" id="memPrev" style="width: 48%;">◀ 이전 단어</button>
-        <button class="btn" id="memNext" style="width: 48%;">다음 단어 ▶</button>
-        <button class="btn sec" id="memPrevStage" style="width: 48%;">⏮ 이전 단계</button>
-        <button class="btn sec" id="memSkip" style="width: 48%;">다음 단계 ⏭</button>
+        <button class="btn ghost" id="memPrev" style="width: 48%;" data-i18n="mem_prev">◀ 이전 단어</button>
+        <button class="btn" id="memNext" style="width: 48%;" data-i18n="mem_next">다음 단어 ▶</button>
+        <button class="btn sec" id="memPrevStage" style="width: 48%;" data-i18n="mem_prevStage">⏮ 이전 단계</button>
+        <button class="btn sec" id="memSkip" style="width: 48%;" data-i18n="mem_skip">다음 단계 ⏭</button>
       </div>
     </div>
   </section>
@@ -512,43 +546,48 @@
   <section id="quiz">
     <div class="card noprint">
      <details id="quizSettings" open>
-      <summary class="setsum">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
-      <p class="sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
-      <label>출제 범위</label>
+      <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
+      <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
+      <label data-i18n="quiz_scope">출제 범위</label>
       <div class="seg seg-full" id="qScopeSeg">
-        <button type="button" data-v="today" class="on">오늘 분량</button>
-        <button type="button" data-v="date">날짜</button>
-        <button type="button" data-v="selected">선택 단어</button>
-        <button type="button" data-v="all">전체</button>
+        <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
+        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
+        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
+        <button type="button" data-v="all" data-i18n="scope_all">전체</button>
       </div>
-      <div id="qDateWrap" style="display:none"><label>날짜</label><select id="qDate"></select></div>
-      <div class="row" style="align-items:flex-end">
-        <div><label>문제 (보여줄 것)</label>
+      <div id="qDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="qDate"></select></div>
+      <label data-i18n="quiz_dir">출제 방향</label>
+      <div class="seg seg-full" id="qDirSeg">
+        <button type="button" data-v="fixed" class="on" data-i18n="quiz_dirFixed">고정</button>
+        <button type="button" data-v="random" data-i18n="quiz_dirRandom">무작위 (문제·정답 섞기)</button>
+      </div>
+      <div class="row" style="align-items:flex-end" id="qFieldRow">
+        <div><label data-i18n="quiz_promptField">문제 (보여줄 것)</label>
           <select id="qPromptField">
-            <option value="kanji">漢字</option>
-            <option value="hira">ひらがな</option>
-            <option value="korean">한글 뜻</option>
+            <option value="kanji" data-i18n="field_kanji">漢字</option>
+            <option value="hira" data-i18n="field_hira">ひらがな</option>
+            <option value="korean" data-i18n="field_korean">한글 뜻</option>
           </select>
         </div>
         <div style="flex:0 0 auto"><label>&nbsp;</label>
-          <button class="btn ghost" id="qSwap" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
+          <button class="btn ghost" id="qSwap" data-i18n-title="quiz_swapTitle" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
         </div>
-        <div><label>정답 (맞힐 것)</label>
+        <div><label data-i18n="quiz_answerField">정답 (맞힐 것)</label>
           <select id="qAnswerField">
-            <option value="korean">한글 뜻</option>
-            <option value="hira">ひらがな</option>
-            <option value="kanji">漢字</option>
+            <option value="korean" data-i18n="field_korean">한글 뜻</option>
+            <option value="hira" data-i18n="field_hira">ひらがな</option>
+            <option value="kanji" data-i18n="field_kanji">漢字</option>
           </select>
         </div>
       </div>
-      <label>출제 단어 수: <b id="qCountLabel">0</b> / <span id="qCountMax">0</span>개</label>
+      <label><span data-i18n="quiz_countPre">출제 단어 수: </span><b id="qCountLabel">0</b> / <span id="qCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="qCount" min="1" max="1" value="1">
-      <div class="btnrow"><button class="btn" id="startQuiz">시작</button></div>
+      <div class="btnrow"><button class="btn" id="startQuiz" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
     <div class="card" id="quizArea" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <span class="pill" id="quizPhase">4지선다</span>
+        <span class="pill" id="quizPhase" data-i18n="quiz_mc">4지선다</span>
         <span class="scorebar" id="quizScore"></span>
       </div>
       <div class="progress"><i id="quizBar"></i></div>
@@ -559,35 +598,35 @@
   <!-- ============ PRINT ============ -->
   <section id="print">
     <div class="card noprint">
-      <h2>인쇄</h2>
-      <label>인쇄 종류</label>
+      <h2 data-i18n="print_title">인쇄</h2>
+      <label data-i18n="print_type">인쇄 종류</label>
       <div class="seg seg-full" id="pTypeSeg">
-        <button type="button" data-v="exam" class="on">단어 시험지</button>
-        <button type="button" data-v="grammar">문법 정리</button>
+        <button type="button" data-v="exam" class="on" data-i18n="print_exam">단어 시험지</button>
+        <button type="button" data-v="grammar" data-i18n="print_grammar">문법 정리</button>
       </div>
       <div id="examOpts">
-        <p class="sub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
+        <p class="sub" data-i18n="print_examSub">ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.</p>
         <div class="row">
-          <div><label>출제 범위</label>
+          <div><label data-i18n="print_scope">출제 범위</label>
             <select id="pScope">
-              <option value="today">오늘 분량</option>
-              <option value="date">날짜 선택</option>
-              <option value="selected">선택한 단어 전체</option>
-              <option value="all">전체 단어</option>
+              <option value="today" data-i18n="pscope_today">오늘 분량</option>
+              <option value="date" data-i18n="pscope_date">날짜 선택</option>
+              <option value="selected" data-i18n="pscope_selected">선택한 단어 전체</option>
+              <option value="all" data-i18n="pscope_all">전체 단어</option>
             </select>
           </div>
-          <div id="pDateWrap" style="display:none"><label>날짜</label><select id="pDate"></select></div>
-          <div><label>제목</label><input type="text" id="pTitle" value="일본어 단어 시험"></div>
+          <div id="pDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="pDate"></select></div>
+          <div><label data-i18n="print_titleLabel">제목</label><input type="text" id="pTitle" data-i18n-val="print_defaultTitle" value="일본어 단어 시험"></div>
         </div>
-        <label>문항 수: <b id="pCountLabel">0</b> / <span id="pCountMax">0</span>개</label>
+        <label><span data-i18n="print_countPre">문항 수: </span><b id="pCountLabel">0</b> / <span id="pCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
         <input type="range" id="pCount" min="1" max="1" value="1">
       </div>
       <div id="grammarOpts" style="display:none">
-        <p class="sub">전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)</p>
+        <p class="sub" data-i18n="print_grammarSub">전체 문법을 A4에 <b>2단</b>으로 빈틈없이 정리해 인쇄합니다. (활용표 포함)</p>
       </div>
       <div class="btnrow">
-        <button class="btn" id="genSheet">시험지 생성</button>
-        <button class="btn sec" id="doPrint" disabled>🖨️ 인쇄</button>
+        <button class="btn" id="genSheet" data-i18n="print_genExam">시험지 생성</button>
+        <button class="btn sec" id="doPrint" disabled data-i18n="print_do">🖨️ 인쇄</button>
       </div>
     </div>
     <div id="sheetOut"></div>
@@ -596,21 +635,21 @@
   <!-- ============ GRAMMAR ============ -->
   <section id="grammar">
     <div class="card">
-      <h2>일본어 품사 · 문법 한눈에 📚</h2>
-      <p class="sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
+      <h2 data-i18n="gram_title">일본어 품사 · 문법 한눈에 📚</h2>
+      <p class="sub" data-i18n="gram_sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
       <div class="gnavbar" id="gNav"></div>
-      <div class="btnrow"><button class="btn sec" id="gExpandAll">전부 열기</button></div>
+      <div class="btnrow"><button class="btn sec" id="gExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
     <div id="grammarBody"></div>
   </section>
 </div>
 
-<button id="toTop" class="totop noprint" hidden title="맨 위로">↑</button>
+<button id="toTop" class="totop noprint" hidden data-i18n-title="totop_title" title="맨 위로">↑</button>
 
 <div class="modal" id="gModal" hidden>
   <div class="modal-backdrop" data-close></div>
   <div class="modal-box">
-    <button class="modal-close" data-close title="닫기">✕</button>
+    <button class="modal-close" data-close data-i18n-title="modal_close" title="닫기">✕</button>
     <div id="gModalBody"></div>
   </div>
 </div>
