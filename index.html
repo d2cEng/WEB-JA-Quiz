@@ -940,8 +940,11 @@ function applyI18n(){
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.placeholder=t(el.dataset.i18nPh); });
   document.querySelectorAll("[data-i18n-title]").forEach(el=>{ el.title=t(el.dataset.i18nTitle); });
   document.querySelectorAll("[data-i18n-val]").forEach(el=>{
-    const nv=t(el.dataset.i18nVal);
-    if(el.value===""||el.value===el._i18nDefault) el.value=nv;
+    const key=el.dataset.i18nVal, nv=t(key);
+    // 사용자가 직접 바꾸지 않았으면(빈값 또는 어느 언어든 기본값) 새 언어 기본값으로 교체
+    const isDefault = el.value==="" || el.value===el._i18nDefault
+      || el.value===(I18N.ko[key]) || el.value===(I18N.en[key]);
+    if(isDefault) el.value=nv;
     el._i18nDefault=nv;
   });
   document.documentElement.style.setProperty("--today-label", JSON.stringify(t("cal_todayMark")));
