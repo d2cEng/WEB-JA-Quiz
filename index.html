@@ -541,6 +541,8 @@
           </select>
         </div>
       </div>
+      <label>출제 단어 수: <b id="qCountLabel">0</b> / <span id="qCountMax">0</span>개</label>
+      <input type="range" id="qCount" min="1" max="1" value="1">
       <div class="btnrow"><button class="btn" id="startQuiz">시작</button></div>
      </details>
     </div>
@@ -926,6 +928,7 @@ function showTab(tab){
   $$("section").forEach(s=>s.classList.toggle("active",s.id===tab));
   if(tab==="schedule") renderSchedule();   // 진행 통계 최신화
   if(tab==="memorize") updateMemCount();   // 범위별 단어 수 최신화
+  if(tab==="quiz") updateQuizCount();      // 범위별 단어 수 최신화
   if(tab==="print") updatePrintCount();    // 문항 수 최신화
   if(location.hash.slice(1)!==tab) history.replaceState(null,"","#"+tab);
 }
@@ -1589,9 +1592,18 @@ function pickDistractors(w, n){
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
   return [...samePos, ...others].slice(0,n);   // 같은 품사가 부족하면 다른 품사로 보충
 }
+function updateQuizCount(){
+  const max=wordsForScope(segVal('qScopeSeg'),$("#qDate").value).length;
+  const sc=$("#qCount");
+  sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
+  $("#qCountMax").textContent=max; $("#qCountLabel").textContent=max;
+}
 bindSeg("qScopeSeg",()=>{
   $("#qDateWrap").style.display=segVal('qScopeSeg')==="date"?"block":"none";
+  updateQuizCount();
 });
+$("#qDate").addEventListener("change",updateQuizCount);
+$("#qCount").addEventListener("input",()=>{ $("#qCountLabel").textContent=$("#qCount").value; });
 // 정답 드롭다운에서 문제로 고른 항목은 제외
 function syncQuizAnswer(){
   const pf=$("#qPromptField").value, cur=$("#qAnswerField").value;
@@ -1608,10 +1620,12 @@ syncQuizAnswer();
 $("#startQuiz").addEventListener("click",()=>{
   const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
   if(pf===af){ toast("문제와 정답을 서로 다른 항목으로 선택하세요"); return; }
-  const list=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
-  if(list.length<1){ toast("출제할 단어가 없습니다"); return; }
+  const pool=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
+  if(pool.length<1){ toast("출제할 단어가 없습니다"); return; }
+  const count=Math.min(Math.max(1,+$("#qCount").value||pool.length), pool.length);
+  const list=shuffle(pool).slice(0,count);   // 설정한 개수만큼 무작위로 출제
   if(list.length<4) toast("단어가 4개 미만이라 보기가 적을 수 있어요");
-  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set(), saTyped:{}};
+  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, wrong:new Set(), saTyped:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1819,7 +1833,7 @@ function resetSchedControls(){
 }
 function refreshAll(){
   refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
-  resetSchedControls(); updateSchedCount(); updateMemCount(); updatePrintCount();
+  resetSchedControls(); updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount();
   $("#dbName").value=state.dbName||"";
 }
 // bfcache 복원 시에도 동기화
