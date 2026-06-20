@@ -2259,7 +2259,7 @@ bindSeg("pTypeSeg",()=>{
   const g=segVal('pTypeSeg')==="grammar";
   $("#examOpts").style.display=g?"none":"block";
   $("#grammarOpts").style.display=g?"block":"none";
-  $("#genSheet").textContent=g?"문법 정리 생성":"시험지 생성";
+  $("#genSheet").textContent=g?t("print_genGrammar"):t("print_genExam");
   $("#doPrint").disabled=true; $("#sheetOut").innerHTML="";
 });
 let lastSheetTitle="";
@@ -2271,31 +2271,31 @@ function scheduleOrdinal(date){
 // 문법 정리 인쇄지 (A4 2단)
 function genGrammarSheet(){
   const pItem=it=>`<div class="gpitem" style="--gc:${gColor(it)}">
-    <div class="gphead">${esc(it.pos||it.title)} <span class="gpen">${esc(it.en)}</span></div>
-    <div class="gptip">${esc(it.tip)}</div>
-    ${it.conj?`<table class="gptable">${it.conj.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
-    ${it.teRules?`<div class="gpsub">${esc(it.teTitle||"て형 변환")}</div><table class="gptable">${it.teRules.map(r=>`<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
+    <div class="gphead">${esc(it.pos?posLabel(it.pos):gTitleLabel(it))} <span class="gpen">${esc(it.en)}</span></div>
+    <div class="gptip">${esc(gTip(it))}</div>
+    ${it.conj?`<table class="gptable">${it.conj.map(r=>`<tr><th>${esc(conjLabel(r))}</th><td>${esc(conjVal(it,r))}</td></tr>`).join("")}</table>`:""}
+    ${it.teRules?`<div class="gpsub">${esc(gTeTitle(it))}</div><table class="gptable">${it.teRules.map(r=>`<tr><th>${esc(teLabel(r))}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`:""}
   </div>`;
-  const body=GRAMMAR.map(g=>`<div class="gpsec">${esc(g.group)}</div>`+g.items.map(pItem).join("")).join("");
-  $("#sheetOut").innerHTML=`<div class="card sheet gsheet"><h3>일본어 문법 정리</h3>${body}</div>`;
-  lastSheetTitle="일본어 문법 정리";
+  const body=GRAMMAR.map(g=>`<div class="gpsec">${esc(gGroupLabel(g))}</div>`+g.items.map(pItem).join("")).join("");
+  $("#sheetOut").innerHTML=`<div class="card sheet gsheet"><h3>${esc(t("sheet_grammarTitle"))}</h3>${body}</div>`;
+  lastSheetTitle=t("sheet_grammarTitle");
   document.title=lastSheetTitle;
   $("#doPrint").disabled=false;
-  toast("문법 정리 생성 완료");
+  toast(t("toast_grammarSheet"));
 }
 $("#genSheet").addEventListener("click",()=>{
   if(segVal('pTypeSeg')==="grammar"){ genGrammarSheet(); return; }
   let list=wordsForScope($("#pScope").value,$("#pDate").value);
-  if(!list.length){ toast("출제할 단어가 없습니다"); return; }
+  if(!list.length){ toast(t("toast_noPrintWords")); return; }
   const count=Math.min(Math.max(1,+$("#pCount").value||list.length), list.length);
   list=list.slice(0,count);
   // 특정 날짜 범위면 제목에 'N일차' 자동 추가
   const dchk = $("#pScope").value==="today" ? todayStr() : ($("#pScope").value==="date" ? $("#pDate").value : "");
   const ord = dchk ? scheduleOrdinal(dchk) : 0;
-  const title=($("#pTitle").value||"일본어 단어 시험") + (ord ? ` ${ord}일차` : "");
+  const title=($("#pTitle").value||t("print_defaultTitle")) + (ord ? t("print_dayOrdinal",{ord}) : "");
   lastSheetTitle=title;
   document.title=title;   // 생성 즉시 문서 제목 반영 → PDF 저장 파일명 기본값
-  const fields=["kanji","hiragana","korean"]; const labels={kanji:"漢字",hiragana:"ひらがな",korean:"한글 뜻"};
+  const fields=["kanji","hiragana","korean"];
   const rows=list.map((w,i)=>{
     const blankField=fields[Math.floor(Math.random()*fields.length)];
     const cell=f=>{
@@ -2305,29 +2305,30 @@ $("#genSheet").addEventListener("click",()=>{
     return {i:i+1, kanji:cell("kanji"), hira:cell("hiragana"), ko:cell("korean"),
       ans:{kanji:w.kanji,hira:w.hiragana,ko:w.meanings.map(m=>m.korean).join(", ")}};
   });
+  const colK=esc(fieldLabel("kanji")), colH=esc(fieldLabel("hira")), colKo=esc(fieldLabel("korean"));
   const head=`<div class="head"><div><h3>${esc(title)}</h3>
-      <span class="muted">총 ${list.length}문항 · 빈칸을 채우세요</span></div>
-      <div>이름: ____________&nbsp;&nbsp;점수: ______</div></div>`;
-  const tbl=arr=>`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+      <span class="muted">${esc(t("sheet_head",{n:list.length}))}</span></div>
+      <div>${t("sheet_nameScore")}</div></div>`;
+  const tbl=arr=>`<table><thead><tr><th style="width:36px">#</th><th>${colK}</th><th>${colH}</th><th>${colKo}</th></tr></thead>
     <tbody>${arr.map(r=>`<tr><td>${r.i}</td><td class="jp">${r.kanji}</td><td class="jp">${r.hira}</td><td>${r.ko}</td></tr>`).join("")}</tbody></table>`;
-  const ansTbl=`<table><thead><tr><th style="width:36px">#</th><th>漢字</th><th>ひらがな</th><th>한글 뜻</th></tr></thead>
+  const ansTbl=`<table><thead><tr><th style="width:36px">#</th><th>${colK}</th><th>${colH}</th><th>${colKo}</th></tr></thead>
     <tbody>${rows.map(r=>`<tr><td>${r.i}</td><td class="jp">${esc(r.ans.kanji)}</td><td class="jp">${esc(r.ans.hira)}</td><td>${esc(r.ans.ko)}</td></tr>`).join("")}</tbody></table>`;
   $("#sheetOut").innerHTML=`
     <div class="card sheet">${head}${tbl(rows)}</div>
     <div class="card sheet answer-sheet noscreen" id="ansSheet" style="display:none">
-      <div class="head"><div><h3>${esc(title)} — 정답</h3></div></div>${ansTbl}</div>
+      <div class="head"><div><h3>${esc(t("sheet_answerTitle",{title}))}</h3></div></div>${ansTbl}</div>
     <div class="card noprint">
-      <label><input type="checkbox" id="showAns"> 정답지도 인쇄에 포함</label>
+      <label class="chk"><input type="checkbox" id="showAns"> <span>${esc(t("sheet_includeAnswer"))}</span></label>
     </div>`;
   $("#doPrint").disabled=false;
   $("#showAns").addEventListener("change",e=>{
     $("#ansSheet").style.display=e.target.checked?"block":"none";
   });
-  toast("시험지 생성 완료");
+  toast(t("toast_examSheet"));
 });
 $("#doPrint").addEventListener("click",()=>{
   // PDF 저장 파일명 = 시험지 제목(일차 포함). 조기 원복하면 저장 대화상자에 반영 안 되므로 원복하지 않음
-  document.title=(lastSheetTitle||$("#pTitle").value||"일본어 단어 시험").trim();
+  document.title=(lastSheetTitle||$("#pTitle").value||t("print_defaultTitle")).trim();
   window.print();
 });
 
@@ -2345,6 +2346,9 @@ function refreshAll(){
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
 load();
+// 언어 적용 (정적 텍스트 + 언어 토글 활성화) — 동적 렌더 전에
+$$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===LANG));
+applyI18n();
 refreshAll();
 // 기본 날짜 채우기
 $("#sStart").value=todayStr();
