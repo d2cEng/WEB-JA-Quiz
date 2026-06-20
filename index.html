@@ -1331,10 +1331,10 @@ let dbSort = {key:"id", dir:1};
 function refreshDbFilters(){
   const pos=[...new Set(state.words.map(w=>w.pos).filter(Boolean))].sort();
   const lvl=[...new Set(state.words.map(w=>w.level).filter(Boolean))].sort();
-  fillSelect($("#dbPos"), pos, "품사 전체");
-  fillSelect($("#dbLevel"), lvl, "레벨 전체");
-  fillSelect($("#sPos"), pos, "품사 전체");
-  fillSelect($("#sLevel"), lvl, "레벨 전체");
+  fillSelect($("#dbPos"), pos, t("pos_all"));
+  fillSelect($("#dbLevel"), lvl, t("level_all"));
+  fillSelect($("#sPos"), pos, t("pos_all"));
+  fillSelect($("#sLevel"), lvl, t("level_all"));
 }
 function fillSelect(sel, items, allLabel){
   const cur=sel.value;
@@ -1368,7 +1368,7 @@ function renderDb(){
       <td>${esc(w.korean)}</td>
       <td>${esc(w.level)}</td>
       <td>${esc(w.pos)}</td>
-    </tr>`).join("") || `<tr><td colspan="6" class="empty">단어가 없습니다</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="6" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
 }
@@ -1386,7 +1386,7 @@ $$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
 }));
 $("#selAll").addEventListener("click",()=>{
   const set=new Set(state.selected); dbFiltered().forEach(w=>set.add(w.id));
-  state.selected=[...set]; save(); renderDb(); toast("검색결과를 선택에 추가");
+  state.selected=[...set]; save(); renderDb(); toast(t("toast_selAdded"));
 });
 $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb(); });
 
@@ -1397,7 +1397,7 @@ $("#expBtn").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast("내보내기 완료");
+  setTimeout(()=>URL.revokeObjectURL(a.href),500); toast(t("toast_exported"));
 });
 $("#impBtn").addEventListener("click",()=>$("#impFile").click());
 $("#impFile").addEventListener("change",e=>{
@@ -1411,14 +1411,41 @@ $("#impFile").addEventListener("change",e=>{
       state.dbName = d.name || f.name.replace(/\.json$/i,"");   // 단어장 이름: JSON name 또는 파일명
       state.selected=Array.isArray(d.selected)?d.selected:[];
       state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
-      normalizeWords(); save(); refreshAll(); toast(`가져오기 완료: ${state.dbName} · ${state.words.length}개`);
-    }catch(err){ toast("올바른 JSON 파일이 아닙니다"); }
+      normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
+    }catch(err){ toast(t("toast_badJson")); }
   };
   r.readAsText(f); e.target.value="";
 });
 
 /* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
 function buildAiPrompt(topic){
+  if(LANG==="en"){
+    return `You are an assistant that builds Japanese vocabulary data.
+Create a JSON file of Japanese words on the topic "${topic}", exactly matching the JSON format below.
+[Output format]
+{
+  "version": 1,
+  "name": "${topic}",
+  "words": [
+    { "kanji": "教える", "hiragana": "おしえる", "korean": "to teach,to inform", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" }
+  ]
+}
+[Field rules]
+- kanji: kanji spelling (if the word has no kanji, write the same as hiragana)
+- hiragana: reading (in hiragana)
+- korean: the meaning in English. If there are several meanings, separate them with commas (,)
+- level: JLPT level (estimate one of N5·N4·N3·N2·N1)
+- pos: part of speech. Use one of these exact (Korean) keys — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
+- example: a Japanese example sentence. If korean has several meanings, give the same number of examples in the same order, separated by commas (,)
+- Do not include an id field (it is auto-assigned on import).
+[How to output]
+- Do not print the result as chat text; provide it as a downloadable file named "${topic}.json".
+- The file content must be pure JSON starting with { and ending with }, with no code block (\`\`\`), explanation or greeting.
+- Save it as UTF-8 with 2-space indentation.
+[Note]
+- The comma count in korean and example must match exactly.
+- Keep any extra explanation outside the file to a minimum.`;
+  }
   return `당신은 일본어 단어장 데이터를 만드는 도우미입니다.
 "${topic}" 주제의 일본어 단어를 아래 JSON 형식에 정확히 맞춰 JSON 파일로 생성해 주세요.
 [출력 형식]
@@ -1447,11 +1474,11 @@ function buildAiPrompt(topic){
 }
 $("#aiCopyBtn").addEventListener("click",async ()=>{
   const topic=($("#aiTopic").value||"").trim();
-  if(!topic){ toast("단어장 주제를 입력하세요"); $("#aiTopic").focus(); return; }
+  if(!topic){ toast(t("toast_enterTopic")); $("#aiTopic").focus(); return; }
   const text=buildAiPrompt(topic);
   try{
     await navigator.clipboard.writeText(text);
-    toast("프롬프트 복사됨 · AI에 붙여넣으세요");
+    toast(t("toast_promptCopied"));
   }catch(err){
     // 클립보드 권한이 없거나 비보안 컨텍스트일 때의 대비책
     const ta=document.createElement("textarea");
@@ -1459,24 +1486,24 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
     document.body.appendChild(ta); ta.focus(); ta.select();
     let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
     document.body.removeChild(ta);
-    toast(ok?"프롬프트 복사됨 · AI에 붙여넣으세요":"복사 실패 · 길게 눌러 직접 복사하세요");
+    toast(ok?t("toast_promptCopied"):t("toast_copyFail"));
   }
 });
 
 $("#resetBtn").addEventListener("click",()=>{
-  if(!confirm("샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)")) return;
+  if(!confirm(t("confirm_reset"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:"샘플 데이터"};
-  normalizeWords(); save(); refreshAll(); toast("초기화 완료");
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},dbName:t("name_sample")};
+  normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
-  if(!confirm("내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)")) return;
+  if(!confirm(t("confirm_wipe"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:"(비어 있음)"};
-  save(); refreshAll(); toast("전체 삭제 완료");
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},dbName:t("name_empty")};
+  save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
-  state.dbName=$("#dbName").value.trim()||"이름 없는 단어장"; save();
+  state.dbName=$("#dbName").value.trim()||t("name_unnamed"); save();
   if($("#scheduleResult").style.display!=="none") renderSchedule();  // 통계의 단어장 표시 갱신
 });
 
