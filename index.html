@@ -206,6 +206,9 @@
   /* 품사 배지 (암기·퀴즈·문법 공통 색) */
   .posbadge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78em;
     font-weight:800;white-space:nowrap;letter-spacing:.02em}
+  .lvlbadge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78em;
+    font-weight:800;white-space:nowrap;letter-spacing:.02em;
+    background:var(--accent);color:var(--brand);border:1px solid var(--line)}
   /* 문법 탭 카드 */
   .gsec-title{font-weight:800;font-size:1.12em;margin:20px 2px 2px}
   /* 문법 상단 바로가기 */
@@ -741,6 +744,7 @@ function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos);
     ? `<span class="posbadge tap" data-pos="${esc(pos)}" title="문법 보기" style="${style};cursor:pointer">${esc(pos)} ⓘ</span>`
     : `<span class="posbadge" style="${style}">${esc(pos)}</span>`;
 }
+function levelBadge(level){ return level ? `<span class="lvlbadge">${esc(level)}</span>` : ""; }
 
 /* ====================== 문법 설명 ====================== */
 const GRAMMAR=[
@@ -1476,7 +1480,7 @@ function renderFlash(){
   $("#memCounter").textContent=`${stageNames[mem.stage]}  —  단어 ${mem.idx+1} / ${N}`;
   $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*3)*100)+"%";
   let html=`<div class="stage-tag">${stageNames[mem.stage]}</div>`;
-  if(w.pos) html+=`<div style="margin-bottom:8px">${posBadge(w.pos,true)}</div>`;   // 품사(터치 시 문법 팝업)
+  if(w.pos||w.level) html+=`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`;   // 품사(터치 시 문법 팝업) · 레벨
   const multi = w.meanings.length>1;
   const picker = multi ? `<div class="meaning-pick">`+w.meanings.map((m,i)=>
       `<button data-mi="${i}" class="${i===mem.meaningIdx?"on":""}">뜻 ${i+1}</button>`).join("")+`</div>` : "";
@@ -1612,7 +1616,7 @@ function renderQuiz(){
   $("#quizPhase").textContent = `${quiz.phase==="mc"?"4지선다":"주관식"} · ${FIELD_LABEL[quiz.pf]}→${FIELD_LABEL[quiz.af]}`;
   $("#quizScore").textContent = `점수 ${quiz.score} / ${quiz.list.length}`;
   $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
-  let html=`<div class="qcenter">${w.pos?`<div style="margin-bottom:8px">${posBadge(w.pos,true)}</div>`:""}<div class="qprompt">${esc(wField(w,quiz.pf))}</div></div>`;
+  let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,quiz.pf))}</div></div>`;
   if(quiz.phase==="mc"){
     // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
     const optWords = shuffle([w, ...pickDistractors(w,3)]);
