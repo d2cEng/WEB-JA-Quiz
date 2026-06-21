@@ -357,6 +357,14 @@
       <p class="sub" data-i18n="db_sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
       <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
       <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
+      <div class="btnrow noprint" style="margin-top:10px">
+        <button class="btn" id="expBtn" data-i18n="db_export">📤 내보내기 (.json)</button>
+        <button class="btn sec" id="impBtn" data-i18n="db_import">📥 가져오기</button>
+        <input type="file" id="impFile" accept="application/json,.json" style="display:none">
+        <button class="btn ghost" id="resetBtn" data-i18n="db_reset">초기화(샘플로)</button>
+        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
+      </div>
+      <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
       <div class="toolbar noprint" style="margin-top:10px">
         <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
         <select id="dbPos"><option value="">품사 전체</option></select>
@@ -381,14 +389,6 @@
           <tbody id="dbBody"></tbody>
         </table>
       </div>
-      <div class="btnrow noprint">
-        <button class="btn" id="expBtn" data-i18n="db_export">📤 내보내기 (.json)</button>
-        <button class="btn sec" id="impBtn" data-i18n="db_import">📥 가져오기</button>
-        <input type="file" id="impFile" accept="application/json,.json" style="display:none">
-        <button class="btn ghost" id="resetBtn" data-i18n="db_reset">초기화(샘플로)</button>
-        <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
-      </div>
-      <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
       <div id="excludedPanel" class="noprint"></div>
       <details class="manual noprint">
         <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
