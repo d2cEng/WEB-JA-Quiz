@@ -462,6 +462,7 @@
       <label data-i18n="sch_weekendWeight">주말 비중 (평일 대비)</label>
       <div class="seg seg-full" id="sWeightSeg">
         <button type="button" data-w="auto" class="on" data-i18n="w_auto">자동</button>
+        <button type="button" data-w="1" data-i18n="w_1">1배</button>
         <button type="button" data-w="2" data-i18n="w_2">2배</button>
         <button type="button" data-w="3" data-i18n="w_3">3배</button>
         <button type="button" data-w="4" data-i18n="w_4">4배</button>
@@ -757,7 +758,7 @@ const I18N = {
     sch_selectedOnly:"단어 DB에서 체크한 단어만 사용 (위 필터 무시)", sch_orderLabel:"추출 순서",
     order_random:"무작위", order_dbOrder:"DB 순서대로", order_seq:"순서대로",
     sch_countPre:"외울 단어 개수: ", edit_countPre:"외울 단어 개수: ", unit_geSuf:"개",
-    sch_weekendWeight:"주말 비중 (평일 대비)", w_auto:"자동", w_2:"2배", w_3:"3배", w_4:"4배",
+    sch_weekendWeight:"주말 비중 (평일 대비)", w_auto:"자동", w_1:"1배", w_2:"2배", w_3:"3배", w_4:"4배",
     sch_wdCap:"평일 분량", sch_weCap:"주말 분량", sch_manual:"분량 직접 수정 (자동 계산 끄기)",
     sch_gen:"일정 생성", sch_statusTitle:"학습 현황",
     sch_editSummary:"✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)",
@@ -879,7 +880,7 @@ const I18N = {
     sch_selectedOnly:"Use only words checked in the DB (ignore the filters above)", sch_orderLabel:"Selection order",
     order_random:"Random", order_dbOrder:"DB order", order_seq:"In order",
     sch_countPre:"Words to learn: ", edit_countPre:"Words to learn: ", unit_geSuf:"",
-    sch_weekendWeight:"Weekend weight (vs weekday)", w_auto:"Auto", w_2:"×2", w_3:"×3", w_4:"×4",
+    sch_weekendWeight:"Weekend weight (vs weekday)", w_auto:"Auto", w_1:"×1", w_2:"×2", w_3:"×3", w_4:"×4",
     sch_wdCap:"Weekday load", sch_weCap:"Weekend load", sch_manual:"Edit load manually (turn off auto-calc)",
     sch_gen:"Generate schedule", sch_statusTitle:"Learning status",
     sch_editSummary:"✏️ Edit current/upcoming schedule — change dates and count (tap to expand)",
@@ -1649,7 +1650,7 @@ function capsAuto(total, days){
   const we=days.filter(d=>d.weekend).length, wd=days.length-we;
   if(total<=0) return {x:0,y:0};
   let best=null;
-  for(const k of [2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+  for(const k of [1,2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
   return best||{x:0,y:0};
 }
 // 단어 풀을 날짜에 평일 cap=x, 주말 cap=y로 순서대로 배치 (마지막 날은 더 적을 수 있음)
@@ -1704,7 +1705,7 @@ function computeCaps(total){
   const seg=$("#sWeightSeg .on"); const mode=seg?seg.dataset.w:"auto";
   let best=null;
   if(mode==="auto"){
-    for(const k of [2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+    for(const k of [1,2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
   } else {
     best=capsForK(total,wd,we,+mode);
   }
