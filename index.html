@@ -357,31 +357,7 @@
       <p class="sub" data-i18n="db_sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
       <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
       <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
-      <div class="toolbar noprint" style="margin-top:10px">
-        <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
-        <select id="dbPos"><option value="">품사 전체</option></select>
-        <select id="dbLevel"><option value="">레벨 전체</option></select>
-        <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
-        <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
-      </div>
-      <p class="muted" style="margin:0 0 8px">
-        <span data-i18n="db_selectedPre">선택됨 </span><span class="count" id="selCount">0</span><span data-i18n="db_shownMid"> / 표시 </span><span class="count" id="shownCount">0</span><span data-i18n="db_unitSuf"> 개</span>
-      </p>
-      <div class="tiphint" data-i18n="hint_db">💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.</div>
-      <div class="tablewrap">
-        <table id="dbTable">
-          <thead><tr>
-            <th style="width:34px"></th>
-            <th data-sort="kanji" data-i18n="th_kanji">漢字</th>
-            <th data-sort="hiragana" data-i18n="th_hira">ひらがな</th>
-            <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
-            <th data-sort="level" data-i18n="th_level">레벨</th>
-            <th data-sort="pos" data-i18n="th_pos">품사</th>
-          </tr></thead>
-          <tbody id="dbBody"></tbody>
-        </table>
-      </div>
-      <div class="btnrow noprint">
+      <div class="btnrow noprint" style="margin-top:10px">
         <button class="btn" id="expBtn" data-i18n="db_export">📤 내보내기 (.json)</button>
         <button class="btn sec" id="impBtn" data-i18n="db_import">📥 가져오기</button>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
@@ -415,7 +391,7 @@
             <tr><th>hiragana</th><td data-i18n="db_fld_hira">읽는 법 (히라가나)</td></tr>
             <tr><th>korean</th><td data-i18n="db_fld_korean">한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분</td></tr>
             <tr><th>level</th><td data-i18n="db_fld_level">레벨 (예: N5, N4) — 자유</td></tr>
-            <tr><th>pos</th><td data-i18n="db_fld_pos">품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)</td></tr>
+            <tr><th>pos</th><td data-i18n="db_fld_pos">품사 — 한국어(1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사) 또는 영어(Group 1/2/3 verb·i-adjective·na-adjective·noun·adverb·conjunction)로 표기. 대소문자·공백·하이픈은 자유</td></tr>
             <tr><th>example</th><td data-i18n="db_fld_example">예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로</td></tr>
           </tbody></table>
           <div class="gnote" style="white-space:pre-wrap;font-family:monospace;font-size:.8em">{
@@ -430,6 +406,30 @@
           <p class="gdesc" style="font-size:.85em;color:var(--muted)" data-i18n="db_manualNote">• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.</p>
         </div>
       </details>
+      <div class="toolbar noprint" style="margin-top:10px">
+        <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
+        <select id="dbPos"><option value="">품사 전체</option></select>
+        <select id="dbLevel"><option value="">레벨 전체</option></select>
+        <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
+        <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
+      </div>
+      <p class="muted" style="margin:0 0 8px">
+        <span data-i18n="db_selectedPre">선택됨 </span><span class="count" id="selCount">0</span><span data-i18n="db_shownMid"> / 표시 </span><span class="count" id="shownCount">0</span><span data-i18n="db_unitSuf"> 개</span>
+      </p>
+      <div class="tiphint" data-i18n="hint_db">💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.</div>
+      <div class="tablewrap">
+        <table id="dbTable">
+          <thead><tr>
+            <th style="width:34px"></th>
+            <th data-sort="kanji" data-i18n="th_kanji">漢字</th>
+            <th data-sort="hiragana" data-i18n="th_hira">ひらがな</th>
+            <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
+            <th data-sort="level" data-i18n="th_level">레벨</th>
+            <th data-sort="pos" data-i18n="th_pos">품사</th>
+          </tr></thead>
+          <tbody id="dbBody"></tbody>
+        </table>
+      </div>
       <div class="btnrow noprint">
         <button class="btn sec" id="installBtn" data-i18n="db_install">📲 홈 화면에 추가</button>
       </div>
@@ -744,7 +744,7 @@ const I18N = {
     db_manualDesc:"직접 만들려면 엑셀·메모장 등으로 아래 형식의 <b>.json</b> 파일을 만들어 <b>📥 가져오기</b>로 불러오면 됩니다. <b>📤 내보내기</b>로 받은 파일을 열어 <code>words</code> 안의 내용만 바꾸는 것도 쉬운 방법입니다.",
     db_fld_name:"단어장 이름 (선택)", db_fld_kanji:"간지 표기 (한자 없으면 히라가나와 동일하게)",
     db_fld_hira:"읽는 법 (히라가나)", db_fld_korean:"한글 뜻 — 여러 뜻은 <b>쉼표(,)</b>로 구분",
-    db_fld_level:"레벨 (예: N5, N4) — 자유", db_fld_pos:"품사 (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사…)",
+    db_fld_level:"레벨 (예: N5, N4) — 자유", db_fld_pos:"품사 — 한국어(1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사) 또는 영어(Group 1/2/3 verb·i-adjective·na-adjective·noun·adverb·conjunction)로 표기. 대소문자·공백·하이픈은 자유",
     db_fld_example:"예문 — 뜻이 여러 개면 <b>쉼표(,)</b>로 뜻과 같은 순서로",
     db_manualNote:"• <b>id</b>는 생략해도 자동 부여됩니다. • <b>korean</b>과 <b>example</b>의 쉼표 개수를 맞추면 뜻별 예문이 1:1로 연결됩니다. • 예문 구분자가 <code>、</code>·<code>，</code>여도 인식합니다.",
     db_install:"📲 홈 화면에 추가",
@@ -866,7 +866,7 @@ const I18N = {
     db_manualDesc:"To make one yourself, create a <b>.json</b> file in the format below (with Excel, a text editor, etc.) and load it with <b>📥 Import</b>. An easy way is to open an <b>📤 Export</b>ed file and just change the contents inside <code>words</code>.",
     db_fld_name:"Wordbook name (optional)", db_fld_kanji:"Kanji spelling (same as hiragana if no kanji)",
     db_fld_hira:"Reading (hiragana)", db_fld_korean:"Meaning — separate multiple meanings with a <b>comma (,)</b>",
-    db_fld_level:"Level (e.g. N5, N4) — free-form", db_fld_pos:"Part of speech (Group 1/2/3 verb · i-adj · na-adj · noun · adverb · conjunction…)",
+    db_fld_level:"Level (e.g. N5, N4) — free-form", db_fld_pos:"Part of speech — English (Group 1/2/3 verb · i-adjective · na-adjective · noun · adverb · conjunction) or Korean (1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사). Case, spaces and hyphens are flexible",
     db_fld_example:"Example — if multiple meanings, list in the same order separated by a <b>comma (,)</b>",
     db_manualNote:"• <b>id</b> can be omitted (auto-assigned). • Match the number of commas in <b>korean</b> and <b>example</b> to link each meaning to its example 1:1. • Separators <code>、</code>·<code>，</code> are also recognized.",
     db_install:"📲 Add to home screen",
@@ -1034,8 +1034,31 @@ function stripDerived(w){
 function normalizeWords(){
   state.words.forEach((w,i)=>{
     if(w.id==null) w.id = i+1;
+    w.pos = normalizePos(w.pos);
     w.meanings = deriveMeanings(w.korean, w.example);
   });
+}
+// 품사 표기 정규화 — DB 파일의 pos가 한국어(1그룹동사…)뿐 아니라 영어(Group 1 verb,
+// i-adjective…)·일본어(五段動詞…)·로마자(godan…)로 들어와도 내부 표준 키(한국어)로 매핑한다.
+// 매칭은 공백·하이픈·대소문자를 무시한다. 모르는 값은 원문 그대로 둔다.
+const POS_ALIASES={
+  "1그룹동사":"1그룹동사","group 1 verb":"1그룹동사","group1 verb":"1그룹동사","godan verb":"1그룹동사","godan":"1그룹동사","u verb":"1그룹동사","u-verb":"1그룹동사","五段動詞":"1그룹동사","五段":"1그룹동사",
+  "2그룹동사":"2그룹동사","group 2 verb":"2그룹동사","group2 verb":"2그룹동사","ichidan verb":"2그룹동사","ichidan":"2그룹동사","ru verb":"2그룹동사","ru-verb":"2그룹동사","一段動詞":"2그룹동사","一段":"2그룹동사",
+  "3그룹동사":"3그룹동사","group 3 verb":"3그룹동사","group3 verb":"3그룹동사","irregular verb":"3그룹동사","irregular":"3그룹동사","不規則動詞":"3그룹동사",
+  "い형용사":"い형용사","i adjective":"い형용사","i-adjective":"い형용사","i adj":"い형용사","i-adj":"い형용사","keiyoushi":"い형용사","形容詞":"い형용사",
+  "な형용사":"な형용사","na adjective":"な형용사","na-adjective":"な형용사","na adj":"な형용사","na-adj":"な형용사","keiyoudoushi":"な형용사","形容動詞":"な형용사",
+  "명사":"명사","noun":"명사","名詞":"명사",
+  "부사":"부사","adverb":"부사","副詞":"부사",
+  "접속사":"접속사","conjunction":"접속사","接続詞":"접속사",
+  "조사":"조사","particle":"조사","助詞":"조사",
+  "감탄사":"감탄사","interjection":"감탄사","感動詞":"감탄사"
+};
+function normalizePos(pos){
+  if(pos==null) return pos;
+  const raw=String(pos).trim();
+  if(!raw) return raw;
+  const key=raw.toLowerCase().replace(/[\s_]+/g," ").trim();
+  return POS_ALIASES[key] || POS_ALIASES[raw] || raw;
 }
 // 한글 뜻과 예문을 뜻별로 1:1 매칭. 예문 구분자가 ASCII 콤마가 아니어도(IME 입력 「、」「，」)
 // 뜻 개수에 맞게 견고하게 분리한다.
@@ -1516,7 +1539,7 @@ Create a JSON file of Japanese words on the topic "${topic}", exactly matching t
   "version": 1,
   "name": "${topic}",
   "words": [
-    { "kanji": "教える", "hiragana": "おしえる", "korean": "to teach,to inform", "level": "N5", "pos": "2그룹동사", "example": "日本語を教える。,道を教える。" }
+    { "kanji": "教える", "hiragana": "おしえる", "korean": "to teach,to inform", "level": "N5", "pos": "Group 2 verb", "example": "日本語を教える。,道を教える。" }
   ]
 }
 [Field rules]
@@ -1524,7 +1547,7 @@ Create a JSON file of Japanese words on the topic "${topic}", exactly matching t
 - hiragana: reading (in hiragana)
 - korean: the meaning in English. If there are several meanings, separate them with commas (,)
 - level: JLPT level (estimate one of N5·N4·N3·N2·N1)
-- pos: part of speech. Use one of these exact (Korean) keys — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
+- pos: part of speech. Use one of these English labels (Korean keys also accepted) — Group 1 verb·Group 2 verb·Group 3 verb·i-adjective·na-adjective·noun·adverb·conjunction·particle·interjection
 - example: a Japanese example sentence. If korean has several meanings, give the same number of examples in the same order, separated by commas (,)
 - Do not include an id field (it is auto-assigned on import).
 [How to output]
@@ -1550,7 +1573,7 @@ Create a JSON file of Japanese words on the topic "${topic}", exactly matching t
 - hiragana: 읽는 법 (히라가나)
 - korean: 한글 뜻. 뜻이 여러 개면 쉼표(,)로 구분
 - level: JLPT 레벨 (N5·N4·N3·N2·N1 중 추정해서 표기)
-- pos: 품사. 다음 중 하나로 표기 — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사
+- pos: 품사. 다음 한국어 키 중 하나로 표기 — 1그룹동사·2그룹동사·3그룹동사·い형용사·な형용사·명사·부사·접속사·조사·감탄사 (영어 Group 1/2/3 verb·i-adjective·na-adjective·noun·adverb·conjunction 등도 인식됩니다)
 - example: 일본어 예문. korean에 뜻이 여러 개면 쉼표(,)로 같은 순서·같은 개수로 예문을 적음
 - id 필드는 넣지 마세요 (가져올 때 자동 부여됩니다).
 [출력 방식]
