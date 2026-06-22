@@ -365,6 +365,14 @@
         <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
       <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
+      <div id="repoBox" class="noprint" style="display:none;margin-top:6px">
+        <label data-i18n="db_repoLabel">저장소에 준비된 단어장 불러오기</label>
+        <div class="toolbar">
+          <select id="repoSelect"></select>
+          <button class="btn sec" id="repoLoadBtn" data-i18n="db_repoLoad">📦 불러오기</button>
+        </div>
+        <div class="tiphint" data-i18n="hint_repo">💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. 불러오면 <b>현재 단어와 진도가 교체</b>됩니다(가져오기와 동일).</div>
+      </div>
       <div id="excludedPanel" class="noprint"></div>
       <details class="manual noprint">
         <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
@@ -734,6 +742,10 @@ const I18N = {
     db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
     th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
     db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
+    db_repoLabel:"저장소에 준비된 단어장 불러오기", db_repoLoad:"📦 불러오기",
+    hint_repo:"💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. 불러오면 <b>현재 단어와 진도가 교체</b>됩니다(가져오기와 동일).",
+    confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n현재 단어·진도가 교체됩니다. (필요하면 먼저 내보내기로 백업하세요)",
+    toast_repoFail:"단어장을 불러오지 못했습니다",
     db_manualSummary:"📄 JSON 단어장 파일 만드는 법",
     ai_hd:"🤖 AI로 만들기 (가장 쉬움)",
     ai_desc:"만들고 싶은 <b>단어장 주제</b>를 적고 <b>프롬프트 복사</b>를 누르세요. 복사된 내용을 ChatGPT·Claude·Gemini 등 AI에 붙여넣으면 아래 형식에 맞는 JSON을 만들어 줍니다. 그 결과를 <b>.json</b> 파일로 저장해 <b>📥 가져오기</b> 하면 끝!",
@@ -856,6 +868,10 @@ const I18N = {
     db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
     th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
     db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
+    db_repoLabel:"Load a built-in wordbook from the repository", db_repoLoad:"📦 Load",
+    hint_repo:"💡 Pick a wordbook bundled in this app's repository and load it instantly. Loading <b>replaces your current words and progress</b> (same as Import).",
+    confirm_repoLoad:"Load the ‘{name}’ wordbook?\nYour current words and progress will be replaced. (Export a backup first if needed.)",
+    toast_repoFail:"Could not load the wordbook",
     db_manualSummary:"📄 How to make a JSON wordbook file",
     ai_hd:"🤖 Make it with AI (easiest)",
     ai_desc:"Type the <b>wordbook topic</b> you want and press <b>Copy prompt</b>. Paste it into an AI like ChatGPT·Claude·Gemini and it will produce JSON in the format below. Save the result as a <b>.json</b> file and <b>📥 Import</b> it — done!",
@@ -1512,23 +1528,50 @@ $("#expBtn").addEventListener("click",()=>{
   setTimeout(()=>URL.revokeObjectURL(a.href),500); toast(t("toast_exported"));
 });
 $("#impBtn").addEventListener("click",()=>$("#impFile").click());
+// 파싱된 단어장 데이터(d)를 현재 상태에 반영. 파일/저장소 불러오기 공통.
+function applyWordbook(d, fallbackName){
+  if(!d || !Array.isArray(d.words)) throw 0;
+  state.words=d.words;
+  state.dbName = d.name || fallbackName || state.dbName;
+  state.selected=Array.isArray(d.selected)?d.selected:[];
+  state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
+  state.excluded=Array.isArray(d.excluded)?d.excluded:[];
+  normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
+}
 $("#impFile").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=()=>{
-    try{
-      const d=JSON.parse(r.result);
-      if(!Array.isArray(d.words)) throw 0;
-      state.words=d.words;
-      state.dbName = d.name || f.name.replace(/\.json$/i,"");   // 단어장 이름: JSON name 또는 파일명
-      state.selected=Array.isArray(d.selected)?d.selected:[];
-      state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
-      state.excluded=Array.isArray(d.excluded)?d.excluded:[];
-      normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
-    }catch(err){ toast(t("toast_badJson")); }
+    try{ applyWordbook(JSON.parse(r.result), f.name.replace(/\.json$/i,"")); }
+    catch(err){ toast(t("toast_badJson")); }
   };
   r.readAsText(f); e.target.value="";
 });
+
+/* 저장소(레포)에 준비된 단어장 목록 불러오기 — http(s)로 서비스될 때만 동작 */
+async function initRepoWordbooks(){
+  try{
+    const res=await fetch("data/wordbooks.json",{cache:"no-cache"});
+    if(!res.ok) throw 0;
+    const data=await res.json();
+    const list=Array.isArray(data.wordbooks)?data.wordbooks.filter(w=>w&&w.file):[];
+    if(!list.length) return;
+    const sel=$("#repoSelect"); sel.innerHTML="";
+    list.forEach(w=>{ const o=document.createElement("option"); o.value=w.file; o.textContent=w.name||w.file; sel.appendChild(o); });
+    $("#repoBox").style.display="";
+  }catch(e){ /* file:// 또는 매니페스트 없음 → 기능 숨김 */ }
+}
+$("#repoLoadBtn").addEventListener("click",async ()=>{
+  const sel=$("#repoSelect"); const file=sel.value; if(!file) return;
+  const label=sel.options[sel.selectedIndex]?.textContent||file;
+  if(!confirm(t("confirm_repoLoad",{name:label}))) return;
+  try{
+    const res=await fetch("data/"+file,{cache:"no-cache"});
+    if(!res.ok) throw 0;
+    applyWordbook(await res.json(), file.replace(/\.json$/i,""));
+  }catch(e){ toast(t("toast_repoFail")); }
+});
+initRepoWordbooks();
 
 /* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
 function buildAiPrompt(topic){
