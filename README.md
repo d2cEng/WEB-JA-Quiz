@@ -1,6 +1,6 @@
 # 일본어 단어 암기 · 시험 (JA Quiz)
 
-**👉 바로 사용하기: [https://d2c-jaquiz.is-a.dev](https://d2c-jaquiz.is-a.dev)**
+**👉 바로 사용하기: [https://d2ceng.github.io/WEB-JA-Quiz/](https://d2ceng.github.io/WEB-JA-Quiz/)**
 
 설치 없이 브라우저에서 바로 쓰는 일본어 단어 학습 웹앱입니다. 위 주소를 열기만 하면 되고,
 **`index.html` 파일 하나로도 작동**하므로 카톡 등으로 파일을 보내 오프라인으로 쓸 수도 있습니다.
@@ -19,7 +19,7 @@
 ## 여는 법
 
 ### 웹에서 바로 열기 (권장)
-[https://d2c-jaquiz.is-a.dev](https://d2c-jaquiz.is-a.dev) 주소를 PC·휴대폰 브라우저에서 열면 바로 사용할 수 있습니다.
+[https://d2ceng.github.io/WEB-JA-Quiz/](https://d2ceng.github.io/WEB-JA-Quiz/) 주소를 PC·휴대폰 브라우저에서 열면 바로 사용할 수 있습니다.
 링크만 공유하면 받는 사람도 똑같이 열어 쓸 수 있고, 자주 쓴다면 브라우저의 **홈 화면에 추가**로 앱처럼 둘 수 있습니다.
 
 ### 파일로 공유하고 여는 법 (오프라인)
@@ -57,7 +57,7 @@
       "hiragana": "あける",
       "korean": "날이 밝다,(기간이) 끝나다",
       "level": "N4",
-      "pos": "1그룹 동사",
+      "pos": "1그룹동사",
       "example": "夜が明ける。,梅雨が明ける。"
     }
   ]
@@ -65,6 +65,7 @@
 ```
 
 - `korean`, `example`은 **쉼표(,)** 로 같은 간지의 여러 뜻과 그에 맞는 예문을 1:1로 적습니다.
+- `pos`(품사)는 **한국어**(`1그룹동사`·`2그룹동사`·`3그룹동사`·`い형용사`·`な형용사`·`명사`·`부사`·`접속사`) 또는 **영어**(`Group 1/2/3 verb`·`i-adjective`·`na-adjective`·`noun`·`adverb`·`conjunction`)로 적을 수 있습니다. 대소문자·공백·하이픈은 자유롭게 인식됩니다.
 - 엑셀/CSV로 관리 중이라면 위 컬럼(간지·히라가나·한글·레벨·품사·예문)에 맞춰 JSON으로 변환하세요.
 
 ## 파일 구성
