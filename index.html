@@ -841,7 +841,8 @@ const I18N = {
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
-    rq_typed:"내가 쓴 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    rq_typed:"내가 쓴 답", rq_chosen:"내가 고른 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    mc_examEnd:"객관식 종료 🎉", mc_score:"객관식 점수: <b>{score} / {total}</b>", mc_goSA:"주관식 시험 시작 ▶",
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
@@ -967,7 +968,8 @@ const I18N = {
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
-    rq_typed:"Your answer", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    rq_typed:"Your answer", rq_chosen:"Your choice", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    mc_examEnd:"Multiple choice finished 🎉", mc_score:"Multiple-choice score: <b>{score} / {total}</b>", mc_goSA:"Start short-answer test ▶",
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
@@ -2199,15 +2201,20 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed"};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{}};
 function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
 // 무작위 방향: 문제·정답을 서로 다른 필드로 임의 선택
-function randPair(){
+// (히라가나 문제에 히라가나가 답으로 나오지 않도록, 표시값이 같아지는 쌍은 제외)
+function randPair(w){
   const fs=["kanji","hira","korean"];
-  const pf=fs[Math.floor(Math.random()*fs.length)];
-  const rest=fs.filter(x=>x!==pf);
-  const af=rest[Math.floor(Math.random()*rest.length)];
-  return {pf,af};
+  for(let tries=0;tries<12;tries++){
+    const pf=fs[Math.floor(Math.random()*fs.length)];
+    const rest=fs.filter(x=>x!==pf);
+    const af=rest[Math.floor(Math.random()*rest.length)];
+    if(w && wField(w,pf)===wField(w,af)) continue;   // 한자 없는 단어 등으로 문제=정답이 되는 경우 회피
+    return {pf,af};
+  }
+  return {pf:"korean", af:"hira"};
 }
 // 문제/정답으로 쓸 필드 값
 function wField(w,f){
@@ -2223,14 +2230,29 @@ function acceptFor(w,f){
 }
 // 끝에서부터 공통 히라가나(오쿠리가나) 길이
 function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.length&&a[a.length-1-i]===b[b.length-1-i]) i++; return i; }
+// 한글 뜻 묶음(중복 비교용)
+function koreanKey(w){ return w.meanings.map(m=>m.korean).join(", "); }
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
-function pickDistractors(w, n){
+// 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
+function pickDistractors(w, n, pf, af){
   const target=w.hiragana||"";
   const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
+  const usedHira=new Set([w.hiragana]);            // 다른 단어의 동일한 히라가나 방지
+  const usedKo=new Set([koreanKey(w)]);            // 동일한 한글 뜻 방지
+  const usedShown=new Set([wField(w,af)]);         // 동일한 표시값(보기 텍스트) 방지
+  const acceptable=x=>{
+    // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
+    if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) return false;
+    const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af);
+    if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
+    usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
+  };
   const pool=state.words.filter(x=>x.id!==w.id);
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
-  return [...samePos, ...others].slice(0,n);   // 같은 품사가 부족하면 다른 품사로 보충
+  const out=[];
+  for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
+  return out;   // 같은 품사가 부족하면 다른 품사로 보충
 }
 function updateQuizCount(){
   const max=wordsForScope(segVal('qScopeSeg'),$("#qDate").value).length;
@@ -2274,8 +2296,8 @@ $("#startQuiz").addEventListener("click",()=>{
   if(list.length<4) toast(t("toast_fewChoices"));
   // 무작위 방향: 단어별로 문제·정답 쌍을 미리 정해 페이즈가 바뀌어도 일관되게 유지
   let pairById=null;
-  if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(); }); }
-  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}};
+  if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
+  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2286,7 +2308,7 @@ function renderQuiz(){
   const w=quiz.list[quiz.idx];
   // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
   let pf=quiz.pf, af=quiz.af;
-  if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(); pf=p.pf; af=p.af; }
+  if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
   quiz.curPf=pf; quiz.curAf=af;
   $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):t("quiz_sa")), pf:fieldLabel(pf), af:fieldLabel(af)});
   $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
@@ -2294,7 +2316,7 @@ function renderQuiz(){
   let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
   if(quiz.phase==="mc"){
     // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
-    const optWords = shuffle([w, ...pickDistractors(w,3)]);
+    const optWords = shuffle([w, ...pickDistractors(w,3,pf,af)]);
     html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,af))}</button>`).join("")+`</div>`;
     html+=`<div class="feedback" id="qfb"></div>`;
   } else {
@@ -2319,7 +2341,7 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
   if(ph===quiz.phase) return;
-  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={};
+  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
   renderQuiz();
 });
 $("#quizBody").addEventListener("click",e=>{
@@ -2334,7 +2356,7 @@ $("#quizBody").addEventListener("click",e=>{
   });
   const ans = wField(w,quiz.curAf);
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
-  else { quiz.wrong.add(w.id); fb(false,t("fb_answer",{ans})); }
+  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(+b.dataset.id),quiz.curAf); fb(false,t("fb_answer",{ans})); }
   setTimeout(nextQuiz,900);
 });
 function submitSA(){
@@ -2353,36 +2375,45 @@ function submitSA(){
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
 function nextQuiz(){
   if(quiz.idx<quiz.list.length-1){ quiz.idx++; renderQuiz(); return; }
-  // 페이즈 종료
-  if(quiz.phase==="mc"){
-    const mcScore=quiz.score;
-    alert(t("alert_mcDone",{score:mcScore, n:quiz.list.length}));
-    // 주관식 결과만 최종 틀린 단어로 집계(오타 정정 대상). 4지선다 오답은 초기화
-    quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.list=shuffle(quiz.list); renderQuiz();
-  } else {
-    renderQuizResults();
-  }
+  renderQuizResults();   // 객관식·주관식 모두 페이즈 종료 시 결과 화면(정정·재시험)
 }
-// 주관식 시험 결과 화면 (틀린 단어 + 내가 쓴 답 + 맞음 처리)
+// 시험 결과 화면 — 객관식/주관식 공용 (틀린 단어 + 내가 고른/쓴 답 + 맞음 처리 + 재시험)
 function renderQuizResults(){
   $("#quizBar").style.width="100%";
   $("#quizPhaseSeg").style.display="none";   // 결과 화면에선 단계 토글 숨김
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
+  const isMc=quiz.phase==="mc";
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
-  const typed=w=>{ const tp=quiz.saTyped&&quiz.saTyped[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
+  // 객관식이면 내가 고른 답, 주관식이면 내가 쓴 답을 표시
+  const given=w=>{ const tp=(isMc?quiz.mcChosen:quiz.saTyped)&&(isMc?quiz.mcChosen:quiz.saTyped)[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
   const wrongHtml = wrong.length
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
-        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(t("rq_typed"))}</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${typed(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
-      <div class="btnrow"><button class="btn" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(isMc?t("rq_chosen"):t("rq_typed"))}</th><th></th></tr></thead>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+      <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
-  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(t("rq_examEnd"))}</div>
-    <p style="text-align:center">${t("rq_saScore",{score:quiz.score, total})}</p>
+  const title = isMc ? t("mc_examEnd") : t("rq_examEnd");
+  const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
+  // 객관식 결과 → 주관식으로 이어가기 / 주관식 결과 → 처음부터 다시
+  const footer = isMc
+    ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(t("mc_goSA"))}</button></div>`
+    : `<div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
+  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(title)}</div>
+    <p style="text-align:center">${scoreLine}</p>
     ${wrongHtml}
-    <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
+    ${footer}`;
+}
+// 객관식 결과 화면에서 주관식 시험으로 이어가기 (같은 단어 전체를 다시 섞어 출제)
+function startSAPhase(){
+  quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.answered=false;
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
+  quiz.list=shuffle(quiz.list);
+  $("#quizArea").style.display="block";
+  renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
 function markCorrect(id){
@@ -2393,11 +2424,12 @@ function markCorrect(id){
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
-// 틀린 단어만 다시 풀기 (4지선다 → 주관식)
+// 틀린 단어만 다시 풀기 (현재 단계 유지 — 객관식이면 객관식, 주관식이면 주관식)
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
-  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}};
+  quiz={list:shuffle(list), idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
+  $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
