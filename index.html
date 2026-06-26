@@ -508,6 +508,7 @@
       </div>
       <div id="calendar"></div>
       <div id="dayDetail"></div>
+      <div id="logPanel" class="noprint"></div>
     </div>
   </section>
 
@@ -824,6 +825,9 @@ const I18N = {
     stat_learned:"학습한 단어", stat_today:"오늘 학습", stat_days:"학습한 날", stat_schedProgress:"일정 진행",
     stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
     stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
+    log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
+    log_hint:"암기·객관식·주관식·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
+    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_fix:"정정",
     detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -951,6 +955,9 @@ const I18N = {
     stat_learned:"Words learned", stat_today:"Learned today", stat_days:"Study days", stat_schedProgress:"Schedule progress",
     stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
     stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
+    log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
+    log_hint:"Every Memorize, multiple-choice, short-answer and correction action is logged by date and time. (last 14 days)",
+    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_fix:"Correction",
     detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -1016,6 +1023,7 @@ let state = {
   settings: {},
   progress: {},        // { id: {done, date} }
   excluded: [],        // ids — 암기 중 '이 단어 빼기'로 제외한 단어 (DB에서 복원 가능)
+  log: [],             // 학습일지(세분화 기록): { t:타임스탬프, d:날짜, id:단어, k:종류(mem/mc/sa/fix), r:결과(o/x) }
   dbName: "" // 현재 단어장(DB) 이름
 };
 
@@ -1031,6 +1039,7 @@ function load(){
   state.schedule = state.schedule || {};
   state.progress = state.progress || {};
   state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  state.log = Array.isArray(state.log) ? state.log : [];
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1038,7 +1047,7 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log
   };
   try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
 }
@@ -1047,6 +1056,14 @@ function isExcluded(id){ return (state.excluded||[]).includes(id); }
 function excludeWord(id){ if(!isExcluded(id)){ (state.excluded=state.excluded||[]).push(id); save(); } }
 function restoreWord(id){ state.excluded=(state.excluded||[]).filter(x=>x!==id); save(); }
 function notExcluded(w){ return !isExcluded(w.id); }
+// 학습일지: 학습 활동을 세분화해 기록 (암기/객관식/주관식/정정 + 정오답)
+function logEvent(id, kind, result){
+  state.log = state.log || [];
+  const now=new Date();
+  state.log.push({ t: now.getTime(), d: todayStr(), id, k: kind, r: result });
+  if(state.log.length>2000) state.log = state.log.slice(-2000);   // 무한 증가 방지
+  save();
+}
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
 }
@@ -1523,7 +1540,7 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 /* 가져오기/내보내기 */
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
-    schedule:state.schedule, settings:state.settings, progress:state.progress};
+    schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -1538,6 +1555,7 @@ function applyWordbook(d, fallbackName){
   state.selected=Array.isArray(d.selected)?d.selected:[];
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
+  state.log=Array.isArray(d.log)?d.log:[];
   normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
@@ -1651,13 +1669,13 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_reset"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_sample")};
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_sample")};
   normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_empty")};
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_empty")};
   save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
@@ -1838,15 +1856,16 @@ function renderSchedule(){
   const box=$("#scheduleResult");
   const dates=Object.keys(state.schedule).sort();
   const today=todayStr();
-  const learnedWords=state.words.filter(w=>isDone(w.id));
-  if(!dates.length && !learnedWords.length){ box.style.display="none"; refreshDateSelects(); return; }
+  // 제외(빼기)한 단어는 성취도(분모·분자)에서 모두 빼서 성취도가 나빠지지 않게 함
+  const learnedWords=state.words.filter(w=>isDone(w.id) && notExcluded(w));
+  if(!dates.length && !learnedWords.length && !(state.log||[]).length){ box.style.display="none"; refreshDateSelects(); return; }
   box.style.display="block";
 
-  /* ---- 학습 통계 (일정 + 일정 외 모두 포함) ---- */
-  const totalW=state.words.length, learned=learnedWords.length;
+  /* ---- 학습 통계 (일정 + 일정 외 모두 포함, 제외 단어는 빼고 집계) ---- */
+  const totalW=state.words.filter(notExcluded).length, learned=learnedWords.length;
   const todayLearned=learnedWords.filter(w=>studyDate(w.id)===today).length;
   const studyDays=new Set(learnedWords.map(w=>studyDate(w.id)).filter(Boolean)).size;
-  const schedIds=dates.flatMap(d=>state.schedule[d]);
+  const schedIds=dates.flatMap(d=>state.schedule[d]).filter(id=>!isExcluded(id));
   const schedSet=new Set(schedIds);
   const schedDone=schedIds.filter(isDone).length;
   const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
@@ -1869,7 +1888,7 @@ function renderSchedule(){
   if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
   if(selDate && !state.schedule[selDate]) selDate=null;
   if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
-  renderCalendar(); renderDayDetail();
+  renderCalendar(); renderDayDetail(); renderLog();
 
   /* ---- 일정 수정 패널 기본값 (현재·예정 기준) ---- */
   const ep=$("#editPanel");
@@ -1909,7 +1928,7 @@ function renderCalendar(){
   for(let i=0;i<startDow;i++) cells+=`<div class="calcell empty"></div>`;
   for(let day=1;day<=daysInMonth;day++){
     const ds=fmtDate(new Date(y,m,day)), dow=new Date(y,m,day).getDay();
-    const ids=state.schedule[ds];
+    const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));   // 제외 단어는 완료율에서 제외
     const cls=['calcell'];
     if(dow===0) cls.push('sun'); else if(dow===6) cls.push('sat');
     if(ds===today) cls.push('today');
@@ -1933,16 +1952,46 @@ function renderDayDetail(){
   const box=$("#dayDetail");
   if(!selDate || !state.schedule[selDate]){ box.innerHTML=''; return; }
   const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
-  const done=ids.filter(isDone).length;
+  const activeIds=ids.filter(id=>!isExcluded(id));   // 제외 단어는 완료율 집계에서 제외
+  const done=activeIds.filter(isDone).length;
   const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:ids.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
+      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:activeIds.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
       <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">${esc(t("detail_deleteDate"))}</button>
     </div>
     <div style="margin-top:8px">${chips}</div>
     <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_hint"))}</div>
   </div>`;
+}
+// 학습일지: 날짜·시간별로 세분화된 학습 기록(암기·객관식·주관식·정정 + 정/오답) 표시
+function renderLog(){
+  const box=$("#logPanel"); if(!box) return;
+  const log=(state.log||[]);
+  if(!log.length){
+    box.innerHTML=`<details class="wronglist" style="margin-top:12px"><summary class="setsum">${esc(t("log_title"))}</summary>
+      <p class="muted" style="margin:8px 2px;font-size:.85em">${esc(t("log_empty"))}</p></details>`;
+    return;
+  }
+  const icon=r=> r==="x" ? '❌' : '✅';
+  const fmtTime=ts=>{ const d=new Date(ts); return String(d.getHours()).padStart(2,'0')+":"+String(d.getMinutes()).padStart(2,'0'); };
+  const byDate={};
+  log.forEach(e=>{ (byDate[e.d]=byDate[e.d]||[]).push(e); });
+  const dates=Object.keys(byDate).sort().reverse().slice(0,14);   // 최근 14일
+  const body=dates.map(d=>{
+    const items=byDate[d].slice().sort((a,b)=>b.t-a.t);
+    const o=items.filter(e=>e.r!=="x").length, x=items.filter(e=>e.r==="x").length;
+    const rows=items.map(e=>{
+      const w=wordById(e.id);
+      const name = w ? `${esc(w.kanji||w.hiragana)} <span class="muted">(${esc(w.hiragana)})</span>` : `<span class="muted">#${e.id}</span>`;
+      return `<tr><td class="muted" style="white-space:nowrap">${fmtTime(e.t)}</td><td>${icon(e.r)}</td><td><span class="pill">${esc(t("log_kind_"+e.k))}</span></td><td>${name}</td></tr>`;
+    }).join("");
+    return `<details class="wronglist" style="margin-top:8px"><summary class="setsum">${esc(d)} · ${esc(t("log_dayCount",{o,x,n:items.length}))}</summary>
+      <div class="tablewrap" style="margin-top:6px"><table><tbody>${rows}</tbody></table></div></details>`;
+  }).join("");
+  box.innerHTML=`<details class="wronglist" open style="margin-top:12px"><summary class="setsum">${esc(t("log_title"))}</summary>
+    <p class="muted" style="margin:8px 2px 0;font-size:.82em">${esc(t("log_hint"))}</p>
+    ${body}</details>`;
 }
 $("#calPrev").addEventListener("click",()=>{ calRef.m--; if(calRef.m<0){calRef.m=11;calRef.y--;} renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ calRef.m++; if(calRef.m>11){calRef.m=0;calRef.y++;} renderCalendar(); });
@@ -2031,7 +2080,9 @@ $("#startMem").addEventListener("click",()=>{
 });
 // 학습 완료 기록 + (선행학습 수정 모드면) 미래 일정에서 제외
 function markLearned(id){
+  const already=isDone(id);
   state.progress[id]={done:true, date:todayStr()};
+  if(!already) logEvent(id,"mem","o");   // 암기 완료를 학습일지에 기록
   if(mem.adjustFuture){
     const td=todayStr();
     Object.keys(state.schedule).forEach(d=>{
@@ -2247,7 +2298,7 @@ function pickDistractors(w, n, pf, af){
     if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
     usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
   };
-  const pool=state.words.filter(x=>x.id!==w.id);
+  const pool=state.words.filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
   const out=[];
@@ -2357,6 +2408,7 @@ $("#quizBody").addEventListener("click",e=>{
   const ans = wField(w,quiz.curAf);
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(+b.dataset.id),quiz.curAf); fb(false,t("fb_answer",{ans})); }
+  logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
   setTimeout(nextQuiz,900);
 });
 function submitSA(){
@@ -2370,6 +2422,7 @@ function submitSA(){
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
+  logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   setTimeout(nextQuiz,1100);
 }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
@@ -2421,6 +2474,7 @@ function markCorrect(id){
   quiz.wrong.delete(id);
   quiz.score++;
   quizMarkDone(id);
+  logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
