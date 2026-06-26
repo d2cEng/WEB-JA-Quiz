@@ -846,7 +846,7 @@ const I18N = {
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
     rq_typed:"내가 쓴 답", rq_chosen:"내가 고른 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
-    mc_examEnd:"객관식 종료 🎉", mc_score:"객관식 점수: <b>{score} / {total}</b>", mc_goSA:"주관식 시험 시작 ▶",
+    mc_examEnd:"객관식 종료 🎉", mc_score:"객관식 점수: <b>{score} / {total}</b>", mc_goSA:"주관식 시험 시작 ▶", mc_goSAFull:"주관식 본시험 시작 (전체 {n}개) ▶",
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
@@ -976,7 +976,7 @@ const I18N = {
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
     rq_typed:"Your answer", rq_chosen:"Your choice", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
-    mc_examEnd:"Multiple choice finished 🎉", mc_score:"Multiple-choice score: <b>{score} / {total}</b>", mc_goSA:"Start short-answer test ▶",
+    mc_examEnd:"Multiple choice finished 🎉", mc_score:"Multiple-choice score: <b>{score} / {total}</b>", mc_goSA:"Start short-answer test ▶", mc_goSAFull:"Start full short-answer test (all {n}) ▶",
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
@@ -2348,7 +2348,8 @@ $("#startQuiz").addEventListener("click",()=>{
   // 무작위 방향: 단어별로 문제·정답 쌍을 미리 정해 페이즈가 바뀌어도 일관되게 유지
   let pairById=null;
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
-  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
+  // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, isRetry:false};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2387,12 +2388,13 @@ function renderQuiz(){
     $("#qSubmit").addEventListener("click",submitSA);
   }
 }
-// 객관식/주관식 단계 직접 이동 (선택한 단계를 처음부터 다시 풉니다)
+// 객관식/주관식 단계 직접 이동 (선택한 단계를 본시험 전체 단어로 처음부터 다시 풉니다)
 $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
-  if(ph===quiz.phase) return;
+  if(ph===quiz.phase && !quiz.isRetry) return;
   quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
+  quiz.isRetry=false; quiz.list=shuffle((quiz.mainList||quiz.list).slice());   // 단계 이동 시 항상 본시험 전체 단어
   renderQuiz();
 });
 $("#quizBody").addEventListener("click",e=>{
@@ -2450,20 +2452,22 @@ function renderQuizResults(){
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
   const title = isMc ? t("mc_examEnd") : t("rq_examEnd");
   const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
-  // 객관식 결과 → 주관식으로 이어가기 / 주관식 결과 → 처음부터 다시
+  // 객관식 결과 → 주관식 본시험(전체)으로 이어가기 / 주관식 결과 → 처음부터 다시
+  const mainN=(quiz.mainList||quiz.list).length;
   const footer = isMc
-    ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(t("mc_goSA"))}</button></div>`
+    ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(quiz.isRetry?t("mc_goSAFull",{n:mainN}):t("mc_goSA"))}</button></div>`
     : `<div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
   $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(title)}</div>
     <p style="text-align:center">${scoreLine}</p>
     ${wrongHtml}
     ${footer}`;
 }
-// 객관식 결과 화면에서 주관식 시험으로 이어가기 (같은 단어 전체를 다시 섞어 출제)
+// 객관식 결과 화면에서 주관식 시험으로 이어가기
+// 주관식 본시험은 항상 본시험 전체 단어(mainList)로 출제 — 객관식 재시험 목록이 섞이지 않는다
 function startSAPhase(){
   quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.answered=false;
-  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
-  quiz.list=shuffle(quiz.list);
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.isRetry=false;
+  quiz.list=shuffle((quiz.mainList||quiz.list).slice());
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2478,11 +2482,12 @@ function markCorrect(id){
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
-// 틀린 단어만 다시 풀기 (현재 단계 유지 — 객관식이면 객관식, 주관식이면 주관식)
+// 틀린 단어만 다시 풀기 — 현재 단계 전용(객관식 재시험은 객관식만, 주관식 재시험은 주관식만).
+// 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
-  quiz={list:shuffle(list), idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, isRetry:true};
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
