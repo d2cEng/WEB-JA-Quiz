@@ -347,6 +347,7 @@
       <button data-tab="quiz" data-i18n="tab_quiz">퀴즈</button>
       <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
       <button data-tab="grammar" data-i18n="tab_grammar">문법</button>
+      <button data-tab="idiom" data-i18n="tab_idiom">어법</button>
     </nav>
   </header>
 
@@ -670,6 +671,17 @@
     </div>
     <div id="grammarBody"></div>
   </section>
+
+  <!-- ============ 어법 (관용어·복합동사·연어) ============ -->
+  <section id="idiom">
+    <div class="card">
+      <h2 data-i18n="idiom_title">자주 쓰는 어법 — 관용어 · 복합동사 · 연어 🗣️</h2>
+      <p class="sub" data-i18n="idiom_sub">문법처럼 통째로 외우면 좋은 표현 모음. 관용어(굳은 비유 표현) · 복합동사(동사+동사) · 연어(굳어진 명사+동사 짝)로 묶었습니다. 아래 버튼으로 바로 이동하세요.</p>
+      <div class="gnavbar" id="iNav"></div>
+      <div class="tiphint" data-i18n="hint_idiom">💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.</div>
+    </div>
+    <div id="idiomBody"></div>
+  </section>
 </div>
 
 <button id="toTop" class="totop noprint" hidden data-i18n-title="totop_title" title="맨 위로">↑</button>
@@ -734,7 +746,8 @@ let LANG = (function(){
 const I18N = {
   ko:{
     appTitle:"일본어 단어 암기 · 시험", help_title:"도움말",
-    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법",
+    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
+    idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(굳은 비유 표현) · 복합동사(동사+동사) · 연어(굳어진 명사+동사 짝)로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.",
     db_title:"단어 데이터베이스",
     db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
     db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
@@ -864,7 +877,8 @@ const I18N = {
   },
   en:{
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help",
-    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar",
+    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
+    idiom_title:"Common usage — Idioms · Compound verbs · Collocations 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms (figurative set phrases), compound verbs (verb+verb), and collocations (fixed noun+verb pairs). Use the buttons below to jump.", hint_idiom:"💡 Same colors as the <b>part-of-speech badges</b> in Words DB, Memorize and Quiz. Load a wordbook to also filter and quiz by these categories.",
     db_title:"Word database",
     db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
     db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
@@ -1087,7 +1101,10 @@ const POS_ALIASES={
   "부사":"부사","adverb":"부사","副詞":"부사",
   "접속사":"접속사","conjunction":"접속사","接続詞":"접속사",
   "조사":"조사","particle":"조사","助詞":"조사",
-  "감탄사":"감탄사","interjection":"감탄사","感動詞":"감탄사"
+  "감탄사":"감탄사","interjection":"감탄사","感動詞":"감탄사",
+  "관용어":"관용어","관용구":"관용어","idiom":"관용어","idiomatic":"관용어","慣用句":"관용어",
+  "복합동사":"복합동사","compound verb":"복합동사","compound":"복합동사","複合動詞":"복합동사",
+  "연어":"연어","collocation":"연어","連語":"연어"
 };
 function normalizePos(pos){
   if(pos==null) return pos;
@@ -1141,11 +1158,12 @@ function bindSeg(id, after){
 const POS_COLORS={
   "1그룹동사":"#2563eb","2그룹동사":"#0d9488","3그룹동사":"#7c3aed",
   "い형용사":"#ea580c","な형용사":"#db2777",
-  "명사":"#475569","부사":"#b45309","접속사":"#4f46e5"
+  "명사":"#475569","부사":"#b45309","접속사":"#4f46e5",
+  "관용어":"#be123c","복합동사":"#0e7490","연어":"#65a30d"
 };
 function posColor(pos){ return POS_COLORS[pos] || "#64748b"; }
 // 품사 표시 라벨 (데이터 키는 한국어로 유지, 화면엔 언어별 라벨)
-const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle"};
+const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle","관용어":"Idiom","복합동사":"Compound verb","연어":"Collocation"};
 function posLabel(pos){ return (LANG==="en" && POS_LABELS_EN[pos]) ? POS_LABELS_EN[pos] : pos; }
 function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos); const lbl=posLabel(pos);
   const style=`background:${c}1a;color:${c};border:1px solid ${c}59`;
@@ -1338,10 +1356,107 @@ function renderGrammar(){
     `<div class="gsec-title">${esc(gGroupLabel(g))}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
   ).join("");
 }
+
+/* ====================== 어법 (관용어·복합동사·연어) ====================== */
+// 자주 쓰는 표현 모음. {jp:한자, hira:읽기, ko:한국어 뜻, en:영어 뜻, ex:예문}
+const IDIOM_DATA=[
+  {pos:"관용어", en:"Idioms (慣用句)", items:[
+    {jp:"腹を立てる",hira:"はらをたてる",ko:"화를 내다",en:"to get angry",ex:"小さなことで腹を立てる。"},
+    {jp:"気が利く",hira:"きがきく",ko:"눈치가 빠르다, 센스 있다",en:"to be thoughtful",ex:"彼は気が利く人だ。"},
+    {jp:"気を配る",hira:"きをくばる",ko:"세심히 신경 쓰다",en:"to be attentive",ex:"細かい所まで気を配る。"},
+    {jp:"気を失う",hira:"きをうしなう",ko:"정신을 잃다, 기절하다",en:"to faint",ex:"ショックで気を失う。"},
+    {jp:"手を抜く",hira:"てをぬく",ko:"대충 하다, 요령 피우다",en:"to cut corners",ex:"仕事の手を抜く。"},
+    {jp:"手に負えない",hira:"てにおえない",ko:"감당할 수 없다",en:"to be unmanageable",ex:"この問題は手に負えない。"},
+    {jp:"頭を抱える",hira:"あたまをかかえる",ko:"골머리를 앓다",en:"to be at one's wits' end",ex:"借金で頭を抱える。"},
+    {jp:"顔が広い",hira:"かおがひろい",ko:"발이 넓다",en:"to know many people",ex:"彼は業界で顔が広い。"},
+    {jp:"足を引っ張る",hira:"あしをひっぱる",ko:"발목을 잡다, 방해하다",en:"to hold someone back",ex:"チームの足を引っ張る。"},
+    {jp:"骨が折れる",hira:"ほねがおれる",ko:"힘들다, 고생스럽다",en:"to be hard work",ex:"この作業は骨が折れる。"},
+    {jp:"耳を傾ける",hira:"みみをかたむける",ko:"귀를 기울이다",en:"to listen carefully",ex:"人の意見に耳を傾ける。"},
+    {jp:"口が堅い",hira:"くちがかたい",ko:"입이 무겁다",en:"to be tight-lipped",ex:"彼は口が堅い。"},
+    {jp:"調子に乗る",hira:"ちょうしにのる",ko:"우쭐대다, 까불다",en:"to get carried away",ex:"褒められて調子に乗る。"},
+    {jp:"念を押す",hira:"ねんをおす",ko:"재차 다짐을 받다",en:"to make doubly sure",ex:"遅れないよう念を押す。"},
+    {jp:"水に流す",hira:"みずにながす",ko:"없던 일로 하다",en:"to let bygones be bygones",ex:"過去のことは水に流そう。"},
+    {jp:"油を売る",hira:"あぶらをうる",ko:"농땡이 피우다",en:"to loaf around",ex:"どこで油を売っていたの。"},
+    {jp:"恥をかく",hira:"はじをかく",ko:"창피를 당하다",en:"to be embarrassed",ex:"人前で恥をかく。"},
+    {jp:"役に立つ",hira:"やくにたつ",ko:"도움이 되다",en:"to be useful",ex:"この辞書は役に立つ。"}
+  ]},
+  {pos:"복합동사", en:"Compound verbs (複合動詞)", items:[
+    {jp:"取り組む",hira:"とりくむ",ko:"몰두하다, 임하다",en:"to tackle / work on",ex:"課題に取り組む。"},
+    {jp:"受け取る",hira:"うけとる",ko:"받다, 수령하다",en:"to receive",ex:"荷物を受け取る。"},
+    {jp:"思い出す",hira:"おもいだす",ko:"떠올리다, 생각해내다",en:"to recall",ex:"昔のことを思い出す。"},
+    {jp:"申し込む",hira:"もうしこむ",ko:"신청하다",en:"to apply",ex:"試験を申し込む。"},
+    {jp:"引き受ける",hira:"ひきうける",ko:"떠맡다, 맡다",en:"to take on",ex:"仕事を引き受ける。"},
+    {jp:"積み立てる",hira:"つみたてる",ko:"적립하다, 모으다",en:"to save up",ex:"毎月お金を積み立てる。"},
+    {jp:"締め切る",hira:"しめきる",ko:"마감하다",en:"to close (a deadline)",ex:"応募を締め切る。"},
+    {jp:"振り込む",hira:"ふりこむ",ko:"송금하다, 입금하다",en:"to transfer money",ex:"家賃を振り込む。"},
+    {jp:"乗り越える",hira:"のりこえる",ko:"극복하다",en:"to overcome",ex:"困難を乗り越える。"},
+    {jp:"落ち込む",hira:"おちこむ",ko:"의기소침해지다, 우울해지다",en:"to feel down",ex:"失敗して落ち込む。"},
+    {jp:"盛り上がる",hira:"もりあがる",ko:"분위기가 달아오르다",en:"to liven up",ex:"パーティーが盛り上がる。"},
+    {jp:"立ち上げる",hira:"たちあげる",ko:"(사업을) 시작하다, 띄우다",en:"to launch / start up",ex:"新事業を立ち上げる。"},
+    {jp:"見落とす",hira:"みおとす",ko:"간과하다, 놓치다",en:"to overlook",ex:"ミスを見落とす。"},
+    {jp:"受け入れる",hira:"うけいれる",ko:"받아들이다, 수용하다",en:"to accept",ex:"意見を受け入れる。"},
+    {jp:"片付ける",hira:"かたづける",ko:"정리하다, 처리하다",en:"to tidy up",ex:"部屋を片付ける。"},
+    {jp:"待ち合わせる",hira:"まちあわせる",ko:"약속하여 만나다",en:"to arrange to meet",ex:"駅で待ち合わせる。"},
+    {jp:"組み立てる",hira:"くみたてる",ko:"조립하다, 구성하다",en:"to assemble",ex:"家具を組み立てる。"},
+    {jp:"落ち着く",hira:"おちつく",ko:"진정되다, 안정되다",en:"to calm down",ex:"気持ちが落ち着く。"}
+  ]},
+  {pos:"연어", en:"Collocations (連語)", items:[
+    {jp:"夢を見る",hira:"ゆめをみる",ko:"꿈을 꾸다",en:"to dream",ex:"怖い夢を見る。"},
+    {jp:"面倒を見る",hira:"めんどうをみる",ko:"돌보다",en:"to look after",ex:"後輩の面倒を見る。"},
+    {jp:"様子を見る",hira:"ようすをみる",ko:"상황을 지켜보다",en:"to wait and see",ex:"もう少し様子を見る。"},
+    {jp:"風邪をひく",hira:"かぜをひく",ko:"감기에 걸리다",en:"to catch a cold",ex:"寒くて風邪をひく。"},
+    {jp:"写真を撮る",hira:"しゃしんをとる",ko:"사진을 찍다",en:"to take a photo",ex:"記念に写真を撮る。"},
+    {jp:"電話をかける",hira:"でんわをかける",ko:"전화를 걸다",en:"to make a call",ex:"友達に電話をかける。"},
+    {jp:"注意を払う",hira:"ちゅういをはらう",ko:"주의를 기울이다",en:"to pay attention",ex:"安全に注意を払う。"},
+    {jp:"興味を持つ",hira:"きょうみをもつ",ko:"흥미를 갖다",en:"to take interest",ex:"歴史に興味を持つ。"},
+    {jp:"自信を持つ",hira:"じしんをもつ",ko:"자신감을 갖다",en:"to be confident",ex:"自分に自信を持つ。"},
+    {jp:"約束を守る",hira:"やくそくをまもる",ko:"약속을 지키다",en:"to keep a promise",ex:"必ず約束を守る。"},
+    {jp:"約束を破る",hira:"やくそくをやぶる",ko:"약속을 어기다",en:"to break a promise",ex:"約束を破ってしまう。"},
+    {jp:"連絡を取る",hira:"れんらくをとる",ko:"연락을 취하다",en:"to get in touch",ex:"担当者と連絡を取る。"},
+    {jp:"道に迷う",hira:"みちにまよう",ko:"길을 잃다, 헤매다",en:"to get lost",ex:"知らない町で道に迷う。"},
+    {jp:"嘘をつく",hira:"うそをつく",ko:"거짓말을 하다",en:"to tell a lie",ex:"平気で嘘をつく。"},
+    {jp:"気に入る",hira:"きにいる",ko:"마음에 들다",en:"to like / take a fancy to",ex:"この服が気に入る。"},
+    {jp:"気を付ける",hira:"きをつける",ko:"조심하다, 주의하다",en:"to be careful",ex:"車に気を付ける。"},
+    {jp:"世話になる",hira:"せわになる",ko:"신세를 지다",en:"to be indebted to",ex:"先輩に世話になる。"},
+    {jp:"間に合う",hira:"まにあう",ko:"시간에 대다, 늦지 않다",en:"to be in time",ex:"電車に間に合う。"}
+  ]}
+];
+function idiomKo(it){ return (LANG==="en" && it.en) ? it.en : it.ko; }
+function renderIdiom(){
+  $("#iNav").innerHTML = IDIOM_DATA.map(g=>{
+    const c=posColor(g.pos), lbl=posLabel(g.pos);
+    return `<button type="button" class="gchip" data-igo="${esc(g.pos)}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(lbl)} (${g.items.length})</button>`;
+  }).join("");
+  $("#idiomBody").innerHTML = IDIOM_DATA.map(g=>{
+    const c=posColor(g.pos);
+    const rows=g.items.map(it=>`<tr>
+      <td class="jp" style="white-space:nowrap;font-weight:600">${esc(it.jp)}<br><span class="ghira" style="font-weight:400">${esc(it.hira)}</span></td>
+      <td>${esc(idiomKo(it))}<div class="jp" style="opacity:.7;font-size:.92em;margin-top:2px">${esc(it.ex)}</div></td></tr>`).join("");
+    return `<div class="gsec-title" id="idiom-${esc(g.pos)}">${posBadge(g.pos)} <span class="en" style="color:${c}">${esc(g.en)}</span></div>
+      <div class="card" style="border-left:4px solid ${c}"><table class="gtable"><tbody>${rows}</tbody></table></div>`;
+  }).join("");
+}
+// 어법 탭 상단 바로가기
+$("#iNav").addEventListener("click",e=>{
+  const b=e.target.closest("[data-igo]"); if(!b) return;
+  const el=$(`#idiom-${CSS.escape(b.dataset.igo)}`); if(!el) return;
+  const header=document.querySelector("header");
+  const off=(header?header.getBoundingClientRect().height:0)+12;
+  const y=el.getBoundingClientRect().top + window.pageYOffset - off;
+  window.scrollTo({top:Math.max(0,y), behavior:"smooth"});
+});
+// 어법 품사 간단 설명 (문법 카드에 없는 관용어·복합동사·연어용)
+const IDIOM_POS_DESC={
+  "관용어":{ko:"글자 그대로가 아닌 굳어진 비유 표현(慣用句). 통째로 외워요. 예: 腹を立てる(화내다).",en:"Set figurative expressions (慣用句) — memorize them whole. e.g. 腹を立てる (get angry)."},
+  "복합동사":{ko:"동사 두 개가 합쳐진 말(複合動詞). 앞=의미, 뒤=방향·완료. 예: 取り組む(몰두하다).",en:"Verbs made of two verbs (複合動詞): first = meaning, second = direction/completion. e.g. 取り組む (tackle)."},
+  "연어":{ko:"특정 명사에 정해진 동사를 쓰는 굳어진 짝(連語). 예: 風邪をひく(감기에 걸리다).",en:"Fixed noun+verb pairings (連語). e.g. 風邪をひく (catch a cold)."}
+};
 // 품사 배지 → 문법 팝업 (펼친 카드)
 function openGrammarPopup(pos){
   const it=GRAMMAR.flatMap(g=>g.items).find(x=>x.pos===pos);
+  const idi=IDIOM_POS_DESC[pos];
   $("#gModalBody").innerHTML = it ? grammarCardHtml(it,true)
+    : idi ? `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">${esc(LANG==="en"?idi.en:idi.ko)}</p><div class="tiphint" style="margin-top:8px">💡 ${esc(t("tab_idiom"))}</div></div>`
     : `<div class="gcard" style="padding:16px"><div class="ghead">${posBadge(pos)}</div><p class="gdesc">${esc(t('gram_noExplain'))}</p></div>`;
   $("#gModal").hidden=false;
 }
@@ -1420,7 +1535,7 @@ function setLang(lang){
   $$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
   applyI18n();
   // 동적 콘텐츠 다시 그리기
-  refreshDbFilters(); syncQuizAnswer(); renderGrammar();
+  refreshDbFilters(); syncQuizAnswer(); renderGrammar(); renderIdiom();
   gAllOpen=false; if($("#gExpandAll")) $("#gExpandAll").textContent=t("gram_expandAll");
   renderDb(); renderSchedule(); refreshDateSelects();
   updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
@@ -1441,6 +1556,7 @@ function showTab(tab){
   if(tab==="memorize") updateMemCount();   // 범위별 단어 수 최신화
   if(tab==="quiz") updateQuizCount();      // 범위별 단어 수 최신화
   if(tab==="print") updatePrintCount();    // 문항 수 최신화
+  if(tab==="idiom") renderIdiom();         // 어법 목록 렌더
   if(location.hash.slice(1)!==tab) history.replaceState(null,"","#"+tab);
 }
 window.addEventListener("hashchange",()=>{ const t=location.hash.slice(1); if(t) showTab(t); });
