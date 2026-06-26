@@ -508,6 +508,7 @@
       </div>
       <div id="calendar"></div>
       <div id="dayDetail"></div>
+      <div id="logPanel" class="noprint"></div>
     </div>
   </section>
 
@@ -824,6 +825,9 @@ const I18N = {
     stat_learned:"학습한 단어", stat_today:"오늘 학습", stat_days:"학습한 날", stat_schedProgress:"일정 진행",
     stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
     stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
+    log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
+    log_hint:"암기·객관식·주관식·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
+    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_fix:"정정",
     detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -841,7 +845,8 @@ const I18N = {
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
-    rq_typed:"내가 쓴 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    rq_typed:"내가 쓴 답", rq_chosen:"내가 고른 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기",
+    mc_examEnd:"객관식 종료 🎉", mc_score:"객관식 점수: <b>{score} / {total}</b>", mc_goSA:"주관식 시험 시작 ▶",
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
@@ -950,6 +955,9 @@ const I18N = {
     stat_learned:"Words learned", stat_today:"Learned today", stat_days:"Study days", stat_schedProgress:"Schedule progress",
     stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
     stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
+    log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
+    log_hint:"Every Memorize, multiple-choice, short-answer and correction action is logged by date and time. (last 14 days)",
+    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_fix:"Correction",
     detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -967,7 +975,8 @@ const I18N = {
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
-    rq_typed:"Your answer", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    rq_typed:"Your answer", rq_chosen:"Your choice", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones",
+    mc_examEnd:"Multiple choice finished 🎉", mc_score:"Multiple-choice score: <b>{score} / {total}</b>", mc_goSA:"Start short-answer test ▶",
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
@@ -1014,6 +1023,7 @@ let state = {
   settings: {},
   progress: {},        // { id: {done, date} }
   excluded: [],        // ids — 암기 중 '이 단어 빼기'로 제외한 단어 (DB에서 복원 가능)
+  log: [],             // 학습일지(세분화 기록): { t:타임스탬프, d:날짜, id:단어, k:종류(mem/mc/sa/fix), r:결과(o/x) }
   dbName: "" // 현재 단어장(DB) 이름
 };
 
@@ -1029,6 +1039,7 @@ function load(){
   state.schedule = state.schedule || {};
   state.progress = state.progress || {};
   state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  state.log = Array.isArray(state.log) ? state.log : [];
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1036,7 +1047,7 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log
   };
   try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
 }
@@ -1045,6 +1056,14 @@ function isExcluded(id){ return (state.excluded||[]).includes(id); }
 function excludeWord(id){ if(!isExcluded(id)){ (state.excluded=state.excluded||[]).push(id); save(); } }
 function restoreWord(id){ state.excluded=(state.excluded||[]).filter(x=>x!==id); save(); }
 function notExcluded(w){ return !isExcluded(w.id); }
+// 학습일지: 학습 활동을 세분화해 기록 (암기/객관식/주관식/정정 + 정오답)
+function logEvent(id, kind, result){
+  state.log = state.log || [];
+  const now=new Date();
+  state.log.push({ t: now.getTime(), d: todayStr(), id, k: kind, r: result });
+  if(state.log.length>2000) state.log = state.log.slice(-2000);   // 무한 증가 방지
+  save();
+}
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
 }
@@ -1521,7 +1540,7 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 /* 가져오기/내보내기 */
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
-    schedule:state.schedule, settings:state.settings, progress:state.progress};
+    schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -1536,6 +1555,7 @@ function applyWordbook(d, fallbackName){
   state.selected=Array.isArray(d.selected)?d.selected:[];
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
+  state.log=Array.isArray(d.log)?d.log:[];
   normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
@@ -1649,13 +1669,13 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_reset"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_sample")};
+  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_sample")};
   normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
   localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],dbName:t("name_empty")};
+  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_empty")};
   save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
@@ -1836,15 +1856,16 @@ function renderSchedule(){
   const box=$("#scheduleResult");
   const dates=Object.keys(state.schedule).sort();
   const today=todayStr();
-  const learnedWords=state.words.filter(w=>isDone(w.id));
-  if(!dates.length && !learnedWords.length){ box.style.display="none"; refreshDateSelects(); return; }
+  // 제외(빼기)한 단어는 성취도(분모·분자)에서 모두 빼서 성취도가 나빠지지 않게 함
+  const learnedWords=state.words.filter(w=>isDone(w.id) && notExcluded(w));
+  if(!dates.length && !learnedWords.length && !(state.log||[]).length){ box.style.display="none"; refreshDateSelects(); return; }
   box.style.display="block";
 
-  /* ---- 학습 통계 (일정 + 일정 외 모두 포함) ---- */
-  const totalW=state.words.length, learned=learnedWords.length;
+  /* ---- 학습 통계 (일정 + 일정 외 모두 포함, 제외 단어는 빼고 집계) ---- */
+  const totalW=state.words.filter(notExcluded).length, learned=learnedWords.length;
   const todayLearned=learnedWords.filter(w=>studyDate(w.id)===today).length;
   const studyDays=new Set(learnedWords.map(w=>studyDate(w.id)).filter(Boolean)).size;
-  const schedIds=dates.flatMap(d=>state.schedule[d]);
+  const schedIds=dates.flatMap(d=>state.schedule[d]).filter(id=>!isExcluded(id));
   const schedSet=new Set(schedIds);
   const schedDone=schedIds.filter(isDone).length;
   const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
@@ -1867,7 +1888,7 @@ function renderSchedule(){
   if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
   if(selDate && !state.schedule[selDate]) selDate=null;
   if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
-  renderCalendar(); renderDayDetail();
+  renderCalendar(); renderDayDetail(); renderLog();
 
   /* ---- 일정 수정 패널 기본값 (현재·예정 기준) ---- */
   const ep=$("#editPanel");
@@ -1907,7 +1928,7 @@ function renderCalendar(){
   for(let i=0;i<startDow;i++) cells+=`<div class="calcell empty"></div>`;
   for(let day=1;day<=daysInMonth;day++){
     const ds=fmtDate(new Date(y,m,day)), dow=new Date(y,m,day).getDay();
-    const ids=state.schedule[ds];
+    const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));   // 제외 단어는 완료율에서 제외
     const cls=['calcell'];
     if(dow===0) cls.push('sun'); else if(dow===6) cls.push('sat');
     if(ds===today) cls.push('today');
@@ -1931,16 +1952,46 @@ function renderDayDetail(){
   const box=$("#dayDetail");
   if(!selDate || !state.schedule[selDate]){ box.innerHTML=''; return; }
   const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
-  const done=ids.filter(isDone).length;
+  const activeIds=ids.filter(id=>!isExcluded(id));   // 제외 단어는 완료율 집계에서 제외
+  const done=activeIds.filter(isDone).length;
   const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:ids.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
+      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:activeIds.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
       <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">${esc(t("detail_deleteDate"))}</button>
     </div>
     <div style="margin-top:8px">${chips}</div>
     <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_hint"))}</div>
   </div>`;
+}
+// 학습일지: 날짜·시간별로 세분화된 학습 기록(암기·객관식·주관식·정정 + 정/오답) 표시
+function renderLog(){
+  const box=$("#logPanel"); if(!box) return;
+  const log=(state.log||[]);
+  if(!log.length){
+    box.innerHTML=`<details class="wronglist" style="margin-top:12px"><summary class="setsum">${esc(t("log_title"))}</summary>
+      <p class="muted" style="margin:8px 2px;font-size:.85em">${esc(t("log_empty"))}</p></details>`;
+    return;
+  }
+  const icon=r=> r==="x" ? '❌' : '✅';
+  const fmtTime=ts=>{ const d=new Date(ts); return String(d.getHours()).padStart(2,'0')+":"+String(d.getMinutes()).padStart(2,'0'); };
+  const byDate={};
+  log.forEach(e=>{ (byDate[e.d]=byDate[e.d]||[]).push(e); });
+  const dates=Object.keys(byDate).sort().reverse().slice(0,14);   // 최근 14일
+  const body=dates.map(d=>{
+    const items=byDate[d].slice().sort((a,b)=>b.t-a.t);
+    const o=items.filter(e=>e.r!=="x").length, x=items.filter(e=>e.r==="x").length;
+    const rows=items.map(e=>{
+      const w=wordById(e.id);
+      const name = w ? `${esc(w.kanji||w.hiragana)} <span class="muted">(${esc(w.hiragana)})</span>` : `<span class="muted">#${e.id}</span>`;
+      return `<tr><td class="muted" style="white-space:nowrap">${fmtTime(e.t)}</td><td>${icon(e.r)}</td><td><span class="pill">${esc(t("log_kind_"+e.k))}</span></td><td>${name}</td></tr>`;
+    }).join("");
+    return `<details class="wronglist" style="margin-top:8px"><summary class="setsum">${esc(d)} · ${esc(t("log_dayCount",{o,x,n:items.length}))}</summary>
+      <div class="tablewrap" style="margin-top:6px"><table><tbody>${rows}</tbody></table></div></details>`;
+  }).join("");
+  box.innerHTML=`<details class="wronglist" open style="margin-top:12px"><summary class="setsum">${esc(t("log_title"))}</summary>
+    <p class="muted" style="margin:8px 2px 0;font-size:.82em">${esc(t("log_hint"))}</p>
+    ${body}</details>`;
 }
 $("#calPrev").addEventListener("click",()=>{ calRef.m--; if(calRef.m<0){calRef.m=11;calRef.y--;} renderCalendar(); });
 $("#calNext").addEventListener("click",()=>{ calRef.m++; if(calRef.m>11){calRef.m=0;calRef.y++;} renderCalendar(); });
@@ -2029,7 +2080,9 @@ $("#startMem").addEventListener("click",()=>{
 });
 // 학습 완료 기록 + (선행학습 수정 모드면) 미래 일정에서 제외
 function markLearned(id){
+  const already=isDone(id);
   state.progress[id]={done:true, date:todayStr()};
+  if(!already) logEvent(id,"mem","o");   // 암기 완료를 학습일지에 기록
   if(mem.adjustFuture){
     const td=todayStr();
     Object.keys(state.schedule).forEach(d=>{
@@ -2199,15 +2252,20 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed"};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{}};
 function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
 // 무작위 방향: 문제·정답을 서로 다른 필드로 임의 선택
-function randPair(){
+// (히라가나 문제에 히라가나가 답으로 나오지 않도록, 표시값이 같아지는 쌍은 제외)
+function randPair(w){
   const fs=["kanji","hira","korean"];
-  const pf=fs[Math.floor(Math.random()*fs.length)];
-  const rest=fs.filter(x=>x!==pf);
-  const af=rest[Math.floor(Math.random()*rest.length)];
-  return {pf,af};
+  for(let tries=0;tries<12;tries++){
+    const pf=fs[Math.floor(Math.random()*fs.length)];
+    const rest=fs.filter(x=>x!==pf);
+    const af=rest[Math.floor(Math.random()*rest.length)];
+    if(w && wField(w,pf)===wField(w,af)) continue;   // 한자 없는 단어 등으로 문제=정답이 되는 경우 회피
+    return {pf,af};
+  }
+  return {pf:"korean", af:"hira"};
 }
 // 문제/정답으로 쓸 필드 값
 function wField(w,f){
@@ -2223,14 +2281,29 @@ function acceptFor(w,f){
 }
 // 끝에서부터 공통 히라가나(오쿠리가나) 길이
 function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.length&&a[a.length-1-i]===b[b.length-1-i]) i++; return i; }
+// 한글 뜻 묶음(중복 비교용)
+function koreanKey(w){ return w.meanings.map(m=>m.korean).join(", "); }
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
-function pickDistractors(w, n){
+// 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
+function pickDistractors(w, n, pf, af){
   const target=w.hiragana||"";
   const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
-  const pool=state.words.filter(x=>x.id!==w.id);
+  const usedHira=new Set([w.hiragana]);            // 다른 단어의 동일한 히라가나 방지
+  const usedKo=new Set([koreanKey(w)]);            // 동일한 한글 뜻 방지
+  const usedShown=new Set([wField(w,af)]);         // 동일한 표시값(보기 텍스트) 방지
+  const acceptable=x=>{
+    // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
+    if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) return false;
+    const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af);
+    if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
+    usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
+  };
+  const pool=state.words.filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
-  return [...samePos, ...others].slice(0,n);   // 같은 품사가 부족하면 다른 품사로 보충
+  const out=[];
+  for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
+  return out;   // 같은 품사가 부족하면 다른 품사로 보충
 }
 function updateQuizCount(){
   const max=wordsForScope(segVal('qScopeSeg'),$("#qDate").value).length;
@@ -2274,8 +2347,8 @@ $("#startQuiz").addEventListener("click",()=>{
   if(list.length<4) toast(t("toast_fewChoices"));
   // 무작위 방향: 단어별로 문제·정답 쌍을 미리 정해 페이즈가 바뀌어도 일관되게 유지
   let pairById=null;
-  if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(); }); }
-  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}};
+  if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
+  quiz={list, idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2286,7 +2359,7 @@ function renderQuiz(){
   const w=quiz.list[quiz.idx];
   // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
   let pf=quiz.pf, af=quiz.af;
-  if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(); pf=p.pf; af=p.af; }
+  if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
   quiz.curPf=pf; quiz.curAf=af;
   $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):t("quiz_sa")), pf:fieldLabel(pf), af:fieldLabel(af)});
   $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
@@ -2294,7 +2367,7 @@ function renderQuiz(){
   let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
   if(quiz.phase==="mc"){
     // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
-    const optWords = shuffle([w, ...pickDistractors(w,3)]);
+    const optWords = shuffle([w, ...pickDistractors(w,3,pf,af)]);
     html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,af))}</button>`).join("")+`</div>`;
     html+=`<div class="feedback" id="qfb"></div>`;
   } else {
@@ -2319,7 +2392,7 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
   if(ph===quiz.phase) return;
-  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={};
+  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
   renderQuiz();
 });
 $("#quizBody").addEventListener("click",e=>{
@@ -2334,7 +2407,8 @@ $("#quizBody").addEventListener("click",e=>{
   });
   const ans = wField(w,quiz.curAf);
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
-  else { quiz.wrong.add(w.id); fb(false,t("fb_answer",{ans})); }
+  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(+b.dataset.id),quiz.curAf); fb(false,t("fb_answer",{ans})); }
+  logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
   setTimeout(nextQuiz,900);
 });
 function submitSA(){
@@ -2348,41 +2422,51 @@ function submitSA(){
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
+  logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   setTimeout(nextQuiz,1100);
 }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
 function nextQuiz(){
   if(quiz.idx<quiz.list.length-1){ quiz.idx++; renderQuiz(); return; }
-  // 페이즈 종료
-  if(quiz.phase==="mc"){
-    const mcScore=quiz.score;
-    alert(t("alert_mcDone",{score:mcScore, n:quiz.list.length}));
-    // 주관식 결과만 최종 틀린 단어로 집계(오타 정정 대상). 4지선다 오답은 초기화
-    quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.list=shuffle(quiz.list); renderQuiz();
-  } else {
-    renderQuizResults();
-  }
+  renderQuizResults();   // 객관식·주관식 모두 페이즈 종료 시 결과 화면(정정·재시험)
 }
-// 주관식 시험 결과 화면 (틀린 단어 + 내가 쓴 답 + 맞음 처리)
+// 시험 결과 화면 — 객관식/주관식 공용 (틀린 단어 + 내가 고른/쓴 답 + 맞음 처리 + 재시험)
 function renderQuizResults(){
   $("#quizBar").style.width="100%";
   $("#quizPhaseSeg").style.display="none";   // 결과 화면에선 단계 토글 숨김
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
+  const isMc=quiz.phase==="mc";
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
-  const typed=w=>{ const tp=quiz.saTyped&&quiz.saTyped[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
+  // 객관식이면 내가 고른 답, 주관식이면 내가 쓴 답을 표시
+  const given=w=>{ const tp=(isMc?quiz.mcChosen:quiz.saTyped)&&(isMc?quiz.mcChosen:quiz.saTyped)[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
   const wrongHtml = wrong.length
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
-        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(t("rq_typed"))}</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${typed(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
-      <div class="btnrow"><button class="btn" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(isMc?t("rq_chosen"):t("rq_typed"))}</th><th></th></tr></thead>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+      <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
-  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(t("rq_examEnd"))}</div>
-    <p style="text-align:center">${t("rq_saScore",{score:quiz.score, total})}</p>
+  const title = isMc ? t("mc_examEnd") : t("rq_examEnd");
+  const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
+  // 객관식 결과 → 주관식으로 이어가기 / 주관식 결과 → 처음부터 다시
+  const footer = isMc
+    ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(t("mc_goSA"))}</button></div>`
+    : `<div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
+  $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(title)}</div>
+    <p style="text-align:center">${scoreLine}</p>
     ${wrongHtml}
-    <div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
+    ${footer}`;
+}
+// 객관식 결과 화면에서 주관식 시험으로 이어가기 (같은 단어 전체를 다시 섞어 출제)
+function startSAPhase(){
+  quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.answered=false;
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
+  quiz.list=shuffle(quiz.list);
+  $("#quizArea").style.display="block";
+  renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
 function markCorrect(id){
@@ -2390,14 +2474,16 @@ function markCorrect(id){
   quiz.wrong.delete(id);
   quiz.score++;
   quizMarkDone(id);
+  logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
-// 틀린 단어만 다시 풀기 (4지선다 → 주관식)
+// 틀린 단어만 다시 풀기 (현재 단계 유지 — 객관식이면 객관식, 주관식이면 주관식)
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
-  quiz={list:shuffle(list), idx:0, phase:"mc", score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}};
+  quiz={list:shuffle(list), idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}};
+  $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
