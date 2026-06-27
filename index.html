@@ -682,6 +682,7 @@
       <p class="sub" data-i18n="idiom_sub">문법처럼 통째로 외우면 좋은 표현 모음. 관용어(굳은 비유 표현) · 복합동사(동사+동사) · 연어(굳어진 명사+동사 짝)로 묶었습니다. 아래 버튼으로 바로 이동하세요.</p>
       <div class="gnavbar" id="iNav"></div>
       <div class="tiphint" data-i18n="hint_idiom">💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.</div>
+      <div class="btnrow"><button class="btn sec" id="iExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
     <div id="idiomBody"></div>
   </section>
@@ -1749,8 +1750,10 @@ function idiomSectionsHtml(){
       return `<div class="isubt" style="color:${c}">${esc(idiomGroupLabel(sg))} <span class="muted" style="font-weight:400">(${sg.items.length})</span></div>
         <table class="gtable" style="margin-bottom:10px"><tbody>${rows}</tbody></table>`;
     }).join("");
-    return `<div class="gsec-title" data-idiom="${esc(g.pos)}">${posBadge(g.pos)} <span class="en" style="color:${c}">${esc(g.en)}</span> <span class="muted" style="font-weight:400">· ${idiomCount(g)}</span></div>
-      <div class="card" style="border-left:4px solid ${c}">${sub}</div>`;
+    return `<details class="gcard idiomcard" data-idiom="${esc(g.pos)}" style="--gc:${c}">
+      <summary>${posBadge(g.pos)} <span class="en">${esc(g.en)}</span> <span class="muted" style="font-weight:400">· ${idiomCount(g)}</span></summary>
+      <div class="gbody">${sub}</div>
+    </details>`;
   }).join("");
 }
 // 어법 분류 바로가기 칩 (어법 탭 #iNav / 모바일 문법 탭 내부 공용)
@@ -1764,15 +1767,13 @@ function renderIdiom(){
   $("#iNav").innerHTML = idiomNavHtml();
   $("#idiomBody").innerHTML = idiomSectionsHtml();
 }
-// 어법 분류 바로가기 — 칩을 누르면 같은 섹션 안의 해당 분류로 스크롤 (어법 탭/모바일 문법 탭 공용)
+// 어법 분류 바로가기 — 칩을 누르면 같은 섹션의 해당 카드를 펼치면서 이동 (어법 탭/모바일 문법 탭 공용)
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-igo]"); if(!b) return;
   const scope=b.closest("section")||document;
-  const el=scope.querySelector(`[data-idiom="${CSS.escape(b.dataset.igo)}"]`); if(!el) return;
-  const header=document.querySelector("header");
-  const off=(header?header.getBoundingClientRect().height:0)+12;
-  const y=el.getBoundingClientRect().top + window.pageYOffset - off;
-  window.scrollTo({top:Math.max(0,y), behavior:"smooth"});
+  const el=scope.querySelector(`details[data-idiom="${CSS.escape(b.dataset.igo)}"]`); if(!el) return;
+  el.open=true;
+  requestAnimationFrame(()=>el.scrollIntoView({behavior:"smooth",block:"start"}));
 });
 // 어법 품사 간단 설명 (문법 카드에 없는 관용어·복합동사·연어용)
 const IDIOM_POS_DESC={
@@ -1836,6 +1837,13 @@ $("#gExpandAll").addEventListener("click",()=>{
   $$("#grammarBody details.gcard").forEach(d=>d.open=gAllOpen);
   $("#gExpandAll").textContent=gAllOpen?t("gram_collapseAll"):t("gram_expandAll");
 });
+// 어법 탭 전부 열기/접기
+let iAllOpen=false;
+$("#iExpandAll").addEventListener("click",()=>{
+  iAllOpen=!iAllOpen;
+  $$("#idiomBody details.idiomcard").forEach(d=>d.open=iAllOpen);
+  $("#iExpandAll").textContent=iAllOpen?t("gram_collapseAll"):t("gram_expandAll");
+});
 document.addEventListener("click",e=>{
   const b=e.target.closest(".posbadge.tap"); if(b){ openGrammarPopup(b.dataset.pos); return; }
   if(e.target.closest("#gModal [data-close]")) $("#gModal").hidden=true;
@@ -1868,6 +1876,7 @@ function setLang(lang){
   // 동적 콘텐츠 다시 그리기
   refreshDbFilters(); syncQuizAnswer(); renderGrammar(); renderIdiom();
   gAllOpen=false; if($("#gExpandAll")) $("#gExpandAll").textContent=t("gram_expandAll");
+  iAllOpen=false; if($("#iExpandAll")) $("#iExpandAll").textContent=t("gram_expandAll");
   renderDb(); renderSchedule(); refreshDateSelects();
   updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
   $("#dbName").value=state.dbName||"";
