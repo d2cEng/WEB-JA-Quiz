@@ -217,6 +217,13 @@
   /* 문법 상단 바로가기 */
   .gnavbar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
   .gchip{border-radius:999px;padding:5px 12px;font-size:.82em;font-weight:800;cursor:pointer;white-space:nowrap}
+  /* 접이식 네비게이터 블록 (문법/어법) */
+  .navfold{margin:8px 0 2px}
+  .navfold>summary{list-style:none;cursor:pointer;font-weight:800;font-size:.92em;padding:8px 12px;
+    border:1px solid var(--line);border-radius:10px;background:var(--card);display:flex;align-items:center;gap:8px}
+  .navfold>summary::-webkit-details-marker{display:none}
+  .navfold>summary::after{content:"▸";margin-left:auto;color:var(--muted);transition:transform .15s}
+  .navfold[open]>summary::after{transform:rotate(90deg)}
   /* 접이식 문법 카드 */
   .gcard{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--gc,#64748b);
     border-radius:var(--r);box-shadow:var(--shadow);margin:12px 0;overflow:hidden;scroll-margin-top:128px}
@@ -668,11 +675,8 @@
     <div class="card">
       <h2 data-i18n="gram_title">일본어 품사 · 문법 한눈에 📚</h2>
       <p class="sub" data-i18n="gram_sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
-      <div class="gnavbar" id="gNav"></div>
-      <div id="gIdiomNavWrap" hidden>
-        <div class="isubt" style="margin:12px 2px 0">🗣️ <span data-i18n="tab_idiom">어법</span></div>
-        <div class="gnavbar" id="gIdiomNav"></div>
-      </div>
+      <details class="navfold"><summary>📚 <span data-i18n="nav_grammar">문법 바로가기</span></summary><div class="gnavbar" id="gNav"></div></details>
+      <details class="navfold" id="gIdiomNavWrap" hidden><summary>🗣️ <span data-i18n="nav_idiom">어법 바로가기</span></summary><div class="gnavbar" id="gIdiomNav"></div></details>
       <div class="tiphint" data-i18n="hint_grammar">💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.</div>
       <div class="btnrow"><button class="btn sec" id="gExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
@@ -684,7 +688,7 @@
     <div class="card">
       <h2 data-i18n="idiom_title">자주 쓰는 어법 — 관용어 · 복합동사 · 연어 🗣️</h2>
       <p class="sub" data-i18n="idiom_sub">문법처럼 통째로 외우면 좋은 표현 모음. 관용어(굳은 비유 표현) · 복합동사(동사+동사) · 연어(굳어진 명사+동사 짝)로 묶었습니다. 아래 버튼으로 바로 이동하세요.</p>
-      <div class="gnavbar" id="iNav"></div>
+      <details class="navfold"><summary>🗣️ <span data-i18n="nav_idiom">어법 바로가기</span></summary><div class="gnavbar" id="iNav"></div></details>
       <div class="tiphint" data-i18n="hint_idiom">💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.</div>
       <div class="btnrow"><button class="btn sec" id="iExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
@@ -755,7 +759,7 @@ const I18N = {
   ko:{
     appTitle:"일본어 단어 암기 · 시험", help_title:"도움말",
     tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
-    idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.",
+    nav_grammar:"문법 바로가기", nav_idiom:"어법 바로가기", idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.",
     db_title:"단어 데이터베이스",
     db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
     db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
@@ -887,7 +891,7 @@ const I18N = {
   en:{
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help",
     tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
-    idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Same colors as the <b>part-of-speech badges</b> in Words DB, Memorize and Quiz. Load a wordbook to also filter and quiz by these categories.",
+    nav_grammar:"Grammar shortcuts", nav_idiom:"Phrase shortcuts", idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Same colors as the <b>part-of-speech badges</b> in Words DB, Memorize and Quiz. Load a wordbook to also filter and quiz by these categories.",
     db_title:"Word database",
     db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
     db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
