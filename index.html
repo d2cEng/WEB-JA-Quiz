@@ -1366,6 +1366,7 @@ function renderGrammar(){
   // 모바일에서는 어법(관용어·복합동사·연어)을 문법 탭 안에 이어서 표시
   if(isMobileView()){
     html += `<div class="gsec-title" style="margin-top:18px">🗣️ ${esc(t("tab_idiom"))} <span class="muted" style="font-weight:400">(${esc(t("idiom_inGrammar"))})</span></div>`
+          + `<div class="gnavbar">${idiomNavHtml()}</div>`
           + idiomSectionsHtml();
   }
   $("#grammarBody").innerHTML = html;
@@ -1748,21 +1749,26 @@ function idiomSectionsHtml(){
       return `<div class="isubt" style="color:${c}">${esc(idiomGroupLabel(sg))} <span class="muted" style="font-weight:400">(${sg.items.length})</span></div>
         <table class="gtable" style="margin-bottom:10px"><tbody>${rows}</tbody></table>`;
     }).join("");
-    return `<div class="gsec-title" id="idiom-${esc(g.pos)}">${posBadge(g.pos)} <span class="en" style="color:${c}">${esc(g.en)}</span> <span class="muted" style="font-weight:400">· ${idiomCount(g)}</span></div>
+    return `<div class="gsec-title" data-idiom="${esc(g.pos)}">${posBadge(g.pos)} <span class="en" style="color:${c}">${esc(g.en)}</span> <span class="muted" style="font-weight:400">· ${idiomCount(g)}</span></div>
       <div class="card" style="border-left:4px solid ${c}">${sub}</div>`;
   }).join("");
 }
-function renderIdiom(){
-  $("#iNav").innerHTML = IDIOM_DATA.map(g=>{
+// 어법 분류 바로가기 칩 (어법 탭 #iNav / 모바일 문법 탭 내부 공용)
+function idiomNavHtml(){
+  return IDIOM_DATA.map(g=>{
     const c=posColor(g.pos), lbl=posLabel(g.pos);
     return `<button type="button" class="gchip" data-igo="${esc(g.pos)}" style="background:${c}1a;color:${c};border:1px solid ${c}59">${esc(lbl)} (${idiomCount(g)})</button>`;
   }).join("");
+}
+function renderIdiom(){
+  $("#iNav").innerHTML = idiomNavHtml();
   $("#idiomBody").innerHTML = idiomSectionsHtml();
 }
-// 어법 탭 상단 바로가기
-$("#iNav").addEventListener("click",e=>{
+// 어법 분류 바로가기 — 칩을 누르면 같은 섹션 안의 해당 분류로 스크롤 (어법 탭/모바일 문법 탭 공용)
+document.addEventListener("click",e=>{
   const b=e.target.closest("[data-igo]"); if(!b) return;
-  const el=$(`#idiom-${CSS.escape(b.dataset.igo)}`); if(!el) return;
+  const scope=b.closest("section")||document;
+  const el=scope.querySelector(`[data-idiom="${CSS.escape(b.dataset.igo)}"]`); if(!el) return;
   const header=document.querySelector("header");
   const off=(header?header.getBoundingClientRect().height:0)+12;
   const y=el.getBoundingClientRect().top + window.pageYOffset - off;
