@@ -669,6 +669,10 @@
       <h2 data-i18n="gram_title">일본어 품사 · 문법 한눈에 📚</h2>
       <p class="sub" data-i18n="gram_sub">동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.</p>
       <div class="gnavbar" id="gNav"></div>
+      <div id="gIdiomNavWrap" hidden>
+        <div class="isubt" style="margin:12px 2px 0">🗣️ <span data-i18n="tab_idiom">어법</span></div>
+        <div class="gnavbar" id="gIdiomNav"></div>
+      </div>
       <div class="tiphint" data-i18n="hint_grammar">💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.</div>
       <div class="btnrow"><button class="btn sec" id="gExpandAll" data-i18n="gram_expandAll">전부 열기</button></div>
     </div>
@@ -1365,11 +1369,13 @@ function renderGrammar(){
     `<div class="gsec-title">${esc(gGroupLabel(g))}</div>`+ g.items.map(it=>grammarCardHtml(it,false)).join("")
   ).join("");
   // 모바일에서는 어법(관용어·복합동사·연어)을 문법 탭 안에 이어서 표시
+  const giw=$("#gIdiomNavWrap");
   if(isMobileView()){
-    html += `<div class="gsec-title" style="margin-top:18px">🗣️ ${esc(t("tab_idiom"))} <span class="muted" style="font-weight:400">(${esc(t("idiom_inGrammar"))})</span></div>`
-          + `<div class="gnavbar">${idiomNavHtml()}</div>`
+    // 어법 네비게이터는 문법 네비게이터 바로 아래(상단 카드)에 배치, 카드 본문은 아래에
+    if(giw){ giw.hidden=false; $("#gIdiomNav").innerHTML=idiomNavHtml(); }
+    html += `<div class="gsec-title" data-idiom-head style="margin-top:18px">🗣️ ${esc(t("tab_idiom"))} <span class="muted" style="font-weight:400">(${esc(t("idiom_inGrammar"))})</span></div>`
           + idiomSectionsHtml();
-  }
+  } else if(giw){ giw.hidden=true; $("#gIdiomNav").innerHTML=""; }
   $("#grammarBody").innerHTML = html;
 }
 
