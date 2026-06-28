@@ -2365,10 +2365,9 @@ function carryOverWords(){
   // 이월 대상 = 지난(오늘 이전) 미완료 단어 (미래에 이미 잡힌 건 제외). 미래 일정은 그대로 두고 '추가'한다
   const pool=overdueIds();
   if(!pool.length) return 0;
-  // 과거 날짜에서 대상 제거 (완료 단어는 남겨 진행률 유지)
-  const pset=new Set(pool);
+  // 과거 날짜의 '미완료'는 전부 제거(완료 단어만 남겨 진행률 유지) → 미완료가 과거에 남지 않음
   Object.keys(state.schedule).forEach(d=>{
-    if(d<td){ state.schedule[d]=state.schedule[d].filter(x=>!pset.has(x)); if(!state.schedule[d].length) delete state.schedule[d]; }
+    if(d<td){ state.schedule[d]=state.schedule[d].filter(x=>isDone(x)); if(!state.schedule[d].length) delete state.schedule[d]; }
   });
   // 남은 날짜: 오늘 ~ 종료일 (종료일이 지났으면 오늘 하루)
   const days=daysOf(td, endDate>=td?endDate:td) || [{date:td, weekend:false}];
