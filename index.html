@@ -2364,6 +2364,11 @@ function carryOverWords(){
     if(w && !isDone(id) && notExcluded(w)) pool.push(id);
   }));
   if(!pool.length) return 0;
+  // 기존 일정의 주중/주말 비중(k = 주말÷주중)을 추론 — 단어 제거 전 원본 길이 기준
+  let wdMax=0, weMax=0;
+  keys.forEach(d=>{ const dow=new Date(d+"T00:00:00").getDay(); const len=state.schedule[d].length;
+    if(dow===0||dow===6){ if(len>weMax) weMax=len; } else { if(len>wdMax) wdMax=len; } });
+  const ratioK = (wdMax>0 && weMax>0) ? Math.min(4, Math.max(1, Math.round(weMax/wdMax))) : null;
   // 대상 단어를 모든 날짜에서 제거(완료 단어는 원래 날짜에 그대로 남겨 진행률 유지)
   const pset=new Set(pool);
   Object.keys(state.schedule).forEach(d=>{
@@ -2373,9 +2378,10 @@ function carryOverWords(){
   // 대상 날짜: 오늘 ~ 종료일 (종료일이 이미 지났으면 오늘 하루)
   const td=todayStr();
   const days=daysOf(td, endDate>=td?endDate:td) || [{date:td, weekend:false}];
-  // 평일/주말 분량 차등을 일정 생성과 동일하게 적용(자동 가중치). 종료일을 넘기지 않음
-  const c=capsAuto(pool.length, days);
-  let x=c.x, y=c.y; if(x<=0 && y<=0){ x=pool.length; y=pool.length; }
+  // 기존 주중/주말 비중(ratioK)을 유지해 재배분. 추론 불가하면 자동 가중치. 종료일을 넘기지 않음
+  const we=days.filter(d=>d.weekend).length, wd=days.length-we;
+  const c = (ratioK!=null) ? capsForK(pool.length, wd, we, ratioK) : capsAuto(pool.length, days);
+  let x=(c&&c.x)||0, y=(c&&c.y)||0; if(x<=0 && y<=0){ x=pool.length; y=pool.length; }
   const fresh={};
   distributeInto(fresh, pool.map(wordById).filter(Boolean), days, x, y);
   // 완료 단어 등 기존 항목과 병합
