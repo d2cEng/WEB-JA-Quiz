@@ -2356,32 +2356,35 @@ function carryOverWords(){
   const keys=Object.keys(state.schedule).sort();
   if(!keys.length) return 0;
   const endDate=keys[keys.length-1];
-  // 재배분 대상 = 일정에 들어 있는 '미완료'(제외 단어 제외) 단어, 중복 제거, 날짜 순
-  const pool=[], seen=new Set();
-  keys.forEach(d=>state.schedule[d].forEach(id=>{
-    if(seen.has(id)) return; seen.add(id);
-    const w=wordById(id);
-    if(w && !isDone(id) && notExcluded(w)) pool.push(id);
-  }));
-  if(!pool.length) return 0;
-  // 대상 단어를 모든 날짜에서 제거(완료 단어는 원래 날짜에 그대로 남겨 진행률 유지)
-  const pset=new Set(pool);
-  Object.keys(state.schedule).forEach(d=>{
-    state.schedule[d]=state.schedule[d].filter(x=>!pset.has(x));
-    if(!state.schedule[d].length) delete state.schedule[d];
-  });
-  // 대상 날짜: 오늘 ~ 종료일 (종료일이 이미 지났으면 오늘 하루)
   const td=todayStr();
+  // 기존 일정의 주중/주말 비중(k = 주말÷주중)을 추론 — 원본 길이 기준
+  let wdMax=0, weMax=0;
+  keys.forEach(d=>{ const dow=new Date(d+"T00:00:00").getDay(); const len=state.schedule[d].length;
+    if(dow===0||dow===6){ if(len>weMax) weMax=len; } else { if(len>wdMax) wdMax=len; } });
+  const k = (wdMax>0 && weMax>0) ? Math.min(4, Math.max(1, Math.round(weMax/wdMax))) : 2;
+  // 이월 대상 = 지난(오늘 이전) 미완료 단어 (미래에 이미 잡힌 건 제외). 미래 일정은 그대로 두고 '추가'한다
+  const pool=overdueIds();
+  if(!pool.length) return 0;
+  // 과거 날짜의 '미완료'는 전부 제거(완료 단어만 남겨 진행률 유지) → 미완료가 과거에 남지 않음
+  Object.keys(state.schedule).forEach(d=>{
+    if(d<td){ state.schedule[d]=state.schedule[d].filter(x=>isDone(x)); if(!state.schedule[d].length) delete state.schedule[d]; }
+  });
+  // 남은 날짜: 오늘 ~ 종료일 (종료일이 지났으면 오늘 하루)
   const days=daysOf(td, endDate>=td?endDate:td) || [{date:td, weekend:false}];
-  // 평일/주말 분량 차등을 일정 생성과 동일하게 적용(자동 가중치). 종료일을 넘기지 않음
-  const c=capsAuto(pool.length, days);
-  let x=c.x, y=c.y; if(x<=0 && y<=0){ x=pool.length; y=pool.length; }
-  const fresh={};
-  distributeInto(fresh, pool.map(wordById).filter(Boolean), days, x, y);
-  // 완료 단어 등 기존 항목과 병합
-  Object.keys(fresh).forEach(d=>{
-    const arr=state.schedule[d] || (state.schedule[d]=[]);
-    fresh[d].forEach(id=>{ if(!arr.includes(id)) arr.push(id); });
+  // 주중/주말 비중(weekend=k, weekday=1)대로 '추가' 배분 → 남은 날의 하루 분량이 늘어남
+  const weights=days.map(d=>d.weekend?k:1);
+  const tw=weights.reduce((a,b)=>a+b,0)||1;
+  const add=days.map((d,i)=>Math.floor(pool.length*weights[i]/tw));
+  let rem=pool.length-add.reduce((a,b)=>a+b,0);
+  const order=days.map((d,i)=>i).sort((a,b)=>weights[b]-weights[a]); // 나머지는 비중 큰 날부터
+  for(let j=0; rem>0 && order.length; j=(j+1)%order.length){ add[order[j]]++; rem--; }
+  // 기존 일정에 더해서 배치
+  let p=0;
+  days.forEach((d,i)=>{
+    if(add[i]<=0) return;
+    const arr=state.schedule[d.date] || (state.schedule[d.date]=[]);
+    for(let n=0; n<add[i] && p<pool.length; n++){ const id=pool[p++]; if(!arr.includes(id)) arr.push(id); }
+    if(!state.schedule[d.date].length) delete state.schedule[d.date];
   });
   return pool.length;
 }
