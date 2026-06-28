@@ -1,0 +1,17 @@
+{
+  "name": "일본어 단어 암기 · 시험 (JA Quiz)",
+  "short_name": "JA Quiz",
+  "description": "설치 없이 브라우저에서 바로 쓰는 일본어 단어 학습·시험 웹앱",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6fb",
+  "theme_color": "#3b5bdb",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

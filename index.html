@@ -10,6 +10,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="JA Quiz">
 <meta name="theme-color" content="#3b5bdb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%233b5bdb'/%3E%3Ctext x='90' y='120' font-size='96' text-anchor='middle' fill='white' font-family='sans-serif'%3E日%3C/text%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b5bdb'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='sans-serif'%3E日%3C/text%3E%3C/svg%3E">
 <style>
@@ -343,6 +345,7 @@
     <div class="topbar">
       <h1><span class="em">🇯🇵</span> <span data-i18n="appTitle">일본어 단어 암기 · 시험</span></h1>
       <div class="topctl">
+        <button class="helpbtn" id="installBtn" data-i18n-title="install_title" title="앱 설치" hidden>⬇️ <span data-i18n="install_btn">설치</span></button>
         <button class="helpbtn" id="helpBtn" data-i18n-title="help_title" title="도움말">❔</button>
         <div class="langseg" id="langSeg">
           <button type="button" data-lang="ko">한국어</button>
@@ -757,7 +760,7 @@ let LANG = (function(){
 })();
 const I18N = {
   ko:{
-    appTitle:"일본어 단어 암기 · 시험", help_title:"도움말",
+    appTitle:"일본어 단어 암기 · 시험", help_title:"도움말", install_title:"앱으로 설치", install_btn:"설치", toast_installed:"홈 화면에 설치했어요",
     tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
     nav_grammar:"문법 바로가기", nav_idiom:"어법 바로가기", idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.",
     db_title:"단어 데이터베이스",
@@ -889,7 +892,7 @@ const I18N = {
     help_tip_t:"💾 저장 & 이동", help_tip_b:"진도와 설정은 <b>브라우저에 자동 저장</b>됩니다. 기기를 바꿀 땐 DB의 <b>내보내기</b>로 백업하고 새 기기에서 <b>가져오기</b> 하세요. 우측 상단에서 <b>언어</b>를 바꿀 수 있습니다."
   },
   en:{
-    appTitle:"Japanese Vocabulary · Quiz", help_title:"Help",
+    appTitle:"Japanese Vocabulary · Quiz", help_title:"Help", install_title:"Install as app", install_btn:"Install", toast_installed:"Installed to your home screen",
     tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
     nav_grammar:"Grammar shortcuts", nav_idiom:"Phrase shortcuts", idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Same colors as the <b>part-of-speech badges</b> in Words DB, Memorize and Quiz. Load a wordbook to also filter and quiz by these categories.",
     db_title:"Word database",
@@ -3159,6 +3162,36 @@ renderGrammar();     // 문법 탭 렌더
 if(Object.keys(state.schedule).length) $("#schedSettings").open=false;  // 일정 있으면 설정 접기
 const initTab=location.hash.slice(1);
 if(initTab && $("#"+initTab)) showTab(initTab);
+</script>
+<script>
+/* ====================== PWA 설치 · 오프라인 ====================== */
+// 서비스워커 등록 (http/https에서만 — 단일 파일 file:// 사용 시엔 건너뜀)
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+// 설치 버튼: beforeinstallprompt를 잡아 사용자 제스처로 설치 안내
+(function () {
+  let deferredPrompt = null;
+  const btn = document.getElementById("installBtn");
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (btn && !standalone) btn.hidden = false;
+  });
+  if (btn) btn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch (e) {}
+    deferredPrompt = null;
+    btn.hidden = true;
+  });
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    if (btn) btn.hidden = true;
+    try { if (typeof toast === "function") toast(t("toast_installed")); } catch (e) {}
+  });
+})();
 </script>
 </body>
 </html>
