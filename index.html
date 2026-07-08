@@ -2685,7 +2685,10 @@ function speakJa(text){
 let lastSpokenKey="";
 function maybeAutoRead(text){
   if(!$("#mAutoRead").checked) return;
-  const key=mem.stage+":"+mem.idx;
+  // 인덱스가 아닌 단어 id로 키를 만든다.
+  // (단어 제외 시 다음 단어가 같은 인덱스로 당겨져 와도 새 단어로 인식해 읽어주도록)
+  const w=mem.list[mem.idx];
+  const key=mem.stage+":"+(w?w.id:mem.idx);
   if(key===lastSpokenKey) return;   // 같은 카드 재렌더(뜻 선택 등)는 다시 읽지 않음
   lastSpokenKey=key; speakJa(text);
 }
@@ -2771,7 +2774,9 @@ function renderStageEnd(){
       renderSchedule(); $("#memBar").style.width="100%"; toast(t("toast_memDone")); }
   });
   $("#stageRetry").addEventListener("click",()=>{
-    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0; renderFlash(); toast(t("toast_retryShuffle"));
+    mem.list=shuffle(mem.list); mem.idx=0; mem.meaningIdx=0;
+    lastSpokenKey="";   // 섞은 뒤 첫 카드가 직전에 읽은 단어여도 다시 읽도록 초기화
+    renderFlash(); toast(t("toast_retryShuffle"));
   });
 }
 $("#flash").addEventListener("click",e=>{
