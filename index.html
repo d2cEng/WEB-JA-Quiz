@@ -168,7 +168,7 @@
     border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:.95em}
   .speakbtn:active{background:var(--brand);color:#fff}
   /* 카드뷰 자동 읽기 토글 스위치 */
-  .memtools{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .memtools{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:8px}
   .tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
     -webkit-user-select:none;border:1px solid var(--line);background:var(--card);
     border-radius:999px;padding:6px 8px 6px 13px;font-size:.84em;font-weight:700;
@@ -319,9 +319,9 @@
   .langseg button.on{background:var(--brand);color:#fff}
   .helpbtn{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:999px;
     width:34px;height:34px;cursor:pointer;font-weight:800;font-size:1em;flex:0 0 auto}
-  /* 암기 카드: 단어 빼기 버튼 */
-  .dropword{position:absolute;top:10px;right:12px;border:1px solid var(--line);background:#fff;
-    color:var(--muted);border-radius:999px;padding:5px 11px;font-size:.78em;font-weight:700;cursor:pointer}
+  /* 암기 카드: 단어 빼기 버튼 (자동 읽기 토글 오른쪽, 상단 바에 배치) */
+  .dropword{border:1px solid var(--line);background:#fff;
+    color:var(--muted);border-radius:999px;padding:6px 12px;font-size:.84em;font-weight:700;cursor:pointer}
   .dropword:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
   .flash{position:relative}
   /* 도움말 힌트 카드 */
@@ -586,6 +586,7 @@
           <span class="tgltxt" data-i18n="mem_autoRead">🔊 자동 읽기</span>
           <span class="knob" aria-hidden="true"></span>
         </label>
+        <button class="dropword" id="memDrop" data-drop data-i18n="mem_dropWord">이 단어 빼기 ✕</button>
       </div>
       <div class="progress"><i id="memBar"></i></div>
       <p class="muted" style="text-align:center" id="memCounter"></p>
@@ -2735,8 +2736,7 @@ function renderFlash(){
   mem.meaningIdx=Math.min(mem.meaningIdx, w.meanings.length-1);
   $("#memCounter").textContent=t("mem_counterWord",{stage:memStageTag(mem.stage), i:mem.idx+1, n:N});
   $("#memBar").style.width=((mem.stage*N + mem.idx)/(N*MEM_STAGES)*100)+"%";
-  let html=`<button class="dropword" data-drop>${esc(t("mem_dropWord"))}</button>`;
-  html+=`<div class="stage-tag">${esc(memStageTag(mem.stage))}</div>`;
+  let html=`<div class="stage-tag">${esc(memStageTag(mem.stage))}</div>`;
   if(w.pos||w.level) html+=`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`;   // 품사(터치 시 문법 팝업) · 레벨
   const multi = w.meanings.length>1;
   const picker = multi ? `<div class="meaning-pick">`+w.meanings.map((m,i)=>
@@ -2812,8 +2812,8 @@ function renderStageEnd(){
     renderFlash(); toast(t("toast_retryShuffle"));
   });
 }
+$("#memDrop").addEventListener("click",()=>dropCurrentWord());   // 상단 바로 이동한 '단어 제외' 버튼
 $("#flash").addEventListener("click",e=>{
-  if(e.target.closest("[data-drop]")){ dropCurrentWord(); return; }
   const sp=e.target.closest(".speakbtn"); if(sp){ speakJa(sp.dataset.text); return; }
   const b=e.target.closest("button[data-mi]"); if(!b) return;
   mem.meaningIdx=+b.dataset.mi; renderFlash();
