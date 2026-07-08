@@ -167,6 +167,22 @@
   .speakbtn{margin-top:14px;border:1px solid var(--brand);background:var(--accent);color:var(--brand);
     border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:.95em}
   .speakbtn:active{background:var(--brand);color:#fff}
+  /* 카드뷰 자동 읽기 토글 스위치 */
+  .memtools{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+    -webkit-user-select:none;border:1px solid var(--line);background:var(--card);
+    border-radius:999px;padding:6px 8px 6px 13px;font-size:.84em;font-weight:700;
+    color:var(--muted);transition:color .2s,border-color .2s,background .2s}
+  .tgl input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+  .tgl .knob{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;
+    flex:0 0 auto;transition:background .2s}
+  .tgl .knob::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;
+    border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(20,30,60,.3);transition:transform .2s}
+  .tgl input:checked ~ .knob{background:var(--brand)}
+  .tgl input:checked ~ .knob::after{transform:translateX(16px)}
+  .tgl input:checked ~ .tgltxt{color:var(--brand)}
+  .tgl:has(input:checked){border-color:var(--brand);background:var(--accent)}
+  .tgl input:focus-visible ~ .knob{outline:2px solid var(--brand);outline-offset:2px}
   .progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0}
   .progress>i{display:block;height:100%;background:var(--brand);width:0;transition:width .25s}
   /* quiz */
@@ -560,11 +576,17 @@
       </div>
       <label><span data-i18n="mem_countPre">단어 수: </span><b id="mCountLabel">0</b> / <span id="mCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="mCount" min="1" max="1" value="1">
-      <label class="chk"><input type="checkbox" id="mAutoRead" autocomplete="off"> <span data-i18n="mem_autoRead">🔊 카드 자동 읽기 (발음·TTS)</span></label>
       <div class="btnrow"><button class="btn" id="startMem" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
     <div class="card" id="memStage" style="display:none">
+      <div class="memtools noprint">
+        <label class="tgl">
+          <input type="checkbox" id="mAutoRead" autocomplete="off">
+          <span class="tgltxt" data-i18n="mem_autoRead">🔊 자동 읽기</span>
+          <span class="knob" aria-hidden="true"></span>
+        </label>
+      </div>
       <div class="progress"><i id="memBar"></i></div>
       <p class="muted" style="text-align:center" id="memCounter"></p>
       <div class="flash" id="flash"></div>
@@ -810,7 +832,7 @@ const I18N = {
     mem_scope:"학습 범위", scope_today:"오늘 분량", scope_date:"날짜", scope_selected:"선택 단어", scope_all:"전체", lbl_date:"날짜",
     mem_mode:"학습 방식", mem_asis:"일정대로", mem_ahead:"선행학습 (이어서 더)",
     mem_afterLabel:"학습한 단어의 이후 일정", mem_keep:"유지", mem_exclude:"학습분 제외",
-    mem_orderLabel:"출제 순서", mem_countPre:"단어 수: ", mem_autoRead:"🔊 카드 자동 읽기 (발음·TTS)",
+    mem_orderLabel:"출제 순서", mem_countPre:"단어 수: ", mem_autoRead:"🔊 자동 읽기",
     btn_start:"시작", mem_prev:"◀ 이전 단어", mem_next:"다음 단어 ▶", mem_prevStage:"⏮ 이전 단계", mem_skip:"다음 단계 ⏭",
     mem_finishStage:"이 단계 마치기 ▶", mem_skipLast:"마치기 ⏭", mem_dropWord:"이 단어 빼기 ✕", mem_firstStageLabel:"⏮ 첫 단계 (처음)",
     hint_db:"💡 <b>체크</b>한 단어가 암기·퀴즈·일정의 대상이 됩니다. 검색·정렬 후 <b>검색결과 전체선택</b>도 활용하세요.",
@@ -942,7 +964,7 @@ const I18N = {
     mem_scope:"Study scope", scope_today:"Today's load", scope_date:"Date", scope_selected:"Selected words", scope_all:"All", lbl_date:"Date",
     mem_mode:"Study mode", mem_asis:"As scheduled", mem_ahead:"Study ahead (keep going)",
     mem_afterLabel:"Future schedule for studied words", mem_keep:"Keep", mem_exclude:"Exclude studied",
-    mem_orderLabel:"Order", mem_countPre:"Words: ", mem_autoRead:"🔊 Auto-read cards (TTS)",
+    mem_orderLabel:"Order", mem_countPre:"Words: ", mem_autoRead:"🔊 Auto-read",
     btn_start:"Start", mem_prev:"◀ Prev word", mem_next:"Next word ▶", mem_prevStage:"⏮ Prev stage", mem_skip:"Next stage ⏭",
     mem_finishStage:"Finish this stage ▶", mem_skipLast:"Finish ⏭", mem_dropWord:"Remove this word ✕", mem_firstStageLabel:"⏮ First stage (start)",
     hint_db:"💡 <b>Checked</b> words become the targets for Memorize/Quiz/Schedule. Try <b>Select all results</b> after searching/sorting.",
@@ -2692,6 +2714,17 @@ function maybeAutoRead(text){
   if(key===lastSpokenKey) return;   // 같은 카드 재렌더(뜻 선택 등)는 다시 읽지 않음
   lastSpokenKey=key; speakJa(text);
 }
+// 현재 카드에서 읽어줄 텍스트 (예문 단계는 예문, 그 외엔 ひらがな)
+function memSpeakText(w){
+  return mem.stage===MEM_LAST ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
+}
+// 카드뷰 자동 읽기 토글: 켜는 즉시 현재 카드를 읽고, 끄면 재생 중인 음성을 멈춘다
+$("#mAutoRead").addEventListener("change",e=>{
+  if(!e.target.checked){ try{ speechSynthesis.cancel(); }catch(err){} return; }
+  const w=mem.list[mem.idx];
+  if(!w || $("#memNav").style.display==="none") return;   // 단계 완료 화면 등 카드가 없을 땐 읽지 않음
+  lastSpokenKey=mem.stage+":"+w.id; speakJa(memSpeakText(w));
+});
 // 암기 단계 정의 (4단계): 0 뜻+ひらがな · 1 ひらがな+漢字 · 2 漢字+뜻 · 3 예문
 const MEM_STAGES=4, MEM_LAST=MEM_STAGES-1;
 function memStageTag(i){ return t("stage"+(i+1)); }
@@ -2727,7 +2760,7 @@ function renderFlash(){
     // 마지막(예문) 단계에 도달한 단어는 즉시 학습 기록 (선행학습/분량 초과분도 바로바로 반영)
     if(!isDone(w.id)){ markLearned(w.id); save(); }
   }
-  const speakText = mem.stage===MEM_LAST ? ((w.meanings[mem.meaningIdx]||{}).example || w.hiragana) : w.hiragana;
+  const speakText = memSpeakText(w);
   html+=`<button class="speakbtn" data-text="${esc(speakText)}">${esc(t("mem_listen"))}</button>`;
   $("#memNav").style.display="flex";
   $("#flash").innerHTML=html;
