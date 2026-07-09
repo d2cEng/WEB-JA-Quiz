@@ -2942,19 +2942,48 @@ function editDist(a,b){
   }
   return prev[n];
 }
-// '어느 정도 맞으면' 판정: 완전 일치 / 포함(2자 이상) / 3자 이상은 편집거리 1 허용 / 유사도(1-편집거리/길이) 75% 이상
+// 탁점·반탁점·장음 차이를 무시한 느슨한 비교용 폴딩 (か=が, は=ば=ぱ 등)
+const SP_DEVOICE={が:"か",ぎ:"き",ぐ:"く",げ:"け",ご:"こ",ざ:"さ",じ:"し",ず:"す",ぜ:"せ",ぞ:"そ",
+  だ:"た",ぢ:"ち",づ:"つ",で:"て",ど:"と",ば:"は",び:"ひ",ぶ:"ふ",べ:"へ",ぼ:"ほ",
+  ぱ:"は",ぴ:"ひ",ぷ:"ふ",ぺ:"へ",ぽ:"ほ"};
+function kanaLoose(s){ return String(s||"").replace(/ー/g,"").replace(/./g,c=>SP_DEVOICE[c]||c); }
+// '어느 정도 맞으면' 판정: 완전 일치 / 포함(2자 이상) / 유사도(1-편집거리/길이) 75% 이상
+// (탁점·장음 차이는 kanaLoose로 별도 흡수. 여기서 짧은 단어의 1글자 차이까지 허용하면
+//  つかう↔ちかう 처럼 서로 다른 단어가 오탐되므로 허용하지 않는다)
 function spSimilar(a,b){
   if(!a||!b) return false;
   if(a===b) return true;
   if(a.length>=2 && b.length>=2 && (a.includes(b)||b.includes(a))) return true;
   const L=Math.max(a.length,b.length), d=editDist(a,b);
-  if(L>=3 && d<=1) return true;   // 짧은 단어: 한 글자 차이까지 허용
-  return L>=2 && (1-d/L)>=0.75;
+  return L>=2 && (1-d/L)>=0.75;   // 4자 이상 단어에서 한 글자 차이 정도만 여유
 }
-// 인식 대안들 vs 정답(히라가나·한자 — 인식기가 한자로 돌려주는 경우 대응)
+// 단어 DB 전체의 한자→읽기(히라가나) 맵. 인식기가 돌려준 한자를 DB 읽기로 되돌려 비교하기 위함.
+// (ja-JP 음성인식은 발음을 동음이의 한자로 바꿔 돌려주므로, 한자 표기만으로 비교하면 오답이 남)
+let spReadingMap=null;
+function buildSpReadingMap(){
+  spReadingMap=new Map();
+  (state.words||[]).forEach(x=>{
+    if(!x.kanji||!x.hiragana) return;
+    const k=normSpeech(x.kanji), r=normSpeech(x.hiragana);
+    if(!k||!r) return;
+    if(!spReadingMap.has(k)) spReadingMap.set(k,new Set());
+    spReadingMap.get(k).add(r);
+  });
+}
+// 인식된 한 대안의 비교 후보값들: 정규화값 + (DB에 있으면) 그 한자의 읽기
+function spReadings(tx){
+  if(!spReadingMap) buildSpReadingMap();
+  const v=normSpeech(tx); const set=new Set();
+  if(v) set.add(v);
+  if(v && spReadingMap.has(v)) spReadingMap.get(v).forEach(r=>set.add(r));
+  return [...set];
+}
+// 인식 대안들 vs 정답 — 히라가나 읽기 기준으로 비교(한자는 DB로 읽기 환원), 탁점 차이는 느슨하게 허용
 function spMatch(alts,w){
-  const answers=[w.hiragana,w.kanji].filter(Boolean).map(normSpeech).filter(Boolean);
-  return alts.some(tx=>{ const v=normSpeech(tx); return v && answers.some(a=>spSimilar(v,a)); });
+  const targets=[normSpeech(w.hiragana), normSpeech(w.kanji)].filter(Boolean);
+  return alts.some(tx=> spReadings(tx).some(v=>
+    targets.some(a=> spSimilar(v,a) || spSimilar(kanaLoose(v),kanaLoose(a)))
+  ));
 }
 function spAbort(){ if(spRec){ try{ spRec.abort(); }catch(e){} spRec=null; } spListening=false; }
 function startListening(){
@@ -3008,6 +3037,7 @@ function giveUpSpeak(){
 // 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
 function startSpeakPhase(){
   if(!SR){ toast(t("quiz_speakUnsupported")); return; }
+  spReadingMap=null;   // 최신 DB로 한자→읽기 맵 재생성
   const base=(quiz.mainList||quiz.list).filter(speakable);
   if(!base.length){ toast(t("quiz_noSpeakWords")); return; }
   quiz.phase="speak"; quiz.idx=0; quiz.score=0; quiz.answered=false;
@@ -3120,7 +3150,7 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   const ph=b.dataset.ph;
   if(ph===quiz.phase && !quiz.isRetry) return;
   let base=(quiz.mainList||quiz.list).slice();   // 단계 이동 시 항상 본시험 전체 단어
-  if(ph==="speak"){ base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
+  if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
   spAbort();
   quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
   quiz.isRetry=false; quiz.list=shuffle(base);
