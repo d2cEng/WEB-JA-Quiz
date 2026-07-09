@@ -183,6 +183,16 @@
   .tgl input:checked ~ .tgltxt{color:var(--brand)}
   .tgl:has(input:checked){border-color:var(--brand);background:var(--accent)}
   .tgl input:focus-visible ~ .knob{outline:2px solid var(--brand);outline-offset:2px}
+  /* 말하기 퀴즈: 후보 칩 · 마이크 버튼 */
+  .candtools{display:flex;justify-content:center;margin-top:6px}
+  .candwrap{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 2px}
+  .candchip{border:1px solid var(--line);background:var(--accent);color:var(--brand);
+    border-radius:999px;padding:7px 14px;font-size:1.05em;font-weight:700}
+  .microw{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}
+  #qMic{min-width:170px}
+  #qMic.listening{background:var(--bad);animation:micpulse 1.2s ease-in-out infinite}
+  @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.45)}50%{box-shadow:0 0 0 12px rgba(192,57,43,0)}}
+  .qheard{text-align:center;margin-top:10px;font-size:.9em;min-height:1.2em}
   .progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0}
   .progress>i{display:block;height:100%;background:var(--brand);width:0;transition:width .25s}
   /* quiz */
@@ -605,8 +615,8 @@
     <div class="card noprint">
      <details id="quizSettings" open>
       <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
-      <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식으로 진행합니다.</p>
-      <div class="tiphint" data-i18n="hint_quiz">💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.</div>
+      <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.</p>
+      <div class="tiphint" data-i18n="hint_quiz">💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요.</div>
       <label data-i18n="quiz_scope">출제 범위</label>
       <div class="seg seg-full" id="qScopeSeg">
         <button type="button" data-v="today" class="on" data-i18n="scope_today">오늘 분량</button>
@@ -654,6 +664,7 @@
       <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
         <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
         <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
+        <button type="button" data-ph="speak" data-i18n="quiz_speak">🎤 말하기</button>
       </div>
     </div>
   </section>
@@ -840,14 +851,20 @@ const I18N = {
     hint_db2:"💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.",
     hint_sch:"💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.",
     hint_mem:"💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.",
-    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식으로 이어지고, 틀린 단어만 다시 풀 수도 있어요.",
+    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요.",
     hint_print:"💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.",
     hint_grammar:"💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.",
-    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식으로 진행합니다.",
+    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.",
     quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
     quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
     field_kanji:"漢字", field_hira:"ひらがな", field_korean:"한글 뜻",
-    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식",
+    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식", quiz_speak:"🎤 말하기",
+    quiz_speakStart:"말하기 (탭하고 발음)", quiz_listening:"듣는 중…", quiz_heard:"들린 발음: {text}",
+    quiz_retrySpeak:"조금 달라요 · 다시 말해보세요", quiz_showCand:"정답 후보 보기", quiz_giveUp:"정답 보기 ⏭",
+    quiz_noSpeakWords:"말하기로 낼 단어(漢字 표기)가 없습니다", quiz_micDenied:"마이크 권한을 허용해주세요",
+    quiz_noSpeech:"음성이 들리지 않았어요 · 다시 시도하세요", quiz_speakUnsupported:"이 브라우저는 음성 인식을 지원하지 않아요",
+    fb_speakCorrect:"정답! 발음: {ans}", rq_heard:"들린 발음",
+    sp_examEnd:"말하기 종료 🎉", sp_score:"말하기 점수: <b>{score} / {total}</b>", sa_goSpeak:"말하기 시험 시작 🎤",
     print_title:"인쇄", print_type:"인쇄 종류", print_exam:"단어 시험지", print_grammar:"문법 정리",
     print_examSub:"ひらがな·漢字·한글 중 무작위로 빈칸을 만들어 실제 프린터로 출력합니다.",
     print_scope:"출제 범위", pscope_today:"오늘 분량", pscope_date:"날짜 선택", pscope_selected:"선택한 단어 전체", pscope_all:"전체 단어",
@@ -878,8 +895,8 @@ const I18N = {
     stats_schedLine:"일정 {done}/{total}단어 완료", stats_noSched:"생성된 일정이 없습니다. 위에서 일정을 만들어 보세요.",
     stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
     log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
-    log_hint:"암기·객관식·주관식·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
-    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_fix:"정정",
+    log_hint:"암기·객관식·주관식·말하기·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
+    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_fix:"정정",
     detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -972,14 +989,20 @@ const I18N = {
     hint_db2:"💡 To move to another device, <b>Export</b> a backup and <b>Import</b> it on the new one. Progress and settings are saved automatically.",
     hint_sch:"💡 Leave the weekend weight on <b>Auto</b> to auto-calculate the weekday/weekend load for your target count. Tap a date/word on the calendar to edit.",
     hint_mem:"💡 Learn in 4 stages (meaning+ひらがな → ひらがな+漢字 → <b>漢字+meaning</b> → example). Use <b>Remove this word ✕</b> on a card to drop ones you know.",
-    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer, and you can retry only the words you missed.",
+    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer and 🎤 speaking, and you can retry only the words you missed.",
     hint_print:"💡 One of 漢字·ひらがな·meaning is randomly blanked per row. You can also print the <b>answer key</b>.",
     hint_grammar:"💡 Tap a <b>part-of-speech badge</b> in Memorize/Quiz to instantly pop up its grammar. Use the chips above to jump between items.",
-    quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer.",
+    quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer → speaking (pronunciation).",
     quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
     quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
     field_kanji:"Kanji", field_hira:"Hiragana", field_korean:"Meaning",
-    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer",
+    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer", quiz_speak:"🎤 Speaking",
+    quiz_speakStart:"Speak (tap & say it)", quiz_listening:"Listening…", quiz_heard:"Heard: {text}",
+    quiz_retrySpeak:"Not quite · try again", quiz_showCand:"Show candidates", quiz_giveUp:"Show answer ⏭",
+    quiz_noSpeakWords:"No kanji words available for the speaking quiz", quiz_micDenied:"Please allow microphone access",
+    quiz_noSpeech:"Didn't catch that · please try again", quiz_speakUnsupported:"This browser doesn't support speech recognition",
+    fb_speakCorrect:"Correct! Reading: {ans}", rq_heard:"What was heard",
+    sp_examEnd:"Speaking finished 🎉", sp_score:"Speaking score: <b>{score} / {total}</b>", sa_goSpeak:"Start speaking test 🎤",
     print_title:"Print", print_type:"Print type", print_exam:"Vocabulary test", print_grammar:"Grammar sheet",
     print_examSub:"Randomly blanks out ひらがな·漢字·meaning and prints to a real printer.",
     print_scope:"Scope", pscope_today:"Today's load", pscope_date:"Choose date", pscope_selected:"All selected words", pscope_all:"All words",
@@ -1010,8 +1033,8 @@ const I18N = {
     stats_schedLine:"Schedule {done}/{total} words done", stats_noSched:"No schedule yet. Create one above.",
     stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
     log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
-    log_hint:"Every Memorize, multiple-choice, short-answer and correction action is logged by date and time. (last 14 days)",
-    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_fix:"Correction",
+    log_hint:"Every Memorize, multiple-choice, short-answer, speaking and correction action is logged by date and time. (last 14 days)",
+    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_fix:"Correction",
     detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -2842,7 +2865,7 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{}};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{}};
 function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
 // 무작위 방향: 문제·정답을 서로 다른 필드로 임의 선택
 // (히라가나 문제에 히라가나가 답으로 나오지 않도록, 표시값이 같아지는 쌍은 제외)
@@ -2895,6 +2918,105 @@ function pickDistractors(w, n, pf, af){
   for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
   return out;   // 같은 품사가 부족하면 다른 품사로 보충
 }
+/* ---- 말하기(음성인식) 퀴즈 ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR) $$("#quizPhaseSeg button[data-ph='speak']").forEach(b=>{ b.style.display="none"; });   // 미지원 브라우저(Firefox 등)
+let spRec=null, spListening=false;
+let spShowCand=true;   // 정답 후보 표시 토글 상태 (문제·시험 간 유지)
+// 말하기 출제 대상: 한자 표기가 따로 있는 단어만 (히라가나뿐이면 문제가 정답을 노출)
+function speakable(w){ return !!w.kanji && w.kanji!==w.hiragana; }
+function kataToHira(s){ return String(s||"").replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)); }
+// 인식 결과 비교용 정규화: NFKC → 가타카나→히라가나 → 소문자 → 문자·숫자·가나·한자 외 제거
+function normSpeech(s){
+  let x=String(s||""); try{ x=x.normalize("NFKC"); }catch(e){}
+  return kataToHira(x).toLowerCase().replace(/[^0-9a-z々぀-ゟー一-鿿]/g,"");
+}
+function editDist(a,b){
+  const m=a.length,n=b.length;
+  if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){
+    const cur=[i];
+    for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    prev=cur;
+  }
+  return prev[n];
+}
+// '어느 정도 맞으면' 판정: 완전 일치 / 포함(2자 이상) / 3자 이상은 편집거리 1 허용 / 유사도(1-편집거리/길이) 75% 이상
+function spSimilar(a,b){
+  if(!a||!b) return false;
+  if(a===b) return true;
+  if(a.length>=2 && b.length>=2 && (a.includes(b)||b.includes(a))) return true;
+  const L=Math.max(a.length,b.length), d=editDist(a,b);
+  if(L>=3 && d<=1) return true;   // 짧은 단어: 한 글자 차이까지 허용
+  return L>=2 && (1-d/L)>=0.75;
+}
+// 인식 대안들 vs 정답(히라가나·한자 — 인식기가 한자로 돌려주는 경우 대응)
+function spMatch(alts,w){
+  const answers=[w.hiragana,w.kanji].filter(Boolean).map(normSpeech).filter(Boolean);
+  return alts.some(tx=>{ const v=normSpeech(tx); return v && answers.some(a=>spSimilar(v,a)); });
+}
+function spAbort(){ if(spRec){ try{ spRec.abort(); }catch(e){} spRec=null; } spListening=false; }
+function startListening(){
+  if(!SR || spListening || quiz.answered) return;
+  const w=quiz.list[quiz.idx]; if(!w) return;
+  try{ window.speechSynthesis&&speechSynthesis.cancel(); }catch(e){}   // TTS가 마이크에 들어가지 않게
+  const rec=new SR();
+  spRec=rec; spListening=true;
+  rec.lang="ja-JP"; rec.interimResults=false; rec.maxAlternatives=5;
+  const mic=$("#qMic");
+  if(mic){ mic.classList.add("listening"); mic.textContent="🎤 "+t("quiz_listening"); }
+  const done=()=>{ spListening=false; if(spRec===rec) spRec=null;
+    const m=$("#qMic"); if(m){ m.classList.remove("listening"); m.textContent="🎤 "+t("quiz_speakStart"); } };
+  rec.onresult=ev=>{
+    done();
+    const res=ev.results[ev.results.length-1];
+    const alts=[]; for(let i=0;i<res.length;i++) alts.push(res[i].transcript);
+    quiz.spHeard[w.id]=alts[0]||"";
+    const hd=$("#qHeard"); if(hd) hd.textContent=t("quiz_heard",{text:alts[0]||""});
+    if(quiz.answered || quiz.list[quiz.idx]!==w) return;
+    if(spMatch(alts,w)){
+      quiz.answered=true; quiz.score++; quizMarkDone(w.id);
+      fb(true,t("fb_speakCorrect",{ans:w.hiragana}));   // 정답 발음을 보여주며 정답 처리
+      speakJa(w.hiragana);
+      logEvent(w.id,"sp","o");
+      setTimeout(nextQuiz,1400);
+    } else {
+      fb(false,t("quiz_retrySpeak"));   // 오답 확정 아님 · 무제한 재시도
+    }
+  };
+  rec.onerror=ev=>{
+    done();
+    if(ev.error==="not-allowed"||ev.error==="service-not-allowed") toast(t("quiz_micDenied"));
+    else if(ev.error==="no-speech") toast(t("quiz_noSpeech"));
+  };
+  rec.onend=done;
+  try{ rec.start(); }catch(e){ done(); }
+}
+// '정답 보기' — 오답 처리하고 정답 발음을 보여준 뒤 다음 문제로
+function giveUpSpeak(){
+  if(quiz.answered) return;
+  spAbort();
+  const w=quiz.list[quiz.idx]; if(!w) return;
+  quiz.answered=true;
+  quiz.wrong.add(w.id);
+  fb(false,t("fb_answer",{ans:w.hiragana}));
+  speakJa(w.hiragana);
+  logEvent(w.id,"sp","x");
+  setTimeout(nextQuiz,1400);
+}
+// 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
+function startSpeakPhase(){
+  if(!SR){ toast(t("quiz_speakUnsupported")); return; }
+  const base=(quiz.mainList||quiz.list).filter(speakable);
+  if(!base.length){ toast(t("quiz_noSpeakWords")); return; }
+  quiz.phase="speak"; quiz.idx=0; quiz.score=0; quiz.answered=false;
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={}; quiz.isRetry=false;
+  quiz.list=shuffle(base);
+  $("#quizArea").style.display="block";
+  renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
+}
 function updateQuizCount(){
   const max=wordsForScope(segVal('qScopeSeg'),$("#qDate").value).length;
   const sc=$("#qCount");
@@ -2939,7 +3061,7 @@ $("#startQuiz").addEventListener("click",()=>{
   let pairById=null;
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, isRetry:false};
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2947,12 +3069,14 @@ $("#startQuiz").addEventListener("click",()=>{
 // 퀴즈 정답 단어를 학습 기록(캘린더·통계 반영)
 function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
 function renderQuiz(){
+  spAbort();   // 문제가 바뀌면 진행 중인 음성 인식 중단
   const w=quiz.list[quiz.idx];
   // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
   let pf=quiz.pf, af=quiz.af;
   if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
+  if(quiz.phase==="speak"){ pf="kanji"; af="hira"; }   // 말하기: 항상 漢字 보고 발음
   quiz.curPf=pf; quiz.curAf=af;
-  $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):t("quiz_sa")), pf:fieldLabel(pf), af:fieldLabel(af)});
+  $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
   $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
   $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
   let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
@@ -2960,6 +3084,14 @@ function renderQuiz(){
     // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
     const optWords = shuffle([w, ...pickDistractors(w,3,pf,af)]);
     html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,af))}</button>`).join("")+`</div>`;
+    html+=`<div class="feedback" id="qfb"></div>`;
+  } else if(quiz.phase==="speak"){
+    // 후보군: 객관식과 동일한 추첨 로직 (정답 + 오답 3개) · 토글로 표시/숨김
+    const cands=shuffle([w, ...pickDistractors(w,3,pf,af)]);
+    html+=`<div class="candtools"><label class="tgl"><input type="checkbox" id="qShowCand"${spShowCand?" checked":""}><span class="tgltxt">${esc(t("quiz_showCand"))}</span><span class="knob" aria-hidden="true"></span></label></div>`;
+    html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+cands.map(x=>`<span class="candchip">${esc(x.hiragana)}</span>`).join("")+`</div>`;
+    html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
+    html+=`<div class="qheard muted" id="qHeard"></div>`;
     html+=`<div class="feedback" id="qfb"></div>`;
   } else {
     html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off">`;
@@ -2976,6 +3108,10 @@ function renderQuiz(){
     const inp=$("#qInput"); inp.focus();
     inp.addEventListener("keydown",e=>{ if(e.key==="Enter") submitSA(); });
     $("#qSubmit").addEventListener("click",submitSA);
+  } else if(quiz.phase==="speak"){
+    $("#qShowCand").addEventListener("change",e=>{ spShowCand=e.target.checked; $("#qCands").style.display=spShowCand?"":"none"; });
+    $("#qMic").addEventListener("click",startListening);
+    $("#qGiveUp").addEventListener("click",giveUpSpeak);
   }
 }
 // 객관식/주관식 단계 직접 이동 (선택한 단계를 본시험 전체 단어로 처음부터 다시 풉니다)
@@ -2983,8 +3119,11 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
   if(ph===quiz.phase && !quiz.isRetry) return;
-  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={};
-  quiz.isRetry=false; quiz.list=shuffle((quiz.mainList||quiz.list).slice());   // 단계 이동 시 항상 본시험 전체 단어
+  let base=(quiz.mainList||quiz.list).slice();   // 단계 이동 시 항상 본시험 전체 단어
+  if(ph==="speak"){ base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
+  spAbort();
+  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
+  quiz.isRetry=false; quiz.list=shuffle(base);
   renderQuiz();
 });
 $("#quizBody").addEventListener("click",e=>{
@@ -3024,29 +3163,36 @@ function nextQuiz(){
 }
 // 시험 결과 화면 — 객관식/주관식 공용 (틀린 단어 + 내가 고른/쓴 답 + 맞음 처리 + 재시험)
 function renderQuizResults(){
+  spAbort();
   $("#quizBar").style.width="100%";
   $("#quizPhaseSeg").style.display="none";   // 결과 화면에선 단계 토글 숨김
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
-  const isMc=quiz.phase==="mc";
+  const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
-  // 객관식이면 내가 고른 답, 주관식이면 내가 쓴 답을 표시
-  const given=w=>{ const tp=(isMc?quiz.mcChosen:quiz.saTyped)&&(isMc?quiz.mcChosen:quiz.saTyped)[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
+  // 객관식=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
+  const givenMap = isMc?quiz.mcChosen : isSp?quiz.spHeard : quiz.saTyped;
+  const given=w=>{ const tp=givenMap&&givenMap[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
+  const givenLabel = isMc?t("rq_chosen") : isSp?t("rq_heard") : t("rq_typed");
   const wrongHtml = wrong.length
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
-        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(isMc?t("rq_chosen"):t("rq_typed"))}</th><th></th></tr></thead>
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(givenLabel)}</th><th></th></tr></thead>
         <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
-  const title = isMc ? t("mc_examEnd") : t("rq_examEnd");
-  const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
-  // 객관식 결과 → 주관식 본시험(전체)으로 이어가기 / 주관식 결과 → 처음부터 다시
+  const title = isMc ? t("mc_examEnd") : isSp ? t("sp_examEnd") : t("rq_examEnd");
+  const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : isSp ? t("sp_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
+  // 객관식 결과 → 주관식 / 주관식 결과 → 말하기(지원 시) / 말하기 결과 → 처음부터 다시
   const mainN=(quiz.mainList||quiz.list).length;
+  const restartBtn=`<button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button>`;
+  const canSpeak = !isSp && SR && (quiz.mainList||quiz.list).some(speakable);
   const footer = isMc
     ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(quiz.isRetry?t("mc_goSAFull",{n:mainN}):t("mc_goSA"))}</button></div>`
-    : `<div class="btnrow"><button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button></div>`;
+    : isSp || !canSpeak
+      ? `<div class="btnrow">${restartBtn}</div>`
+      : `<div class="btnrow"><button class="btn" onclick="startSpeakPhase()">${esc(t("sa_goSpeak"))}</button>${restartBtn}</div>`;
   $("#quizBody").innerHTML=`<div class="qprompt" style="text-align:center">${esc(title)}</div>
     <p style="text-align:center">${scoreLine}</p>
     ${wrongHtml}
@@ -3077,7 +3223,7 @@ function markCorrect(id){
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, isRetry:true};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true};
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
