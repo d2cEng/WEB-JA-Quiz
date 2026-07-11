@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "pos": "관용어",
+      "en": "Idioms (慣用句)",
+      "file": "idiom.json"
+    },
+    {
+      "pos": "복합동사",
+      "en": "Compound verbs (複合動詞)",
+      "file": "compound.json"
+    },
+    {
+      "pos": "연어",
+      "en": "Collocations (連語)",
+      "file": "collocation.json"
+    },
+    {
+      "pos": "사자성어",
+      "en": "Four-character idioms (四字熟語)",
+      "file": "yojijukugo.json"
+    },
+    {
+      "pos": "속담",
+      "en": "Proverbs (ことわざ)",
+      "file": "proverb.json"
+    }
+  ]
+}

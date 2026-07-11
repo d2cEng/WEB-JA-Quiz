@@ -1434,24 +1434,31 @@ function renderGrammar(){
 
 /* ====================== 어법 (관용어·복합동사·연어) ====================== */
 // 자주 쓰는 표현 모음. {jp:한자, hira:읽기, ko:한국어 뜻, en:영어 뜻, ex:예문}
-// 어법 데이터(관용어·복합동사·연어·사자성어·속담)는 data/idioms.json에서 불러옵니다.
-// 파일은 테마영역(themes)과 db영역(entries)을 분리해 정의하며, 로드 시 렌더용 groups 구조로 합칩니다.
+// 어법 데이터(관용어·복합동사·연어·사자성어·속담)는 카테고리별 파일로 분리돼 있습니다.
+// data/idioms/index.json(인덱스) → 각 data/idioms/<파일>.json(테마영역 themes + db영역 entries).
+// 로드 시 themes+entries를 렌더용 groups 구조로 합칩니다.
 let IDIOM_DATA=[];
-function buildIdiomBlocks(doc){
-  return (doc&&doc.blocks||[]).map(b=>({
+function buildIdiomBlock(b){
+  return {
     pos:b.pos, en:b.en,
     groups:(b.themes||[]).map(th=>({
       ko:th.ko, en:th.en,
       items:(b.entries||[]).filter(e=>e.theme===th.id)
         .map(e=>({jp:e.jp,hira:e.hira,ko:e.ko,en:e.en,ex:e.ex}))
     }))
-  }));
+  };
 }
 async function loadIdioms(){
   try{
-    const res=await fetch("data/idioms.json",{cache:"no-cache"});
-    if(!res.ok) throw new Error("idioms fetch "+res.status);
-    IDIOM_DATA=buildIdiomBlocks(await res.json());
+    const idx=await fetch("data/idioms/index.json",{cache:"no-cache"});
+    if(!idx.ok) throw new Error("idioms index fetch "+idx.status);
+    const cats=(await idx.json()).categories||[];
+    const blocks=await Promise.all(cats.map(async c=>{
+      const r=await fetch("data/idioms/"+c.file,{cache:"no-cache"});
+      if(!r.ok) throw new Error("idioms fetch "+c.file+" "+r.status);
+      return buildIdiomBlock(await r.json());
+    }));
+    IDIOM_DATA=blocks;
   }catch(e){ console.warn("어법 데이터 로드 실패:",e); IDIOM_DATA=[]; }
   try{ renderGrammar(); }catch(e){}
   try{ renderIdiom(); }catch(e){}
