@@ -1,0 +1,687 @@
+{
+  "pos": "연어",
+  "en": "Collocations (連語)",
+  "themes": [
+    {
+      "id": "g1",
+      "ko": "見る와 함께",
+      "en": "with 見る"
+    },
+    {
+      "id": "g2",
+      "ko": "取る·撮る(とる)와 함께",
+      "en": "with とる"
+    },
+    {
+      "id": "g3",
+      "ko": "かける와 함께",
+      "en": "with かける"
+    },
+    {
+      "id": "g4",
+      "ko": "持つ와 함께",
+      "en": "with 持つ"
+    },
+    {
+      "id": "g5",
+      "ko": "払う와 함께",
+      "en": "with 払う"
+    },
+    {
+      "id": "g6",
+      "ko": "引く와 함께",
+      "en": "with 引く"
+    },
+    {
+      "id": "g7",
+      "ko": "守る·破る (약속·규칙)",
+      "en": "keep / break (promise·rule)"
+    },
+    {
+      "id": "g8",
+      "ko": "する와 함께",
+      "en": "with する"
+    },
+    {
+      "id": "g9",
+      "ko": "감정 표현 (의성·의태어+する)",
+      "en": "Feelings (mimetic + する)"
+    },
+    {
+      "id": "g10",
+      "ko": "몸 상태·반응",
+      "en": "Body & reactions"
+    },
+    {
+      "id": "g11",
+      "ko": "기타 연어",
+      "en": "Other collocations"
+    }
+  ],
+  "entries": [
+    {
+      "theme": "g1",
+      "jp": "夢を見る",
+      "hira": "ゆめをみる",
+      "ko": "꿈을 꾸다",
+      "en": "to dream",
+      "ex": "怖い夢を見る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "面倒を見る",
+      "hira": "めんどうをみる",
+      "ko": "돌보다",
+      "en": "to look after",
+      "ex": "後輩の面倒を見る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "様子を見る",
+      "hira": "ようすをみる",
+      "ko": "상황을 지켜보다",
+      "en": "to wait and see",
+      "ex": "もう少し様子を見る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "味を見る",
+      "hira": "あじをみる",
+      "ko": "맛을 보다",
+      "en": "to taste",
+      "ex": "スープの味を見る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "痛い目を見る",
+      "hira": "いたいめをみる",
+      "ko": "혼쭐이 나다",
+      "en": "to have a hard time",
+      "ex": "痛い目を見る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "大目に見る",
+      "hira": "おおめにみる",
+      "ko": "너그럽게 봐주다",
+      "en": "to overlook leniently",
+      "ex": "今回は大目に見る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "連絡を取る",
+      "hira": "れんらくをとる",
+      "ko": "연락을 취하다",
+      "en": "to get in touch",
+      "ex": "担当者と連絡を取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "休みを取る",
+      "hira": "やすみをとる",
+      "ko": "휴가를 내다",
+      "en": "to take time off",
+      "ex": "休みを取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "年を取る",
+      "hira": "としをとる",
+      "ko": "나이를 먹다",
+      "en": "to grow old",
+      "ex": "年を取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "メモを取る",
+      "hira": "メモをとる",
+      "ko": "메모하다",
+      "en": "to take notes",
+      "ex": "会議でメモを取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "写真を撮る",
+      "hira": "しゃしんをとる",
+      "ko": "사진을 찍다",
+      "en": "to take a photo",
+      "ex": "記念に写真を撮る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "責任を取る",
+      "hira": "せきにんをとる",
+      "ko": "책임을 지다",
+      "en": "to take responsibility",
+      "ex": "責任を取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "機嫌を取る",
+      "hira": "きげんをとる",
+      "ko": "비위를 맞추다",
+      "en": "to humor / butter up",
+      "ex": "上司の機嫌を取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "バランスを取る",
+      "hira": "バランスをとる",
+      "ko": "균형을 잡다",
+      "en": "to keep balance",
+      "ex": "バランスを取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "距離を取る",
+      "hira": "きょりをとる",
+      "ko": "거리를 두다",
+      "en": "to keep one's distance",
+      "ex": "少し距離を取る。"
+    },
+    {
+      "theme": "g3",
+      "jp": "電話をかける",
+      "hira": "でんわをかける",
+      "ko": "전화를 걸다",
+      "en": "to make a call",
+      "ex": "友達に電話をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "迷惑をかける",
+      "hira": "めいわくをかける",
+      "ko": "폐를 끼치다",
+      "en": "to cause trouble",
+      "ex": "人に迷惑をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "声をかける",
+      "hira": "こえをかける",
+      "ko": "말을 걸다",
+      "en": "to call out to",
+      "ex": "声をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "時間をかける",
+      "hira": "じかんをかける",
+      "ko": "시간을 들이다",
+      "en": "to spend time",
+      "ex": "料理に時間をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "心配をかける",
+      "hira": "しんぱいをかける",
+      "ko": "걱정을 끼치다",
+      "en": "to make (someone) worry",
+      "ex": "親に心配をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "鍵をかける",
+      "hira": "かぎをかける",
+      "ko": "(자물쇠를) 잠그다",
+      "en": "to lock",
+      "ex": "ドアに鍵をかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "エンジンをかける",
+      "hira": "エンジンをかける",
+      "ko": "시동을 걸다",
+      "en": "to start the engine",
+      "ex": "エンジンをかける。"
+    },
+    {
+      "theme": "g3",
+      "jp": "ブレーキをかける",
+      "hira": "ブレーキをかける",
+      "ko": "브레이크를 걸다",
+      "en": "to put the brakes on",
+      "ex": "急にブレーキをかける。"
+    },
+    {
+      "theme": "g4",
+      "jp": "興味を持つ",
+      "hira": "きょうみをもつ",
+      "ko": "흥미를 갖다",
+      "en": "to take interest",
+      "ex": "歴史に興味を持つ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "自信を持つ",
+      "hira": "じしんをもつ",
+      "ko": "자신감을 갖다",
+      "en": "to be confident",
+      "ex": "自分に自信を持つ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "責任を持つ",
+      "hira": "せきにんをもつ",
+      "ko": "책임을 지다",
+      "en": "to be responsible",
+      "ex": "責任を持つ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "関心を持つ",
+      "hira": "かんしんをもつ",
+      "ko": "관심을 가지다",
+      "en": "to be interested in",
+      "ex": "環境に関心を持つ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "疑問を持つ",
+      "hira": "ぎもんをもつ",
+      "ko": "의문을 품다",
+      "en": "to have doubts",
+      "ex": "説明に疑問を持つ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "好感を持つ",
+      "hira": "こうかんをもつ",
+      "ko": "호감을 갖다",
+      "en": "to have a good impression",
+      "ex": "彼に好感を持つ。"
+    },
+    {
+      "theme": "g5",
+      "jp": "お金を払う",
+      "hira": "おかねをはらう",
+      "ko": "돈을 내다, 지불하다",
+      "en": "to pay money",
+      "ex": "現金でお金を払う。"
+    },
+    {
+      "theme": "g5",
+      "jp": "注意を払う",
+      "hira": "ちゅういをはらう",
+      "ko": "주의를 기울이다",
+      "en": "to pay attention",
+      "ex": "安全に注意を払う。"
+    },
+    {
+      "theme": "g5",
+      "jp": "敬意を払う",
+      "hira": "けいいをはらう",
+      "ko": "경의를 표하다",
+      "en": "to pay respect",
+      "ex": "先輩に敬意を払う。"
+    },
+    {
+      "theme": "g5",
+      "jp": "犠牲を払う",
+      "hira": "ぎせいをはらう",
+      "ko": "희생을 치르다",
+      "en": "to make sacrifices",
+      "ex": "大きな犠牲を払う。"
+    },
+    {
+      "theme": "g6",
+      "jp": "風邪を引く",
+      "hira": "かぜをひく",
+      "ko": "감기에 걸리다",
+      "en": "to catch a cold",
+      "ex": "寒くて風邪を引く。"
+    },
+    {
+      "theme": "g6",
+      "jp": "辞書を引く",
+      "hira": "じしょをひく",
+      "ko": "사전을 찾다",
+      "en": "to look up (a dictionary)",
+      "ex": "辞書を引く。"
+    },
+    {
+      "theme": "g6",
+      "jp": "線を引く",
+      "hira": "せんをひく",
+      "ko": "선을 긋다",
+      "en": "to draw a line",
+      "ex": "定規で線を引く。"
+    },
+    {
+      "theme": "g6",
+      "jp": "注意を引く",
+      "hira": "ちゅういをひく",
+      "ko": "주의를 끌다",
+      "en": "to draw attention",
+      "ex": "注意を引く。"
+    },
+    {
+      "theme": "g6",
+      "jp": "手を引く",
+      "hira": "てをひく",
+      "ko": "손을 떼다",
+      "en": "to pull out / withdraw",
+      "ex": "事業から手を引く。"
+    },
+    {
+      "theme": "g7",
+      "jp": "約束を守る",
+      "hira": "やくそくをまもる",
+      "ko": "약속을 지키다",
+      "en": "to keep a promise",
+      "ex": "必ず約束を守る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "約束を破る",
+      "hira": "やくそくをやぶる",
+      "ko": "약속을 어기다",
+      "en": "to break a promise",
+      "ex": "約束を破る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "ルールを守る",
+      "hira": "ルールをまもる",
+      "ko": "규칙을 지키다",
+      "en": "to follow the rules",
+      "ex": "ルールを守る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "秘密を守る",
+      "hira": "ひみつをまもる",
+      "ko": "비밀을 지키다",
+      "en": "to keep a secret",
+      "ex": "秘密を守る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "記録を破る",
+      "hira": "きろくをやぶる",
+      "ko": "기록을 깨다",
+      "en": "to break a record",
+      "ex": "世界記録を破る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "期限を守る",
+      "hira": "きげんをまもる",
+      "ko": "기한을 지키다",
+      "en": "to meet the deadline",
+      "ex": "期限を守る。"
+    },
+    {
+      "theme": "g7",
+      "jp": "沈黙を破る",
+      "hira": "ちんもくをやぶる",
+      "ko": "침묵을 깨다",
+      "en": "to break the silence",
+      "ex": "沈黙を破る。"
+    },
+    {
+      "theme": "g8",
+      "jp": "楽しみにする",
+      "hira": "たのしみにする",
+      "ko": "기대하다",
+      "en": "to look forward to",
+      "ex": "旅行を楽しみにする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "大切にする",
+      "hira": "たいせつにする",
+      "ko": "소중히 하다",
+      "en": "to cherish",
+      "ex": "家族を大切にする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "けがをする",
+      "hira": "けがをする",
+      "ko": "다치다",
+      "en": "to get injured",
+      "ex": "転んでけがをする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "噂をする",
+      "hira": "うわさをする",
+      "ko": "소문을 내다, 험담하다",
+      "en": "to gossip",
+      "ex": "人の噂をする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "遠慮する",
+      "hira": "えんりょする",
+      "ko": "사양하다, 삼가다",
+      "en": "to hold back / decline",
+      "ex": "遠慮しないで。"
+    },
+    {
+      "theme": "g8",
+      "jp": "無理をする",
+      "hira": "むりをする",
+      "ko": "무리하다",
+      "en": "to overdo it",
+      "ex": "無理をしないで。"
+    },
+    {
+      "theme": "g8",
+      "jp": "後回しにする",
+      "hira": "あとまわしにする",
+      "ko": "뒤로 미루다",
+      "en": "to put off",
+      "ex": "宿題を後回しにする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "びっくりする",
+      "hira": "びっくりする",
+      "ko": "깜짝 놀라다",
+      "en": "to be surprised",
+      "ex": "急に呼ばれてびっくりする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "がっかりする",
+      "hira": "がっかりする",
+      "ko": "실망하다",
+      "en": "to be disappointed",
+      "ex": "結果にがっかりする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "イライラする",
+      "hira": "イライラする",
+      "ko": "짜증나다",
+      "en": "to be irritated",
+      "ex": "渋滞でイライラする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "わくわくする",
+      "hira": "わくわくする",
+      "ko": "설레다, 두근거리다",
+      "en": "to be excited",
+      "ex": "旅行前はわくわくする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "どきどきする",
+      "hira": "どきどきする",
+      "ko": "두근거리다(긴장·설렘)",
+      "en": "heart pounding",
+      "ex": "発表前にどきどきする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "うんざりする",
+      "hira": "うんざりする",
+      "ko": "진절머리 나다",
+      "en": "to be fed up",
+      "ex": "長い話にうんざりする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "ほっとする",
+      "hira": "ほっとする",
+      "ko": "안심하다",
+      "en": "to be relieved",
+      "ex": "無事と聞いてほっとする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "すっきりする",
+      "hira": "すっきりする",
+      "ko": "개운하다, 후련하다",
+      "en": "to feel refreshed",
+      "ex": "掃除してすっきりする。"
+    },
+    {
+      "theme": "g9",
+      "jp": "ぞっとする",
+      "hira": "ぞっとする",
+      "ko": "소름이 끼치다",
+      "en": "to shudder",
+      "ex": "想像してぞっとする。"
+    },
+    {
+      "theme": "g10",
+      "jp": "肩が凝る",
+      "hira": "かたがこる",
+      "ko": "어깨가 결리다",
+      "en": "to have stiff shoulders",
+      "ex": "パソコンで肩が凝る。"
+    },
+    {
+      "theme": "g10",
+      "jp": "鼻が詰まる",
+      "hira": "はながつまる",
+      "ko": "코가 막히다",
+      "en": "to have a stuffy nose",
+      "ex": "風邪で鼻が詰まる。"
+    },
+    {
+      "theme": "g10",
+      "jp": "鳥肌が立つ",
+      "hira": "とりはだがたつ",
+      "ko": "소름이 돋다",
+      "en": "to get goosebumps",
+      "ex": "怖くて鳥肌が立つ。"
+    },
+    {
+      "theme": "g10",
+      "jp": "涙が出る",
+      "hira": "なみだがでる",
+      "ko": "눈물이 나다",
+      "en": "tears come out",
+      "ex": "感動して涙が出る。"
+    },
+    {
+      "theme": "g10",
+      "jp": "喉が痛い",
+      "hira": "のどがいたい",
+      "ko": "목이 아프다",
+      "en": "to have a sore throat",
+      "ex": "朝から喉が痛い。"
+    },
+    {
+      "theme": "g11",
+      "jp": "嘘をつく",
+      "hira": "うそをつく",
+      "ko": "거짓말을 하다",
+      "en": "to tell a lie",
+      "ex": "平気で嘘をつく。"
+    },
+    {
+      "theme": "g11",
+      "jp": "汗をかく",
+      "hira": "あせをかく",
+      "ko": "땀을 흘리다",
+      "en": "to sweat",
+      "ex": "運動して汗をかく。"
+    },
+    {
+      "theme": "g11",
+      "jp": "道に迷う",
+      "hira": "みちにまよう",
+      "ko": "길을 잃다",
+      "en": "to get lost",
+      "ex": "知らない町で道に迷う。"
+    },
+    {
+      "theme": "g11",
+      "jp": "世話になる",
+      "hira": "せわになる",
+      "ko": "신세를 지다",
+      "en": "to be indebted to",
+      "ex": "先輩に世話になる。"
+    },
+    {
+      "theme": "g11",
+      "jp": "間に合う",
+      "hira": "まにあう",
+      "ko": "시간에 대다",
+      "en": "to be in time",
+      "ex": "電車に間に合う。"
+    },
+    {
+      "theme": "g11",
+      "jp": "お腹が空く",
+      "hira": "おなかがすく",
+      "ko": "배가 고프다",
+      "en": "to get hungry",
+      "ex": "お腹が空いた。"
+    },
+    {
+      "theme": "g11",
+      "jp": "喉が渇く",
+      "hira": "のどがかわく",
+      "ko": "목이 마르다",
+      "en": "to be thirsty",
+      "ex": "喉が渇く。"
+    },
+    {
+      "theme": "g11",
+      "jp": "順番を待つ",
+      "hira": "じゅんばんをまつ",
+      "ko": "차례를 기다리다",
+      "en": "to wait one's turn",
+      "ex": "順番を待つ。"
+    },
+    {
+      "theme": "g11",
+      "jp": "列に並ぶ",
+      "hira": "れつにならぶ",
+      "ko": "줄을 서다",
+      "en": "to line up",
+      "ex": "レジに並ぶ。"
+    },
+    {
+      "theme": "g11",
+      "jp": "役割を果たす",
+      "hira": "やくわりをはたす",
+      "ko": "역할을 다하다",
+      "en": "to fulfill a role",
+      "ex": "役割を果たす。"
+    },
+    {
+      "theme": "g11",
+      "jp": "寝坊する",
+      "hira": "ねぼうする",
+      "ko": "늦잠 자다",
+      "en": "to oversleep",
+      "ex": "寝坊して遅刻する。"
+    },
+    {
+      "theme": "g11",
+      "jp": "興味がわく",
+      "hira": "きょうみがわく",
+      "ko": "흥미가 생기다",
+      "en": "to become interested",
+      "ex": "話を聞いて興味がわく。"
+    }
+  ]
+}

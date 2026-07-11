@@ -1,0 +1,816 @@
+{
+  "pos": "관용어",
+  "en": "Idioms (慣用句)",
+  "themes": [
+    {
+      "id": "g1",
+      "ko": "気 — 마음·기분",
+      "en": "気 — mind & mood"
+    },
+    {
+      "id": "g2",
+      "ko": "手 — 손",
+      "en": "手 — hand"
+    },
+    {
+      "id": "g3",
+      "ko": "目 — 눈",
+      "en": "目 — eye"
+    },
+    {
+      "id": "g4",
+      "ko": "口 — 입",
+      "en": "口 — mouth"
+    },
+    {
+      "id": "g5",
+      "ko": "頭·顔 — 머리·얼굴",
+      "en": "頭·顔 — head & face"
+    },
+    {
+      "id": "g6",
+      "ko": "足·腰 — 발·허리",
+      "en": "足·腰 — leg & back"
+    },
+    {
+      "id": "g7",
+      "ko": "腹·胸·肝 — 배·가슴·간",
+      "en": "腹·胸·肝 — belly/chest/guts"
+    },
+    {
+      "id": "g8",
+      "ko": "기타 생활 관용",
+      "en": "Other everyday idioms"
+    }
+  ],
+  "entries": [
+    {
+      "theme": "g1",
+      "jp": "気が利く",
+      "hira": "きがきく",
+      "ko": "눈치가 빠르다, 센스 있다",
+      "en": "to be thoughtful",
+      "ex": "彼は気が利く人だ。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が付く",
+      "hira": "きがつく",
+      "ko": "알아차리다, 깨닫다",
+      "en": "to notice",
+      "ex": "間違いに気が付く。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気にする",
+      "hira": "きにする",
+      "ko": "신경 쓰다",
+      "en": "to mind / worry",
+      "ex": "失敗を気にする。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気になる",
+      "hira": "きになる",
+      "ko": "신경 쓰이다, 궁금하다",
+      "en": "to be on one's mind",
+      "ex": "結果が気になる。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気に入る",
+      "hira": "きにいる",
+      "ko": "마음에 들다",
+      "en": "to take a liking to",
+      "ex": "この服が気に入る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を付ける",
+      "hira": "きをつける",
+      "ko": "조심하다, 주의하다",
+      "en": "to be careful",
+      "ex": "車に気を付ける。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を配る",
+      "hira": "きをくばる",
+      "ko": "세심히 신경 쓰다",
+      "en": "to be attentive",
+      "ex": "細かい所まで気を配る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を遣う",
+      "hira": "きをつかう",
+      "ko": "신경 쓰다, 배려하다",
+      "en": "to be considerate",
+      "ex": "周りに気を遣う。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を失う",
+      "hira": "きをうしなう",
+      "ko": "정신을 잃다, 기절하다",
+      "en": "to faint",
+      "ex": "ショックで気を失う。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が重い",
+      "hira": "きがおもい",
+      "ko": "마음이 무겁다",
+      "en": "to feel reluctant",
+      "ex": "会議が気が重い。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が短い",
+      "hira": "きがみじかい",
+      "ko": "성급하다",
+      "en": "to be short-tempered",
+      "ex": "父は気が短い。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が済む",
+      "hira": "きがすむ",
+      "ko": "직성이 풀리다",
+      "en": "to feel satisfied",
+      "ex": "謝るまで気が済まない。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を取り直す",
+      "hira": "きをとりなおす",
+      "ko": "마음을 다잡다",
+      "en": "to pull oneself together",
+      "ex": "気を取り直して頑張る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が向く",
+      "hira": "きがむく",
+      "ko": "내키다",
+      "en": "to feel like it",
+      "ex": "気が向いたらやる。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が散る",
+      "hira": "きがちる",
+      "ko": "산만해지다",
+      "en": "to get distracted",
+      "ex": "音で気が散る。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を引く",
+      "hira": "きをひく",
+      "ko": "관심을 끌다",
+      "en": "to attract attention",
+      "ex": "気を引こうとする。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が合う",
+      "hira": "きがあう",
+      "ko": "마음이 맞다",
+      "en": "to get along",
+      "ex": "彼とは気が合う。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が進まない",
+      "hira": "きがすすまない",
+      "ko": "내키지 않다",
+      "en": "to be reluctant",
+      "ex": "どうも気が進まない。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気を悪くする",
+      "hira": "きをわるくする",
+      "ko": "기분이 상하다",
+      "en": "to take offense",
+      "ex": "気を悪くしないで。"
+    },
+    {
+      "theme": "g1",
+      "jp": "気が緩む",
+      "hira": "きがゆるむ",
+      "ko": "긴장이 풀리다",
+      "en": "to let one's guard down",
+      "ex": "休みで気が緩む。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手を抜く",
+      "hira": "てをぬく",
+      "ko": "대충 하다, 요령 피우다",
+      "en": "to cut corners",
+      "ex": "仕事の手を抜く。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手に入る",
+      "hira": "てにはいる",
+      "ko": "손에 들어오다, 구해지다",
+      "en": "to obtain",
+      "ex": "切符が手に入る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手に負えない",
+      "hira": "てにおえない",
+      "ko": "감당할 수 없다",
+      "en": "to be unmanageable",
+      "ex": "この子は手に負えない。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手が離せない",
+      "hira": "てがはなせない",
+      "ko": "손을 못 떼다(바쁘다)",
+      "en": "to be tied up",
+      "ex": "今は手が離せない。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手がかかる",
+      "hira": "てがかかる",
+      "ko": "손이 많이 가다",
+      "en": "to need a lot of care",
+      "ex": "手がかかる子。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手を貸す",
+      "hira": "てをかす",
+      "ko": "도와주다",
+      "en": "to lend a hand",
+      "ex": "引っ越しに手を貸す。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手を打つ",
+      "hira": "てをうつ",
+      "ko": "조치를 취하다",
+      "en": "to take measures",
+      "ex": "早めに手を打つ。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手に取る",
+      "hira": "てにとる",
+      "ko": "집어 들다",
+      "en": "to pick up",
+      "ex": "本を手に取る。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手が足りない",
+      "hira": "てがたりない",
+      "ko": "일손이 부족하다",
+      "en": "to be short-handed",
+      "ex": "人手が足りない。"
+    },
+    {
+      "theme": "g2",
+      "jp": "手も足も出ない",
+      "hira": "てもあしもでない",
+      "ko": "속수무책이다",
+      "en": "to be helpless",
+      "ex": "難しくて手も足も出ない。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目に付く",
+      "hira": "めにつく",
+      "ko": "눈에 띄다",
+      "en": "to catch the eye",
+      "ex": "欠点が目に付く。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目を通す",
+      "hira": "めをとおす",
+      "ko": "훑어보다",
+      "en": "to look over",
+      "ex": "書類に目を通す。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目を覚ます",
+      "hira": "めをさます",
+      "ko": "잠을 깨다, 정신 차리다",
+      "en": "to wake up",
+      "ex": "物音で目を覚ます。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目がない",
+      "hira": "めがない",
+      "ko": "사족을 못 쓰다",
+      "en": "to have a weakness for",
+      "ex": "甘い物に目がない。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目を引く",
+      "hira": "めをひく",
+      "ko": "눈길을 끌다",
+      "en": "to be eye-catching",
+      "ex": "デザインが目を引く。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目に入る",
+      "hira": "めにはいる",
+      "ko": "눈에 들어오다",
+      "en": "to come into view",
+      "ex": "看板が目に入る。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目を離す",
+      "hira": "めをはなす",
+      "ko": "눈을 떼다",
+      "en": "to take one's eyes off",
+      "ex": "子供から目を離す。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目を疑う",
+      "hira": "めをうたがう",
+      "ko": "눈을 의심하다",
+      "en": "to not believe one's eyes",
+      "ex": "結果に目を疑う。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目が回る",
+      "hira": "めがまわる",
+      "ko": "눈코 뜰 새 없다, 어지럽다",
+      "en": "to be dizzy / swamped",
+      "ex": "忙しくて目が回る。"
+    },
+    {
+      "theme": "g3",
+      "jp": "目に浮かぶ",
+      "hira": "めにうかぶ",
+      "ko": "눈에 선하다",
+      "en": "to picture vividly",
+      "ex": "笑顔が目に浮かぶ。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口が堅い",
+      "hira": "くちがかたい",
+      "ko": "입이 무겁다",
+      "en": "to be tight-lipped",
+      "ex": "彼は口が堅い。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口が軽い",
+      "hira": "くちがかるい",
+      "ko": "입이 가볍다",
+      "en": "to be a blabbermouth",
+      "ex": "口が軽い人。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口を挟む",
+      "hira": "くちをはさむ",
+      "ko": "말참견하다",
+      "en": "to butt in",
+      "ex": "横から口を挟む。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口に出す",
+      "hira": "くちにだす",
+      "ko": "입 밖에 내다",
+      "en": "to put into words",
+      "ex": "本音を口に出す。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口を出す",
+      "hira": "くちをだす",
+      "ko": "참견하다",
+      "en": "to meddle",
+      "ex": "人の事に口を出す。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口が滑る",
+      "hira": "くちがすべる",
+      "ko": "말이 헛나오다",
+      "en": "to let slip",
+      "ex": "つい口が滑る。"
+    },
+    {
+      "theme": "g4",
+      "jp": "口にする",
+      "hira": "くちにする",
+      "ko": "입에 담다, 먹다",
+      "en": "to mention / eat",
+      "ex": "不満を口にする。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭に来る",
+      "hira": "あたまにくる",
+      "ko": "열받다, 화나다",
+      "en": "to get pissed off",
+      "ex": "その態度に頭に来る。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭を抱える",
+      "hira": "あたまをかかえる",
+      "ko": "골머리를 앓다",
+      "en": "to be at a loss",
+      "ex": "借金で頭を抱える。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭が固い",
+      "hira": "あたまがかたい",
+      "ko": "융통성이 없다",
+      "en": "to be inflexible",
+      "ex": "頭が固い上司。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭を下げる",
+      "hira": "あたまをさげる",
+      "ko": "머리를 숙이다, 사과하다",
+      "en": "to bow / apologize",
+      "ex": "深く頭を下げる。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭が下がる",
+      "hira": "あたまがさがる",
+      "ko": "존경스럽다",
+      "en": "to be impressed by",
+      "ex": "努力に頭が下がる。"
+    },
+    {
+      "theme": "g5",
+      "jp": "顔が広い",
+      "hira": "かおがひろい",
+      "ko": "발이 넓다",
+      "en": "to know many people",
+      "ex": "業界で顔が広い。"
+    },
+    {
+      "theme": "g5",
+      "jp": "顔を出す",
+      "hira": "かおをだす",
+      "ko": "얼굴을 비치다",
+      "en": "to show up",
+      "ex": "会に顔を出す。"
+    },
+    {
+      "theme": "g5",
+      "jp": "顔に出る",
+      "hira": "かおにでる",
+      "ko": "얼굴에 드러나다",
+      "en": "to show on one's face",
+      "ex": "感情が顔に出る。"
+    },
+    {
+      "theme": "g5",
+      "jp": "頭を冷やす",
+      "hira": "あたまをひやす",
+      "ko": "머리를 식히다",
+      "en": "to cool one's head",
+      "ex": "少し頭を冷やす。"
+    },
+    {
+      "theme": "g5",
+      "jp": "顔を立てる",
+      "hira": "かおをたてる",
+      "ko": "체면을 세워주다",
+      "en": "to save face for someone",
+      "ex": "相手の顔を立てる。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足を引っ張る",
+      "hira": "あしをひっぱる",
+      "ko": "발목을 잡다",
+      "en": "to hold back",
+      "ex": "チームの足を引っ張る。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足を運ぶ",
+      "hira": "あしをはこぶ",
+      "ko": "발걸음하다, 찾아가다",
+      "en": "to make the trip",
+      "ex": "何度も足を運ぶ。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足が出る",
+      "hira": "あしがでる",
+      "ko": "적자가 나다",
+      "en": "to go over budget",
+      "ex": "予算より足が出る。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足を洗う",
+      "hira": "あしをあらう",
+      "ko": "(나쁜 일에서) 손을 떼다",
+      "en": "to wash one's hands of",
+      "ex": "悪い仕事から足を洗う。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足元を見る",
+      "hira": "あしもとをみる",
+      "ko": "약점을 이용하다",
+      "en": "to take advantage of",
+      "ex": "足元を見られる。"
+    },
+    {
+      "theme": "g6",
+      "jp": "二の足を踏む",
+      "hira": "にのあしをふむ",
+      "ko": "망설이다",
+      "en": "to hesitate",
+      "ex": "値段に二の足を踏む。"
+    },
+    {
+      "theme": "g6",
+      "jp": "腰が重い",
+      "hira": "こしがおもい",
+      "ko": "굼뜨다, 엉덩이가 무겁다",
+      "en": "to be slow to act",
+      "ex": "腰が重い人。"
+    },
+    {
+      "theme": "g6",
+      "jp": "腰を据える",
+      "hira": "こしをすえる",
+      "ko": "자리잡고 임하다",
+      "en": "to settle down to",
+      "ex": "腰を据えて取り組む。"
+    },
+    {
+      "theme": "g6",
+      "jp": "足を延ばす",
+      "hira": "あしをのばす",
+      "ko": "발길을 더 늘리다",
+      "en": "to extend one's trip",
+      "ex": "駅から足を延ばす。"
+    },
+    {
+      "theme": "g7",
+      "jp": "腹を立てる",
+      "hira": "はらをたてる",
+      "ko": "화를 내다",
+      "en": "to get angry",
+      "ex": "小さな事で腹を立てる。"
+    },
+    {
+      "theme": "g7",
+      "jp": "腹が立つ",
+      "hira": "はらがたつ",
+      "ko": "화가 나다",
+      "en": "to feel angry",
+      "ex": "態度に腹が立つ。"
+    },
+    {
+      "theme": "g7",
+      "jp": "腹を割る",
+      "hira": "はらをわる",
+      "ko": "속을 터놓다",
+      "en": "to be frank",
+      "ex": "腹を割って話す。"
+    },
+    {
+      "theme": "g7",
+      "jp": "腹が減る",
+      "hira": "はらがへる",
+      "ko": "배가 고프다",
+      "en": "to get hungry",
+      "ex": "お腹が減った。"
+    },
+    {
+      "theme": "g7",
+      "jp": "胸を打つ",
+      "hira": "むねをうつ",
+      "ko": "감동을 주다",
+      "en": "to be moving",
+      "ex": "胸を打つ話。"
+    },
+    {
+      "theme": "g7",
+      "jp": "胸を張る",
+      "hira": "むねをはる",
+      "ko": "당당하다",
+      "en": "to be proud",
+      "ex": "胸を張って言う。"
+    },
+    {
+      "theme": "g7",
+      "jp": "胸がいっぱい",
+      "hira": "むねがいっぱい",
+      "ko": "가슴이 벅차다",
+      "en": "to be overcome with emotion",
+      "ex": "感動で胸がいっぱい。"
+    },
+    {
+      "theme": "g7",
+      "jp": "肝が据わる",
+      "hira": "きもがすわる",
+      "ko": "담대하다, 배짱있다",
+      "en": "to be gutsy",
+      "ex": "肝が据わった人。"
+    },
+    {
+      "theme": "g7",
+      "jp": "肝に銘じる",
+      "hira": "きもにめいじる",
+      "ko": "명심하다",
+      "en": "to bear in mind",
+      "ex": "失敗を肝に銘じる。"
+    },
+    {
+      "theme": "g7",
+      "jp": "腹をくくる",
+      "hira": "はらをくくる",
+      "ko": "각오를 다지다",
+      "en": "to brace oneself",
+      "ex": "腹をくくって挑む。"
+    },
+    {
+      "theme": "g7",
+      "jp": "胸がすく",
+      "hira": "むねがすく",
+      "ko": "속이 후련하다",
+      "en": "to feel a thrill of relief",
+      "ex": "逆転勝ちで胸がすく。"
+    },
+    {
+      "theme": "g8",
+      "jp": "骨が折れる",
+      "hira": "ほねがおれる",
+      "ko": "고생스럽다, 힘들다",
+      "en": "to be hard work",
+      "ex": "骨が折れる作業。"
+    },
+    {
+      "theme": "g8",
+      "jp": "念を押す",
+      "hira": "ねんをおす",
+      "ko": "재차 다짐을 받다",
+      "en": "to make doubly sure",
+      "ex": "念を押す。"
+    },
+    {
+      "theme": "g8",
+      "jp": "根に持つ",
+      "hira": "ねにもつ",
+      "ko": "앙심을 품다",
+      "en": "to hold a grudge",
+      "ex": "昔の事を根に持つ。"
+    },
+    {
+      "theme": "g8",
+      "jp": "水に流す",
+      "hira": "みずにながす",
+      "ko": "없던 일로 하다",
+      "en": "to let bygones be bygones",
+      "ex": "過去を水に流す。"
+    },
+    {
+      "theme": "g8",
+      "jp": "油を売る",
+      "hira": "あぶらをうる",
+      "ko": "농땡이 피우다",
+      "en": "to loaf around",
+      "ex": "油を売る。"
+    },
+    {
+      "theme": "g8",
+      "jp": "恥をかく",
+      "hira": "はじをかく",
+      "ko": "창피를 당하다",
+      "en": "to be embarrassed",
+      "ex": "人前で恥をかく。"
+    },
+    {
+      "theme": "g8",
+      "jp": "調子に乗る",
+      "hira": "ちょうしにのる",
+      "ko": "우쭐대다, 까불다",
+      "en": "to get carried away",
+      "ex": "褒められて調子に乗る。"
+    },
+    {
+      "theme": "g8",
+      "jp": "耳を傾ける",
+      "hira": "みみをかたむける",
+      "ko": "귀를 기울이다",
+      "en": "to listen carefully",
+      "ex": "意見に耳を傾ける。"
+    },
+    {
+      "theme": "g8",
+      "jp": "役に立つ",
+      "hira": "やくにたつ",
+      "ko": "도움이 되다",
+      "en": "to be useful",
+      "ex": "この辞書は役に立つ。"
+    },
+    {
+      "theme": "g8",
+      "jp": "世話を焼く",
+      "hira": "せわをやく",
+      "ko": "이것저것 챙기다",
+      "en": "to fuss over",
+      "ex": "後輩の世話を焼く。"
+    },
+    {
+      "theme": "g8",
+      "jp": "仕方がない",
+      "hira": "しかたがない",
+      "ko": "어쩔 수 없다",
+      "en": "it can't be helped",
+      "ex": "今さら仕方がない。"
+    },
+    {
+      "theme": "g8",
+      "jp": "とんでもない",
+      "hira": "とんでもない",
+      "ko": "당치도 않다, 천만에",
+      "en": "outrageous / not at all",
+      "ex": "とんでもない話だ。"
+    },
+    {
+      "theme": "g8",
+      "jp": "馬鹿にする",
+      "hira": "ばかにする",
+      "ko": "무시하다, 얕보다",
+      "en": "to make fun of",
+      "ex": "人を馬鹿にする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "我慢する",
+      "hira": "がまんする",
+      "ko": "참다, 견디다",
+      "en": "to endure",
+      "ex": "痛みを我慢する。"
+    },
+    {
+      "theme": "g8",
+      "jp": "文句を言う",
+      "hira": "もんくをいう",
+      "ko": "불평하다",
+      "en": "to complain",
+      "ex": "文句ばかり言う。"
+    },
+    {
+      "theme": "g8",
+      "jp": "損をする",
+      "hira": "そんをする",
+      "ko": "손해를 보다",
+      "en": "to lose out",
+      "ex": "知らないと損をする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "得をする",
+      "hira": "とくをする",
+      "ko": "이득을 보다",
+      "en": "to gain / benefit",
+      "ex": "早割で得をする。"
+    },
+    {
+      "theme": "g8",
+      "jp": "気の毒",
+      "hira": "きのどく",
+      "ko": "딱하다, 안쓰럽다",
+      "en": "to feel sorry for",
+      "ex": "気の毒に思う。"
+    },
+    {
+      "theme": "g8",
+      "jp": "やる気が出る",
+      "hira": "やるきがでる",
+      "ko": "의욕이 생기다",
+      "en": "to get motivated",
+      "ex": "褒められてやる気が出る。"
+    }
+  ]
+}

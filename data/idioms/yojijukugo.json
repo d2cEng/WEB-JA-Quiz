@@ -1,0 +1,77 @@
+{
+  "pos": "사자성어",
+  "en": "Four-character idioms (四字熟語)",
+  "themes": [
+    {
+      "id": "g1",
+      "ko": "자주 쓰는 四字熟語",
+      "en": "Common four-character idioms"
+    }
+  ],
+  "entries": [
+    {
+      "theme": "g1",
+      "jp": "一生懸命",
+      "hira": "いっしょうけんめい",
+      "ko": "열심히, 죽을힘을 다해",
+      "en": "with all one's might",
+      "ex": "一生懸命勉強する。"
+    },
+    {
+      "theme": "g1",
+      "jp": "一石二鳥",
+      "hira": "いっせきにちょう",
+      "ko": "일석이조",
+      "en": "killing two birds with one stone",
+      "ex": "運動になって一石二鳥だ。"
+    },
+    {
+      "theme": "g1",
+      "jp": "臨機応変",
+      "hira": "りんきおうへん",
+      "ko": "임기응변",
+      "en": "adapting to circumstances",
+      "ex": "臨機応変に対応する。"
+    },
+    {
+      "theme": "g1",
+      "jp": "以心伝心",
+      "hira": "いしんでんしん",
+      "ko": "이심전심",
+      "en": "heart-to-heart understanding",
+      "ex": "以心伝心で通じ合う。"
+    },
+    {
+      "theme": "g1",
+      "jp": "自業自得",
+      "hira": "じごうじとく",
+      "ko": "자업자득",
+      "en": "you reap what you sow",
+      "ex": "遅刻も自業自得だ。"
+    },
+    {
+      "theme": "g1",
+      "jp": "十人十色",
+      "hira": "じゅうにんといろ",
+      "ko": "각양각색, 십인십색",
+      "en": "to each their own",
+      "ex": "好みは十人十色だ。"
+    },
+    {
+      "theme": "g1",
+      "jp": "油断大敵",
+      "hira": "ゆだんたいてき",
+      "ko": "방심은 금물",
+      "en": "carelessness is the great enemy",
+      "ex": "最後まで油断大敵だ。"
+    },
+    {
+      "theme": "g1",
+      "jp": "一期一会",
+      "hira": "いちごいちえ",
+      "ko": "일생에 한 번뿐인 인연",
+      "en": "a once-in-a-lifetime encounter",
+      "ex": "一期一会の出会い。"
+    }
+  ]
+}
