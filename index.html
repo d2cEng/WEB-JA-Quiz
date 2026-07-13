@@ -803,7 +803,8 @@ const I18N = {
   ko:{
     appTitle:"일본어 단어 암기 · 시험", help_title:"도움말", install_title:"앱으로 설치", install_btn:"설치", toast_installed:"홈 화면에 설치했어요",
     tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
-    nav_grammar:"문법 바로가기", nav_idiom:"어법 바로가기", idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 단어 DB·암기·퀴즈의 <b>품사 배지</b> 색과 같아요. 단어장을 불러오면 이 분류로도 필터·시험을 볼 수 있습니다.",
+    nav_grammar:"문법 바로가기", nav_idiom:"어법 바로가기", idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 아래 <b>단어장으로 불러오기</b> 버튼을 누르면 이 표현들을 암기·퀴즈·일정·시험지 인쇄에서 그대로 시험볼 수 있어요. 배지 색은 단어 DB·암기·퀴즈와 같습니다.",
+    idiom_loadAll:"어법 전체", idiom_loadBtn:"📚 단어장으로 불러오기 (암기·퀴즈)",
     db_title:"단어 데이터베이스",
     db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
     db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
@@ -941,7 +942,8 @@ const I18N = {
   en:{
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help", install_title:"Install as app", install_btn:"Install", toast_installed:"Installed to your home screen",
     tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
-    nav_grammar:"Grammar shortcuts", nav_idiom:"Phrase shortcuts", idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Same colors as the <b>part-of-speech badges</b> in Words DB, Memorize and Quiz. Load a wordbook to also filter and quiz by these categories.",
+    nav_grammar:"Grammar shortcuts", nav_idiom:"Phrase shortcuts", idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Tap <b>Load as wordbook</b> below to practice these phrases in Memorize, Quiz, Schedule and Print. Badge colors match Words DB, Memorize and Quiz.",
+    idiom_loadAll:"All phrases", idiom_loadBtn:"📚 Load as wordbook (memorize & quiz)",
     db_title:"Word database",
     db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
     db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
@@ -1474,9 +1476,39 @@ function idiomKo(it){ return (LANG==="en" && it.en) ? it.en : it.ko; }
 function idiomGroupLabel(sg){ return (LANG==="en" && sg.en) ? sg.en : sg.ko; }
 function idiomCount(g){ return g.groups.reduce((n,sg)=>n+sg.items.length,0); }
 function isMobileView(){ return window.matchMedia("(max-width:560px)").matches; }
+// 어법을 암기·퀴즈용 단어장으로 변환 (pos 지정 시 해당 분류만, 없으면 전체)
+// level에는 소그룹 테마의 앞부분(〜出す, 気 등)을 넣어 레벨 칩으로 테마 필터가 되게 한다.
+function idiomWordbook(pos){
+  const blocks=IDIOM_DATA.filter(b=>!pos||b.pos===pos);
+  let id=1; const words=[];
+  blocks.forEach(b=>b.groups.forEach(sg=>{
+    const lvl=idiomGroupLabel(sg).split(" — ")[0].trim();
+    sg.items.forEach(it=>words.push({id:id++, kanji:it.jp, hiragana:it.hira, korean:idiomKo(it), level:lvl, pos:b.pos, example:it.ex||""}));
+  }));
+  return words;
+}
+// 어법 불러오기 툴바 (어법 탭/모바일 문법 탭에 함께 렌더되므로 id 대신 클래스+위임 사용)
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".iLoadBtn"); if(!b) return;
+  const sel=b.parentElement.querySelector(".iLoadSel");
+  const pos=sel?sel.value:"";
+  const name=pos?`${t("tab_idiom")} — ${posLabel(pos)}`:t("idiom_loadAll");
+  const words=idiomWordbook(pos);
+  if(!words.length) return;
+  if(!confirm(t("confirm_repoLoad",{name}))) return;
+  applyWordbook({words}, name);
+  showTab("db");
+});
 // 어법 3개 분류 HTML — 각 분류 안을 '같은 종류'로 다시 묶어서(소그룹) 표시 (어법 탭 / 모바일 문법 탭 공용)
 function idiomSectionsHtml(){
-  return IDIOM_DATA.map(g=>{
+  const loadBar = IDIOM_DATA.length ? `<div class="btnrow noprint" style="margin:4px 0 12px;align-items:center">
+    <select class="iLoadSel" style="flex:0 1 auto">
+      <option value="">${esc(t("idiom_loadAll"))}</option>
+      ${IDIOM_DATA.map(g=>`<option value="${esc(g.pos)}">${esc(posLabel(g.pos))} (${idiomCount(g)})</option>`).join("")}
+    </select>
+    <button type="button" class="btn iLoadBtn">${esc(t("idiom_loadBtn"))}</button>
+  </div>` : "";
+  return loadBar + IDIOM_DATA.map(g=>{
     const c=posColor(g.pos);
     const sub=g.groups.map(sg=>{
       const rows=sg.items.map(it=>`<tr>
