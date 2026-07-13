@@ -72,6 +72,13 @@
   .wchip{display:inline-block;padding:4px 9px;margin:2px;border-radius:8px;background:var(--accent);
     font-size:.9em;cursor:pointer;border:1px solid transparent}
   .wchip:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  /* 레벨 다중 선택 칩 (빈 선택 = 전체) */
+  .lvlchips{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:center;vertical-align:middle}
+  .lvlchip{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:8px 12px;border-radius:999px;font-size:.9em;line-height:1;cursor:pointer}
+  .lvlchip:hover{border-color:var(--brand);color:var(--brand)}
+  .lvlchip.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+  .lvlchips.disabled{opacity:.45;pointer-events:none}
   /* 캘린더 뷰 */
   .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
   .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
@@ -457,7 +464,7 @@
       <div class="toolbar noprint" style="margin-top:10px">
         <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
         <select id="dbPos"><option value="">품사 전체</option></select>
-        <select id="dbLevel"><option value="">레벨 전체</option></select>
+        <span id="dbLevel" class="lvlchips" aria-label="레벨 필터(복수 선택)"></span>
         <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
         <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
       </div>
@@ -497,7 +504,7 @@
       </div>
       <div class="row">
         <div><label data-i18n="sch_posFilter">품사 필터</label><select id="sPos"></select></div>
-        <div><label data-i18n="sch_levelFilter">레벨 필터</label><select id="sLevel"></select></div>
+        <div><label data-i18n="sch_levelFilter">레벨 필터</label><div id="sLevel" class="lvlchips"></div></div>
       </div>
       <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> <span data-i18n="sch_selectedOnly">단어 DB에서 체크한 단어만 사용 (위 필터 무시)</span></label>
       <label data-i18n="sch_orderLabel">추출 순서</label>
@@ -1645,11 +1652,32 @@ window.addEventListener("resize",()=>{
 let dbSort = {key:"id", dir:1};
 function refreshDbFilters(){
   const pos=[...new Set(state.words.map(w=>w.pos).filter(Boolean))].sort();
-  const lvl=[...new Set(state.words.map(w=>w.level).filter(Boolean))].sort();
   fillSelect($("#dbPos"), pos, t("pos_all"));
-  fillSelect($("#dbLevel"), lvl, t("level_all"));
   fillSelect($("#sPos"), pos, t("pos_all"));
-  fillSelect($("#sLevel"), lvl, t("level_all"));
+  renderLevelChips("dbLevel");
+  renderLevelChips("sLevel");
+}
+// 레벨 다중 선택 상태 (빈 Set = 전체) — 단어 DB(dbLevel)·일정(sLevel) 각각 유지
+const levelSel = { dbLevel:new Set(), sLevel:new Set() };
+function renderLevelChips(id){
+  const box=$("#"+id); if(!box) return;
+  const levels=[...new Set(state.words.map(w=>w.level).filter(Boolean))].sort();
+  const sel=levelSel[id];
+  [...sel].forEach(v=>{ if(!levels.includes(v)) sel.delete(v); });  // 사라진 레벨은 선택 해제
+  const allOn = sel.size===0;
+  box.innerHTML =
+    `<button type="button" class="lvlchip${allOn?" on":""}" data-lvl="">${esc(t("level_all"))}</button>`
+    + levels.map(v=>`<button type="button" class="lvlchip${sel.has(v)?" on":""}" data-lvl="${esc(v)}">${esc(v)}</button>`).join("");
+}
+function bindLevelChips(id, onChange){
+  $("#"+id).addEventListener("click",e=>{
+    const b=e.target.closest(".lvlchip"); if(!b) return;
+    if($("#"+id).classList.contains("disabled")) return;
+    const sel=levelSel[id], v=b.dataset.lvl;
+    if(v==="") sel.clear();                          // '전체' → 모두 해제(=전체 표시)
+    else { sel.has(v)?sel.delete(v):sel.add(v); }
+    renderLevelChips(id); onChange&&onChange();
+  });
 }
 function fillSelect(sel, items, allLabel){
   const cur=sel.value;
@@ -1658,11 +1686,11 @@ function fillSelect(sel, items, allLabel){
   if(allLabel==="") {} else if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
 }
 function dbFiltered(){
-  const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvl=$("#dbLevel").value;
+  const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvlSel=levelSel.dbLevel;
   let rows = state.words.filter(w=>{
     if(isExcluded(w.id)) return false;   // 제외된 단어는 본 목록에서 숨기고 아래 '제외된 단어'에서 관리
     if(pos && w.pos!==pos) return false;
-    if(lvl && w.level!==lvl) return false;
+    if(lvlSel.size && !lvlSel.has(w.level)) return false;
     if(q){
       const hay=normAns(w.kanji+w.hiragana+w.korean);
       if(!hay.includes(q)) return false;
@@ -1723,7 +1751,7 @@ $("#dbBody").addEventListener("change",e=>{
 });
 $("#dbSearch").addEventListener("input",renderDb);
 $("#dbPos").addEventListener("change",renderDb);
-$("#dbLevel").addEventListener("change",renderDb);
+bindLevelChips("dbLevel", renderDb);
 $$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
   const k=th.dataset.sort; dbSort.dir = (dbSort.key===k)? -dbSort.dir : 1; dbSort.key=k; renderDb();
 }));
@@ -1883,8 +1911,8 @@ $("#dbName").addEventListener("input",()=>{
 // 필터 조건에 맞는 단어 풀 (개수 슬라이더 적용 전)
 function schedPoolBase(){
   if($("#sSelectedOnly").checked) return state.selected.map(wordById).filter(Boolean).filter(notExcluded);
-  const pos=$("#sPos").value, lvl=$("#sLevel").value;
-  return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvl||w.level===lvl)).filter(notExcluded);
+  const pos=$("#sPos").value, lvlSel=levelSel.sLevel;
+  return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvlSel.size||lvlSel.has(w.level))).filter(notExcluded);
 }
 function updateSchedCount(){
   const max=schedPoolBase().length;
@@ -1994,10 +2022,11 @@ function updateSchedCalc(){
 }
 $("#sSelectedOnly").addEventListener("change",()=>{
   const sel=$("#sSelectedOnly").checked;
-  $("#sPos").disabled=sel; $("#sLevel").disabled=sel;   // 체크 단어만 쓸 땐 필터 비활성
+  $("#sPos").disabled=sel; $("#sLevel").classList.toggle("disabled",sel);   // 체크 단어만 쓸 땐 필터 비활성
   updateSchedCount();
 });
-["#sPos","#sLevel"].forEach(s=>$(s).addEventListener("change",updateSchedCount));
+$("#sPos").addEventListener("change",updateSchedCount);
+bindLevelChips("sLevel", updateSchedCount);
 // 외울 개수·시작일·마지막일·주말 비중·분량·수동모드를 조작할 때마다 갱신
 $("#sCount").addEventListener("input",()=>{ $("#sCountLabel").textContent=$("#sCount").value; updateSchedCalc(); });
 ["#sEnd","#sWdCap","#sWeCap"].forEach(s=>$(s).addEventListener("input",updateSchedCalc));
@@ -3023,7 +3052,7 @@ $("#doPrint").addEventListener("click",()=>{
 function resetSchedControls(){
   // 브라우저의 체크박스 상태 복원으로 0/0에 고착되는 문제 방지
   $("#sSelectedOnly").checked=false;
-  $("#sPos").disabled=false; $("#sLevel").disabled=false;
+  $("#sPos").disabled=false; $("#sLevel").classList.remove("disabled");
 }
 function refreshAll(){
   refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
