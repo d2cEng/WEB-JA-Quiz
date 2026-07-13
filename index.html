@@ -402,6 +402,13 @@
     <div class="card">
       <h2 data-i18n="db_title">단어 데이터베이스</h2>
       <p class="sub" data-i18n="db_sub">암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.</p>
+      <div id="bookBar" class="noprint" style="display:none">
+        <label data-i18n="book_switchLabel">내 단어장 (각각 진도 별도 보관 · 선택하면 전환)</label>
+        <div class="toolbar">
+          <select id="bookSelect"></select>
+          <button class="btn ghost" id="bookDelBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="book_delete">이 단어장 삭제</button>
+        </div>
+      </div>
       <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
       <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
       <div class="btnrow noprint" style="margin-top:10px">
@@ -814,8 +821,11 @@ const I18N = {
     th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
     db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
     db_repoLabel:"저장소에 준비된 단어장 불러오기", db_repoLoad:"📦 불러오기",
-    hint_repo:"💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. 불러오면 <b>현재 단어와 진도가 교체</b>됩니다(가져오기와 동일).",
-    confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n현재 단어·진도가 교체됩니다. (필요하면 먼저 내보내기로 백업하세요)",
+    hint_repo:"💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. <b>현재 단어장은 진도째 보관</b>되고, 위의 ‘내 단어장’에서 언제든 다시 전환할 수 있습니다.",
+    confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n현재 단어장은 진도와 함께 보관되며, 단어 DB의 ‘내 단어장’에서 언제든 전환할 수 있습니다. (같은 이름의 단어장이 이미 있으면 그 단어장이 갱신됩니다)",
+    book_switchLabel:"내 단어장 (각각 진도 별도 보관 · 선택하면 전환)", book_delete:"이 단어장 삭제",
+    toast_bookSwitched:"‘{name}’ 단어장으로 전환했어요 (진도 유지)", toast_bookDeleted:"단어장을 삭제했어요",
+    confirm_bookDelete:"‘{name}’ 단어장과 그 진도를 삭제할까요?",
     toast_repoFail:"단어장을 불러오지 못했습니다",
     db_manualSummary:"📄 JSON 단어장 파일 만드는 법",
     ai_hd:"🤖 AI로 만들기 (가장 쉬움)",
@@ -953,8 +963,11 @@ const I18N = {
     th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
     db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
     db_repoLabel:"Load a built-in wordbook from the repository", db_repoLoad:"📦 Load",
-    hint_repo:"💡 Pick a wordbook bundled in this app's repository and load it instantly. Loading <b>replaces your current words and progress</b> (same as Import).",
-    confirm_repoLoad:"Load the ‘{name}’ wordbook?\nYour current words and progress will be replaced. (Export a backup first if needed.)",
+    hint_repo:"💡 Pick a wordbook bundled in this app's repository and load it instantly. <b>Your current wordbook is kept with its progress</b> — switch back anytime from ‘My wordbooks’ above.",
+    confirm_repoLoad:"Load the ‘{name}’ wordbook?\nYour current wordbook is kept with its progress; switch anytime from ‘My wordbooks’ in the Words DB tab. (If a wordbook with the same name exists, it will be updated.)",
+    book_switchLabel:"My wordbooks (each keeps its own progress · select to switch)", book_delete:"Delete this wordbook",
+    toast_bookSwitched:"Switched to ‘{name}’ (progress kept)", toast_bookDeleted:"Wordbook deleted",
+    confirm_bookDelete:"Delete the ‘{name}’ wordbook and its progress?",
     toast_repoFail:"Could not load the wordbook",
     db_manualSummary:"📄 How to make a JSON wordbook file",
     ai_hd:"🤖 Make it with AI (easiest)",
@@ -1113,11 +1126,29 @@ let state = {
   dbName: "" // 현재 단어장(DB) 이름
 };
 
+/* ---- 단어장 슬롯(여러 단어장 병행) ----
+   기존 단일 저장 키(LS_KEY)를 "main" 슬롯으로 그대로 사용해 하위 호환.
+   다른 단어장은 LS_KEY+".book.<id>"에 각자 진도째 저장하고, 레지스트리(BOOKS_KEY)로 목록·활성 슬롯을 관리한다. */
+const BOOKS_KEY = LS_KEY + ".books";
+let books = { active:"main", list:[{id:"main", name:""}] };
+function loadBooksReg(){
+  try{
+    const r=JSON.parse(localStorage.getItem(BOOKS_KEY));
+    if(r && r.active && Array.isArray(r.list) && r.list.length && r.list.some(b=>b.id===r.active)) books=r;
+  }catch(e){}
+}
+function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} }
+function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
+function blankState(name){
+  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:name||""};
+}
 function load(){
+  loadBooksReg();
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e){}
+  try { saved = JSON.parse(localStorage.getItem(bookKey(books.active))); } catch(e){}
   if(saved && Array.isArray(saved.words) && saved.words.length){
     state = Object.assign(state, saved);
+    if(saved.name && !state.dbName) state.dbName = saved.name;
   } else {
     state.words = SEED.words.slice();
   }
@@ -1135,7 +1166,19 @@ function save(){
     selected:state.selected, schedule:state.schedule,
     settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log
   };
-  try { localStorage.setItem(LS_KEY, JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
+  try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
+  const b=books.list.find(x=>x.id===books.active);
+  if(b && b.name!==state.dbName){ b.name=state.dbName; saveBooksReg(); }
+}
+// 다른 단어장 슬롯으로 전환 — 현재 단어장은 진도째 보관
+function switchBook(id){
+  if(id===books.active || !books.list.some(b=>b.id===id)) return;
+  save();
+  books.active=id; saveBooksReg();
+  state=blankState("");
+  load();
+  refreshAll();
+  toast(t("toast_bookSwitched",{name:state.dbName}));
 }
 // 제외(암기 중 '이 단어 빼기') 단어 관리 — 단어 DB에서 복원 가능
 function isExcluded(id){ return (state.excluded||[]).includes(id); }
@@ -1493,6 +1536,8 @@ document.addEventListener("click",e=>{
   const sel=b.parentElement.querySelector(".iLoadSel");
   const pos=sel?sel.value:"";
   const name=pos?`${t("tab_idiom")} — ${posLabel(pos)}`:t("idiom_loadAll");
+  const existing=books.list.find(x=>x.name===name);
+  if(existing){ switchBook(existing.id); showTab("db"); return; }   // 이미 있으면 진도 유지한 채 전환만
   const words=idiomWordbook(pos);
   if(!words.length) return;
   if(!confirm(t("confirm_repoLoad",{name}))) return;
@@ -1803,11 +1848,17 @@ $("#expBtn").addEventListener("click",()=>{
   setTimeout(()=>URL.revokeObjectURL(a.href),500); toast(t("toast_exported"));
 });
 $("#impBtn").addEventListener("click",()=>$("#impFile").click());
-// 파싱된 단어장 데이터(d)를 현재 상태에 반영. 파일/저장소 불러오기 공통.
+// 파싱된 단어장 데이터(d)를 새(또는 같은 이름의) 단어장 슬롯에 반영. 파일/저장소/어법 불러오기 공통.
+// 현재 단어장은 진도째 자기 슬롯에 보관되므로 사라지지 않는다. 같은 이름 슬롯이 있으면 그 슬롯을 갱신.
 function applyWordbook(d, fallbackName){
   if(!d || !Array.isArray(d.words)) throw 0;
+  const name = d.name || fallbackName || t("name_unnamed");
+  save();   // 현재 단어장 보관
+  let b=books.list.find(x=>x.name===name);
+  if(!b){ b={id:"b"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name}; books.list.push(b); }
+  books.active=b.id; saveBooksReg();
+  state=blankState(name);
   state.words=d.words;
-  state.dbName = d.name || fallbackName || state.dbName;
   state.selected=Array.isArray(d.selected)?d.selected:[];
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
@@ -1924,19 +1975,40 @@ $("#aiCopyBtn").addEventListener("click",async ()=>{
 
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_reset"))) return;
-  localStorage.removeItem(LS_KEY);
-  state={words:SEED.words.slice(),selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_sample")};
+  localStorage.removeItem(bookKey(books.active));   // 현재 단어장 슬롯만 초기화
+  state=blankState(t("name_sample")); state.words=SEED.words.slice();
   normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
 });
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
-  localStorage.removeItem(LS_KEY);
-  state={words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:t("name_empty")};
+  books.list.forEach(b=>localStorage.removeItem(bookKey(b.id)));   // 모든 단어장 슬롯 삭제
+  localStorage.removeItem(BOOKS_KEY);
+  books={active:"main", list:[{id:"main", name:""}]};
+  state=blankState(t("name_empty"));
   save(); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
   state.dbName=$("#dbName").value.trim()||t("name_unnamed"); save();
+  renderBookSelect();   // 스위처의 이름 표시 갱신
   if($("#scheduleResult").style.display!=="none") renderSchedule();  // 통계의 단어장 표시 갱신
+});
+// 단어장 스위처 — 2개 이상일 때만 표시. 각 단어장은 진도·일정·선택을 각자 보관.
+function renderBookSelect(){
+  const bar=$("#bookBar"); if(!bar) return;
+  if(books.list.length<2){ bar.style.display="none"; return; }
+  bar.style.display="";
+  $("#bookSelect").innerHTML=books.list.map(b=>
+    `<option value="${esc(b.id)}"${b.id===books.active?" selected":""}>${esc(b.name||t("name_unnamed"))}</option>`).join("");
+}
+$("#bookSelect").addEventListener("change",()=>switchBook($("#bookSelect").value));
+$("#bookDelBtn").addEventListener("click",()=>{
+  if(books.list.length<2) return;   // 마지막 남은 단어장은 삭제 불가
+  const cur=books.list.find(b=>b.id===books.active);
+  if(!confirm(t("confirm_bookDelete",{name:(cur&&cur.name)||t("name_unnamed")}))) return;
+  localStorage.removeItem(bookKey(books.active));
+  books.list=books.list.filter(b=>b.id!==books.active);
+  books.active=books.list[0].id; saveBooksReg();
+  state=blankState(""); load(); refreshAll(); toast(t("toast_bookDeleted"));
 });
 
 /* ====================== 일정 ====================== */
@@ -3090,6 +3162,7 @@ function refreshAll(){
   refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
   resetSchedControls(); updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount();
   $("#dbName").value=state.dbName||"";
+  renderBookSelect();
 }
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
