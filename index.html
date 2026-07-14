@@ -997,7 +997,6 @@ const I18N = {
     sync_lastSynced:"마지막 동기화: {time}", sync_never:"아직 없음",
     sync_justNow:"방금", sync_minAgo:"{n}분 전", sync_hourAgo:"{n}시간 전",
     sync_conflict:"‘{name}’ 단어장이 이 기기와 클라우드 양쪽에서 변경되었습니다.\n[확인] = 클라우드 버전 사용 (이 기기의 변경 내용을 버림)\n[취소] = 이 기기 버전 유지 (클라우드를 덮어씀)",
-    sync_tooBig:"‘{name}’ 단어장이 너무 커서 클라우드에 저장하지 못했습니다",
     toast_loginFail:"로그인에 실패했습니다", toast_loggedOut:"로그아웃했습니다 — 이 기기의 데이터는 그대로 남아 있어요",
     toast_syncDone:"클라우드 동기화 완료", toast_syncFail:"동기화에 실패했습니다 — 나중에 다시 시도합니다",
     confirm_wipeCloud:"클라우드에 저장된 학습 기록도 함께 삭제할까요?\n[확인] = 클라우드도 삭제\n[취소] = 클라우드는 보관 (다음 동기화 때 이 기기로 복원됩니다)"
@@ -1149,7 +1148,6 @@ const I18N = {
     sync_lastSynced:"Last synced: {time}", sync_never:"never",
     sync_justNow:"just now", sync_minAgo:"{n} min ago", sync_hourAgo:"{n} h ago",
     sync_conflict:"The wordbook ‘{name}’ was changed on both this device and the cloud.\n[OK] = use the cloud version (discard this device's changes)\n[Cancel] = keep this device's version (overwrite the cloud)",
-    sync_tooBig:"Wordbook ‘{name}’ is too large to save to the cloud",
     toast_loginFail:"Sign-in failed", toast_loggedOut:"Signed out — data on this device is kept",
     toast_syncDone:"Cloud sync complete", toast_syncFail:"Sync failed — will retry later",
     confirm_wipeCloud:"Also delete the learning records stored in the cloud?\n[OK] = delete the cloud copy too\n[Cancel] = keep the cloud copy (it will be restored to this device on the next sync)"
@@ -3247,6 +3245,7 @@ function syncMetaObj(){
   if(!syncMeta || typeof syncMeta!=="object") syncMeta={};
   syncMeta.dirty=syncMeta.dirty||{}; syncMeta.deleted=syncMeta.deleted||{};
   syncMeta.lastSeen=syncMeta.lastSeen||{}; syncMeta.lastSyncAt=syncMeta.lastSyncAt||0;
+  syncMeta.chunks=syncMeta.chunks||{};   // 단어장별 원격 조각 문서 수 (분할 저장 정리용)
   return syncMeta;
 }
 function saveSyncMeta(){ try{ localStorage.setItem(SYNC_KEY, JSON.stringify(syncMetaObj())); }catch(e){} }
@@ -3363,14 +3362,19 @@ async function pullMerge(){
   const uref=cloudDb();
   const [udoc,bsnap]=await Promise.all([uref.get(), uref.collection("books").get()]);
   const m=syncMetaObj();
-  const remoteBooks={};
-  bsnap.forEach(d=>{ remoteBooks[d.id]=d.data()||{}; });
+  const remoteBooks={}, remoteChunks={};
+  bsnap.forEach(d=>{
+    const i=d.id.indexOf("#");
+    if(i>=0){ const pid=d.id.slice(0,i), seq=+d.id.slice(i+1);
+      (remoteChunks[pid]=remoteChunks[pid]||{})[seq]=d.data()||{}; }
+    else remoteBooks[d.id]=d.data()||{};
+  });
   const remoteDeleted=Object.assign({}, (udoc.exists && udoc.data().deleted)||{});
   let regChanged=false, activeChanged=false;
 
   // ① 이 기기의 삭제(tombstone)를 원격에 반영
   for(const id of Object.keys(m.deleted)){
-    if(remoteBooks[id]){ await uref.collection("books").doc(id).delete(); delete remoteBooks[id]; }
+    if(remoteBooks[id]){ await deleteBookDocs(uref, id, remoteBooks[id].chunks||1); delete remoteBooks[id]; }
     remoteDeleted[id]=m.deleted[id];
     delete m.deleted[id]; delete m.dirty[id]; delete m.lastSeen[id];
     m.dirty.__registry__=true;
@@ -3396,20 +3400,21 @@ async function pullMerge(){
   const localIds=new Set(books.list.map(b=>b.id));
   for(const id of Object.keys(remoteBooks)){
     const r=remoteBooks[id];
-    if(typeof r.payload!=="string") continue;
+    const payload=assemblePayload(id, r, remoteChunks);
+    if(payload==null) continue;   // 조각 불완전(업로드 도중 끊김 등) → 이번 회차는 건너뜀
     const rUp=r.updatedAt||0, seen=m.lastSeen[id]||0, dirty=!!m.dirty[id];
     if(!localIds.has(id)){
       // 원격에만 있음 → 이 기기에 복원 (새 기기 시나리오)
       try{
-        localStorage.setItem(bookKey(id), r.payload);
+        localStorage.setItem(bookKey(id), payload);
         books.list.push({id, name:r.name||""});
-        m.lastSeen[id]=rUp; regChanged=true;
+        m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1; regChanged=true;
       }catch(e){}
     } else if(!dirty){
       if(rUp>seen){
         // 원격이 더 새로움 → 덮어씀
         try{
-          localStorage.setItem(bookKey(id), r.payload); m.lastSeen[id]=rUp;
+          localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
           const b=books.list.find(x=>x.id===id);
           if(b && r.name && b.name!==r.name){ b.name=r.name; regChanged=true; }
           if(id===books.active) activeChanged=true;
@@ -3420,7 +3425,7 @@ async function pullMerge(){
       const b=books.list.find(x=>x.id===id);
       if(confirm(t("sync_conflict",{name:(b&&b.name)||r.name||id}))){
         try{
-          localStorage.setItem(bookKey(id), r.payload); m.lastSeen[id]=rUp; delete m.dirty[id];
+          localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1; delete m.dirty[id];
           if(id===books.active) activeChanged=true;
         }catch(e){}
       }
@@ -3439,18 +3444,37 @@ async function pullMerge(){
   if(activeChanged){ state=blankState(""); load(); refreshAll(); }
 }
 
-// Firestore 문서 1MB 한도 가드 — 초과 시 push 사본의 log만 축소, 그래도 크면 null
-function payloadSizeGuard(raw){
-  const MAX=950000;
-  let obj=null;
-  try{ obj=JSON.parse(raw); }catch(e){ return null; }
-  let json=raw;
-  if(new TextEncoder().encode(json).length>MAX && Array.isArray(obj.log) && obj.log.length>500){
-    obj=Object.assign({}, obj, {log:obj.log.slice(-500)});
-    json=JSON.stringify(obj);
+/* Firestore 문서 1MB 한도 대응 — 큰 단어장은 payload를 여러 문서로 분할 저장.
+   본문서: books/{id} = {name, updatedAt, chunks:N, payload:<0번 조각>}
+   조각:  books/{id}#{i} = {parent, seq, updatedAt, payload}  (i = 1..N-1)
+   조각 문서도 books/{bookId} 규칙 패턴에 걸리므로 보안 규칙 변경이 필요 없다.
+   updatedAt이 본문서와 다른 조각(업로드 도중 끊김)은 조립하지 않고 그 회차는 건너뛴다. */
+const CHUNK_CHARS = 200000;   // UTF-8 최악(문자당 4바이트)이어도 문서당 800KB 이하
+function chunkPayload(json){
+  const out=[]; let i=0;
+  while(i<json.length){
+    let end=Math.min(i+CHUNK_CHARS, json.length);
+    const c=json.charCodeAt(end-1);
+    if(c>=0xD800 && c<=0xDBFF && end<json.length) end++;   // 서러게이트 쌍 분리 방지
+    out.push(json.slice(i,end)); i=end;
   }
-  if(new TextEncoder().encode(json).length>MAX) return null;
-  return {json, obj};
+  return out.length?out:[""];
+}
+function assemblePayload(id, r, remoteChunks){
+  if(typeof r.payload!=="string") return null;
+  const n=r.chunks||1;
+  if(n<=1) return r.payload;
+  let s=r.payload;
+  for(let i=1;i<n;i++){
+    const c=(remoteChunks[id]||{})[i];
+    if(!c || c.updatedAt!==r.updatedAt || typeof c.payload!=="string") return null;
+    s+=c.payload;
+  }
+  return s;
+}
+async function deleteBookDocs(uref, id, n){
+  await uref.collection("books").doc(id).delete();
+  for(let i=1;i<(n||1);i++) await uref.collection("books").doc(id+"#"+i).delete();
 }
 
 function scheduleCloudPush(){
@@ -3467,26 +3491,31 @@ async function pushDirtyNow(){
   try{
     const uref=cloudDb();
     for(const id of Object.keys(m.deleted)){
-      await uref.collection("books").doc(id).delete();
+      await deleteBookDocs(uref, id, m.chunks[id]||1);
       cloudDeletedRemote[id]=m.deleted[id];
-      delete m.deleted[id]; delete m.lastSeen[id];
+      delete m.deleted[id]; delete m.lastSeen[id]; delete m.chunks[id];
       m.dirty.__registry__=true; saveSyncMeta();
     }
     for(const id of Object.keys(m.dirty)){
       if(id==="__registry__") continue;
       const raw=localStorage.getItem(bookKey(id));
       if(raw==null){ delete m.dirty[id]; saveSyncMeta(); continue; }
-      const g=payloadSizeGuard(raw);
-      if(!g){
-        let nm=id; try{ nm=(JSON.parse(raw).name)||id; }catch(e){}
-        toast(t("sync_tooBig",{name:nm}));
-        delete m.dirty[id]; saveSyncMeta(); continue;
+      let obj=null; try{ obj=JSON.parse(raw); }catch(e){ delete m.dirty[id]; saveSyncMeta(); continue; }
+      const up=obj.updatedAt||Date.now();
+      // 1MB 초과 대비 분할 업로드: 조각(#1..) 먼저, 본문서는 마지막에 써서 버전을 확정
+      const parts=chunkPayload(raw);
+      for(let i=1;i<parts.length;i++){
+        await uref.collection("books").doc(id+"#"+i).set({parent:id, seq:i, updatedAt:up, payload:parts[i]});
       }
       await uref.collection("books").doc(id).set({
-        name:g.obj.name||"", updatedAt:g.obj.updatedAt||Date.now(), payload:g.json,
+        name:obj.name||"", updatedAt:up, chunks:parts.length, payload:parts[0],
         syncedAt:firebase.firestore.FieldValue.serverTimestamp()
       });
-      m.lastSeen[id]=g.obj.updatedAt||0;
+      for(let i=parts.length;i<(m.chunks[id]||1);i++){   // 조각 수가 줄었으면 남은 조각 정리
+        await uref.collection("books").doc(id+"#"+i).delete();
+      }
+      m.chunks[id]=parts.length;
+      m.lastSeen[id]=up;
       delete m.dirty[id]; saveSyncMeta();
     }
     if(m.dirty.__registry__){
@@ -3544,10 +3573,24 @@ function renderSyncUI(){
   $("#syncLastLine").textContent=syncUser
     ? t("sync_lastSynced",{time:m.lastSyncAt?fmtLastSync(m.lastSyncAt):t("sync_never")}) : "";
 }
+// 패널을 버튼 아래, 화면 안쪽으로 배치 — 모바일에서 상단바가 줄바꿈되어
+// 버튼이 왼쪽에 있어도 잘리지 않도록 뷰포트 기준(fixed)으로 좌표를 계산한다
+function positionSyncPanel(){
+  const btn=$("#syncBtn"), p=$("#syncPanel");
+  const r=btn.getBoundingClientRect();
+  const w=Math.min(270, window.innerWidth-24);
+  p.style.position="fixed";
+  p.style.width=w+"px";
+  p.style.top=(r.bottom+8)+"px";
+  let left=r.right-w;                                        // 기본: 버튼 오른쪽 끝 정렬
+  if(left<12) left=12;                                       // 왼쪽 잘림 방지
+  if(left+w>window.innerWidth-12) left=window.innerWidth-12-w; // 오른쪽 잘림 방지
+  p.style.left=left+"px"; p.style.right="auto";
+}
 $("#syncBtn").addEventListener("click",e=>{
   e.stopPropagation();
   const p=$("#syncPanel"); p.hidden=!p.hidden;
-  if(!p.hidden) renderSyncUI();
+  if(!p.hidden){ renderSyncUI(); positionSyncPanel(); }
 });
 $("#syncPanel").addEventListener("click",e=>e.stopPropagation());
 document.addEventListener("click",()=>{ const p=$("#syncPanel"); if(p && !p.hidden) p.hidden=true; });
