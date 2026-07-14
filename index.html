@@ -336,6 +336,22 @@
   .langseg button.on{background:var(--brand);color:#fff}
   .helpbtn{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:999px;
     width:34px;height:34px;cursor:pointer;font-weight:800;font-size:1em;flex:0 0 auto}
+  /* 클라우드 동기화: ☁️ 버튼(상태 점) + 드롭다운 패널 */
+  .syncwrap{position:relative}
+  .syncwrap .helpbtn{position:relative;overflow:visible;padding:0}
+  .syncavatar{width:26px;height:26px;border-radius:50%;vertical-align:middle;object-fit:cover}
+  .syncdot{position:absolute;right:-2px;top:-2px;width:11px;height:11px;border-radius:50%;border:2px solid #fff;background:#9ca3af}
+  .syncdot.synced{background:#16a34a}
+  .syncdot.pending,.syncdot.syncing{background:#d97706}
+  .syncdot.error{background:#dc2626}
+  .syncpanel{position:absolute;right:0;top:42px;z-index:60;background:#fff;border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 10px 26px rgba(0,0,0,.14);padding:12px;width:min(270px,84vw);font-size:.9em;text-align:left}
+  .syncpanel [hidden]{display:none!important}
+  .syncpanel .btnrow{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .syncuser{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:700;word-break:break-all}
+  .syncuser img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+  .syncstatus{color:var(--ink)}
+  .synclast{color:var(--muted);font-size:.85em;margin-top:2px}
   /* 암기 카드: 단어 빼기 버튼 (자동 읽기 토글 오른쪽, 상단 바에 배치) */
   .dropword{border:1px solid var(--line);background:#fff;
     color:var(--muted);border-radius:999px;padding:6px 12px;font-size:.84em;font-weight:700;cursor:pointer}
@@ -379,6 +395,19 @@
       <h1><span class="em">🇯🇵</span> <span data-i18n="appTitle">일본어 단어 암기 · 시험</span></h1>
       <div class="topctl">
         <button class="helpbtn" id="installBtn" data-i18n-title="install_title" title="앱 설치" hidden>⬇️ <span data-i18n="install_btn">설치</span></button>
+        <div class="syncwrap">
+          <button class="helpbtn" id="syncBtn" data-i18n-title="sync_title" title="클라우드 동기화" hidden>☁️</button>
+          <div id="syncPanel" class="syncpanel" hidden>
+            <div class="syncuser" id="syncUserRow" hidden><img id="syncPhoto" alt="" referrerpolicy="no-referrer"><span id="syncEmail"></span></div>
+            <div class="syncstatus" id="syncStatusLine"></div>
+            <div class="synclast" id="syncLastLine"></div>
+            <div class="btnrow">
+              <button class="btn sec" id="syncLoginBtn" data-i18n="sync_login">Google로 로그인</button>
+              <button class="btn sec" id="syncNowBtn" data-i18n="sync_syncNow" hidden>🔄 지금 동기화</button>
+              <button class="btn ghost" id="syncLogoutBtn" data-i18n="sync_logout" hidden>로그아웃</button>
+            </div>
+          </div>
+        </div>
         <button class="helpbtn" id="helpBtn" data-i18n-title="help_title" title="도움말">❔</button>
         <div class="langseg" id="langSeg">
           <button type="button" data-lang="ko">한국어</button>
@@ -799,6 +828,20 @@
 const LS_KEY = "jaquiz.v1";
 const SEED = JSON.parse(document.getElementById("seed-data").textContent);
 
+/* ---- 클라우드 동기화 (Firebase) 설정 ----
+   README의 "☁️ 클라우드 동기화 설정"을 따라 Firebase 콘솔에서 받은 firebaseConfig 값을 아래에
+   채우면 ☁️ 버튼이 나타나고 Google 로그인·기기 간 동기화가 활성화됩니다. 값이 비어 있으면
+   동기화 기능 전체가 비활성화되고 앱은 기존과 동일하게 동작합니다.
+   (apiKey는 공개 저장소에 올라가도 안전합니다 — 접근 제어는 Firestore 보안 규칙이 담당) */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCbJ729H4JHBT5x_IqRLwIga7IyHhb8CE8",
+  authDomain: "jaquiz-ce805.firebaseapp.com",
+  projectId: "jaquiz-ce805",
+  storageBucket: "jaquiz-ce805.firebasestorage.app",
+  messagingSenderId: "342340578538",
+  appId: "1:342340578538:web:3b22f74fa9f626adec3b93"
+};
+
 /* ====================== 다국어 (i18n) ====================== */
 const LANG_KEY = "jaquiz.lang";
 let LANG = (function(){
@@ -947,7 +990,17 @@ const I18N = {
     help_quiz_t:"④ 퀴즈", help_quiz_b:"<b>4지선다 → 주관식</b> 순서로 풉니다. 문제·정답 방향을 고정하거나 <b>무작위</b>로 섞을 수 있고, 틀린 단어만 다시 풀 수 있어요.",
     help_print_t:"⑤ 시험지 인쇄", help_print_b:"漢字·ひらがな·뜻 중 무작위로 빈칸을 낸 <b>시험지</b>나 전체 <b>문법 정리</b>를 실제 프린터로 출력(또는 PDF 저장)합니다.",
     help_grammar_t:"⑥ 문법", help_grammar_b:"동사 3그룹·형용사·필수 표현을 색깔 배지로 정리했어요. 암기·퀴즈의 <b>품사 배지</b>를 누르면 그 문법 설명이 바로 떠요.",
-    help_tip_t:"💾 저장 & 이동", help_tip_b:"진도와 설정은 <b>브라우저에 자동 저장</b>됩니다. 기기를 바꿀 땐 DB의 <b>내보내기</b>로 백업하고 새 기기에서 <b>가져오기</b> 하세요. 우측 상단에서 <b>언어</b>를 바꿀 수 있습니다."
+    help_tip_t:"💾 저장 & 이동", help_tip_b:"진도와 설정은 <b>브라우저에 자동 저장</b>됩니다. 기기를 바꿀 땐 DB의 <b>내보내기</b>로 백업하고 새 기기에서 <b>가져오기</b> 하세요. 우측 상단에서 <b>언어</b>를 바꿀 수 있습니다.",
+    sync_title:"클라우드 동기화", sync_login:"Google로 로그인", sync_logout:"로그아웃", sync_syncNow:"🔄 지금 동기화",
+    sync_status_off:"로그인하면 단어장과 학습 기록이 클라우드에 자동 저장되고, 다른 기기에서도 이어서 학습할 수 있어요.",
+    sync_status_synced:"✅ 동기화됨", sync_status_syncing:"동기화 중…", sync_status_pending:"⏳ 동기화 대기 중", sync_status_error:"⚠️ 동기화 오류 — 나중에 다시 시도합니다",
+    sync_lastSynced:"마지막 동기화: {time}", sync_never:"아직 없음",
+    sync_justNow:"방금", sync_minAgo:"{n}분 전", sync_hourAgo:"{n}시간 전",
+    sync_conflict:"‘{name}’ 단어장이 이 기기와 클라우드 양쪽에서 변경되었습니다.\n[확인] = 클라우드 버전 사용 (이 기기의 변경 내용을 버림)\n[취소] = 이 기기 버전 유지 (클라우드를 덮어씀)",
+    sync_tooBig:"‘{name}’ 단어장이 너무 커서 클라우드에 저장하지 못했습니다",
+    toast_loginFail:"로그인에 실패했습니다", toast_loggedOut:"로그아웃했습니다 — 이 기기의 데이터는 그대로 남아 있어요",
+    toast_syncDone:"클라우드 동기화 완료", toast_syncFail:"동기화에 실패했습니다 — 나중에 다시 시도합니다",
+    confirm_wipeCloud:"클라우드에 저장된 학습 기록도 함께 삭제할까요?\n[확인] = 클라우드도 삭제\n[취소] = 클라우드는 보관 (다음 동기화 때 이 기기로 복원됩니다)"
   },
   en:{
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help", install_title:"Install as app", install_btn:"Install", toast_installed:"Installed to your home screen",
@@ -1089,7 +1142,17 @@ const I18N = {
     help_quiz_t:"④ Quiz", help_quiz_b:"Solve <b>multiple choice → short answer</b>. Keep the prompt/answer direction fixed or <b>shuffle</b> it, and retry only the words you missed.",
     help_print_t:"⑤ Print", help_print_b:"Print (or save as PDF) a <b>test sheet</b> with random blanks over 漢字·ひらがな·meaning, or a full <b>grammar summary</b>.",
     help_grammar_t:"⑥ Grammar", help_grammar_b:"Verb groups, adjectives and essential patterns organized by color. Tap a <b>part-of-speech badge</b> in Memorize/Quiz to pop up its grammar.",
-    help_tip_t:"💾 Saving & moving", help_tip_b:"Progress and settings are <b>saved automatically in your browser</b>. To switch devices, <b>Export</b> from the DB and <b>Import</b> on the new one. Change <b>language</b> at the top right."
+    help_tip_t:"💾 Saving & moving", help_tip_b:"Progress and settings are <b>saved automatically in your browser</b>. To switch devices, <b>Export</b> from the DB and <b>Import</b> on the new one. Change <b>language</b> at the top right.",
+    sync_title:"Cloud sync", sync_login:"Sign in with Google", sync_logout:"Sign out", sync_syncNow:"🔄 Sync now",
+    sync_status_off:"Sign in to back up your wordbooks and progress to the cloud and continue on any device.",
+    sync_status_synced:"✅ Synced", sync_status_syncing:"Syncing…", sync_status_pending:"⏳ Waiting to sync", sync_status_error:"⚠️ Sync error — will retry later",
+    sync_lastSynced:"Last synced: {time}", sync_never:"never",
+    sync_justNow:"just now", sync_minAgo:"{n} min ago", sync_hourAgo:"{n} h ago",
+    sync_conflict:"The wordbook ‘{name}’ was changed on both this device and the cloud.\n[OK] = use the cloud version (discard this device's changes)\n[Cancel] = keep this device's version (overwrite the cloud)",
+    sync_tooBig:"Wordbook ‘{name}’ is too large to save to the cloud",
+    toast_loginFail:"Sign-in failed", toast_loggedOut:"Signed out — data on this device is kept",
+    toast_syncDone:"Cloud sync complete", toast_syncFail:"Sync failed — will retry later",
+    confirm_wipeCloud:"Also delete the learning records stored in the cloud?\n[OK] = delete the cloud copy too\n[Cancel] = keep the cloud copy (it will be restored to this device on the next sync)"
   }
 };
 function t(key, vars){
@@ -1113,6 +1176,7 @@ function applyI18n(){
     el._i18nDefault=nv;
   });
   document.documentElement.style.setProperty("--today-label", JSON.stringify(t("cal_todayMark")));
+  renderSyncUI();   // 동기화 패널의 상태 문구도 현재 언어로 갱신
 }
 
 let state = {
@@ -1137,7 +1201,7 @@ function loadBooksReg(){
     if(r && r.active && Array.isArray(r.list) && r.list.length && r.list.some(b=>b.id===r.active)) books=r;
   }catch(e){}
 }
-function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} }
+function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} cloudMarkDirty("__registry__"); }
 function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
 function blankState(name){
   return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:name||""};
@@ -1164,9 +1228,11 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log,
+    updatedAt:Date.now()   // 클라우드 동기화의 변경 시각(충돌 판정 기준)
   };
   try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
+  cloudMarkDirty(books.active);
   const b=books.list.find(x=>x.id===books.active);
   if(b && b.name!==state.dbName){ b.name=state.dbName; saveBooksReg(); }
 }
@@ -1981,11 +2047,12 @@ $("#resetBtn").addEventListener("click",()=>{
 });
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
+  const prevIds=books.list.map(b=>b.id);
   books.list.forEach(b=>localStorage.removeItem(bookKey(b.id)));   // 모든 단어장 슬롯 삭제
   localStorage.removeItem(BOOKS_KEY);
   books={active:"main", list:[{id:"main", name:""}]};
   state=blankState(t("name_empty"));
-  save(); refreshAll(); toast(t("toast_wiped"));
+  save(); cloudAfterWipe(prevIds); refreshAll(); toast(t("toast_wiped"));
 });
 $("#dbName").addEventListener("input",()=>{
   state.dbName=$("#dbName").value.trim()||t("name_unnamed"); save();
@@ -2006,6 +2073,7 @@ $("#bookDelBtn").addEventListener("click",()=>{
   const cur=books.list.find(b=>b.id===books.active);
   if(!confirm(t("confirm_bookDelete",{name:(cur&&cur.name)||t("name_unnamed")}))) return;
   localStorage.removeItem(bookKey(books.active));
+  cloudMarkDeleted(books.active);   // 클라우드에도 삭제 전파 (tombstone)
   books.list=books.list.filter(b=>b.id!==books.active);
   books.active=books.list[0].id; saveBooksReg();
   state=blankState(""); load(); refreshAll(); toast(t("toast_bookDeleted"));
@@ -3152,6 +3220,341 @@ $("#doPrint").addEventListener("click",()=>{
   window.print();
 });
 
+/* ====================== 클라우드 동기화 (Firebase Auth + Firestore) ======================
+   구조: Google 로그인 → users/{uid} 문서(단어장 레지스트리 + 삭제 tombstone)와
+   users/{uid}/books/{bookId} 문서(단어장 전체를 JSON 문자열 payload로) 저장.
+   push: save()/saveBooksReg()가 cloudMarkDirty()로 표시 → 3초 디바운스 후 업로드.
+         dirty 플래그는 localStorage에 영속되어 오프라인 변경도 재접속 후 업로드된다.
+   pull: 로그인(=앱 시작 포함) 시 fullSync()가 단어장별 updatedAt과 마지막으로 본 원격
+         시각(lastSeen)을 비교해 병합. 양쪽 모두 변경된 진짜 충돌만 confirm으로 물어본다. */
+const SYNC_KEY = LS_KEY + ".sync";
+const FIREBASE_SDK_VER = "10.14.1";
+let syncMeta = null;          // {dirty:{id:true}, deleted:{id:ms}, lastSeen:{id:ms}, lastSyncAt:ms}
+let syncUser = null;          // Firebase User (로그인 상태)
+let syncBusy = false;         // fullSync 진행 중
+let cloudPushing = false;     // pushDirtyNow 진행 중
+let syncErr = false;          // 마지막 작업 실패 여부
+let cloudReady = null;        // SDK 로드+초기화 Promise (실패 시 null로 되돌려 재시도 허용)
+let fbSdkPromise = null;
+let cloudPushTimer = null;
+let cloudDeletedRemote = {};  // 원격 tombstone 캐시 (registry 문서 push 시 함께 저장)
+
+function cloudConfigured(){ return !!(FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId); }
+
+function syncMetaObj(){
+  if(syncMeta) return syncMeta;
+  try{ syncMeta=JSON.parse(localStorage.getItem(SYNC_KEY)); }catch(e){}
+  if(!syncMeta || typeof syncMeta!=="object") syncMeta={};
+  syncMeta.dirty=syncMeta.dirty||{}; syncMeta.deleted=syncMeta.deleted||{};
+  syncMeta.lastSeen=syncMeta.lastSeen||{}; syncMeta.lastSyncAt=syncMeta.lastSyncAt||0;
+  return syncMeta;
+}
+function saveSyncMeta(){ try{ localStorage.setItem(SYNC_KEY, JSON.stringify(syncMetaObj())); }catch(e){} }
+
+// save()/saveBooksReg()에서 호출 — 로그인 여부와 무관하게 항상 안전해야 한다
+function cloudMarkDirty(id){
+  if(!cloudConfigured()) return;
+  const m=syncMetaObj();
+  if(m.deleted[id]) return;
+  m.dirty[id]=true; saveSyncMeta();
+  scheduleCloudPush();
+}
+function cloudMarkDeleted(id){
+  if(!cloudConfigured()) return;
+  const m=syncMetaObj();
+  m.deleted[id]=Date.now(); delete m.dirty[id]; delete m.lastSeen[id];
+  saveSyncMeta(); scheduleCloudPush();
+}
+// 내부 데이터 전체 삭제 후 클라우드 처리 — 확인=클라우드도 삭제 / 취소=클라우드 보관(다음 동기화 때 복원)
+function cloudAfterWipe(prevIds){
+  if(!cloudConfigured() || !syncUser) return;
+  const m=syncMetaObj();
+  if(confirm(t("confirm_wipeCloud"))){
+    prevIds.forEach(id=>{
+      // main 슬롯은 삭제 대신 빈 상태 push로 덮어씀 (dirty·lastSeen 유지)
+      if(id!=="main"){ m.deleted[id]=Date.now(); delete m.dirty[id]; delete m.lastSeen[id]; }
+    });
+    saveSyncMeta(); scheduleCloudPush();
+  } else {
+    // 로컬 흔적을 지워 다음 fullSync가 클라우드본을 그대로 내려받게 한다
+    prevIds.forEach(id=>{ delete m.dirty[id]; delete m.deleted[id]; delete m.lastSeen[id]; });
+    delete m.dirty.__registry__;
+    saveSyncMeta();
+    fullSync();   // 즉시 복원
+  }
+}
+
+// Firebase compat SDK를 필요할 때만 동적 로드 — 오프라인/file://에서는 조용히 실패
+function loadFirebaseSdk(){
+  if(fbSdkPromise) return fbSdkPromise;
+  if(!location.protocol.startsWith("http")) return Promise.reject(new Error("cloud sync needs http(s)"));
+  const one=f=>new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://www.gstatic.com/firebasejs/"+FIREBASE_SDK_VER+"/"+f;
+    s.onload=res; s.onerror=()=>{ s.remove(); rej(new Error("SDK load failed: "+f)); };
+    document.head.appendChild(s);
+  });
+  fbSdkPromise=(async()=>{
+    await one("firebase-app-compat.js");
+    await Promise.all([one("firebase-auth-compat.js"), one("firebase-firestore-compat.js")]);
+  })().catch(e=>{ fbSdkPromise=null; throw e; });
+  return fbSdkPromise;
+}
+function ensureCloud(){
+  if(cloudReady) return cloudReady;
+  cloudReady=(async()=>{
+    await loadFirebaseSdk();
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const auth=firebase.auth();
+    try{ auth.useDeviceLanguage(); }catch(e){}
+    auth.getRedirectResult().catch(()=>{});
+    auth.onAuthStateChanged(u=>{ syncUser=u; renderSyncUI(); if(u) fullSync(); });
+  })().catch(e=>{ cloudReady=null; throw e; });
+  return cloudReady;
+}
+// 부팅 시 호출 — 설정이 비어 있으면 아무것도 하지 않는다 (버튼도 숨김 유지)
+function initCloudSync(){
+  if(!cloudConfigured()) return;
+  const btn=$("#syncBtn"); if(btn) btn.hidden=false;
+  renderSyncUI();
+  ensureCloud().catch(()=>{});   // 오프라인이면 로그인 버튼 클릭/online 이벤트 때 재시도
+  window.addEventListener("online",()=>{ ensureCloud().then(()=>pushDirtyNow()).catch(()=>{}); });
+  window.addEventListener("pagehide",()=>{ if(syncUser) pushDirtyNow(); });
+}
+
+async function cloudSignIn(){
+  try{
+    await ensureCloud();
+    const provider=new firebase.auth.GoogleAuthProvider();
+    try{
+      await firebase.auth().signInWithPopup(provider);
+    }catch(e){
+      const c=e&&e.code;
+      if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request") return;   // 사용자가 닫음
+      if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){
+        await firebase.auth().signInWithRedirect(provider);   // 설치형 PWA 등 팝업 불가 환경 폴백
+        return;
+      }
+      throw e;
+    }
+  }catch(e){ toast(t("toast_loginFail")); }
+}
+async function cloudSignOut(){
+  try{ await firebase.auth().signOut(); }catch(e){}
+  const p=$("#syncPanel"); if(p) p.hidden=true;
+  toast(t("toast_loggedOut"));   // 로컬 데이터는 그대로 유지
+}
+
+function cloudDb(){ return firebase.firestore().collection("users").doc(syncUser.uid); }
+
+// 로그인/앱 시작/수동 동기화 진입점: 원격을 내려받아 병합한 뒤 밀린 변경을 올린다
+async function fullSync(){
+  if(!syncUser || syncBusy) return;
+  syncBusy=true; syncErr=false; renderSyncUI();
+  try{
+    await pullMerge();
+    await pushDirtyNow();
+    const m=syncMetaObj(); m.lastSyncAt=Date.now(); saveSyncMeta();
+  }catch(e){ syncErr=true; }
+  syncBusy=false; renderSyncUI();
+}
+
+async function pullMerge(){
+  const uref=cloudDb();
+  const [udoc,bsnap]=await Promise.all([uref.get(), uref.collection("books").get()]);
+  const m=syncMetaObj();
+  const remoteBooks={};
+  bsnap.forEach(d=>{ remoteBooks[d.id]=d.data()||{}; });
+  const remoteDeleted=Object.assign({}, (udoc.exists && udoc.data().deleted)||{});
+  let regChanged=false, activeChanged=false;
+
+  // ① 이 기기의 삭제(tombstone)를 원격에 반영
+  for(const id of Object.keys(m.deleted)){
+    if(remoteBooks[id]){ await uref.collection("books").doc(id).delete(); delete remoteBooks[id]; }
+    remoteDeleted[id]=m.deleted[id];
+    delete m.deleted[id]; delete m.dirty[id]; delete m.lastSeen[id];
+    m.dirty.__registry__=true;
+  }
+  // ② 다른 기기의 삭제를 이 기기에 반영 (삭제 이후 로컬 수정이 있으면 로컬 승)
+  for(const id of Object.keys(remoteDeleted)){
+    const b=books.list.find(x=>x.id===id); if(!b) continue;
+    let localUp=0; try{ const s=JSON.parse(localStorage.getItem(bookKey(id))); localUp=(s&&s.updatedAt)||0; }catch(e){}
+    if(localUp>remoteDeleted[id]){
+      delete remoteDeleted[id]; m.dirty[id]=true; m.dirty.__registry__=true;
+    } else {
+      localStorage.removeItem(bookKey(id));
+      books.list=books.list.filter(x=>x.id!==id);
+      delete m.dirty[id]; delete m.lastSeen[id];
+      regChanged=true;
+      if(books.active===id){ books.active=books.list.length?books.list[0].id:"main"; activeChanged=true; }
+    }
+  }
+  if(!books.list.length){ books.list=[{id:"main",name:""}]; books.active="main"; regChanged=true; }
+  cloudDeletedRemote=remoteDeleted;
+
+  // ③ 단어장별 병합
+  const localIds=new Set(books.list.map(b=>b.id));
+  for(const id of Object.keys(remoteBooks)){
+    const r=remoteBooks[id];
+    if(typeof r.payload!=="string") continue;
+    const rUp=r.updatedAt||0, seen=m.lastSeen[id]||0, dirty=!!m.dirty[id];
+    if(!localIds.has(id)){
+      // 원격에만 있음 → 이 기기에 복원 (새 기기 시나리오)
+      try{
+        localStorage.setItem(bookKey(id), r.payload);
+        books.list.push({id, name:r.name||""});
+        m.lastSeen[id]=rUp; regChanged=true;
+      }catch(e){}
+    } else if(!dirty){
+      if(rUp>seen){
+        // 원격이 더 새로움 → 덮어씀
+        try{
+          localStorage.setItem(bookKey(id), r.payload); m.lastSeen[id]=rUp;
+          const b=books.list.find(x=>x.id===id);
+          if(b && r.name && b.name!==r.name){ b.name=r.name; regChanged=true; }
+          if(id===books.active) activeChanged=true;
+        }catch(e){}
+      }
+    } else if(rUp>seen){
+      // 양쪽 모두 변경 — 진짜 충돌만 사용자에게 확인
+      const b=books.list.find(x=>x.id===id);
+      if(confirm(t("sync_conflict",{name:(b&&b.name)||r.name||id}))){
+        try{
+          localStorage.setItem(bookKey(id), r.payload); m.lastSeen[id]=rUp; delete m.dirty[id];
+          if(id===books.active) activeChanged=true;
+        }catch(e){}
+      }
+      // 취소 → dirty 유지 → 아래 push에서 클라우드를 덮어씀
+    }
+    // dirty && rUp===seen → 원격은 그대로 → 로컬 승 (push 대기 유지)
+  }
+  // ④ 이 기기에만 있는 단어장 → 업로드 대상 (첫 로그인 시나리오)
+  for(const b of books.list){
+    if(!remoteBooks[b.id] && !m.deleted[b.id]){ m.dirty[b.id]=true; m.dirty.__registry__=true; }
+  }
+  if(!udoc.exists) m.dirty.__registry__=true;
+
+  saveSyncMeta();
+  if(regChanged) saveBooksReg();
+  if(activeChanged){ state=blankState(""); load(); refreshAll(); }
+}
+
+// Firestore 문서 1MB 한도 가드 — 초과 시 push 사본의 log만 축소, 그래도 크면 null
+function payloadSizeGuard(raw){
+  const MAX=950000;
+  let obj=null;
+  try{ obj=JSON.parse(raw); }catch(e){ return null; }
+  let json=raw;
+  if(new TextEncoder().encode(json).length>MAX && Array.isArray(obj.log) && obj.log.length>500){
+    obj=Object.assign({}, obj, {log:obj.log.slice(-500)});
+    json=JSON.stringify(obj);
+  }
+  if(new TextEncoder().encode(json).length>MAX) return null;
+  return {json, obj};
+}
+
+function scheduleCloudPush(){
+  if(!syncUser) return;
+  clearTimeout(cloudPushTimer);
+  cloudPushTimer=setTimeout(pushDirtyNow, 3000);
+  renderSyncUI();
+}
+async function pushDirtyNow(){
+  if(!syncUser || cloudPushing || !cloudConfigured()) return;
+  const m=syncMetaObj();
+  if(!Object.keys(m.dirty).length && !Object.keys(m.deleted).length) return;
+  cloudPushing=true; renderSyncUI();
+  try{
+    const uref=cloudDb();
+    for(const id of Object.keys(m.deleted)){
+      await uref.collection("books").doc(id).delete();
+      cloudDeletedRemote[id]=m.deleted[id];
+      delete m.deleted[id]; delete m.lastSeen[id];
+      m.dirty.__registry__=true; saveSyncMeta();
+    }
+    for(const id of Object.keys(m.dirty)){
+      if(id==="__registry__") continue;
+      const raw=localStorage.getItem(bookKey(id));
+      if(raw==null){ delete m.dirty[id]; saveSyncMeta(); continue; }
+      const g=payloadSizeGuard(raw);
+      if(!g){
+        let nm=id; try{ nm=(JSON.parse(raw).name)||id; }catch(e){}
+        toast(t("sync_tooBig",{name:nm}));
+        delete m.dirty[id]; saveSyncMeta(); continue;
+      }
+      await uref.collection("books").doc(id).set({
+        name:g.obj.name||"", updatedAt:g.obj.updatedAt||Date.now(), payload:g.json,
+        syncedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      m.lastSeen[id]=g.obj.updatedAt||0;
+      delete m.dirty[id]; saveSyncMeta();
+    }
+    if(m.dirty.__registry__){
+      await uref.set({
+        registry:{active:books.active, list:books.list},
+        deleted:cloudDeletedRemote,
+        updatedAt:Date.now(),
+        syncedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      delete m.dirty.__registry__; saveSyncMeta();
+    }
+    m.lastSyncAt=Date.now(); saveSyncMeta();
+    syncErr=false;
+  }catch(e){ syncErr=true; }
+  cloudPushing=false; renderSyncUI();
+  // push 도중 새로 생긴 변경(위 스냅숏에 없던 dirty)이 있으면 다시 예약
+  if(!syncErr && (Object.keys(m.dirty).length||Object.keys(m.deleted).length)) scheduleCloudPush();
+}
+
+/* ---- 동기화 UI ---- */
+function computeSyncStatus(){
+  if(!syncUser) return "off";
+  if(syncBusy||cloudPushing) return "syncing";
+  if(syncErr) return "error";
+  const m=syncMetaObj();
+  if(Object.keys(m.dirty).length||Object.keys(m.deleted).length) return "pending";
+  return "synced";
+}
+function fmtLastSync(ms){
+  const diff=Date.now()-ms;
+  if(diff<60000) return t("sync_justNow");
+  if(diff<3600000) return t("sync_minAgo",{n:Math.floor(diff/60000)});
+  if(diff<86400000) return t("sync_hourAgo",{n:Math.floor(diff/3600000)});
+  return new Date(ms).toLocaleDateString();
+}
+function renderSyncUI(){
+  const btn=$("#syncBtn"); if(!btn) return;
+  const st=computeSyncStatus();
+  btn.innerHTML=(syncUser
+    ? (syncUser.photoURL ? '<img class="syncavatar" src="'+esc(syncUser.photoURL)+'" referrerpolicy="no-referrer" alt="">' : "👤")
+    : "☁️")
+    + (st!=="off" ? '<span class="syncdot '+st+'"></span>' : "");
+  const userRow=$("#syncUserRow");
+  userRow.hidden=!syncUser;
+  if(syncUser){
+    const ph=$("#syncPhoto");
+    ph.src=syncUser.photoURL||""; ph.style.display=syncUser.photoURL?"":"none";
+    $("#syncEmail").textContent=syncUser.email||syncUser.displayName||"";
+  }
+  $("#syncLoginBtn").hidden=!!syncUser;
+  $("#syncNowBtn").hidden=!syncUser;
+  $("#syncLogoutBtn").hidden=!syncUser;
+  $("#syncStatusLine").textContent=t("sync_status_"+st);
+  const m=syncMetaObj();
+  $("#syncLastLine").textContent=syncUser
+    ? t("sync_lastSynced",{time:m.lastSyncAt?fmtLastSync(m.lastSyncAt):t("sync_never")}) : "";
+}
+$("#syncBtn").addEventListener("click",e=>{
+  e.stopPropagation();
+  const p=$("#syncPanel"); p.hidden=!p.hidden;
+  if(!p.hidden) renderSyncUI();
+});
+$("#syncPanel").addEventListener("click",e=>e.stopPropagation());
+document.addEventListener("click",()=>{ const p=$("#syncPanel"); if(p && !p.hidden) p.hidden=true; });
+$("#syncLoginBtn").addEventListener("click",cloudSignIn);
+$("#syncNowBtn").addEventListener("click",()=>fullSync());
+$("#syncLogoutBtn").addEventListener("click",cloudSignOut);
+
 /* ====================== 초기화 ====================== */
 function resetSchedControls(){
   // 브라우저의 체크박스 상태 복원으로 0/0에 고착되는 문제 방지
@@ -3178,6 +3581,7 @@ updateSchedCalc();   // 기본 날짜 반영해 자동 분량 표시
 renderGrammar();     // 문법 탭 렌더 (동사·형용사 등은 즉시 표시)
 loadIdioms();        // 어법 데이터(data/idioms.json)를 불러온 뒤 어법·문법 어법영역 재렌더
 if(Object.keys(state.schedule).length) $("#schedSettings").open=false;  // 일정 있으면 설정 접기
+initCloudSync();     // 클라우드 동기화 (FIREBASE_CONFIG가 비어 있으면 아무것도 안 함)
 const initTab=location.hash.slice(1);
 if(initTab && $("#"+initTab)) showTab(initTab);
 </script>
