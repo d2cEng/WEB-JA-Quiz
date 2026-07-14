@@ -1,6 +1,6 @@
 // 일본어 단어 암기 · 시험 — 서비스워커 (오프라인 + 설치 지원)
 // 캐시 버전을 올리면 이전 캐시를 정리하고 새 자산을 받습니다.
-const CACHE = 'ja-quiz-v3';
+const CACHE = 'ja-quiz-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -36,6 +36,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
+  // 크로스오리진(Firebase SDK·Firestore 스트리밍 등)은 SW가 건드리지 않고 그대로 통과
+  if (new URL(req.url).origin !== location.origin) return;
   // 페이지 이동(HTML): 네트워크 우선 → 오프라인이면 캐시된 index.html
   if (req.mode === 'navigate') {
     e.respondWith(
