@@ -352,6 +352,16 @@
   .syncuser img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:0 0 auto}
   .syncstatus{color:var(--ink)}
   .synclast{color:var(--muted);font-size:.85em;margin-top:2px}
+  /* 모바일: 상단 컨트롤(☁️·❔·언어)이 둘째 줄로 내려가지 않고 제목 오른편에 붙도록 축소 */
+  @media(max-width:560px){
+    .topbar{flex-wrap:nowrap}
+    .topbar h1{min-width:0;font-size:16px}
+    .topbar h1 span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .topctl{gap:4px}
+    .topctl .helpbtn{width:30px;height:30px;font-size:.9em}
+    .langseg button{padding:5px 8px;font-size:.75em}
+    .syncavatar{width:23px;height:23px}
+  }
   /* 암기 카드: 단어 빼기 버튼 (자동 읽기 토글 오른쪽, 상단 바에 배치) */
   .dropword{border:1px solid var(--line);background:#fff;
     color:var(--muted);border-radius:999px;padding:6px 12px;font-size:.84em;font-weight:700;cursor:pointer}
@@ -420,8 +430,8 @@
       <button data-tab="schedule" data-i18n="tab_schedule">일정</button>
       <button data-tab="memorize" data-i18n="tab_memorize">암기</button>
       <button data-tab="quiz" data-i18n="tab_quiz">퀴즈</button>
-      <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
       <button data-tab="grammar" data-i18n="tab_grammar">문법</button>
+      <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
       <button data-tab="idiom" data-i18n="tab_idiom">어법</button>
     </nav>
   </header>
