@@ -1969,7 +1969,7 @@ $("#repoLoadBtn").addEventListener("click",async ()=>{
   try{
     const res=await fetch("data/"+file,{cache:"no-cache"});
     if(!res.ok) throw 0;
-    applyWordbook(await res.json(), file.replace(/\.json$/i,""));
+    applyWordbook(await res.json(), label);   // JSON에 name이 없으면 목록의 표시 이름 사용
   }catch(e){ toast(t("toast_repoFail")); }
 });
 initRepoWordbooks();

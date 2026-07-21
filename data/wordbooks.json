@@ -2,6 +2,7 @@
   "version": 1,
   "wordbooks": [
     { "name": "JLPT 샘플 단어장", "file": "words.sample.json" },
-    { "name": "일본 이자카야·마트 메뉴 읽기", "file": "izakaya-menu.json" }
+    { "name": "일본 이자카야·마트 메뉴 읽기", "file": "izakaya-menu.json" },
+    { "name": "JLPT N5–N1 Vocabulary (Japanese–English)", "file": "words.en.json" }
   ]
 }
