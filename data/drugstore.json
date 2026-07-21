@@ -1,0 +1,518 @@
+{
+ "version": 1,
+ "name": "드러그스토어·약국",
+ "words": [
+  {
+   "kanji": "薬局",
+   "hiragana": "やっきょく",
+   "korean": "약국",
+   "level": "N3",
+   "pos": "명사",
+   "example": "駅前の薬局で風邪薬を買った。"
+  },
+  {
+   "kanji": "薬剤師",
+   "hiragana": "やくざいし",
+   "korean": "약사",
+   "level": "N2",
+   "pos": "명사",
+   "example": "薬剤師に飲み合わせを相談した。"
+  },
+  {
+   "kanji": "処方箋",
+   "hiragana": "しょほうせん",
+   "korean": "처방전",
+   "level": "N1",
+   "pos": "명사",
+   "example": "処方箋を持って調剤薬局へ行った。"
+  },
+  {
+   "kanji": "市販薬",
+   "hiragana": "しはんやく",
+   "korean": "일반 의약품",
+   "level": "N1",
+   "pos": "명사",
+   "example": "軽い頭痛なら市販薬で十分だ。"
+  },
+  {
+   "kanji": "常備薬",
+   "hiragana": "じょうびやく",
+   "korean": "상비약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "旅行には常備薬を持って行く。"
+  },
+  {
+   "kanji": "錠剤",
+   "hiragana": "じょうざい",
+   "korean": "알약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "錠剤を水で飲み込んだ。"
+  },
+  {
+   "kanji": "カプセル",
+   "hiragana": "カプセル",
+   "korean": "캡슐",
+   "level": "N2",
+   "pos": "명사",
+   "example": "このカプセルは一回二錠です。"
+  },
+  {
+   "kanji": "粉薬",
+   "hiragana": "こなぐすり",
+   "korean": "가루약",
+   "level": "N2",
+   "pos": "명사",
+   "example": "子どもは粉薬が苦手だ。"
+  },
+  {
+   "kanji": "シロップ",
+   "hiragana": "シロップ",
+   "korean": "시럽(물약)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "咳止めのシロップを処方された。"
+  },
+  {
+   "kanji": "塗り薬",
+   "hiragana": "ぬりぐすり",
+   "korean": "바르는 약",
+   "level": "N2",
+   "pos": "명사",
+   "example": "虫刺されに塗り薬をつけた。"
+  },
+  {
+   "kanji": "貼り薬",
+   "hiragana": "はりぐすり",
+   "korean": "붙이는 약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "腰に貼り薬を貼って寝た。"
+  },
+  {
+   "kanji": "湿布",
+   "hiragana": "しっぷ",
+   "korean": "파스",
+   "level": "N1",
+   "pos": "명사",
+   "example": "肩こりに湿布を貼った。"
+  },
+  {
+   "kanji": "目薬",
+   "hiragana": "めぐすり",
+   "korean": "안약",
+   "level": "N2",
+   "pos": "명사",
+   "example": "目が乾くので目薬を差した。"
+  },
+  {
+   "kanji": "点鼻薬",
+   "hiragana": "てんびやく",
+   "korean": "비강 스프레이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鼻づまりに点鼻薬を使った。"
+  },
+  {
+   "kanji": "うがい薬",
+   "hiragana": "うがいぐすり",
+   "korean": "가글약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "帰宅後はうがい薬でうがいをする。"
+  },
+  {
+   "kanji": "消毒液",
+   "hiragana": "しょうどくえき",
+   "korean": "소독액",
+   "level": "N2",
+   "pos": "명사",
+   "example": "傷口を消毒液で洗った。"
+  },
+  {
+   "kanji": "包帯",
+   "hiragana": "ほうたい",
+   "korean": "붕대",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ねんざした足首に包帯を巻いた。"
+  },
+  {
+   "kanji": "ガーゼ",
+   "hiragana": "ガーゼ",
+   "korean": "거즈",
+   "level": "N2",
+   "pos": "명사",
+   "example": "傷にガーゼを当てて固定した。"
+  },
+  {
+   "kanji": "体温計",
+   "hiragana": "たいおんけい",
+   "korean": "체온계",
+   "level": "N2",
+   "pos": "명사",
+   "example": "体温計で熱を測ったら三十八度だった。"
+  },
+  {
+   "kanji": "血圧計",
+   "hiragana": "けつあつけい",
+   "korean": "혈압계",
+   "level": "N1",
+   "pos": "명사",
+   "example": "祖父は毎朝血圧計で測定している。"
+  },
+  {
+   "kanji": "頭痛薬",
+   "hiragana": "ずつうやく",
+   "korean": "두통약",
+   "level": "N2",
+   "pos": "명사",
+   "example": "頭痛薬を飲んで少し横になった。"
+  },
+  {
+   "kanji": "解熱剤",
+   "hiragana": "げねつざい",
+   "korean": "해열제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "熱が下がらず解熱剤を服用した。"
+  },
+  {
+   "kanji": "鎮痛剤",
+   "hiragana": "ちんつうざい",
+   "korean": "진통제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "歯が痛くて鎮痛剤に頼った。"
+  },
+  {
+   "kanji": "風邪薬",
+   "hiragana": "かぜぐすり",
+   "korean": "감기약",
+   "level": "N3",
+   "pos": "명사",
+   "example": "総合風邪薬を一箱買った。"
+  },
+  {
+   "kanji": "咳止め",
+   "hiragana": "せきどめ",
+   "korean": "기침약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "咳止めを飲んだら楽になった。"
+  },
+  {
+   "kanji": "のど飴",
+   "hiragana": "のどあめ",
+   "korean": "목캔디",
+   "level": "N2",
+   "pos": "명사",
+   "example": "乾燥する季節はのど飴が手放せない。"
+  },
+  {
+   "kanji": "胃腸薬",
+   "hiragana": "いちょうやく",
+   "korean": "위장약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "食べ過ぎたので胃腸薬を飲んだ。"
+  },
+  {
+   "kanji": "整腸剤",
+   "hiragana": "せいちょうざい",
+   "korean": "정장제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "お腹の調子を整える整腸剤を続けている。"
+  },
+  {
+   "kanji": "便秘薬",
+   "hiragana": "べんぴやく",
+   "korean": "변비약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "便秘薬は用量を守って使う。"
+  },
+  {
+   "kanji": "下痢止め",
+   "hiragana": "げりどめ",
+   "korean": "지사제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "旅行に下痢止めを常備している。"
+  },
+  {
+   "kanji": "酔い止め",
+   "hiragana": "よいどめ",
+   "korean": "멀미약",
+   "level": "N1",
+   "pos": "명사",
+   "example": "船に乗る前に酔い止めを飲んだ。"
+  },
+  {
+   "kanji": "アレルギー",
+   "hiragana": "アレルギー",
+   "korean": "알레르기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "薬のアレルギーを薬剤師に伝えた。"
+  },
+  {
+   "kanji": "花粉症",
+   "hiragana": "かふんしょう",
+   "korean": "꽃가루 알레르기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "春は花粉症の薬が一番売れる。"
+  },
+  {
+   "kanji": "鼻炎",
+   "hiragana": "びえん",
+   "korean": "비염",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鼻炎用のスプレーを探している。"
+  },
+  {
+   "kanji": "かゆみ止め",
+   "hiragana": "かゆみどめ",
+   "korean": "가려움 완화제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "蚊に刺されてかゆみ止めを塗った。"
+  },
+  {
+   "kanji": "日焼け止め",
+   "hiragana": "ひやけどめ",
+   "korean": "선크림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "外出前に日焼け止めを塗り直した。"
+  },
+  {
+   "kanji": "保湿",
+   "hiragana": "ほしつ",
+   "korean": "보습",
+   "level": "N1",
+   "pos": "명사",
+   "example": "冬は保湿クリームが欠かせない。"
+  },
+  {
+   "kanji": "乾燥肌",
+   "hiragana": "かんそうはだ",
+   "korean": "건성 피부",
+   "level": "N1",
+   "pos": "명사",
+   "example": "乾燥肌向けの化粧水を選んだ。"
+  },
+  {
+   "kanji": "敏感肌",
+   "hiragana": "びんかんはだ",
+   "korean": "민감성 피부",
+   "level": "N1",
+   "pos": "명사",
+   "example": "敏感肌でも使える製品ですか。"
+  },
+  {
+   "kanji": "化粧水",
+   "hiragana": "けしょうすい",
+   "korean": "스킨,토너",
+   "level": "N2",
+   "pos": "명사",
+   "example": "お風呂上がりに化粧水をつける。"
+  },
+  {
+   "kanji": "乳液",
+   "hiragana": "にゅうえき",
+   "korean": "로션",
+   "level": "N2",
+   "pos": "명사",
+   "example": "化粧水の後に乳液で蓋をする。"
+  },
+  {
+   "kanji": "リップクリーム",
+   "hiragana": "リップクリーム",
+   "korean": "립밤",
+   "level": "N2",
+   "pos": "명사",
+   "example": "唇が荒れてリップクリームを塗った。"
+  },
+  {
+   "kanji": "ハンドクリーム",
+   "hiragana": "ハンドクリーム",
+   "korean": "핸드크림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "手洗いのたびにハンドクリームを塗る。"
+  },
+  {
+   "kanji": "入浴剤",
+   "hiragana": "にゅうよくざい",
+   "korean": "입욕제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "温泉気分の入浴剤を買ってみた。"
+  },
+  {
+   "kanji": "栄養ドリンク",
+   "hiragana": "えいようドリンク",
+   "korean": "영양 드링크",
+   "level": "N2",
+   "pos": "명사",
+   "example": "残業前に栄養ドリンクを飲んだ。"
+  },
+  {
+   "kanji": "サプリメント",
+   "hiragana": "サプリメント",
+   "korean": "영양제",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ビタミンのサプリメントを毎日とる。"
+  },
+  {
+   "kanji": "用法",
+   "hiragana": "ようほう",
+   "korean": "용법",
+   "level": "N1",
+   "pos": "명사",
+   "example": "用法を守って正しく服用してください。"
+  },
+  {
+   "kanji": "用量",
+   "hiragana": "ようりょう",
+   "korean": "용량(복용량)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "子どもの用量は半分です。"
+  },
+  {
+   "kanji": "服用",
+   "hiragana": "ふくよう",
+   "korean": "복용",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この薬は食後に服用します。"
+  },
+  {
+   "kanji": "副作用",
+   "hiragana": "ふくさよう",
+   "korean": "부작용",
+   "level": "N1",
+   "pos": "명사",
+   "example": "眠くなる副作用があります。"
+  },
+  {
+   "kanji": "効き目",
+   "hiragana": "ききめ",
+   "korean": "효능,효과",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この湿布は効き目が長く続く。"
+  },
+  {
+   "kanji": "効く",
+   "hiragana": "きく",
+   "korean": "(약이) 듣다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "この薬は頭痛によく効く。"
+  },
+  {
+   "kanji": "飲み合わせ",
+   "hiragana": "のみあわせ",
+   "korean": "약 함께 복용(궁합)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "薬の飲み合わせに注意が必要だ。"
+  },
+  {
+   "kanji": "症状",
+   "hiragana": "しょうじょう",
+   "korean": "증상",
+   "level": "N2",
+   "pos": "명사",
+   "example": "症状に合わせて薬を選んでもらった。"
+  },
+  {
+   "kanji": "鼻水",
+   "hiragana": "はなみず",
+   "korean": "콧물",
+   "level": "N3",
+   "pos": "명사",
+   "example": "鼻水が止まらなくて薬を買った。"
+  },
+  {
+   "kanji": "くしゃみ",
+   "hiragana": "くしゃみ",
+   "korean": "재채기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "くしゃみが続くのは花粉のせいだ。"
+  },
+  {
+   "kanji": "めまい",
+   "hiragana": "めまい",
+   "korean": "어지럼증",
+   "level": "N1",
+   "pos": "명사",
+   "example": "立ち上がった時にめまいがした。"
+  },
+  {
+   "kanji": "吐き気",
+   "hiragana": "はきけ",
+   "korean": "구역질",
+   "level": "N1",
+   "pos": "명사",
+   "example": "吐き気がするので酔い止めをください。"
+  },
+  {
+   "kanji": "肩こり",
+   "hiragana": "かたこり",
+   "korean": "어깨 결림",
+   "level": "N1",
+   "pos": "명사",
+   "example": "デスクワークで肩こりがひどい。"
+  },
+  {
+   "kanji": "筋肉痛",
+   "hiragana": "きんにくつう",
+   "korean": "근육통",
+   "level": "N2",
+   "pos": "명사",
+   "example": "運動の翌日に筋肉痛になった。"
+  },
+  {
+   "kanji": "眠気",
+   "hiragana": "ねむけ",
+   "korean": "졸음",
+   "level": "N1",
+   "pos": "명사",
+   "example": "眠気の出にくいタイプはありますか。"
+  },
+  {
+   "kanji": "食前",
+   "hiragana": "しょくぜん",
+   "korean": "식전",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この薬は食前に飲んでください。"
+  },
+  {
+   "kanji": "食間",
+   "hiragana": "しょっかん",
+   "korean": "식간(식사 사이)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "食間とは食後二時間ほどのことです。"
+  },
+  {
+   "kanji": "就寝前",
+   "hiragana": "しゅうしんまえ",
+   "korean": "취침 전",
+   "level": "N1",
+   "pos": "명사",
+   "example": "就寝前に一錠服用します。"
+  }
+ ]
+}

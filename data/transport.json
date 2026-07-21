@@ -1,0 +1,486 @@
+{
+ "version": 1,
+ "name": "전철·교통 표현",
+ "words": [
+  {
+   "kanji": "改札",
+   "hiragana": "かいさつ",
+   "korean": "개찰",
+   "level": "N2",
+   "pos": "명사",
+   "example": "改札でICカードをタッチした。"
+  },
+  {
+   "kanji": "改札口",
+   "hiragana": "かいさつぐち",
+   "korean": "개찰구",
+   "level": "N2",
+   "pos": "명사",
+   "example": "北改札口で待ち合わせしましょう。"
+  },
+  {
+   "kanji": "券売機",
+   "hiragana": "けんばいき",
+   "korean": "매표기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "券売機で切符を買った。"
+  },
+  {
+   "kanji": "運賃",
+   "hiragana": "うんちん",
+   "korean": "운임",
+   "level": "N2",
+   "pos": "명사",
+   "example": "運賃は距離によって変わる。"
+  },
+  {
+   "kanji": "乗り越し",
+   "hiragana": "のりこし",
+   "korean": "목적지 지나침",
+   "level": "N1",
+   "pos": "명사",
+   "example": "寝てしまって二駅乗り越した。"
+  },
+  {
+   "kanji": "乗り越し精算",
+   "hiragana": "のりこしせいさん",
+   "korean": "추가 요금 정산",
+   "level": "N1",
+   "pos": "명사",
+   "example": "降りる前に乗り越し精算をした。"
+  },
+  {
+   "kanji": "定期券",
+   "hiragana": "ていきけん",
+   "korean": "정기권",
+   "level": "N2",
+   "pos": "명사",
+   "example": "通学用の定期券を更新した。"
+  },
+  {
+   "kanji": "回数券",
+   "hiragana": "かいすうけん",
+   "korean": "회수권",
+   "level": "N1",
+   "pos": "명사",
+   "example": "回数券は少しお得だ。"
+  },
+  {
+   "kanji": "片道",
+   "hiragana": "かたみち",
+   "korean": "편도",
+   "level": "N3",
+   "pos": "명사",
+   "example": "片道の切符を二枚買った。"
+  },
+  {
+   "kanji": "往復",
+   "hiragana": "おうふく",
+   "korean": "왕복",
+   "level": "N3",
+   "pos": "명사",
+   "example": "往復で買うと割引になる。"
+  },
+  {
+   "kanji": "終電",
+   "hiragana": "しゅうでん",
+   "korean": "막차",
+   "level": "N2",
+   "pos": "명사",
+   "example": "終電を逃してタクシーで帰った。"
+  },
+  {
+   "kanji": "始発",
+   "hiragana": "しはつ",
+   "korean": "첫차",
+   "level": "N2",
+   "pos": "명사",
+   "example": "始発に乗るため四時に起きた。"
+  },
+  {
+   "kanji": "各駅停車",
+   "hiragana": "かくえきていしゃ",
+   "korean": "각역 정차(완행)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "急がないので各駅停車で行く。"
+  },
+  {
+   "kanji": "快速",
+   "hiragana": "かいそく",
+   "korean": "쾌속",
+   "level": "N2",
+   "pos": "명사",
+   "example": "快速はこの駅には止まりません。"
+  },
+  {
+   "kanji": "急行",
+   "hiragana": "きゅうこう",
+   "korean": "급행",
+   "level": "N3",
+   "pos": "명사",
+   "example": "急行に乗れば二十分で着く。"
+  },
+  {
+   "kanji": "特急",
+   "hiragana": "とっきゅう",
+   "korean": "특급",
+   "level": "N2",
+   "pos": "명사",
+   "example": "特急には特急券が必要です。"
+  },
+  {
+   "kanji": "指定席",
+   "hiragana": "していせき",
+   "korean": "지정석",
+   "level": "N2",
+   "pos": "명사",
+   "example": "窓側の指定席を予約した。"
+  },
+  {
+   "kanji": "自由席",
+   "hiragana": "じゆうせき",
+   "korean": "자유석",
+   "level": "N2",
+   "pos": "명사",
+   "example": "自由席は先着順です。"
+  },
+  {
+   "kanji": "乗り換え",
+   "hiragana": "のりかえ",
+   "korean": "환승",
+   "level": "N3",
+   "pos": "명사",
+   "example": "新宿で乗り換えが必要だ。"
+  },
+  {
+   "kanji": "乗り場",
+   "hiragana": "のりば",
+   "korean": "타는 곳",
+   "level": "N3",
+   "pos": "명사",
+   "example": "バス乗り場は駅の南口にある。"
+  },
+  {
+   "kanji": "ホーム",
+   "hiragana": "ホーム",
+   "korean": "승강장",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ホームの黄色い線の内側でお待ちください。"
+  },
+  {
+   "kanji": "番線",
+   "hiragana": "ばんせん",
+   "korean": "~번 승강장",
+   "level": "N1",
+   "pos": "명사",
+   "example": "三番線に電車がまいります。"
+  },
+  {
+   "kanji": "路線図",
+   "hiragana": "ろせんず",
+   "korean": "노선도",
+   "level": "N2",
+   "pos": "명사",
+   "example": "路線図で行き方を確認した。"
+  },
+  {
+   "kanji": "時刻表",
+   "hiragana": "じこくひょう",
+   "korean": "시간표",
+   "level": "N2",
+   "pos": "명사",
+   "example": "時刻表を見て出発時間を決めた。"
+  },
+  {
+   "kanji": "運行情報",
+   "hiragana": "うんこうじょうほう",
+   "korean": "운행 정보",
+   "level": "N1",
+   "pos": "명사",
+   "example": "アプリで運行情報をチェックする。"
+  },
+  {
+   "kanji": "遅延",
+   "hiragana": "ちえん",
+   "korean": "지연",
+   "level": "N1",
+   "pos": "명사",
+   "example": "大雨の影響で遅延が発生した。"
+  },
+  {
+   "kanji": "運休",
+   "hiragana": "うんきゅう",
+   "korean": "운행 중단",
+   "level": "N1",
+   "pos": "명사",
+   "example": "台風のため一部区間が運休になった。"
+  },
+  {
+   "kanji": "見合わせ",
+   "hiragana": "みあわせ",
+   "korean": "(운행) 일시 중지",
+   "level": "N1",
+   "pos": "명사",
+   "example": "事故の影響で運転を見合わせています。"
+  },
+  {
+   "kanji": "振替輸送",
+   "hiragana": "ふりかえゆそう",
+   "korean": "대체 수송",
+   "level": "N1",
+   "pos": "명사",
+   "example": "振替輸送で他社線を利用した。"
+  },
+  {
+   "kanji": "人身事故",
+   "hiragana": "じんしんじこ",
+   "korean": "인명 사고",
+   "level": "N1",
+   "pos": "명사",
+   "example": "人身事故でダイヤが乱れている。"
+  },
+  {
+   "kanji": "優先席",
+   "hiragana": "ゆうせんせき",
+   "korean": "노약자석",
+   "level": "N2",
+   "pos": "명사",
+   "example": "優先席の近くでは携帯を控える。"
+  },
+  {
+   "kanji": "バス停",
+   "hiragana": "バスてい",
+   "korean": "버스 정류장",
+   "level": "N3",
+   "pos": "명사",
+   "example": "バス停で十分ほど待った。"
+  },
+  {
+   "kanji": "整理券",
+   "hiragana": "せいりけん",
+   "korean": "정리권(번호표)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "乗車時に整理券を取ってください。"
+  },
+  {
+   "kanji": "降車ボタン",
+   "hiragana": "こうしゃボタン",
+   "korean": "하차 벨",
+   "level": "N1",
+   "pos": "명사",
+   "example": "降りる前に降車ボタンを押した。"
+  },
+  {
+   "kanji": "車掌",
+   "hiragana": "しゃしょう",
+   "korean": "차장",
+   "level": "N2",
+   "pos": "명사",
+   "example": "車掌が切符を確認しに来た。"
+  },
+  {
+   "kanji": "駅員",
+   "hiragana": "えきいん",
+   "korean": "역무원",
+   "level": "N2",
+   "pos": "명사",
+   "example": "駅員に乗り換えを尋ねた。"
+  },
+  {
+   "kanji": "網棚",
+   "hiragana": "あみだな",
+   "korean": "선반(짐칸)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "荷物を網棚に載せた。"
+  },
+  {
+   "kanji": "つり革",
+   "hiragana": "つりかわ",
+   "korean": "손잡이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "揺れるのでつり革につかまった。"
+  },
+  {
+   "kanji": "車内放送",
+   "hiragana": "しゃないほうそう",
+   "korean": "차내 방송",
+   "level": "N1",
+   "pos": "명사",
+   "example": "車内放送で次の駅を知らせた。"
+  },
+  {
+   "kanji": "発車",
+   "hiragana": "はっしゃ",
+   "korean": "발차",
+   "level": "N2",
+   "pos": "명사",
+   "example": "発車のベルが鳴った。"
+  },
+  {
+   "kanji": "停車",
+   "hiragana": "ていしゃ",
+   "korean": "정차",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この電車は次の駅に停車します。"
+  },
+  {
+   "kanji": "通過",
+   "hiragana": "つうか",
+   "korean": "통과",
+   "level": "N2",
+   "pos": "명사",
+   "example": "特急は小さな駅を通過する。"
+  },
+  {
+   "kanji": "最寄り駅",
+   "hiragana": "もよりえき",
+   "korean": "가장 가까운 역",
+   "level": "N1",
+   "pos": "명사",
+   "example": "最寄り駅から徒歩五分の物件だ。"
+  },
+  {
+   "kanji": "上り",
+   "hiragana": "のぼり",
+   "korean": "상행",
+   "level": "N2",
+   "pos": "명사",
+   "example": "上りの電車は混んでいる。"
+  },
+  {
+   "kanji": "下り",
+   "hiragana": "くだり",
+   "korean": "하행",
+   "level": "N2",
+   "pos": "명사",
+   "example": "週末は下りが渋滞する。"
+  },
+  {
+   "kanji": "方面",
+   "hiragana": "ほうめん",
+   "korean": "방면",
+   "level": "N2",
+   "pos": "명사",
+   "example": "東京方面の電車はこちらです。"
+  },
+  {
+   "kanji": "経由",
+   "hiragana": "けいゆ",
+   "korean": "경유",
+   "level": "N2",
+   "pos": "명사",
+   "example": "品川経由で行くほうが早い。"
+  },
+  {
+   "kanji": "直通",
+   "hiragana": "ちょくつう",
+   "korean": "직통",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この電車は空港まで直通です。"
+  },
+  {
+   "kanji": "終点",
+   "hiragana": "しゅうてん",
+   "korean": "종점",
+   "level": "N2",
+   "pos": "명사",
+   "example": "終点までぐっすり寝てしまった。"
+  },
+  {
+   "kanji": "高速バス",
+   "hiragana": "こうそくバス",
+   "korean": "고속버스",
+   "level": "N2",
+   "pos": "명사",
+   "example": "夜行の高速バスで大阪へ行った。"
+  },
+  {
+   "kanji": "深夜バス",
+   "hiragana": "しんやバス",
+   "korean": "심야버스",
+   "level": "N1",
+   "pos": "명사",
+   "example": "終電後は深夜バスしかない。"
+  },
+  {
+   "kanji": "タクシー乗り場",
+   "hiragana": "タクシーのりば",
+   "korean": "택시 승강장",
+   "level": "N2",
+   "pos": "명사",
+   "example": "タクシー乗り場に列ができていた。"
+  },
+  {
+   "kanji": "乗り遅れる",
+   "hiragana": "のりおくれる",
+   "korean": "놓치다(차를)",
+   "level": "N2",
+   "pos": "2그룹동사",
+   "example": "一分差で新幹線に乗り遅れた。"
+  },
+  {
+   "kanji": "駆け込む",
+   "hiragana": "かけこむ",
+   "korean": "뛰어들다",
+   "level": "N1",
+   "pos": "1그룹동사",
+   "example": "駆け込み乗車は危険です。"
+  },
+  {
+   "kanji": "乗り換える",
+   "hiragana": "のりかえる",
+   "korean": "갈아타다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "次の駅で地下鉄に乗り換える。"
+  },
+  {
+   "kanji": "座席",
+   "hiragana": "ざせき",
+   "korean": "좌석",
+   "level": "N2",
+   "pos": "명사",
+   "example": "座席を回転させて四人で座った。"
+  },
+  {
+   "kanji": "車両",
+   "hiragana": "しゃりょう",
+   "korean": "차량(칸)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "女性専用車両は一番前です。"
+  },
+  {
+   "kanji": "先頭",
+   "hiragana": "せんとう",
+   "korean": "선두,맨 앞",
+   "level": "N2",
+   "pos": "명사",
+   "example": "先頭車両からの眺めが好きだ。"
+  },
+  {
+   "kanji": "満員",
+   "hiragana": "まんいん",
+   "korean": "만원",
+   "level": "N2",
+   "pos": "명사",
+   "example": "朝の電車は満員だった。"
+  },
+  {
+   "kanji": "駆け足",
+   "hiragana": "かけあし",
+   "korean": "빠른 걸음",
+   "level": "N1",
+   "pos": "명사",
+   "example": "駆け足で階段を上りホームへ急いだ。"
+  }
+ ]
+}

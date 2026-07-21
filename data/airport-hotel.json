@@ -1,0 +1,486 @@
+{
+ "version": 1,
+ "name": "공항·호텔 일본어",
+ "words": [
+  {
+   "kanji": "搭乗",
+   "hiragana": "とうじょう",
+   "korean": "탑승",
+   "level": "N2",
+   "pos": "명사",
+   "example": "搭乗は出発の三十分前に始まる。"
+  },
+  {
+   "kanji": "搭乗券",
+   "hiragana": "とうじょうけん",
+   "korean": "탑승권",
+   "level": "N2",
+   "pos": "명사",
+   "example": "搭乗券を提示してゲートを通った。"
+  },
+  {
+   "kanji": "搭乗口",
+   "hiragana": "とうじょうぐち",
+   "korean": "탑승구",
+   "level": "N2",
+   "pos": "명사",
+   "example": "搭乗口が変更になった。"
+  },
+  {
+   "kanji": "便名",
+   "hiragana": "びんめい",
+   "korean": "편명",
+   "level": "N1",
+   "pos": "명사",
+   "example": "便名を確認してから搭乗した。"
+  },
+  {
+   "kanji": "国際線",
+   "hiragana": "こくさいせん",
+   "korean": "국제선",
+   "level": "N2",
+   "pos": "명사",
+   "example": "国際線のターミナルへ移動した。"
+  },
+  {
+   "kanji": "国内線",
+   "hiragana": "こくないせん",
+   "korean": "국내선",
+   "level": "N2",
+   "pos": "명사",
+   "example": "国内線は一時間前に着けば十分だ。"
+  },
+  {
+   "kanji": "出発ロビー",
+   "hiragana": "しゅっぱつロビー",
+   "korean": "출발 로비",
+   "level": "N2",
+   "pos": "명사",
+   "example": "出発ロビーで家族と別れた。"
+  },
+  {
+   "kanji": "到着ロビー",
+   "hiragana": "とうちゃくロビー",
+   "korean": "도착 로비",
+   "level": "N2",
+   "pos": "명사",
+   "example": "到着ロビーで友人を出迎えた。"
+  },
+  {
+   "kanji": "手荷物",
+   "hiragana": "てにもつ",
+   "korean": "수하물,휴대 짐",
+   "level": "N2",
+   "pos": "명사",
+   "example": "手荷物は一つまで機内に持ち込める。"
+  },
+  {
+   "kanji": "預け荷物",
+   "hiragana": "あずけにもつ",
+   "korean": "위탁 수하물",
+   "level": "N1",
+   "pos": "명사",
+   "example": "預け荷物は二十三キロまで無料だ。"
+  },
+  {
+   "kanji": "機内持ち込み",
+   "hiragana": "きないもちこみ",
+   "korean": "기내 반입",
+   "level": "N1",
+   "pos": "명사",
+   "example": "液体の機内持ち込みには制限がある。"
+  },
+  {
+   "kanji": "重量制限",
+   "hiragana": "じゅうりょうせいげん",
+   "korean": "중량 제한",
+   "level": "N1",
+   "pos": "명사",
+   "example": "重量制限を超えて追加料金を払った。"
+  },
+  {
+   "kanji": "超過料金",
+   "hiragana": "ちょうかりょうきん",
+   "korean": "초과 요금",
+   "level": "N1",
+   "pos": "명사",
+   "example": "荷物の超過料金は高くつく。"
+  },
+  {
+   "kanji": "保安検査",
+   "hiragana": "ほあんけんさ",
+   "korean": "보안 검색",
+   "level": "N1",
+   "pos": "명사",
+   "example": "保安検査で上着を脱いだ。"
+  },
+  {
+   "kanji": "出国審査",
+   "hiragana": "しゅっこくしんさ",
+   "korean": "출국 심사",
+   "level": "N1",
+   "pos": "명사",
+   "example": "出国審査は自動ゲートで済んだ。"
+  },
+  {
+   "kanji": "入国審査",
+   "hiragana": "にゅうこくしんさ",
+   "korean": "입국 심사",
+   "level": "N1",
+   "pos": "명사",
+   "example": "入国審査で滞在目的を聞かれた。"
+  },
+  {
+   "kanji": "税関",
+   "hiragana": "ぜいかん",
+   "korean": "세관",
+   "level": "N1",
+   "pos": "명사",
+   "example": "税関で申告するものはありません。"
+  },
+  {
+   "kanji": "申告",
+   "hiragana": "しんこく",
+   "korean": "신고",
+   "level": "N1",
+   "pos": "명사",
+   "example": "高価な品は申告が必要です。"
+  },
+  {
+   "kanji": "免税店",
+   "hiragana": "めんぜいてん",
+   "korean": "면세점",
+   "level": "N2",
+   "pos": "명사",
+   "example": "免税店で化粧品を買った。"
+  },
+  {
+   "kanji": "乗り継ぎ",
+   "hiragana": "のりつぎ",
+   "korean": "환승(비행기)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "乗り継ぎの時間が二時間ある。"
+  },
+  {
+   "kanji": "直行便",
+   "hiragana": "ちょっこうびん",
+   "korean": "직항편",
+   "level": "N1",
+   "pos": "명사",
+   "example": "直行便のほうが楽だが高い。"
+  },
+  {
+   "kanji": "経由便",
+   "hiragana": "けいゆびん",
+   "korean": "경유편",
+   "level": "N1",
+   "pos": "명사",
+   "example": "経由便で安く行くことにした。"
+  },
+  {
+   "kanji": "窓側",
+   "hiragana": "まどがわ",
+   "korean": "창가 쪽",
+   "level": "N2",
+   "pos": "명사",
+   "example": "窓側の席から富士山が見えた。"
+  },
+  {
+   "kanji": "通路側",
+   "hiragana": "つうろがわ",
+   "korean": "통로 쪽",
+   "level": "N2",
+   "pos": "명사",
+   "example": "トイレに立ちやすい通路側にした。"
+  },
+  {
+   "kanji": "非常口",
+   "hiragana": "ひじょうぐち",
+   "korean": "비상구",
+   "level": "N2",
+   "pos": "명사",
+   "example": "非常口の位置を確認してください。"
+  },
+  {
+   "kanji": "離陸",
+   "hiragana": "りりく",
+   "korean": "이륙",
+   "level": "N2",
+   "pos": "명사",
+   "example": "飛行機が滑走路から離陸した。"
+  },
+  {
+   "kanji": "着陸",
+   "hiragana": "ちゃくりく",
+   "korean": "착륙",
+   "level": "N2",
+   "pos": "명사",
+   "example": "まもなく着陸態勢に入ります。"
+  },
+  {
+   "kanji": "機内食",
+   "hiragana": "きないしょく",
+   "korean": "기내식",
+   "level": "N1",
+   "pos": "명사",
+   "example": "機内食は魚と肉から選べた。"
+  },
+  {
+   "kanji": "客室乗務員",
+   "hiragana": "きゃくしつじょうむいん",
+   "korean": "객실 승무원",
+   "level": "N1",
+   "pos": "명사",
+   "example": "客室乗務員に毛布を頼んだ。"
+  },
+  {
+   "kanji": "欠航",
+   "hiragana": "けっこう",
+   "korean": "결항",
+   "level": "N1",
+   "pos": "명사",
+   "example": "大雪で午後の便が欠航になった。"
+  },
+  {
+   "kanji": "両替所",
+   "hiragana": "りょうがえじょ",
+   "korean": "환전소",
+   "level": "N1",
+   "pos": "명사",
+   "example": "空港の両替所で円をドルに替えた。"
+  },
+  {
+   "kanji": "荷物受取所",
+   "hiragana": "にもつうけとりじょ",
+   "korean": "수하물 찾는 곳",
+   "level": "N1",
+   "pos": "명사",
+   "example": "荷物受取所でスーツケースを待った。"
+  },
+  {
+   "kanji": "ターンテーブル",
+   "hiragana": "ターンテーブル",
+   "korean": "수하물 컨베이어",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ターンテーブルに荷物が流れてきた。"
+  },
+  {
+   "kanji": "搭乗案内",
+   "hiragana": "とうじょうあんない",
+   "korean": "탑승 안내",
+   "level": "N1",
+   "pos": "명사",
+   "example": "搭乗案内のアナウンスが流れた。"
+  },
+  {
+   "kanji": "フロント",
+   "hiragana": "フロント",
+   "korean": "프런트",
+   "level": "N3",
+   "pos": "명사",
+   "example": "フロントで両替をお願いした。"
+  },
+  {
+   "kanji": "チェックイン",
+   "hiragana": "チェックイン",
+   "korean": "체크인",
+   "level": "N3",
+   "pos": "명사",
+   "example": "チェックインは十五時からです。"
+  },
+  {
+   "kanji": "チェックアウト",
+   "hiragana": "チェックアウト",
+   "korean": "체크아웃",
+   "level": "N3",
+   "pos": "명사",
+   "example": "チェックアウトを一時間延ばした。"
+  },
+  {
+   "kanji": "宿泊",
+   "hiragana": "しゅくはく",
+   "korean": "숙박",
+   "level": "N2",
+   "pos": "명사",
+   "example": "二泊三日で宿泊の予約をした。"
+  },
+  {
+   "kanji": "素泊まり",
+   "hiragana": "すどまり",
+   "korean": "식사 없는 숙박",
+   "level": "N1",
+   "pos": "명사",
+   "example": "素泊まりプランで安く泊まった。"
+  },
+  {
+   "kanji": "朝食付き",
+   "hiragana": "ちょうしょくつき",
+   "korean": "조식 포함",
+   "level": "N2",
+   "pos": "명사",
+   "example": "朝食付きのプランを選んだ。"
+  },
+  {
+   "kanji": "二食付き",
+   "hiragana": "にしょくつき",
+   "korean": "2식 포함",
+   "level": "N1",
+   "pos": "명사",
+   "example": "温泉宿は二食付きが基本だ。"
+  },
+  {
+   "kanji": "シングル",
+   "hiragana": "シングル",
+   "korean": "싱글룸",
+   "level": "N3",
+   "pos": "명사",
+   "example": "出張なのでシングルで十分だ。"
+  },
+  {
+   "kanji": "ツイン",
+   "hiragana": "ツイン",
+   "korean": "트윈룸",
+   "level": "N3",
+   "pos": "명사",
+   "example": "友人とツインの部屋に泊まった。"
+  },
+  {
+   "kanji": "和室",
+   "hiragana": "わしつ",
+   "korean": "일본식 방",
+   "level": "N2",
+   "pos": "명사",
+   "example": "和室に布団を敷いて寝た。"
+  },
+  {
+   "kanji": "洋室",
+   "hiragana": "ようしつ",
+   "korean": "서양식 방",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ベッド派なので洋室にした。"
+  },
+  {
+   "kanji": "禁煙ルーム",
+   "hiragana": "きんえんルーム",
+   "korean": "금연 객실",
+   "level": "N2",
+   "pos": "명사",
+   "example": "禁煙ルームを指定して予約した。"
+  },
+  {
+   "kanji": "アメニティ",
+   "hiragana": "アメニティ",
+   "korean": "욕실용품(어메니티)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "アメニティが充実しているホテルだ。"
+  },
+  {
+   "kanji": "貴重品",
+   "hiragana": "きちょうひん",
+   "korean": "귀중품",
+   "level": "N2",
+   "pos": "명사",
+   "example": "貴重品は金庫に入れてください。"
+  },
+  {
+   "kanji": "金庫",
+   "hiragana": "きんこ",
+   "korean": "금고",
+   "level": "N2",
+   "pos": "명사",
+   "example": "部屋の金庫にパスポートを預けた。"
+  },
+  {
+   "kanji": "ルームサービス",
+   "hiragana": "ルームサービス",
+   "korean": "룸서비스",
+   "level": "N2",
+   "pos": "명사",
+   "example": "夜食をルームサービスで頼んだ。"
+  },
+  {
+   "kanji": "モーニングコール",
+   "hiragana": "モーニングコール",
+   "korean": "모닝콜",
+   "level": "N2",
+   "pos": "명사",
+   "example": "六時にモーニングコールをお願いした。"
+  },
+  {
+   "kanji": "清掃",
+   "hiragana": "せいそう",
+   "korean": "청소",
+   "level": "N2",
+   "pos": "명사",
+   "example": "清掃は不要ですと札を下げた。"
+  },
+  {
+   "kanji": "延泊",
+   "hiragana": "えんぱく",
+   "korean": "숙박 연장",
+   "level": "N1",
+   "pos": "명사",
+   "example": "気に入ったので一泊延泊した。"
+  },
+  {
+   "kanji": "前払い",
+   "hiragana": "まえばらい",
+   "korean": "선불",
+   "level": "N2",
+   "pos": "명사",
+   "example": "料金は前払いでお願いします。"
+  },
+  {
+   "kanji": "カードキー",
+   "hiragana": "カードキー",
+   "korean": "카드키",
+   "level": "N2",
+   "pos": "명사",
+   "example": "カードキーをかざしてドアを開けた。"
+  },
+  {
+   "kanji": "荷物預かり",
+   "hiragana": "にもつあずかり",
+   "korean": "짐 보관",
+   "level": "N1",
+   "pos": "명사",
+   "example": "チェックイン前に荷物預かりを利用した。"
+  },
+  {
+   "kanji": "送迎バス",
+   "hiragana": "そうげいバス",
+   "korean": "셔틀버스",
+   "level": "N1",
+   "pos": "명사",
+   "example": "駅から無料の送迎バスが出ている。"
+  },
+  {
+   "kanji": "満室",
+   "hiragana": "まんしつ",
+   "korean": "만실",
+   "level": "N1",
+   "pos": "명사",
+   "example": "連休はどこのホテルも満室だった。"
+  },
+  {
+   "kanji": "空室",
+   "hiragana": "くうしつ",
+   "korean": "빈방",
+   "level": "N1",
+   "pos": "명사",
+   "example": "空室があるか電話で確認した。"
+  },
+  {
+   "kanji": "眺め",
+   "hiragana": "ながめ",
+   "korean": "전망",
+   "level": "N2",
+   "pos": "명사",
+   "example": "部屋からの眺めが素晴らしかった。"
+  }
+ ]
+}

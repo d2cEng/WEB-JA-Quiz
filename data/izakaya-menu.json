@@ -1,4206 +1,2318 @@
 {
-  "version": 1,
-  "name": "일본 이자까야 메뉴 읽기",
-  "words": [
-    {
-      "kanji": "焼き鳥",
-      "hiragana": "やきとり",
-      "korean": "닭꼬치",
-      "level": "N3",
-      "pos": "명사",
-      "example": "焼き鳥を五本ください。"
-    },
-    {
-      "kanji": "刺身",
-      "hiragana": "さしみ",
-      "korean": "회",
-      "level": "N4",
-      "pos": "명사",
-      "example": "刺身の盛り合わせを注文した。"
-    },
-    {
-      "kanji": "枝豆",
-      "hiragana": "えだまめ",
-      "korean": "풋콩",
-      "level": "N2",
-      "pos": "명사",
-      "example": "まず枝豆を頼みましょう。"
-    },
-    {
-      "kanji": "唐揚げ",
-      "hiragana": "からあげ",
-      "korean": "닭튀김",
-      "level": "N3",
-      "pos": "명사",
-      "example": "唐揚げはこの店の名物です。"
-    },
-    {
-      "kanji": "冷奴",
-      "hiragana": "ひややっこ",
-      "korean": "차가운 두부 요리",
-      "level": "N1",
-      "pos": "명사",
-      "example": "冷奴を一つお願いします。"
-    },
-    {
-      "kanji": "餃子",
-      "hiragana": "ぎょうざ",
-      "korean": "만두",
-      "level": "N3",
-      "pos": "명사",
-      "example": "焼き餃子と生ビールを頼んだ。"
-    },
-    {
-      "kanji": "串",
-      "hiragana": "くし",
-      "korean": "꼬치",
-      "level": "N2",
-      "pos": "명사",
-      "example": "串に刺した肉を焼く。"
-    },
-    {
-      "kanji": "揚げ物",
-      "hiragana": "あげもの",
-      "korean": "튀김 요리",
-      "level": "N3",
-      "pos": "명사",
-      "example": "揚げ物は少し重い。"
-    },
-    {
-      "kanji": "煮物",
-      "hiragana": "にもの",
-      "korean": "조림 요리",
-      "level": "N2",
-      "pos": "명사",
-      "example": "煮物は体に優しい味だ。"
-    },
-    {
-      "kanji": "焼き物",
-      "hiragana": "やきもの",
-      "korean": "구이 요리",
-      "level": "N3",
-      "pos": "명사",
-      "example": "焼き物を中心に注文する。"
-    },
-    {
-      "kanji": "漬物",
-      "hiragana": "つけもの",
-      "korean": "절임,장아찌",
-      "level": "N3",
-      "pos": "명사",
-      "example": "漬物でお酒を飲む。,きゅうりの漬物が好きだ。"
-    },
-    {
-      "kanji": "お通し",
-      "hiragana": "おとおし",
-      "korean": "기본 안주",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お通しに小鉢が出てきた。"
-    },
-    {
-      "kanji": "盛り合わせ",
-      "hiragana": "もりあわせ",
-      "korean": "모둠",
-      "level": "N2",
-      "pos": "명사",
-      "example": "刺身の盛り合わせが届いた。"
-    },
-    {
-      "kanji": "生ビール",
-      "hiragana": "なまビール",
-      "korean": "생맥주",
-      "level": "N3",
-      "pos": "명사",
-      "example": "生ビールを二つください。"
-    },
-    {
-      "kanji": "焼酎",
-      "hiragana": "しょうちゅう",
-      "korean": "소주",
-      "level": "N2",
-      "pos": "명사",
-      "example": "焼酎をお湯で割る。"
-    },
-    {
-      "kanji": "日本酒",
-      "hiragana": "にほんしゅ",
-      "korean": "일본 술,청주",
-      "level": "N3",
-      "pos": "명사",
-      "example": "日本酒を冷やで飲む。,日本酒は米から作られる。"
-    },
-    {
-      "kanji": "梅酒",
-      "hiragana": "うめしゅ",
-      "korean": "매실주",
-      "level": "N2",
-      "pos": "명사",
-      "example": "梅酒のソーダ割りが甘い。"
-    },
-    {
-      "kanji": "熱燗",
-      "hiragana": "あつかん",
-      "korean": "따뜻하게 데운 청주",
-      "level": "N1",
-      "pos": "명사",
-      "example": "熱燗を一本ください。"
-    },
-    {
-      "kanji": "冷酒",
-      "hiragana": "れいしゅ",
-      "korean": "차게 마시는 청주",
-      "level": "N1",
-      "pos": "명사",
-      "example": "冷酒でいただきます。"
-    },
-    {
-      "kanji": "ハイボール",
-      "hiragana": "はいぼーる",
-      "korean": "하이볼",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ハイボールをもう一杯ください。"
-    },
-    {
-      "kanji": "飲み放題",
-      "hiragana": "のみほうだい",
-      "korean": "무제한 음료",
-      "level": "N3",
-      "pos": "명사",
-      "example": "飲み放題のコースを選んだ。"
-    },
-    {
-      "kanji": "注文",
-      "hiragana": "ちゅうもん",
-      "korean": "주문",
-      "level": "N4",
-      "pos": "명사",
-      "example": "注文をまとめてお願いします。"
-    },
-    {
-      "kanji": "会計",
-      "hiragana": "かいけい",
-      "korean": "계산,회계",
-      "level": "N3",
-      "pos": "명사",
-      "example": "会計はレジでお願いします。,会計の仕事をしている。"
-    },
-    {
-      "kanji": "乾杯",
-      "hiragana": "かんぱい",
-      "korean": "건배",
-      "level": "N4",
-      "pos": "명사",
-      "example": "みんなで乾杯した。"
-    },
-    {
-      "kanji": "旬",
-      "hiragana": "しゅん",
-      "korean": "제철",
-      "level": "N1",
-      "pos": "명사",
-      "example": "旬の魚を使った料理だ。"
-    },
-    {
-      "kanji": "定番",
-      "hiragana": "ていばん",
-      "korean": "단골 인기 메뉴",
-      "level": "N1",
-      "pos": "명사",
-      "example": "唐揚げは定番のつまみだ。"
-    },
-    {
-      "kanji": "お勧め",
-      "hiragana": "おすすめ",
-      "korean": "추천",
-      "level": "N3",
-      "pos": "명사",
-      "example": "店員にお勧めを聞く。"
-    },
-    {
-      "kanji": "つまみ",
-      "hiragana": "つまみ",
-      "korean": "안주",
-      "level": "N2",
-      "pos": "명사",
-      "example": "お酒のつまみを選ぶ。"
-    },
-    {
-      "kanji": "出汁",
-      "hiragana": "だし",
-      "korean": "육수,국물",
-      "level": "N1",
-      "pos": "명사",
-      "example": "昆布で出汁を取る。,出汁が効いている。"
-    },
-    {
-      "kanji": "揚げ出し豆腐",
-      "hiragana": "あげだしどうふ",
-      "korean": "아게다시 두부",
-      "level": "N1",
-      "pos": "명사",
-      "example": "揚げ出し豆腐を注文した。"
-    },
-    {
-      "kanji": "茶碗蒸し",
-      "hiragana": "ちゃわんむし",
-      "korean": "일본식 계란찜",
-      "level": "N1",
-      "pos": "명사",
-      "example": "茶碗蒸しは熱々が美味しい。"
-    },
-    {
-      "kanji": "厚焼き卵",
-      "hiragana": "あつやきたまご",
-      "korean": "두툼한 계란말이",
-      "level": "N2",
-      "pos": "명사",
-      "example": "厚焼き卵は甘めの味だ。"
-    },
-    {
-      "kanji": "天ぷら",
-      "hiragana": "てんぷら",
-      "korean": "튀김,덴푸라",
-      "level": "N3",
-      "pos": "명사",
-      "example": "海老の天ぷらが好きだ。,天ぷらを塩で食べる。"
-    },
-    {
-      "kanji": "海老",
-      "hiragana": "えび",
-      "korean": "새우",
-      "level": "N2",
-      "pos": "명사",
-      "example": "海老の天ぷらを頼む。"
-    },
-    {
-      "kanji": "烏賊",
-      "hiragana": "いか",
-      "korean": "오징어",
-      "level": "N2",
-      "pos": "명사",
-      "example": "烏賊の刺身が新鮮だ。"
-    },
-    {
-      "kanji": "鮪",
-      "hiragana": "まぐろ",
-      "korean": "참치",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鮪の刺身を注文する。"
-    },
-    {
-      "kanji": "鮭",
-      "hiragana": "さけ",
-      "korean": "연어",
-      "level": "N3",
-      "pos": "명사",
-      "example": "鮭の塩焼きが定番だ。"
-    },
-    {
-      "kanji": "塩",
-      "hiragana": "しお",
-      "korean": "소금",
-      "level": "N4",
-      "pos": "명사",
-      "example": "焼き鳥は塩で食べたい。"
-    },
-    {
-      "kanji": "タレ",
-      "hiragana": "たれ",
-      "korean": "양념 소스",
-      "level": "N2",
-      "pos": "명사",
-      "example": "焼き鳥のタレが甘い。"
-    },
-    {
-      "kanji": "鍋",
-      "hiragana": "なべ",
-      "korean": "전골,냄비",
-      "level": "N3",
-      "pos": "명사",
-      "example": "冬は鍋料理が人気だ。,鍋でお湯を沸かす。"
-    },
-    {
-      "kanji": "一品",
-      "hiragana": "いっぴん",
-      "korean": "일품요리,한 가지 요리",
-      "level": "N2",
-      "pos": "명사",
-      "example": "お勧めの一品を頼んだ。,もう一品注文する。"
-    },
-    {
-      "kanji": "頼む",
-      "hiragana": "たのむ",
-      "korean": "부탁하다,주문하다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "友達に頼む。,生ビールを頼む。"
-    },
-    {
-      "kanji": "焼く",
-      "hiragana": "やく",
-      "korean": "굽다,태우다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "肉を焼く。,魚を焼きすぎた。"
-    },
-    {
-      "kanji": "揚げる",
-      "hiragana": "あげる",
-      "korean": "튀기다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "天ぷらを揚げる。"
-    },
-    {
-      "kanji": "注ぐ",
-      "hiragana": "つぐ",
-      "korean": "따르다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "お酒を注ぐ。"
-    },
-    {
-      "kanji": "冷たい",
-      "hiragana": "つめたい",
-      "korean": "차갑다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "冷たいビールが美味しい。"
-    },
-    {
-      "kanji": "もつ煮",
-      "hiragana": "もつに",
-      "korean": "내장 조림",
-      "level": "N1",
-      "pos": "명사",
-      "example": "もつ煮込みを注文した。"
-    },
-    {
-      "kanji": "もつ鍋",
-      "hiragana": "もつなべ",
-      "korean": "곱창전골",
-      "level": "N1",
-      "pos": "명사",
-      "example": "冬はもつ鍋が食べたくなる。"
-    },
-    {
-      "kanji": "串カツ",
-      "hiragana": "くしカツ",
-      "korean": "꼬치 튀김",
-      "level": "N2",
-      "pos": "명사",
-      "example": "串カツをソースに二度漬けしない。"
-    },
-    {
-      "kanji": "手羽先",
-      "hiragana": "てばさき",
-      "korean": "닭날개",
-      "level": "N2",
-      "pos": "명사",
-      "example": "名古屋の手羽先は有名だ。"
-    },
-    {
-      "kanji": "つくね",
-      "hiragana": "つくね",
-      "korean": "닭고기 완자 꼬치",
-      "level": "N2",
-      "pos": "명사",
-      "example": "つくねを卵黄につけて食べる。"
-    },
-    {
-      "kanji": "砂肝",
-      "hiragana": "すなぎも",
-      "korean": "닭모래집",
-      "level": "N1",
-      "pos": "명사",
-      "example": "砂肝のコリコリした食感が好きだ。"
-    },
-    {
-      "kanji": "豚バラ",
-      "hiragana": "ぶたバラ",
-      "korean": "삼겹살",
-      "level": "N2",
-      "pos": "명사",
-      "example": "豚バラ串を塩で頼む。"
-    },
-    {
-      "kanji": "鶏皮",
-      "hiragana": "とりかわ",
-      "korean": "닭껍질",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鶏皮はパリッと焼くのが好きだ。"
-    },
-    {
-      "kanji": "レバー",
-      "hiragana": "レバー",
-      "korean": "간",
-      "level": "N2",
-      "pos": "명사",
-      "example": "レバーの串を注文した。"
-    },
-    {
-      "kanji": "ねぎま",
-      "hiragana": "ねぎま",
-      "korean": "닭고기 파꼬치",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ねぎまを塩で二本ください。"
-    },
-    {
-      "kanji": "肉豆腐",
-      "hiragana": "にくどうふ",
-      "korean": "고기두부조림",
-      "level": "N2",
-      "pos": "명사",
-      "example": "肉豆腐は甘辛い味付けだ。"
-    },
-    {
-      "kanji": "肉じゃが",
-      "hiragana": "にくじゃが",
-      "korean": "고기감자조림",
-      "level": "N2",
-      "pos": "명사",
-      "example": "肉じゃがは家庭的な味だ。"
-    },
-    {
-      "kanji": "牛すじ",
-      "hiragana": "ぎゅうすじ",
-      "korean": "소힘줄",
-      "level": "N1",
-      "pos": "명사",
-      "example": "牛すじの煮込みが柔らかい。"
-    },
-    {
-      "kanji": "馬刺し",
-      "hiragana": "ばさし",
-      "korean": "말고기회",
-      "level": "N1",
-      "pos": "명사",
-      "example": "馬刺しを生姜で食べる。"
-    },
-    {
-      "kanji": "鶏刺し",
-      "hiragana": "とりさし",
-      "korean": "닭고기회",
-      "level": "N1",
-      "pos": "명사",
-      "example": "新鮮な鶏刺しが出てきた。"
-    },
-    {
-      "kanji": "たたき",
-      "hiragana": "たたき",
-      "korean": "겉만 살짝 익힌 회",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰹のたたきが香ばしい。"
-    },
-    {
-      "kanji": "炙り",
-      "hiragana": "あぶり",
-      "korean": "불에 살짝 그을림",
-      "level": "N1",
-      "pos": "명사",
-      "example": "炙りサーモンを注文した。"
-    },
-    {
-      "kanji": "握り",
-      "hiragana": "にぎり",
-      "korean": "초밥(쥔 것)",
-      "level": "N2",
-      "pos": "명사",
-      "example": "握り寿司を一人前頼む。"
-    },
-    {
-      "kanji": "巻き寿司",
-      "hiragana": "まきずし",
-      "korean": "김초밥",
-      "level": "N3",
-      "pos": "명사",
-      "example": "巻き寿司を半分に切る。"
-    },
-    {
-      "kanji": "軍艦巻き",
-      "hiragana": "ぐんかんまき",
-      "korean": "군함말이",
-      "level": "N1",
-      "pos": "명사",
-      "example": "いくらの軍艦巻きが好きだ。"
-    },
-    {
-      "kanji": "海鮮",
-      "hiragana": "かいせん",
-      "korean": "해산물",
-      "level": "N2",
-      "pos": "명사",
-      "example": "海鮮丼に新鮮なネタが乗る。"
-    },
-    {
-      "kanji": "貝",
-      "hiragana": "かい",
-      "korean": "조개",
-      "level": "N3",
-      "pos": "명사",
-      "example": "焼き貝を注文した。"
-    },
-    {
-      "kanji": "牡蠣",
-      "hiragana": "かき",
-      "korean": "굴",
-      "level": "N2",
-      "pos": "명사",
-      "example": "牡蠣はレモンをかけて食べる。"
-    },
-    {
-      "kanji": "蛤",
-      "hiragana": "はまぐり",
-      "korean": "대합",
-      "level": "N1",
-      "pos": "명사",
-      "example": "蛤の酒蒸しが上品な味だ。"
-    },
-    {
-      "kanji": "蛸",
-      "hiragana": "たこ",
-      "korean": "문어",
-      "level": "N2",
-      "pos": "명사",
-      "example": "蛸の刺身が歯ごたえある。"
-    },
-    {
-      "kanji": "鯵",
-      "hiragana": "あじ",
-      "korean": "전갱이",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鯵のなめろうが酒に合う。"
-    },
-    {
-      "kanji": "鯖",
-      "hiragana": "さば",
-      "korean": "고등어",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鯖の味噌煮を頼んだ。"
-    },
-    {
-      "kanji": "鰻",
-      "hiragana": "うなぎ",
-      "korean": "장어",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰻の蒲焼きは高級だ。"
-    },
-    {
-      "kanji": "穴子",
-      "hiragana": "あなご",
-      "korean": "붕장어",
-      "level": "N1",
-      "pos": "명사",
-      "example": "穴子の天ぷらがふわふわだ。"
-    },
-    {
-      "kanji": "白子",
-      "hiragana": "しらこ",
-      "korean": "이리(생선 정소)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "白子ポン酢は冬の珍味だ。"
-    },
-    {
-      "kanji": "明太子",
-      "hiragana": "めんたいこ",
-      "korean": "명란젓",
-      "level": "N2",
-      "pos": "명사",
-      "example": "明太子の卵焼きが人気だ。"
-    },
-    {
-      "kanji": "数の子",
-      "hiragana": "かずのこ",
-      "korean": "청어알",
-      "level": "N1",
-      "pos": "명사",
-      "example": "数の子の塩漬けを出す。"
-    },
-    {
-      "kanji": "イクラ",
-      "hiragana": "イクラ",
-      "korean": "연어알",
-      "level": "N2",
-      "pos": "명사",
-      "example": "イクラがプチプチして美味しい。"
-    },
-    {
-      "kanji": "ウニ",
-      "hiragana": "ウニ",
-      "korean": "성게알",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ウニの軍艦を一貫食べる。"
-    },
-    {
-      "kanji": "干物",
-      "hiragana": "ひもの",
-      "korean": "건어물",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鯵の干物を焼いてもらう。"
-    },
-    {
-      "kanji": "塩焼き",
-      "hiragana": "しおやき",
-      "korean": "소금구이",
-      "level": "N3",
-      "pos": "명사",
-      "example": "秋刀魚の塩焼きが旬だ。"
-    },
-    {
-      "kanji": "照り焼き",
-      "hiragana": "てりやき",
-      "korean": "데리야키",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鶏の照り焼きが甘辛い。"
-    },
-    {
-      "kanji": "蒲焼き",
-      "hiragana": "かばやき",
-      "korean": "양념구이(장어)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰻の蒲焼きをご飯に乗せる。"
-    },
-    {
-      "kanji": "味噌煮",
-      "hiragana": "みそに",
-      "korean": "된장조림",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鯖の味噌煮はご飯に合う。"
-    },
-    {
-      "kanji": "煮込み",
-      "hiragana": "にこみ",
-      "korean": "푹 끓인 조림",
-      "level": "N2",
-      "pos": "명사",
-      "example": "牛すじの煮込みを温める。"
-    },
-    {
-      "kanji": "蒸し",
-      "hiragana": "むし",
-      "korean": "찜",
-      "level": "N3",
-      "pos": "명사",
-      "example": "酒蒸しの香りが広がる。"
-    },
-    {
-      "kanji": "炒め物",
-      "hiragana": "いためもの",
-      "korean": "볶음 요리",
-      "level": "N3",
-      "pos": "명사",
-      "example": "野菜の炒め物を追加した。"
-    },
-    {
-      "kanji": "和え物",
-      "hiragana": "あえもの",
-      "korean": "무침 요리",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ほうれん草の和え物が出る。"
-    },
-    {
-      "kanji": "酢の物",
-      "hiragana": "すのもの",
-      "korean": "초무침",
-      "level": "N1",
-      "pos": "명사",
-      "example": "蛸の酢の物がさっぱりする。"
-    },
-    {
-      "kanji": "出汁巻き卵",
-      "hiragana": "だしまきたまご",
-      "korean": "육수 계란말이",
-      "level": "N2",
-      "pos": "명사",
-      "example": "出汁巻き卵はふんわり焼く。"
-    },
-    {
-      "kanji": "卵黄",
-      "hiragana": "らんおう",
-      "korean": "노른자",
-      "level": "N2",
-      "pos": "명사",
-      "example": "つくねを卵黄に絡める。"
-    },
-    {
-      "kanji": "豆腐",
-      "hiragana": "とうふ",
-      "korean": "두부",
-      "level": "N4",
-      "pos": "명사",
-      "example": "豆腐の田楽を注文する。"
-    },
-    {
-      "kanji": "納豆",
-      "hiragana": "なっとう",
-      "korean": "낫토",
-      "level": "N3",
-      "pos": "명사",
-      "example": "納豆オムレツが意外と合う。"
-    },
-    {
-      "kanji": "椎茸",
-      "hiragana": "しいたけ",
-      "korean": "표고버섯",
-      "level": "N2",
-      "pos": "명사",
-      "example": "椎茸の網焼きが香ばしい。"
-    },
-    {
-      "kanji": "茸",
-      "hiragana": "きのこ",
-      "korean": "버섯",
-      "level": "N2",
-      "pos": "명사",
-      "example": "茸のバター焼きを頼む。"
-    },
-    {
-      "kanji": "大根",
-      "hiragana": "だいこん",
-      "korean": "무",
-      "level": "N3",
-      "pos": "명사",
-      "example": "大根おろしを添える。"
-    },
-    {
-      "kanji": "大根おろし",
-      "hiragana": "だいこんおろし",
-      "korean": "무즙",
-      "level": "N1",
-      "pos": "명사",
-      "example": "焼き魚に大根おろしを乗せる。"
-    },
-    {
-      "kanji": "葱",
-      "hiragana": "ねぎ",
-      "korean": "파",
-      "level": "N2",
-      "pos": "명사",
-      "example": "葱をたっぷりかける。"
-    },
-    {
-      "kanji": "生姜",
-      "hiragana": "しょうが",
-      "korean": "생강",
-      "level": "N2",
-      "pos": "명사",
-      "example": "生姜をすりおろす。"
-    },
-    {
-      "kanji": "山葵",
-      "hiragana": "わさび",
-      "korean": "고추냉이",
-      "level": "N1",
-      "pos": "명사",
-      "example": "刺身に山葵を少しつける。"
-    },
-    {
-      "kanji": "薬味",
-      "hiragana": "やくみ",
-      "korean": "양념(고명)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "薬味を別の皿で出す。"
-    },
-    {
-      "kanji": "胡麻",
-      "hiragana": "ごま",
-      "korean": "참깨",
-      "level": "N2",
-      "pos": "명사",
-      "example": "胡麻を振りかける。"
-    },
-    {
-      "kanji": "醤油",
-      "hiragana": "しょうゆ",
-      "korean": "간장",
-      "level": "N3",
-      "pos": "명사",
-      "example": "醤油を少しだけつける。"
-    },
-    {
-      "kanji": "味噌",
-      "hiragana": "みそ",
-      "korean": "된장",
-      "level": "N3",
-      "pos": "명사",
-      "example": "味噌だれをつけて食べる。"
-    },
-    {
-      "kanji": "酢",
-      "hiragana": "す",
-      "korean": "식초",
-      "level": "N2",
-      "pos": "명사",
-      "example": "酢を少し加える。"
-    },
-    {
-      "kanji": "ポン酢",
-      "hiragana": "ポンず",
-      "korean": "폰즈 소스",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鍋はポン酢で食べる。"
-    },
-    {
-      "kanji": "辛子",
-      "hiragana": "からし",
-      "korean": "겨자",
-      "level": "N2",
-      "pos": "명사",
-      "example": "おでんに辛子をつける。"
-    },
-    {
-      "kanji": "おでん",
-      "hiragana": "おでん",
-      "korean": "오뎅",
-      "level": "N2",
-      "pos": "명사",
-      "example": "おでんの大根がよく染みている。"
-    },
-    {
-      "kanji": "焼きおにぎり",
-      "hiragana": "やきおにぎり",
-      "korean": "구운 주먹밥",
-      "level": "N3",
-      "pos": "명사",
-      "example": "締めに焼きおにぎりを頼む。"
-    },
-    {
-      "kanji": "お茶漬け",
-      "hiragana": "おちゃづけ",
-      "korean": "오차즈케",
-      "level": "N2",
-      "pos": "명사",
-      "example": "最後に鮭茶漬けで締める。"
-    },
-    {
-      "kanji": "雑炊",
-      "hiragana": "ぞうすい",
-      "korean": "죽(전골 마무리)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鍋の後は雑炊にする。"
-    },
-    {
-      "kanji": "締め",
-      "hiragana": "しめ",
-      "korean": "마무리 음식",
-      "level": "N1",
-      "pos": "명사",
-      "example": "締めにラーメンを食べた。"
-    },
-    {
-      "kanji": "ポテトフライ",
-      "hiragana": "ポテトフライ",
-      "korean": "감자튀김",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ポテトフライを取り分ける。"
-    },
-    {
-      "kanji": "焼きそば",
-      "hiragana": "やきそば",
-      "korean": "야키소바",
-      "level": "N3",
-      "pos": "명사",
-      "example": "締めに焼きそばを頼んだ。"
-    },
-    {
-      "kanji": "出来立て",
-      "hiragana": "できたて",
-      "korean": "갓 만든 것",
-      "level": "N2",
-      "pos": "명사",
-      "example": "出来立てを運んでくれた。"
-    },
-    {
-      "kanji": "食べ放題",
-      "hiragana": "たべほうだい",
-      "korean": "무한리필",
-      "level": "N3",
-      "pos": "명사",
-      "example": "食べ放題のプランにした。"
-    },
-    {
-      "kanji": "お代わり",
-      "hiragana": "おかわり",
-      "korean": "리필,추가",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ご飯をお代わりする。,ビールをお代わりした。"
-    },
-    {
-      "kanji": "突き出し",
-      "hiragana": "つきだし",
-      "korean": "기본 안주(간사이)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "突き出しに小鉢が付く。"
-    },
-    {
-      "kanji": "お新香",
-      "hiragana": "おしんこ",
-      "korean": "절임 반찬",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お新香の盛り合わせを頼む。"
-    },
-    {
-      "kanji": "小鉢",
-      "hiragana": "こばち",
-      "korean": "작은 그릇 요리",
-      "level": "N1",
-      "pos": "명사",
-      "example": "小鉢が三つ並んでいる。"
-    },
-    {
-      "kanji": "大皿",
-      "hiragana": "おおざら",
-      "korean": "큰 접시",
-      "level": "N2",
-      "pos": "명사",
-      "example": "大皿で取り分けて食べる。"
-    },
-    {
-      "kanji": "取り皿",
-      "hiragana": "とりざら",
-      "korean": "앞접시",
-      "level": "N2",
-      "pos": "명사",
-      "example": "取り皿をもう一枚ください。"
-    },
-    {
-      "kanji": "おしぼり",
-      "hiragana": "おしぼり",
-      "korean": "물수건",
-      "level": "N2",
-      "pos": "명사",
-      "example": "おしぼりで手を拭く。"
-    },
-    {
-      "kanji": "箸",
-      "hiragana": "はし",
-      "korean": "젓가락",
-      "level": "N4",
-      "pos": "명사",
-      "example": "割り箸を割って使う。"
-    },
-    {
-      "kanji": "おちょこ",
-      "hiragana": "おちょこ",
-      "korean": "작은 술잔",
-      "level": "N1",
-      "pos": "명사",
-      "example": "おちょこで日本酒を飲む。"
-    },
-    {
-      "kanji": "徳利",
-      "hiragana": "とっくり",
-      "korean": "도쿠리(술병)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "徳利でお酒を温める。"
-    },
-    {
-      "kanji": "ジョッキ",
-      "hiragana": "ジョッキ",
-      "korean": "맥주잔",
-      "level": "N2",
-      "pos": "명사",
-      "example": "大ジョッキで頼む。"
-    },
-    {
-      "kanji": "中ジョッキ",
-      "hiragana": "ちゅうジョッキ",
-      "korean": "중간 맥주잔",
-      "level": "N2",
-      "pos": "명사",
-      "example": "中ジョッキを二つください。"
-    },
-    {
-      "kanji": "瓶ビール",
-      "hiragana": "びんビール",
-      "korean": "병맥주",
-      "level": "N3",
-      "pos": "명사",
-      "example": "瓶ビールを一本追加する。"
-    },
-    {
-      "kanji": "サワー",
-      "hiragana": "サワー",
-      "korean": "사워(술)",
-      "level": "N2",
-      "pos": "명사",
-      "example": "レモンサワーが人気だ。"
-    },
-    {
-      "kanji": "酎ハイ",
-      "hiragana": "チューハイ",
-      "korean": "츄하이",
-      "level": "N1",
-      "pos": "명사",
-      "example": "グレープフルーツ酎ハイを頼む。"
-    },
-    {
-      "kanji": "水割り",
-      "hiragana": "みずわり",
-      "korean": "물을 탄 술",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ウイスキーの水割りを作る。"
-    },
-    {
-      "kanji": "お湯割り",
-      "hiragana": "おゆわり",
-      "korean": "따뜻한 물을 탄 술",
-      "level": "N1",
-      "pos": "명사",
-      "example": "焼酎のお湯割りが体に染みる。"
-    },
-    {
-      "kanji": "ロック",
-      "hiragana": "ロック",
-      "korean": "온더록",
-      "level": "N2",
-      "pos": "명사",
-      "example": "焼酎をロックで飲む。"
-    },
-    {
-      "kanji": "ソフトドリンク",
-      "hiragana": "ソフトドリンク",
-      "korean": "무알코올 음료",
-      "level": "N2",
-      "pos": "명사",
-      "example": "運転なのでソフトドリンクにする。"
-    },
-    {
-      "kanji": "烏龍茶",
-      "hiragana": "ウーロンちゃ",
-      "korean": "우롱차",
-      "level": "N2",
-      "pos": "명사",
-      "example": "烏龍茶を一杯ください。"
-    },
-    {
-      "kanji": "酔う",
-      "hiragana": "よう",
-      "korean": "취하다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "少し酔ってきた。"
-    },
-    {
-      "kanji": "割る",
-      "hiragana": "わる",
-      "korean": "(술을) 타다,깨다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "焼酎をお湯で割る。,コップを割ってしまった。"
-    },
-    {
-      "kanji": "味わう",
-      "hiragana": "あじわう",
-      "korean": "맛보다,음미하다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "旬の味をじっくり味わう。,苦労を味わう。"
-    },
-    {
-      "kanji": "炙る",
-      "hiragana": "あぶる",
-      "korean": "불에 살짝 굽다",
-      "level": "N1",
-      "pos": "1그룹동사",
-      "example": "表面を軽く炙る。"
-    },
-    {
-      "kanji": "煮る",
-      "hiragana": "にる",
-      "korean": "삶다,조리다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "野菜を弱火で煮る。,豆をことことと煮る。"
-    },
-    {
-      "kanji": "蒸す",
-      "hiragana": "むす",
-      "korean": "찌다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "蛤を酒で蒸す。"
-    },
-    {
-      "kanji": "炒める",
-      "hiragana": "いためる",
-      "korean": "볶다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "もやしをさっと炒める。"
-    },
-    {
-      "kanji": "盛る",
-      "hiragana": "もる",
-      "korean": "담다,수북이 담다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "刺身を綺麗に盛る。,ご飯を山盛りに盛る。"
-    },
-    {
-      "kanji": "混ぜる",
-      "hiragana": "まぜる",
-      "korean": "섞다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "納豆をよく混ぜる。"
-    },
-    {
-      "kanji": "付ける",
-      "hiragana": "つける",
-      "korean": "찍다,묻히다",
-      "level": "N4",
-      "pos": "2그룹동사",
-      "example": "醤油に付けて食べる。,わさびをつける。"
-    },
-    {
-      "kanji": "掛ける",
-      "hiragana": "かける",
-      "korean": "뿌리다,끼얹다",
-      "level": "N4",
-      "pos": "2그룹동사",
-      "example": "レモンを掛ける。,醤油を掛ける。"
-    },
-    {
-      "kanji": "添える",
-      "hiragana": "そえる",
-      "korean": "곁들이다",
-      "level": "N2",
-      "pos": "2그룹동사",
-      "example": "薬味を添える。"
-    },
-    {
-      "kanji": "温める",
-      "hiragana": "あたためる",
-      "korean": "데우다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "お酒を温めてもらう。"
-    },
-    {
-      "kanji": "冷やす",
-      "hiragana": "ひやす",
-      "korean": "차게 하다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "グラスをよく冷やす。"
-    },
-    {
-      "kanji": "煮込む",
-      "hiragana": "にこむ",
-      "korean": "푹 끓이다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "牛すじを時間をかけて煮込む。"
-    },
-    {
-      "kanji": "香ばしい",
-      "hiragana": "こうばしい",
-      "korean": "고소하다",
-      "level": "N1",
-      "pos": "い형용사",
-      "example": "焼いた皮が香ばしい。"
-    },
-    {
-      "kanji": "甘辛い",
-      "hiragana": "あまからい",
-      "korean": "달콤짭짤하다",
-      "level": "N2",
-      "pos": "い형용사",
-      "example": "甘辛いタレが食欲をそそる。"
-    },
-    {
-      "kanji": "脂っこい",
-      "hiragana": "あぶらっこい",
-      "korean": "기름지다",
-      "level": "N2",
-      "pos": "い형용사",
-      "example": "揚げ物は少し脂っこい。"
-    },
-    {
-      "kanji": "濃い",
-      "hiragana": "こい",
-      "korean": "진하다",
-      "level": "N3",
-      "pos": "い형용사",
-      "example": "味が濃いめだ。"
-    },
-    {
-      "kanji": "薄い",
-      "hiragana": "うすい",
-      "korean": "연하다,싱겁다",
-      "level": "N4",
-      "pos": "い형용사",
-      "example": "味が少し薄い。,色が薄い。"
-    },
-    {
-      "kanji": "辛い",
-      "hiragana": "からい",
-      "korean": "맵다",
-      "level": "N4",
-      "pos": "い형용사",
-      "example": "この明太子は辛い。"
-    },
-    {
-      "kanji": "酸っぱい",
-      "hiragana": "すっぱい",
-      "korean": "시다",
-      "level": "N3",
-      "pos": "い형용사",
-      "example": "酢の物が少し酸っぱい。"
-    },
-    {
-      "kanji": "苦い",
-      "hiragana": "にがい",
-      "korean": "쓰다",
-      "level": "N3",
-      "pos": "い형용사",
-      "example": "ビールの苦味が好きだ。"
-    },
-    {
-      "kanji": "熱々",
-      "hiragana": "あつあつ",
-      "korean": "갓 만들어 뜨거움",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "熱々の天ぷらが届く。"
-    },
-    {
-      "kanji": "新鮮",
-      "hiragana": "しんせん",
-      "korean": "신선함",
-      "level": "N3",
-      "pos": "な형용사",
-      "example": "新鮮な魚が自慢の店だ。"
-    },
-    {
-      "kanji": "上品",
-      "hiragana": "じょうひん",
-      "korean": "고급스러움,품위 있음",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "上品な味付けの煮物だ。,上品な振る舞いの店員だ。"
-    },
-    {
-      "kanji": "ジューシー",
-      "hiragana": "ジューシー",
-      "korean": "육즙이 많음",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "唐揚げがジューシーだ。"
-    },
-    {
-      "kanji": "あっさり",
-      "hiragana": "あっさり",
-      "korean": "담백하게,산뜻하게",
-      "level": "N2",
-      "pos": "부사",
-      "example": "あっさりした味付けが好みだ。,あっさりと断られた。"
-    },
-    {
-      "kanji": "こってり",
-      "hiragana": "こってり",
-      "korean": "진하고 기름지게",
-      "level": "N1",
-      "pos": "부사",
-      "example": "こってりした豚骨が好きだ。"
-    },
-    {
-      "kanji": "ぷりぷり",
-      "hiragana": "ぷりぷり",
-      "korean": "탱탱하게",
-      "level": "N1",
-      "pos": "부사",
-      "example": "海老がぷりぷりしている。"
-    },
-    {
-      "kanji": "とりあえず",
-      "hiragana": "とりあえず",
-      "korean": "우선,일단",
-      "level": "N2",
-      "pos": "부사",
-      "example": "とりあえず生ビールで。,とりあえず席に座る。"
-    },
-    {
-      "kanji": "別々",
-      "hiragana": "べつべつ",
-      "korean": "따로따로",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "会計は別々でお願いします。"
-    },
-    {
-      "kanji": "それから",
-      "hiragana": "それから",
-      "korean": "그리고,그다음에",
-      "level": "N4",
-      "pos": "접속사",
-      "example": "枝豆と、それから唐揚げをください。,顔を洗って、それから歯を磨く。"
-    },
-    {
-      "kanji": "豚肉",
-      "hiragana": "ぶたにく",
-      "korean": "돼지고기",
-      "level": "N4",
-      "pos": "명사",
-      "example": "豚肉を200グラム買いました。"
-    },
-    {
-      "kanji": "牛肉",
-      "hiragana": "ぎゅうにく",
-      "korean": "소고기",
-      "level": "N4",
-      "pos": "명사",
-      "example": "今夜は牛肉のカレーにします。"
-    },
-    {
-      "kanji": "鶏肉",
-      "hiragana": "とりにく",
-      "korean": "닭고기",
-      "level": "N4",
-      "pos": "명사",
-      "example": "鶏肉で唐揚げを作ります。"
-    },
-    {
-      "kanji": "挽肉",
-      "hiragana": "ひきにく",
-      "korean": "다진 고기",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ハンバーグ用の挽肉を買いましょう。"
-    },
-    {
-      "kanji": "玉ねぎ",
-      "hiragana": "たまねぎ",
-      "korean": "양파",
-      "level": "N3",
-      "pos": "명사",
-      "example": "玉ねぎを細かく刻む。"
-    },
-    {
-      "kanji": "人参",
-      "hiragana": "にんじん",
-      "korean": "당근",
-      "level": "N3",
-      "pos": "명사",
-      "example": "カレーに人参を入れます。"
-    },
-    {
-      "kanji": "じゃがいも",
-      "hiragana": "じゃがいも",
-      "korean": "감자",
-      "level": "N3",
-      "pos": "명사",
-      "example": "じゃがいもの皮をむく。"
-    },
-    {
-      "kanji": "キャベツ",
-      "hiragana": "キャベツ",
-      "korean": "양배추",
-      "level": "N3",
-      "pos": "명사",
-      "example": "キャベツの千切りを作った。"
-    },
-    {
-      "kanji": "牛乳",
-      "hiragana": "ぎゅうにゅう",
-      "korean": "우유",
-      "level": "N5",
-      "pos": "명사",
-      "example": "毎朝、牛乳を飲みます。"
-    },
-    {
-      "kanji": "卵",
-      "hiragana": "たまご",
-      "korean": "계란",
-      "level": "N5",
-      "pos": "명사",
-      "example": "卵を1パック買う。"
-    },
-    {
-      "kanji": "食パン",
-      "hiragana": "しょくパン",
-      "korean": "식빵",
-      "level": "N3",
-      "pos": "명사",
-      "example": "朝食に食パンを焼く。"
-    },
-    {
-      "kanji": "惣菜",
-      "hiragana": "そうざい",
-      "korean": "조리식품",
-      "level": "N1",
-      "pos": "명사",
-      "example": "スーパーの惣菜は便利だ。"
-    },
-    {
-      "kanji": "割引",
-      "hiragana": "わりびき",
-      "korean": "할인",
-      "level": "N3",
-      "pos": "명사",
-      "example": "この商品は3割引きです。"
-    },
-    {
-      "kanji": "半額",
-      "hiragana": "はんがく",
-      "korean": "반값",
-      "level": "N2",
-      "pos": "명사",
-      "example": "夜になるとお弁当が半額になる。"
-    },
-    {
-      "kanji": "値引き",
-      "hiragana": "ねびき",
-      "korean": "가격 인하",
-      "level": "N2",
-      "pos": "명사",
-      "example": "シールが貼られた値引き品を選ぶ。"
-    },
-    {
-      "kanji": "賞味期限",
-      "hiragana": "しょうみきげん",
-      "korean": "유통기한",
-      "level": "N2",
-      "pos": "명사",
-      "example": "賞味期限を確かめてから買う。"
-    },
-    {
-      "kanji": "レジ袋",
-      "hiragana": "レジぶくろ",
-      "korean": "비닐봉지",
-      "level": "N2",
-      "pos": "명사",
-      "example": "レジ袋は有料ですか。"
-    },
-    {
-      "kanji": "カート",
-      "hiragana": "カート",
-      "korean": "쇼핑카트",
-      "level": "N2",
-      "pos": "명사",
-      "example": "カートに荷物を載せる。"
-    },
-    {
-      "kanji": "税込み",
-      "hiragana": "ぜいこみ",
-      "korean": "세금 포함 가격",
-      "level": "N2",
-      "pos": "명사",
-      "example": "表示価格は税込みです。"
-    },
-    {
-      "kanji": "袋詰め",
-      "hiragana": "ふくろづめ",
-      "korean": "봉지에 담기",
-      "level": "N1",
-      "pos": "명사",
-      "example": "会計の後、袋詰めの台へ移動する。"
-    },
-    {
-      "kanji": "鶏モモ肉",
-      "hiragana": "とりももにく",
-      "korean": "닭다리살",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鶏モモ肉を唐揚げ用に切る。"
-    },
-    {
-      "kanji": "鶏胸肉",
-      "hiragana": "とりむねにく",
-      "korean": "닭가슴살",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鶏胸肉は高タンパクでヘルシーだ。"
-    },
-    {
-      "kanji": "もやし",
-      "hiragana": "もやし",
-      "korean": "숙주나물",
-      "level": "N3",
-      "pos": "명사",
-      "example": "もやしは安くて料理に使いやすい。"
-    },
-    {
-      "kanji": "きゅうり",
-      "hiragana": "きゅうり",
-      "korean": "오이",
-      "level": "N4",
-      "pos": "명사",
-      "example": "きゅうりの浅漬けを作りました。"
-    },
-    {
-      "kanji": "きのこ",
-      "hiragana": "きのこ",
-      "korean": "버섯",
-      "level": "N3",
-      "pos": "명사",
-      "example": "きのこをバターで炒める。"
-    },
-    {
-      "kanji": "サラダ油",
-      "hiragana": "さらだあぶら",
-      "korean": "식용유",
-      "level": "N2",
-      "pos": "명사",
-      "example": "フライパンにサラダ油をひく。"
-    },
-    {
-      "kanji": "胡椒",
-      "hiragana": "こしょう",
-      "korean": "후추",
-      "level": "N3",
-      "pos": "명사",
-      "example": "塩と胡椒で味を調える。"
-    },
-    {
-      "kanji": "マヨネーズ",
-      "hiragana": "まよねーず",
-      "korean": "마요네즈",
-      "level": "N3",
-      "pos": "명사",
-      "example": "サラダにマヨネーズをかける。"
-    },
-    {
-      "kanji": "料理酒",
-      "hiragana": "りょうりしゅ",
-      "korean": "요리술",
-      "level": "N2",
-      "pos": "명사",
-      "example": "肉の臭みを消すために料理酒を使う。"
-    },
-    {
-      "kanji": "つゆ",
-      "hiragana": "つゆ",
-      "korean": "맛간장",
-      "level": "N2",
-      "pos": "명사",
-      "example": "めんつゆを水で薄めて使う。"
-    },
-    {
-      "kanji": "冷凍食品",
-      "hiragana": "れいとうしょくひん",
-      "korean": "냉동식품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "冷凍食品を電子レンジで温める。"
-    },
-    {
-      "kanji": "セルフレジ",
-      "hiragana": "せるふれじ",
-      "korean": "셀프 계산대",
-      "level": "N1",
-      "pos": "명사",
-      "example": "セルフレジで会計を済ませる。"
-    },
-    {
-      "kanji": "ポイントカード",
-      "hiragana": "ぽいんとかーど",
-      "korean": "포인트 카드",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ポイントカードはお持ちですか。"
-    },
-    {
-      "kanji": "レシート",
-      "hiragana": "れしーと",
-      "korean": "영수증",
-      "level": "N4",
-      "pos": "명사",
-      "example": "レシートは結構です。"
-    },
-    {
-      "kanji": "国産",
-      "hiragana": "こくさん",
-      "korean": "국산",
-      "level": "N2",
-      "pos": "명사",
-      "example": "安心なので国産の野菜を選ぶ。"
-    },
-    {
-      "kanji": "輸入",
-      "hiragana": "ゆにゅう",
-      "korean": "수입",
-      "level": "N3",
-      "pos": "명사",
-      "example": "輸入物の果物を安く買う。"
-    },
-    {
-      "kanji": "特売品",
-      "hiragana": "とくばいひん",
-      "korean": "특가 상품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "今日の特売品は卵です。"
-    },
-    {
-      "kanji": "マイバッグ",
-      "hiragana": "まいばっぐ",
-      "korean": "장바구니",
-      "level": "N3",
-      "pos": "명사",
-      "example": "買い物にはマイバッグを持参する。"
-    },
-    {
-      "kanji": "有機",
-      "hiragana": "ゆうき",
-      "korean": "유기농",
-      "level": "N1",
-      "pos": "명사",
-      "example": "有機栽培のトマトを買った。"
-    },
-    {
-      "kanji": "低脂肪",
-      "hiragana": "ていしぼう",
-      "korean": "저지방",
-      "level": "N2",
-      "pos": "명사",
-      "example": "健康のために低脂肪の牛乳を選ぶ。"
-    },
-    {
-      "kanji": "油揚げ",
-      "hiragana": "あぶらあげ",
-      "korean": "유부",
-      "level": "N2",
-      "pos": "명사",
-      "example": "油揚げを味噌汁に入れます。"
-    },
-    {
-      "kanji": "ごま油",
-      "hiragana": "ごまあぶら",
-      "korean": "참기름",
-      "level": "N2",
-      "pos": "명사",
-      "example": "仕上げにごま油をひと回しする。"
-    },
-    {
-      "kanji": "みりん",
-      "hiragana": "みりん",
-      "korean": "맛술",
-      "level": "N2",
-      "pos": "명사",
-      "example": "煮物にみりんを加えて照りを出す。"
-    },
-    {
-      "kanji": "切り身",
-      "hiragana": "きりみ",
-      "korean": "생선 토막",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鮭の切り身を二切れ買いました。"
-    },
-    {
-      "kanji": "消費期限",
-      "hiragana": "しょうひきげん",
-      "korean": "소비기한",
-      "level": "N2",
-      "pos": "명사",
-      "example": "お肉の消費期限が今日までだ。"
-    },
-    {
-      "kanji": "売り場",
-      "hiragana": "うりば",
-      "korean": "매장",
-      "level": "N4",
-      "pos": "명사",
-      "example": "お惣菜の売り場はどこですか。"
-    },
-    {
-      "kanji": "お釣り",
-      "hiragana": "おつり",
-      "korean": "거스름돈",
-      "level": "N4",
-      "pos": "명사",
-      "example": "お釣りのお札を受け取る。"
-    },
-    {
-      "kanji": "茄子",
-      "hiragana": "なす",
-      "korean": "가지",
-      "level": "N2",
-      "pos": "명사",
-      "example": "茄子の味噌炒めを作ります。"
-    },
-    {
-      "kanji": "ピーマン",
-      "hiragana": "ピーマン",
-      "korean": "피망",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ピーマンの肉詰めが食べたい。"
-    },
-    {
-      "kanji": "白菜",
-      "hiragana": "はくさい",
-      "korean": "배추",
-      "level": "N2",
-      "pos": "명사",
-      "example": "冬は白菜が安くて美味しい。"
-    },
-    {
-      "kanji": "レタス",
-      "hiragana": "レタス",
-      "korean": "양상추",
-      "level": "N3",
-      "pos": "명사",
-      "example": "新鮮なレタスでサラダを作る。"
-    },
-    {
-      "kanji": "ニンニク",
-      "hiragana": "ニンニク",
-      "korean": "마늘",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ニンニクをすりおろして使う。"
-    },
-    {
-      "kanji": "ほうれん草",
-      "hiragana": "ほうれんそう",
-      "korean": "시금치",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ほうれん草のお浸しを作った。"
-    },
-    {
-      "kanji": "小麦粉",
-      "hiragana": "こむぎこ",
-      "korean": "밀가루",
-      "level": "N2",
-      "pos": "명사",
-      "example": "お肉に小麦粉を薄くまぶす。"
-    },
-    {
-      "kanji": "パン粉",
-      "hiragana": "パンこ",
-      "korean": "빵가루",
-      "level": "N2",
-      "pos": "명사",
-      "example": "揚げ物のためにパン粉を買う。"
-    },
-    {
-      "kanji": "ヨーグルト",
-      "hiragana": "ヨーグルト",
-      "korean": "요거트",
-      "level": "N3",
-      "pos": "명사",
-      "example": "プレーンヨーグルトを毎朝食べる。"
-    },
-    {
-      "kanji": "チーズ",
-      "hiragana": "チーズ",
-      "korean": "치즈",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ピザ用チーズがよく溶ける。"
-    },
-    {
-      "kanji": "ハム",
-      "hiragana": "ハム",
-      "korean": "햄",
-      "level": "N3",
-      "pos": "명사",
-      "example": "サンドイッチにハムを挟む。"
-    },
-    {
-      "kanji": "ソーセージ",
-      "hiragana": "ソーセージ",
-      "korean": "소시지",
-      "level": "N3",
-      "pos": "명사",
-      "example": "朝食にソーセージを焼く。"
-    },
-    {
-      "kanji": "バラ売り",
-      "hiragana": "ばらうり",
-      "korean": "낱개 판매",
-      "level": "N1",
-      "pos": "명사",
-      "example": "玉ねぎがバラ売りされている。"
-    },
-    {
-      "kanji": "トマト",
-      "hiragana": "トマト",
-      "korean": "토마토",
-      "level": "N5",
-      "pos": "명사",
-      "example": "新鮮なトマトでサラダを作りました。"
-    },
-    {
-      "kanji": "味噌汁",
-      "hiragana": "みそしる",
-      "korean": "된장국",
-      "level": "N4",
-      "pos": "명사",
-      "example": "温かい味噌汁を飲むと落ち着きます。"
-    },
-    {
-      "kanji": "定食",
-      "hiragana": "ていしょく",
-      "korean": "정식",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お昼休みに唐揚げ定食を食べました。"
-    },
-    {
-      "kanji": "丼",
-      "hiragana": "どんぶり",
-      "korean": "덮밥",
-      "level": "N3",
-      "pos": "명사",
-      "example": "がっつり食べたい時は牛丼に限る。"
-    },
-    {
-      "kanji": "バター",
-      "hiragana": "ばたー",
-      "korean": "버터",
-      "level": "N3",
-      "pos": "명사",
-      "example": "焼きたての食パンにバターを塗る。"
-    },
-    {
-      "kanji": "砂糖",
-      "hiragana": "さとう",
-      "korean": "설탕",
-      "level": "N4",
-      "pos": "명사",
-      "example": "煮物に砂糖を少し足して甘みを出す。"
-    },
-    {
-      "kanji": "ケチャップ",
-      "hiragana": "けちゃっぷ",
-      "korean": "케첩",
-      "level": "N3",
-      "pos": "명사",
-      "example": "オムライスにケチャップで綺麗に文字を書く。"
-    },
-    {
-      "kanji": "お冷",
-      "hiragana": "おひや",
-      "korean": "냉수",
-      "level": "N2",
-      "pos": "명사",
-      "example": "すみません、お冷をもう一杯ください。"
-    },
-    {
-      "kanji": "売り切れ",
-      "hiragana": "うりきれ",
-      "korean": "품절,매진",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お目当てのお惣菜が売り切れだった。,人気商品は午前中に売り切れる。"
-    },
-    {
-      "kanji": "値札",
-      "hiragana": "ねふだ",
-      "korean": "가격표",
-      "level": "N2",
-      "pos": "명사",
-      "example": "商品の値札をよく確認してからカゴに入れる。"
-    },
-    {
-      "kanji": "試食",
-      "hiragana": "ししょく",
-      "korean": "시식",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ウインナーの試食を勧められた。"
-    },
-    {
-      "kanji": "ラーメン",
-      "hiragana": "らーめん",
-      "korean": "라면",
-      "level": "N4",
-      "pos": "명사",
-      "example": "飲んだ後の締めのラーメンは最高だ。"
-    },
-    {
-      "kanji": "うどん",
-      "hiragana": "うどん",
-      "korean": "우동",
-      "level": "N4",
-      "pos": "명사",
-      "example": "寒い日は温かいうどんが体に染みる。"
-    },
-    {
-      "kanji": "カレーライス",
-      "hiragana": "かれーらいす",
-      "korean": "카레라이스",
-      "level": "N4",
-      "pos": "명사",
-      "example": "カレーライスは多めに作っておくと楽だ。"
-    },
-    {
-      "kanji": "かぼちゃ",
-      "hiragana": "かぼちゃ",
-      "korean": "단호박",
-      "level": "N3",
-      "pos": "명사",
-      "example": "かぼちゃの煮物は甘くて美味しい。"
-    },
-    {
-      "kanji": "リンゴ",
-      "hiragana": "りんご",
-      "korean": "사과",
-      "level": "N5",
-      "pos": "명사",
-      "example": "食後のデザートにリンゴを剥く。"
-    },
-    {
-      "kanji": "デザート",
-      "hiragana": "でざーと",
-      "korean": "디저트",
-      "level": "N3",
-      "pos": "명사",
-      "example": "別腹でデザートを追加注文する。"
-    },
-    {
-      "kanji": "お茶",
-      "hiragana": "おちゃ",
-      "korean": "차",
-      "level": "N5",
-      "pos": "명사",
-      "example": "食後に温かいお茶を淹れて飲む。"
-    },
-    {
-      "kanji": "メニュー",
-      "hiragana": "めにゅー",
-      "korean": "메뉴",
-      "level": "N4",
-      "pos": "명사",
-      "example": "メニューを見て何を頼むか決める。"
-    },
-    {
-      "kanji": "レジ",
-      "hiragana": "れじ",
-      "korean": "계산대",
-      "level": "N4",
-      "pos": "명사",
-      "example": "会計をするためにレジの列に並ぶ。"
-    },
-    {
-      "kanji": "お弁当",
-      "hiragana": "おべんとう",
-      "korean": "도시락",
-      "level": "N4",
-      "pos": "명사",
-      "example": "お昼ご飯にお弁当を買いました。"
-    },
-    {
-      "kanji": "大盛り",
-      "hiragana": "おおもり",
-      "korean": "양 많이",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ラーメンを大盛りで注文する。"
-    },
-    {
-      "kanji": "ライス",
-      "hiragana": "らいす",
-      "korean": "밥,라이스",
-      "level": "N4",
-      "pos": "명사",
-      "example": "唐揚げにライスを付けてください。,大盛りライスを注文する。"
-    },
-    {
-      "kanji": "おかず",
-      "hiragana": "おかず",
-      "korean": "반찬",
-      "level": "N3",
-      "pos": "명사",
-      "example": "今日のおかずは焼き魚です。"
-    },
-    {
-      "kanji": "生姜焼き",
-      "hiragana": "しょうがやき",
-      "korean": "돼지고기 생강구이",
-      "level": "N2",
-      "pos": "명사",
-      "example": "定食屋で豚の生姜焼きを頼む。"
-    },
-    {
-      "kanji": "炭火焼き",
-      "hiragana": "すみびやき",
-      "korean": "숯불구이",
-      "level": "N2",
-      "pos": "명사",
-      "example": "炭火焼きの焼き鳥は香りがいい。"
-    },
-    {
-      "kanji": "お買い得",
-      "hiragana": "おかいどく",
-      "korean": "싸게 잘 삼",
-      "level": "N2",
-      "pos": "명사",
-      "example": "この牛肉は今日のお買い得品だ。"
-    },
-    {
-      "kanji": "調味料",
-      "hiragana": "ちょうみりょう",
-      "korean": "조미료",
-      "level": "N2",
-      "pos": "명사",
-      "example": "スーパーで新しい調味料を試す。"
-    },
-    {
-      "kanji": "オリーブオイル",
-      "hiragana": "おりーぶおいる",
-      "korean": "올리브 오일",
-      "level": "N2",
-      "pos": "명사",
-      "example": "サラダにオリーブオイルをかける。"
-    },
-    {
-      "kanji": "ウインナー",
-      "hiragana": "ういんなー",
-      "korean": "비엔나 소시지",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お弁当にウインナーを入れる。"
-    },
-    {
-      "kanji": "厚揚げ",
-      "hiragana": "あつあげ",
-      "korean": "두꺼운 유부 튀김",
-      "level": "N2",
-      "pos": "명사",
-      "example": "厚揚げを煮물にする。"
-    },
-    {
-      "kanji": "こんにゃく",
-      "hiragana": "こんにゃく",
-      "korean": "곤약",
-      "level": "N3",
-      "pos": "명사",
-      "example": "おでんのこんにゃくが美味しい。"
-    },
-    {
-      "kanji": "ちくわ",
-      "hiragana": "ちくわ",
-      "korean": "구멍 뚫린 어묵 (치쿠와)",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ちくわの磯辺揚げを作る。"
-    },
-    {
-      "kanji": "アイス",
-      "hiragana": "あいす",
-      "korean": "아이스크림",
-      "level": "N4",
-      "pos": "명사",
-      "example": "食後に冷たいアイスを食べます。"
-    },
-    {
-      "kanji": "氷",
-      "hiragana": "こおり",
-      "korean": "얼음",
-      "level": "N4",
-      "pos": "명사",
-      "example": "グラスに氷をたっぷり入れる。"
-    },
-    {
-      "kanji": "炭酸水",
-      "hiragana": "たんさんすい",
-      "korean": "탄산수",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ハイボール用に炭酸水を買う。"
-    },
-    {
-      "kanji": "緑茶",
-      "hiragana": "りょくちゃ",
-      "korean": "녹차",
-      "level": "N3",
-      "pos": "명사",
-      "example": "温かい緑茶を淹れました。"
-    },
-    {
-      "kanji": "お菓子",
-      "hiragana": "おかし",
-      "korean": "과자",
-      "level": "N3",
-      "pos": "명사",
-      "example": "子供にお菓子を買い与える。"
-    },
-    {
-      "kanji": "パック",
-      "hiragana": "ぱっく",
-      "korean": "포장 팩",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お肉を1パック買いました。"
-    },
-    {
-      "kanji": "持ち帰り",
-      "hiragana": "もちかえり",
-      "korean": "포장",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お持ち帰りでお願いします。"
-    },
-    {
-      "kanji": "鮮魚",
-      "hiragana": "せんぎょ",
-      "korean": "선어,생선 코너",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鮮魚コーナーで刺身を選ぶ。,鮮魚を仕入れる。"
-    },
-    {
-      "kanji": "精肉",
-      "hiragana": "せいにく",
-      "korean": "정육",
-      "level": "N1",
-      "pos": "명사",
-      "example": "精肉売り場で牛肉を買う。"
-    },
-    {
-      "kanji": "青果",
-      "hiragana": "せいか",
-      "korean": "청과",
-      "level": "N1",
-      "pos": "명사",
-      "example": "青果コーナーは入口の近くだ。"
-    },
-    {
-      "kanji": "食料品",
-      "hiragana": "しょくりょうひん",
-      "korean": "식료품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "食料品をまとめて買う。"
-    },
-    {
-      "kanji": "日用品",
-      "hiragana": "にちようひん",
-      "korean": "생필품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "日用品も同じ店で揃える。"
-    },
-    {
-      "kanji": "食材",
-      "hiragana": "しょくざい",
-      "korean": "식재료",
-      "level": "N2",
-      "pos": "명사",
-      "example": "夕飯の食材を買い込む。"
-    },
-    {
-      "kanji": "棚",
-      "hiragana": "たな",
-      "korean": "선반,진열대",
-      "level": "N3",
-      "pos": "명사",
-      "example": "棚に商品が並んでいる。,棚から缶詰を取る。"
-    },
-    {
-      "kanji": "陳列",
-      "hiragana": "ちんれつ",
-      "korean": "진열",
-      "level": "N1",
-      "pos": "명사",
-      "example": "新商品が陳列されている。"
-    },
-    {
-      "kanji": "在庫",
-      "hiragana": "ざいこ",
-      "korean": "재고",
-      "level": "N1",
-      "pos": "명사",
-      "example": "在庫が少なくなっている。"
-    },
-    {
-      "kanji": "品切れ",
-      "hiragana": "しなぎれ",
-      "korean": "품절",
-      "level": "N2",
-      "pos": "명사",
-      "example": "人気商品が品切れだ。"
-    },
-    {
-      "kanji": "鮮度",
-      "hiragana": "せんど",
-      "korean": "신선도",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鮮度の良い魚を選ぶ。"
-    },
-    {
-      "kanji": "産地",
-      "hiragana": "さんち",
-      "korean": "산지",
-      "level": "N2",
-      "pos": "명사",
-      "example": "産地を確認して買う。"
-    },
-    {
-      "kanji": "産地直送",
-      "hiragana": "さんちちょくそう",
-      "korean": "산지직송",
-      "level": "N1",
-      "pos": "명사",
-      "example": "産地直送の野菜が並ぶ。"
-    },
-    {
-      "kanji": "値段",
-      "hiragana": "ねだん",
-      "korean": "가격,값",
-      "level": "N3",
-      "pos": "명사",
-      "example": "値段を見て決める。,値段が手頃だ。"
-    },
-    {
-      "kanji": "価格",
-      "hiragana": "かかく",
-      "korean": "가격",
-      "level": "N2",
-      "pos": "명사",
-      "example": "価格が表示されている。"
-    },
-    {
-      "kanji": "特価",
-      "hiragana": "とっか",
-      "korean": "특가",
-      "level": "N1",
-      "pos": "명사",
-      "example": "本日の特価品を狙う。"
-    },
-    {
-      "kanji": "値上げ",
-      "hiragana": "ねあげ",
-      "korean": "가격 인상",
-      "level": "N2",
-      "pos": "명사",
-      "example": "卵が値上げされた。"
-    },
-    {
-      "kanji": "量り売り",
-      "hiragana": "はかりうり",
-      "korean": "무게 달아 팖",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お惣菜が量り売りされている。"
-    },
-    {
-      "kanji": "まとめ買い",
-      "hiragana": "まとめがい",
-      "korean": "한꺼번에 많이 삼",
-      "level": "N2",
-      "pos": "명사",
-      "example": "安いのでまとめ買いした。"
-    },
-    {
-      "kanji": "お徳用",
-      "hiragana": "おとくよう",
-      "korean": "대용량 이득팩",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お徳用パックを選ぶ。"
-    },
-    {
-      "kanji": "業務用",
-      "hiragana": "ぎょうむよう",
-      "korean": "업소용 대용량",
-      "level": "N1",
-      "pos": "명사",
-      "example": "業務用の油は量が多い。"
-    },
-    {
-      "kanji": "増量",
-      "hiragana": "ぞうりょう",
-      "korean": "증량",
-      "level": "N1",
-      "pos": "명사",
-      "example": "増量キャンペーン中だ。"
-    },
-    {
-      "kanji": "支払い",
-      "hiragana": "しはらい",
-      "korean": "지불,결제",
-      "level": "N2",
-      "pos": "명사",
-      "example": "支払いは現金にする。,カードで支払いを済ませる。"
-    },
-    {
-      "kanji": "現金",
-      "hiragana": "げんきん",
-      "korean": "현금",
-      "level": "N3",
-      "pos": "명사",
-      "example": "現金で支払う。"
-    },
-    {
-      "kanji": "電子マネー",
-      "hiragana": "でんしマネー",
-      "korean": "전자화폐",
-      "level": "N1",
-      "pos": "명사",
-      "example": "電子マネーで会計する。"
-    },
-    {
-      "kanji": "買い物かご",
-      "hiragana": "かいものかご",
-      "korean": "장바구니",
-      "level": "N2",
-      "pos": "명사",
-      "example": "買い物かごに商品を入れる。"
-    },
-    {
-      "kanji": "会員",
-      "hiragana": "かいいん",
-      "korean": "회원",
-      "level": "N2",
-      "pos": "명사",
-      "example": "会員価格で安くなる。"
-    },
-    {
-      "kanji": "支払う",
-      "hiragana": "しはらう",
-      "korean": "지불하다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "レジで代金を支払う。"
-    },
-    {
-      "kanji": "缶詰",
-      "hiragana": "かんづめ",
-      "korean": "통조림",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鯖の缶詰を常備する。"
-    },
-    {
-      "kanji": "レトルト",
-      "hiragana": "レトルト",
-      "korean": "레토르트",
-      "level": "N2",
-      "pos": "명사",
-      "example": "レトルトカレーを温める。"
-    },
-    {
-      "kanji": "即席",
-      "hiragana": "そくせき",
-      "korean": "즉석,인스턴트",
-      "level": "N1",
-      "pos": "명사",
-      "example": "即席みそ汁を買う。,即席麺をストックする。"
-    },
-    {
-      "kanji": "乾物",
-      "hiragana": "かんぶつ",
-      "korean": "건식품(마른 식품)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "乾物コーナーで昆布を探す。"
-    },
-    {
-      "kanji": "練り物",
-      "hiragana": "ねりもの",
-      "korean": "어묵류",
-      "level": "N1",
-      "pos": "명사",
-      "example": "練り物をおでんに入れる。"
-    },
-    {
-      "kanji": "蒲鉾",
-      "hiragana": "かまぼこ",
-      "korean": "어묵(가마보코)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "蒲鉾を薄く切る。"
-    },
-    {
-      "kanji": "海苔",
-      "hiragana": "のり",
-      "korean": "김",
-      "level": "N2",
-      "pos": "명사",
-      "example": "おにぎりに海苔を巻く。"
-    },
-    {
-      "kanji": "昆布",
-      "hiragana": "こんぶ",
-      "korean": "다시마",
-      "level": "N2",
-      "pos": "명사",
-      "example": "昆布で出汁を取る。"
-    },
-    {
-      "kanji": "わかめ",
-      "hiragana": "わかめ",
-      "korean": "미역",
-      "level": "N3",
-      "pos": "명사",
-      "example": "わかめを味噌汁に入れる。"
-    },
-    {
-      "kanji": "鰹節",
-      "hiragana": "かつおぶし",
-      "korean": "가다랑어포",
-      "level": "N1",
-      "pos": "명사",
-      "example": "冷奴に鰹節をかける。"
-    },
-    {
-      "kanji": "梅干し",
-      "hiragana": "うめぼし",
-      "korean": "매실장아찌",
-      "level": "N2",
-      "pos": "명사",
-      "example": "梅干しでご飯を食べる。"
-    },
-    {
-      "kanji": "豆乳",
-      "hiragana": "とうにゅう",
-      "korean": "두유",
-      "level": "N2",
-      "pos": "명사",
-      "example": "毎朝豆乳を飲む。"
-    },
-    {
-      "kanji": "米",
-      "hiragana": "こめ",
-      "korean": "쌀",
-      "level": "N4",
-      "pos": "명사",
-      "example": "米を五キロ買う。"
-    },
-    {
-      "kanji": "餅",
-      "hiragana": "もち",
-      "korean": "떡",
-      "level": "N2",
-      "pos": "명사",
-      "example": "正月に餅を食べる。"
-    },
-    {
-      "kanji": "ベーコン",
-      "hiragana": "ベーコン",
-      "korean": "베이컨",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ベーコンを炒める。"
-    },
-    {
-      "kanji": "ささみ",
-      "hiragana": "ささみ",
-      "korean": "닭안심",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ささみは脂が少ない。"
-    },
-    {
-      "kanji": "ロース",
-      "hiragana": "ロース",
-      "korean": "등심",
-      "level": "N1",
-      "pos": "명사",
-      "example": "豚ロースを焼く。"
-    },
-    {
-      "kanji": "蜂蜜",
-      "hiragana": "はちみつ",
-      "korean": "꿀",
-      "level": "N2",
-      "pos": "명사",
-      "example": "蜂蜜を紅茶に入れる。"
-    },
-    {
-      "kanji": "ジャム",
-      "hiragana": "ジャム",
-      "korean": "잼",
-      "level": "N3",
-      "pos": "명사",
-      "example": "パンにジャムを塗る。"
-    },
-    {
-      "kanji": "缶ビール",
-      "hiragana": "かんビール",
-      "korean": "캔맥주",
-      "level": "N3",
-      "pos": "명사",
-      "example": "缶ビールを六本買う。"
-    },
-    {
-      "kanji": "ジュース",
-      "hiragana": "ジュース",
-      "korean": "주스",
-      "level": "N4",
-      "pos": "명사",
-      "example": "オレンジジュースを選ぶ。"
-    },
-    {
-      "kanji": "水",
-      "hiragana": "みず",
-      "korean": "물",
-      "level": "N5",
-      "pos": "명사",
-      "example": "ミネラルウォーターを箱で買う。"
-    },
-    {
-      "kanji": "選ぶ",
-      "hiragana": "えらぶ",
-      "korean": "고르다,선택하다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "新鮮な野菜を選ぶ。,プランを選ぶ。"
-    },
-    {
-      "kanji": "迷う",
-      "hiragana": "まよう",
-      "korean": "망설이다,헤매다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "どれにするか迷う。,道に迷う。"
-    },
-    {
-      "kanji": "並べる",
-      "hiragana": "ならべる",
-      "korean": "늘어놓다,진열하다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "商品を棚に並べる。,椅子を並べる。"
-    },
-    {
-      "kanji": "詰める",
-      "hiragana": "つめる",
-      "korean": "채우다,담다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "袋に詰める。,隙間に詰める。"
-    },
-    {
-      "kanji": "安い",
-      "hiragana": "やすい",
-      "korean": "싸다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "今日は卵が安い。"
-    },
-    {
-      "kanji": "高い",
-      "hiragana": "たかい",
-      "korean": "비싸다,높다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "輸入品は少し高い。,天井が高い。"
-    },
-    {
-      "kanji": "新しい",
-      "hiragana": "あたらしい",
-      "korean": "새롭다,신선하다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "新しい商品が入荷した。,新しい靴を買う。"
-    },
-    {
-      "kanji": "いらっしゃいませ",
-      "hiragana": "いらっしゃいませ",
-      "korean": "어서 오세요",
-      "level": "N4",
-      "pos": "감탄사",
-      "example": "店員がいらっしゃいませと言う。"
-    },
-    {
-      "kanji": "かしこまりました",
-      "hiragana": "かしこまりました",
-      "korean": "알겠습니다(공손)",
-      "level": "N2",
-      "pos": "감탄사",
-      "example": "店員がかしこまりましたと答える。"
-    },
-    {
-      "kanji": "少々",
-      "hiragana": "しょうしょう",
-      "korean": "잠시,조금",
-      "level": "N2",
-      "pos": "부사",
-      "example": "少々お待ちください。,塩を少々加える。"
-    },
-    {
-      "kanji": "以上",
-      "hiragana": "いじょう",
-      "korean": "이상,끝",
-      "level": "N3",
-      "pos": "명사",
-      "example": "注文は以上です。,三人以上で予約する。"
-    },
-    {
-      "kanji": "ラストオーダー",
-      "hiragana": "ラストオーダー",
-      "korean": "라스트오더(마지막 주문)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "そろそろラストオーダーの時間だ。"
-    },
-    {
-      "kanji": "おしまい",
-      "hiragana": "おしまい",
-      "korean": "끝,마감",
-      "level": "N2",
-      "pos": "명사",
-      "example": "本日はこれでおしまいです。,早めにおしまいにする。"
-    },
-    {
-      "kanji": "追加",
-      "hiragana": "ついか",
-      "korean": "추가",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ドリンクを追加する。"
-    },
-    {
-      "kanji": "単品",
-      "hiragana": "たんぴん",
-      "korean": "단품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "単品で頼むこともできる。"
-    },
-    {
-      "kanji": "セット",
-      "hiragana": "セット",
-      "korean": "세트",
-      "level": "N3",
-      "pos": "명사",
-      "example": "お得なセットを注文する。"
-    },
-    {
-      "kanji": "コース",
-      "hiragana": "コース",
-      "korean": "코스",
-      "level": "N3",
-      "pos": "명사",
-      "example": "宴会コースを予約した。"
-    },
-    {
-      "kanji": "一人前",
-      "hiragana": "いちにんまえ",
-      "korean": "1인분",
-      "level": "N2",
-      "pos": "명사",
-      "example": "刺身を一人前頼む。"
-    },
-    {
-      "kanji": "本日",
-      "hiragana": "ほんじつ",
-      "korean": "오늘(공손)",
-      "level": "N2",
-      "pos": "명사",
-      "example": "本日のおすすめを聞く。"
-    },
-    {
-      "kanji": "名物",
-      "hiragana": "めいぶつ",
-      "korean": "명물 요리",
-      "level": "N2",
-      "pos": "명사",
-      "example": "この店の名物を頼む。"
-    },
-    {
-      "kanji": "予約",
-      "hiragana": "よやく",
-      "korean": "예약",
-      "level": "N3",
-      "pos": "명사",
-      "example": "六時に予約を入れる。"
-    },
-    {
-      "kanji": "席",
-      "hiragana": "せき",
-      "korean": "자리,좌석",
-      "level": "N3",
-      "pos": "명사",
-      "example": "窓際の席に座る。,席を予約する。"
-    },
-    {
-      "kanji": "座敷",
-      "hiragana": "ざしき",
-      "korean": "다다미방 좌석",
-      "level": "N1",
-      "pos": "명사",
-      "example": "座敷の席に通された。"
-    },
-    {
-      "kanji": "個室",
-      "hiragana": "こしつ",
-      "korean": "개별룸",
-      "level": "N2",
-      "pos": "명사",
-      "example": "個室を希望する。"
-    },
-    {
-      "kanji": "禁煙",
-      "hiragana": "きんえん",
-      "korean": "금연",
-      "level": "N2",
-      "pos": "명사",
-      "example": "禁煙席をお願いします。"
-    },
-    {
-      "kanji": "満席",
-      "hiragana": "まんせき",
-      "korean": "만석",
-      "level": "N1",
-      "pos": "명사",
-      "example": "週末は満席になりやすい。"
-    },
-    {
-      "kanji": "店員",
-      "hiragana": "てんいん",
-      "korean": "점원",
-      "level": "N3",
-      "pos": "명사",
-      "example": "店員を呼んで注文する。"
-    },
-    {
-      "kanji": "飲み会",
-      "hiragana": "のみかい",
-      "korean": "회식,술자리",
-      "level": "N2",
-      "pos": "명사",
-      "example": "金曜に飲み会がある。,飲み会の幹事をする。"
-    },
-    {
-      "kanji": "宴会",
-      "hiragana": "えんかい",
-      "korean": "연회",
-      "level": "N1",
-      "pos": "명사",
-      "example": "忘年会の宴会を開く。"
-    },
-    {
-      "kanji": "二次会",
-      "hiragana": "にじかい",
-      "korean": "2차",
-      "level": "N1",
-      "pos": "명사",
-      "example": "二次会はカラオケに行く。"
-    },
-    {
-      "kanji": "幹事",
-      "hiragana": "かんじ",
-      "korean": "총무(간사)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "今日の幹事を任される。"
-    },
-    {
-      "kanji": "割り勘",
-      "hiragana": "わりかん",
-      "korean": "더치페이",
-      "level": "N1",
-      "pos": "명사",
-      "example": "会計は割り勘にする。"
-    },
-    {
-      "kanji": "おごる",
-      "hiragana": "おごる",
-      "korean": "한턱내다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "後輩に一杯おごる。"
-    },
-    {
-      "kanji": "サービス料",
-      "hiragana": "サービスりょう",
-      "korean": "서비스료",
-      "level": "N1",
-      "pos": "명사",
-      "example": "サービス料が別途かかる。"
-    },
-    {
-      "kanji": "味付け",
-      "hiragana": "あじつけ",
-      "korean": "양념,간 맞추기",
-      "level": "N2",
-      "pos": "명사",
-      "example": "味付けが濃いめだ。,味付けを薄くする。"
-    },
-    {
-      "kanji": "食感",
-      "hiragana": "しょっかん",
-      "korean": "식감",
-      "level": "N1",
-      "pos": "명사",
-      "example": "もちもちした食感が良い。"
-    },
-    {
-      "kanji": "歯ごたえ",
-      "hiragana": "はごたえ",
-      "korean": "씹는 맛",
-      "level": "N1",
-      "pos": "명사",
-      "example": "蛸は歯ごたえがある。"
-    },
-    {
-      "kanji": "旨味",
-      "hiragana": "うまみ",
-      "korean": "감칠맛",
-      "level": "N1",
-      "pos": "명사",
-      "example": "出汁の旨味が広がる。"
-    },
-    {
-      "kanji": "風味",
-      "hiragana": "ふうみ",
-      "korean": "풍미",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ごま油の風味が効く。"
-    },
-    {
-      "kanji": "後味",
-      "hiragana": "あとあじ",
-      "korean": "뒷맛",
-      "level": "N1",
-      "pos": "명사",
-      "example": "後味がすっきりしている。"
-    },
-    {
-      "kanji": "香り",
-      "hiragana": "かおり",
-      "korean": "향기",
-      "level": "N2",
-      "pos": "명사",
-      "example": "焼き鳥の香りが食欲をそそる。"
-    },
-    {
-      "kanji": "食欲",
-      "hiragana": "しょくよく",
-      "korean": "식욕",
-      "level": "N2",
-      "pos": "명사",
-      "example": "暑くて食欲がない。"
-    },
-    {
-      "kanji": "満腹",
-      "hiragana": "まんぷく",
-      "korean": "배부름(포만)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "もう満腹で食べられない。"
-    },
-    {
-      "kanji": "残す",
-      "hiragana": "のこす",
-      "korean": "남기다",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "料理を残すのはもったいない。"
-    },
-    {
-      "kanji": "取り分ける",
-      "hiragana": "とりわける",
-      "korean": "나눠 담다,덜다",
-      "level": "N2",
-      "pos": "2그룹동사",
-      "example": "大皿から取り分ける。,人数分に取り分ける。"
-    },
-    {
-      "kanji": "片付ける",
-      "hiragana": "かたづける",
-      "korean": "치우다,정리하다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "空いた皿を片付ける。,部屋を片付ける。"
-    },
-    {
-      "kanji": "呼ぶ",
-      "hiragana": "よぶ",
-      "korean": "부르다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "店員を呼ぶ。"
-    },
-    {
-      "kanji": "美味しい",
-      "hiragana": "おいしい",
-      "korean": "맛있다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "ここの唐揚げは美味しい。"
-    },
-    {
-      "kanji": "柔らかい",
-      "hiragana": "やわらかい",
-      "korean": "부드럽다,연하다",
-      "level": "N3",
-      "pos": "い형용사",
-      "example": "牛すじが柔らかく煮えている。,柔らかい布団だ。"
-    },
-    {
-      "kanji": "しょっぱい",
-      "hiragana": "しょっぱい",
-      "korean": "짜다",
-      "level": "N2",
-      "pos": "い형용사",
-      "example": "このタレは少ししょっぱい。"
-    },
-    {
-      "kanji": "まろやか",
-      "hiragana": "まろやか",
-      "korean": "부드럽고 순한 맛",
-      "level": "N1",
-      "pos": "な형용사",
-      "example": "まろやかな口当たりの酒だ。"
-    },
-    {
-      "kanji": "洗剤",
-      "hiragana": "せんざい",
-      "korean": "세제",
-      "level": "N2",
-      "pos": "명사",
-      "example": "食器用洗剤を補充する。"
-    },
-    {
-      "kanji": "柔軟剤",
-      "hiragana": "じゅうなんざい",
-      "korean": "섬유유연제",
-      "level": "N1",
-      "pos": "명사",
-      "example": "洗濯に柔軟剤を入れる。"
-    },
-    {
-      "kanji": "漂白剤",
-      "hiragana": "ひょうはくざい",
-      "korean": "표백제",
-      "level": "N1",
-      "pos": "명사",
-      "example": "漂白剤で布巾を洗う。"
-    },
-    {
-      "kanji": "スポンジ",
-      "hiragana": "スポンジ",
-      "korean": "스펀지,수세미",
-      "level": "N2",
-      "pos": "명사",
-      "example": "新しいスポンジに替える。,スポンジで皿を洗う。"
-    },
-    {
-      "kanji": "ゴミ袋",
-      "hiragana": "ゴミぶくろ",
-      "korean": "쓰레기봉투",
-      "level": "N2",
-      "pos": "명사",
-      "example": "指定のゴミ袋を買う。"
-    },
-    {
-      "kanji": "ラップ",
-      "hiragana": "ラップ",
-      "korean": "랩",
-      "level": "N2",
-      "pos": "명사",
-      "example": "残り物にラップをかける。"
-    },
-    {
-      "kanji": "アルミホイル",
-      "hiragana": "アルミホイル",
-      "korean": "알루미늄 포일",
-      "level": "N1",
-      "pos": "명사",
-      "example": "魚をアルミホイルで包む。"
-    },
-    {
-      "kanji": "掃除",
-      "hiragana": "そうじ",
-      "korean": "청소",
-      "level": "N4",
-      "pos": "명사",
-      "example": "週末に部屋の掃除をする。"
-    },
-    {
-      "kanji": "ティッシュ",
-      "hiragana": "ティッシュ",
-      "korean": "티슈,화장지",
-      "level": "N3",
-      "pos": "명사",
-      "example": "ティッシュを一箱買う。,ティッシュで鼻をかむ。"
-    },
-    {
-      "kanji": "トイレットペーパー",
-      "hiragana": "トイレットペーパー",
-      "korean": "화장지(두루마리 휴지)",
-      "level": "N2",
-      "pos": "명사",
-      "example": "トイレットペーパーをまとめ買いする。"
-    },
-    {
-      "kanji": "ウェットティッシュ",
-      "hiragana": "ウェットティッシュ",
-      "korean": "물티슈",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ウェットティッシュで手を拭く。"
-    },
-    {
-      "kanji": "綿棒",
-      "hiragana": "めんぼう",
-      "korean": "면봉",
-      "level": "N1",
-      "pos": "명사",
-      "example": "綿棒で耳を掃除する。"
-    },
-    {
-      "kanji": "絆創膏",
-      "hiragana": "ばんそうこう",
-      "korean": "반창고,일회용 밴드",
-      "level": "N1",
-      "pos": "명사",
-      "example": "指に絆創膏を貼る。,傷口に絆創膏を当てる。"
-    },
-    {
-      "kanji": "マスク",
-      "hiragana": "マスク",
-      "korean": "마스크",
-      "level": "N2",
-      "pos": "명사",
-      "example": "マスクを箱で買う。"
-    },
-    {
-      "kanji": "石鹸",
-      "hiragana": "せっけん",
-      "korean": "비누",
-      "level": "N3",
-      "pos": "명사",
-      "example": "固形石鹸で手を洗う。"
-    },
-    {
-      "kanji": "シャンプー",
-      "hiragana": "シャンプー",
-      "korean": "샴푸",
-      "level": "N2",
-      "pos": "명사",
-      "example": "詰め替えのシャンプーを買う。"
-    },
-    {
-      "kanji": "歯ブラシ",
-      "hiragana": "はブラシ",
-      "korean": "칫솔",
-      "level": "N3",
-      "pos": "명사",
-      "example": "歯ブラシを新しくする。"
-    },
-    {
-      "kanji": "歯磨き粉",
-      "hiragana": "はみがきこ",
-      "korean": "치약",
-      "level": "N2",
-      "pos": "명사",
-      "example": "歯磨き粉がなくなりそうだ。"
-    },
-    {
-      "kanji": "髭剃り",
-      "hiragana": "ひげそり",
-      "korean": "면도기",
-      "level": "N1",
-      "pos": "명사",
-      "example": "使い捨ての髭剃りを買う。"
-    },
-    {
-      "kanji": "化粧品",
-      "hiragana": "けしょうひん",
-      "korean": "화장품",
-      "level": "N2",
-      "pos": "명사",
-      "example": "化粧品コーナーに寄る。"
-    },
-    {
-      "kanji": "割り箸",
-      "hiragana": "わりばし",
-      "korean": "나무젓가락",
-      "level": "N2",
-      "pos": "명사",
-      "example": "割り箸をもらう。"
-    },
-    {
-      "kanji": "紙コップ",
-      "hiragana": "かみコップ",
-      "korean": "종이컵",
-      "level": "N3",
-      "pos": "명사",
-      "example": "紙コップを多めに買う。"
-    },
-    {
-      "kanji": "紙皿",
-      "hiragana": "かみざら",
-      "korean": "종이 접시",
-      "level": "N2",
-      "pos": "명사",
-      "example": "バーベキューに紙皿を使う。"
-    },
-    {
-      "kanji": "ストロー",
-      "hiragana": "ストロー",
-      "korean": "빨대",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ジュースにストローを差す。"
-    },
-    {
-      "kanji": "電池",
-      "hiragana": "でんち",
-      "korean": "건전지",
-      "level": "N2",
-      "pos": "명사",
-      "example": "リモコンの電池を交換する。"
-    },
-    {
-      "kanji": "乾電池",
-      "hiragana": "かんでんち",
-      "korean": "건전지",
-      "level": "N1",
-      "pos": "명사",
-      "example": "単三の乾電池を買う。"
-    },
-    {
-      "kanji": "ライター",
-      "hiragana": "ライター",
-      "korean": "라이터",
-      "level": "N2",
-      "pos": "명사",
-      "example": "使い捨てライターを買う。"
-    },
-    {
-      "kanji": "傘",
-      "hiragana": "かさ",
-      "korean": "우산",
-      "level": "N4",
-      "pos": "명사",
-      "example": "急な雨でビニール傘を買う。"
-    },
-    {
-      "kanji": "洗濯",
-      "hiragana": "せんたく",
-      "korean": "빨래,세탁",
-      "level": "N4",
-      "pos": "명사",
-      "example": "毎朝洗濯をする。,洗濯した服を干す。"
-    },
-    {
-      "kanji": "消臭剤",
-      "hiragana": "しょうしゅうざい",
-      "korean": "탈취제",
-      "level": "N1",
-      "pos": "명사",
-      "example": "玄関に消臭剤を置く。"
-    },
-    {
-      "kanji": "虫除け",
-      "hiragana": "むしよけ",
-      "korean": "벌레 퇴치제",
-      "level": "N1",
-      "pos": "명사",
-      "example": "夏は虫除けスプレーが要る。"
-    },
-    {
-      "kanji": "電球",
-      "hiragana": "でんきゅう",
-      "korean": "전구",
-      "level": "N2",
-      "pos": "명사",
-      "example": "切れた電球を取り替える。"
-    },
-    {
-      "kanji": "文房具",
-      "hiragana": "ぶんぼうぐ",
-      "korean": "문구류",
-      "level": "N2",
-      "pos": "명사",
-      "example": "文房具コーナーでペンを買う。"
-    },
-    {
-      "kanji": "ペット用品",
-      "hiragana": "ペットようひん",
-      "korean": "반려동물 용품",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ペット用品売り場でエサを買う。"
-    },
-    {
-      "kanji": "おむつ",
-      "hiragana": "おむつ",
-      "korean": "기저귀",
-      "level": "N1",
-      "pos": "명사",
-      "example": "赤ちゃんのおむつを買い足す。"
-    },
-    {
-      "kanji": "雑貨",
-      "hiragana": "ざっか",
-      "korean": "잡화",
-      "level": "N2",
-      "pos": "명사",
-      "example": "雑貨コーナーをのぞく。"
-    },
-    {
-      "kanji": "詰め替える",
-      "hiragana": "つめかえる",
-      "korean": "리필하다,바꿔 채우다",
-      "level": "N1",
-      "pos": "2그룹동사",
-      "example": "洗剤を容器に詰め替える。,中身を詰め替える。"
-    },
-    {
-      "kanji": "交換",
-      "hiragana": "こうかん",
-      "korean": "교환",
-      "level": "N2",
-      "pos": "명사",
-      "example": "電池を交換する。"
-    },
-    {
-      "kanji": "補充",
-      "hiragana": "ほじゅう",
-      "korean": "보충",
-      "level": "N1",
-      "pos": "명사",
-      "example": "在庫を補充する。"
-    },
-    {
-      "kanji": "使い捨て",
-      "hiragana": "つかいすて",
-      "korean": "일회용",
-      "level": "N1",
-      "pos": "명사",
-      "example": "使い捨ての手袋を使う。"
-    },
-    {
-      "kanji": "備える",
-      "hiragana": "そなえる",
-      "korean": "대비하다,갖추다",
-      "level": "N2",
-      "pos": "2그룹동사",
-      "example": "災害に備えて水を買う。,日用品を備えておく。"
-    },
-    {
-      "kanji": "苺",
-      "hiragana": "いちご",
-      "korean": "딸기",
-      "level": "N2",
-      "pos": "명사",
-      "example": "苺がパックで安い。"
-    },
-    {
-      "kanji": "葡萄",
-      "hiragana": "ぶどう",
-      "korean": "포도",
-      "level": "N2",
-      "pos": "명사",
-      "example": "種なし葡萄を買う。"
-    },
-    {
-      "kanji": "蜜柑",
-      "hiragana": "みかん",
-      "korean": "귤",
-      "level": "N3",
-      "pos": "명사",
-      "example": "冬は蜜柑をよく食べる。"
-    },
-    {
-      "kanji": "桃",
-      "hiragana": "もも",
-      "korean": "복숭아",
-      "level": "N2",
-      "pos": "명사",
-      "example": "桃が旬を迎える。"
-    },
-    {
-      "kanji": "梨",
-      "hiragana": "なし",
-      "korean": "배",
-      "level": "N2",
-      "pos": "명사",
-      "example": "梨はみずみずしい。"
-    },
-    {
-      "kanji": "柿",
-      "hiragana": "かき",
-      "korean": "감",
-      "level": "N2",
-      "pos": "명사",
-      "example": "秋になると柿が並ぶ。"
-    },
-    {
-      "kanji": "西瓜",
-      "hiragana": "すいか",
-      "korean": "수박",
-      "level": "N2",
-      "pos": "명사",
-      "example": "夏は西瓜を冷やして食べる。"
-    },
-    {
-      "kanji": "バナナ",
-      "hiragana": "バナナ",
-      "korean": "바나나",
-      "level": "N4",
-      "pos": "명사",
-      "example": "バナナを一房買う。"
-    },
-    {
-      "kanji": "レモン",
-      "hiragana": "レモン",
-      "korean": "레몬",
-      "level": "N3",
-      "pos": "명사",
-      "example": "唐揚げにレモンを搾る。"
-    },
-    {
-      "kanji": "南瓜",
-      "hiragana": "かぼちゃ",
-      "korean": "호박",
-      "level": "N2",
-      "pos": "명사",
-      "example": "南瓜の煮物を作る。"
-    },
-    {
-      "kanji": "牛蒡",
-      "hiragana": "ごぼう",
-      "korean": "우엉",
-      "level": "N1",
-      "pos": "명사",
-      "example": "牛蒡のきんぴらが美味しい。"
-    },
-    {
-      "kanji": "蓮根",
-      "hiragana": "れんこん",
-      "korean": "연근",
-      "level": "N1",
-      "pos": "명사",
-      "example": "蓮根を薄く切って揚げる。"
-    },
-    {
-      "kanji": "筍",
-      "hiragana": "たけのこ",
-      "korean": "죽순",
-      "level": "N1",
-      "pos": "명사",
-      "example": "春は筍の天ぷらが旬だ。"
-    },
-    {
-      "kanji": "ブロッコリー",
-      "hiragana": "ブロッコリー",
-      "korean": "브로콜리",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ブロッコリーを茹でる。"
-    },
-    {
-      "kanji": "とうもろこし",
-      "hiragana": "とうもろこし",
-      "korean": "옥수수",
-      "level": "N2",
-      "pos": "명사",
-      "example": "とうもろこしを焼いて食べる。"
-    },
-    {
-      "kanji": "枝豆もやし",
-      "hiragana": "えだまめもやし",
-      "korean": "콩나물",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ナムル用に枝豆もやしを買う。"
-    },
-    {
-      "kanji": "三つ葉",
-      "hiragana": "みつば",
-      "korean": "미츠바(파드득나물)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "茶碗蒸しに三つ葉を乗せる。"
-    },
-    {
-      "kanji": "大葉",
-      "hiragana": "おおば",
-      "korean": "차조기 잎(향채)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "刺身に大葉を添える。"
-    },
-    {
-      "kanji": "鰤",
-      "hiragana": "ぶり",
-      "korean": "방어",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰤の照り焼きが冬の定番だ。"
-    },
-    {
-      "kanji": "鯛",
-      "hiragana": "たい",
-      "korean": "도미",
-      "level": "N2",
-      "pos": "명사",
-      "example": "鯛の刺身は上品な味だ。"
-    },
-    {
-      "kanji": "鰯",
-      "hiragana": "いわし",
-      "korean": "정어리",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰯のフライを揚げる。"
-    },
-    {
-      "kanji": "秋刀魚",
-      "hiragana": "さんま",
-      "korean": "꽁치",
-      "level": "N1",
-      "pos": "명사",
-      "example": "秋刀魚の塩焼きが香ばしい。"
-    },
-    {
-      "kanji": "帆立",
-      "hiragana": "ほたて",
-      "korean": "가리비",
-      "level": "N1",
-      "pos": "명사",
-      "example": "帆立のバター焼きを頼む。"
-    },
-    {
-      "kanji": "蟹",
-      "hiragana": "かに",
-      "korean": "게",
-      "level": "N2",
-      "pos": "명사",
-      "example": "冬は蟹鍋が食べたい。"
-    },
-    {
-      "kanji": "鱈",
-      "hiragana": "たら",
-      "korean": "대구",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鱈を鍋に入れる。"
-    },
-    {
-      "kanji": "鰹",
-      "hiragana": "かつお",
-      "korean": "가다랑어",
-      "level": "N1",
-      "pos": "명사",
-      "example": "初鰹を味わう。"
-    },
-    {
-      "kanji": "もんじゃ焼き",
-      "hiragana": "もんじゃやき",
-      "korean": "몬자야키",
-      "level": "N1",
-      "pos": "명사",
-      "example": "下町でもんじゃ焼きを食べる。"
-    },
-    {
-      "kanji": "お好み焼き",
-      "hiragana": "おこのみやき",
-      "korean": "오코노미야키",
-      "level": "N2",
-      "pos": "명사",
-      "example": "お好み焼きを鉄板で焼く。"
-    },
-    {
-      "kanji": "たこ焼き",
-      "hiragana": "たこやき",
-      "korean": "타코야키",
-      "level": "N3",
-      "pos": "명사",
-      "example": "たこ焼きを八個頼む。"
-    },
-    {
-      "kanji": "焼きうどん",
-      "hiragana": "やきうどん",
-      "korean": "야키우동",
-      "level": "N3",
-      "pos": "명사",
-      "example": "締めに焼きうどんを頼む。"
-    },
-    {
-      "kanji": "卵焼き",
-      "hiragana": "たまごやき",
-      "korean": "계란말이",
-      "level": "N3",
-      "pos": "명사",
-      "example": "甘めの卵焼きが好きだ。"
-    },
-    {
-      "kanji": "餡掛け",
-      "hiragana": "あんかけ",
-      "korean": "걸쭉한 소스를 끼얹은 요리",
-      "level": "N1",
-      "pos": "명사",
-      "example": "餡掛け豆腐が温まる。"
-    },
-    {
-      "kanji": "天むす",
-      "hiragana": "てんむす",
-      "korean": "새우튀김 주먹밥",
-      "level": "N1",
-      "pos": "명사",
-      "example": "天むすを土産に買う。"
-    },
-    {
-      "kanji": "ぬか漬け",
-      "hiragana": "ぬかづけ",
-      "korean": "쌀겨 절임",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ぬか漬けの胡瓜を出す。"
-    },
-    {
-      "kanji": "枝豆塩茹で",
-      "hiragana": "えだまめしおゆで",
-      "korean": "소금 삶은 풋콩",
-      "level": "N1",
-      "pos": "명사",
-      "example": "枝豆塩茹でをつまみにする。"
-    },
-    {
-      "kanji": "果実酒",
-      "hiragana": "かじつしゅ",
-      "korean": "과실주",
-      "level": "N1",
-      "pos": "명사",
-      "example": "果実酒を炭酸で割る。"
-    },
-    {
-      "kanji": "甘酒",
-      "hiragana": "あまざけ",
-      "korean": "감주,단술",
-      "level": "N1",
-      "pos": "명사",
-      "example": "寒い日に甘酒を飲む。,正月に甘酒を振る舞う。"
-    },
-    {
-      "kanji": "生搾り",
-      "hiragana": "なましぼり",
-      "korean": "생착즙(과일 사워)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "生搾りレモンサワーを頼む。"
-    },
-    {
-      "kanji": "瓶",
-      "hiragana": "びん",
-      "korean": "병",
-      "level": "N3",
-      "pos": "명사",
-      "example": "瓶の蓋を開ける。"
-    },
-    {
-      "kanji": "栓",
-      "hiragana": "せん",
-      "korean": "마개,뚜껑",
-      "level": "N2",
-      "pos": "명사",
-      "example": "ワインの栓を抜く。,瓶の栓を閉める。"
-    },
-    {
-      "kanji": "入荷",
-      "hiragana": "にゅうか",
-      "korean": "입하,입고",
-      "level": "N1",
-      "pos": "명사",
-      "example": "新商品が入荷した。,鮮魚が朝に入荷する。"
-    },
-    {
-      "kanji": "品揃え",
-      "hiragana": "しなぞろえ",
-      "korean": "상품 구성,갖춤",
-      "level": "N1",
-      "pos": "명사",
-      "example": "この店は品揃えが豊富だ。,品揃えが良い。"
-    },
-    {
-      "kanji": "目玉商品",
-      "hiragana": "めだましょうひん",
-      "korean": "특가 미끼상품",
-      "level": "N1",
-      "pos": "명사",
-      "example": "目玉商品を朝一で狙う。"
-    },
-    {
-      "kanji": "閉店",
-      "hiragana": "へいてん",
-      "korean": "폐점,영업 종료",
-      "level": "N2",
-      "pos": "명사",
-      "example": "閉店間際は値引きが多い。,九時に閉店する。"
-    },
-    {
-      "kanji": "開店",
-      "hiragana": "かいてん",
-      "korean": "개점,영업 시작",
-      "level": "N2",
-      "pos": "명사",
-      "example": "開店と同時に客が入る。,新しい店が開店する。"
-    },
-    {
-      "kanji": "営業時間",
-      "hiragana": "えいぎょうじかん",
-      "korean": "영업시간",
-      "level": "N2",
-      "pos": "명사",
-      "example": "営業時間を確認する。"
-    },
-    {
-      "kanji": "数量限定",
-      "hiragana": "すうりょうげんてい",
-      "korean": "수량 한정",
-      "level": "N1",
-      "pos": "명사",
-      "example": "数量限定の弁当が並ぶ。"
-    },
-    {
-      "kanji": "詰め合わせ",
-      "hiragana": "つめあわせ",
-      "korean": "여러 종류를 담은 세트",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お菓子の詰め合わせを贈る。"
-    },
-    {
-      "kanji": "買う",
-      "hiragana": "かう",
-      "korean": "사다",
-      "level": "N5",
-      "pos": "1그룹동사",
-      "example": "夕飯の材料を買う。"
-    },
-    {
-      "kanji": "売る",
-      "hiragana": "うる",
-      "korean": "팔다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "店先で野菜を売る。"
-    },
-    {
-      "kanji": "探す",
-      "hiragana": "さがす",
-      "korean": "찾다",
-      "level": "N4",
-      "pos": "1그룹동사",
-      "example": "醤油の売り場を探す。"
-    },
-    {
-      "kanji": "比べる",
-      "hiragana": "くらべる",
-      "korean": "비교하다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "値段を比べて選ぶ。"
-    },
-    {
-      "kanji": "選り好み",
-      "hiragana": "えりごのみ",
-      "korean": "골라서 가림(편식)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "野菜の選り好みをしない。"
-    },
-    {
-      "kanji": "新鮮さ",
-      "hiragana": "しんせんさ",
-      "korean": "신선함의 정도",
-      "level": "N1",
-      "pos": "명사",
-      "example": "魚の新鮮さを確かめる。"
-    },
-    {
-      "kanji": "豊富",
-      "hiragana": "ほうふ",
-      "korean": "풍부함",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "種類が豊富で迷う。"
-    },
-    {
-      "kanji": "手頃",
-      "hiragana": "てごろ",
-      "korean": "적당함,알맞음",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "手頃な値段の惣菜だ。,手頃なサイズを選ぶ。"
-    },
-    {
-      "kanji": "新た",
-      "hiragana": "あらた",
-      "korean": "새로움",
-      "level": "N2",
-      "pos": "な형용사",
-      "example": "新たな商品が加わる。"
-    },
-    {
-      "kanji": "みずみずしい",
-      "hiragana": "みずみずしい",
-      "korean": "싱싱하다",
-      "level": "N1",
-      "pos": "い형용사",
-      "example": "みずみずしい果物が並ぶ。"
-    },
-    {
-      "kanji": "切る",
-      "hiragana": "きる",
-      "korean": "자르다,썰다",
-      "level": "N5",
-      "pos": "1그룹동사",
-      "example": "野菜を細かく切る。,糸を切る。"
-    },
-    {
-      "kanji": "刻む",
-      "hiragana": "きざむ",
-      "korean": "잘게 썰다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "葱を刻む。"
-    },
-    {
-      "kanji": "茹でる",
-      "hiragana": "ゆでる",
-      "korean": "데치다,삶다",
-      "level": "N3",
-      "pos": "2그룹동사",
-      "example": "ほうれん草を茹でる。,卵を茹でる。"
-    },
-    {
-      "kanji": "沸かす",
-      "hiragana": "わかす",
-      "korean": "끓이다(물)",
-      "level": "N3",
-      "pos": "1그룹동사",
-      "example": "お湯を沸かす。"
-    },
-    {
-      "kanji": "煮立てる",
-      "hiragana": "にたてる",
-      "korean": "팔팔 끓이다",
-      "level": "N1",
-      "pos": "2그룹동사",
-      "example": "出汁を煮立てる。"
-    },
-    {
-      "kanji": "漬ける",
-      "hiragana": "つける",
-      "korean": "절이다,담그다",
-      "level": "N2",
-      "pos": "2그룹동사",
-      "example": "野菜を塩で漬ける。,梅を漬ける。"
-    },
-    {
-      "kanji": "和える",
-      "hiragana": "あえる",
-      "korean": "무치다",
-      "level": "N1",
-      "pos": "2그룹동사",
-      "example": "胡麻で和える。"
-    },
-    {
-      "kanji": "下ろす",
-      "hiragana": "おろす",
-      "korean": "갈다,강판에 갈다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "大根を下ろす。,生姜を下ろす。"
-    },
-    {
-      "kanji": "搾る",
-      "hiragana": "しぼる",
-      "korean": "짜다,즙을 내다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "レモンを搾る。,牛乳を搾る。"
-    },
-    {
-      "kanji": "盛り付ける",
-      "hiragana": "もりつける",
-      "korean": "담아 차리다(플레이팅)",
-      "level": "N1",
-      "pos": "2그룹동사",
-      "example": "刺身を彩りよく盛り付ける。"
-    },
-    {
-      "kanji": "仕込む",
-      "hiragana": "しこむ",
-      "korean": "미리 준비하다(밑작업)",
-      "level": "N1",
-      "pos": "1그룹동사",
-      "example": "朝から食材を仕込む。"
-    },
-    {
-      "kanji": "炊く",
-      "hiragana": "たく",
-      "korean": "(밥을) 짓다",
-      "level": "N2",
-      "pos": "1그룹동사",
-      "example": "ご飯を炊く。"
-    },
-    {
-      "kanji": "七味唐辛子",
-      "hiragana": "しちみとうがらし",
-      "korean": "시치미(고춧가루 양념)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "うどんに七味唐辛子をかける。"
-    },
-    {
-      "kanji": "一味",
-      "hiragana": "いちみ",
-      "korean": "고춧가루(이치미)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "一味を少し振る。"
-    },
-    {
-      "kanji": "山椒",
-      "hiragana": "さんしょう",
-      "korean": "산초",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鰻に山椒をかける。"
-    },
-    {
-      "kanji": "柚子胡椒",
-      "hiragana": "ゆずこしょう",
-      "korean": "유자 후추",
-      "level": "N1",
-      "pos": "명사",
-      "example": "鍋に柚子胡椒を添える。"
-    },
-    {
-      "kanji": "ソース",
-      "hiragana": "ソース",
-      "korean": "소스",
-      "level": "N3",
-      "pos": "명사",
-      "example": "串カツをソースにつける。"
-    },
-    {
-      "kanji": "ドレッシング",
-      "hiragana": "ドレッシング",
-      "korean": "드레싱",
-      "level": "N2",
-      "pos": "명사",
-      "example": "サラダにドレッシングをかける。"
-    },
-    {
-      "kanji": "出汁の素",
-      "hiragana": "だしのもと",
-      "korean": "다시 분말,육수 베이스",
-      "level": "N1",
-      "pos": "명사",
-      "example": "味噌汁に出汁の素を使う。,出汁の素を切らす。"
-    },
-    {
-      "kanji": "片栗粉",
-      "hiragana": "かたくりこ",
-      "korean": "전분,녹말가루",
-      "level": "N1",
-      "pos": "명사",
-      "example": "片栗粉でとろみをつける。,片栗粉をまぶす。"
-    },
-    {
-      "kanji": "煎餅",
-      "hiragana": "せんべい",
-      "korean": "센베이,쌀과자",
-      "level": "N2",
-      "pos": "명사",
-      "example": "醤油煎餅をつまむ。,煎餅を焼く。"
-    },
-    {
-      "kanji": "団子",
-      "hiragana": "だんご",
-      "korean": "경단",
-      "level": "N2",
-      "pos": "명사",
-      "example": "みたらし団子を買う。"
-    },
-    {
-      "kanji": "饅頭",
-      "hiragana": "まんじゅう",
-      "korean": "만주(찐빵 과자)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "温泉饅頭を土産にする。"
-    },
-    {
-      "kanji": "羊羹",
-      "hiragana": "ようかん",
-      "korean": "양갱",
-      "level": "N1",
-      "pos": "명사",
-      "example": "羊羹をお茶と一緒に食べる。"
-    },
-    {
-      "kanji": "プリン",
-      "hiragana": "プリン",
-      "korean": "푸딩",
-      "level": "N3",
-      "pos": "명사",
-      "example": "デザートにプリンを選ぶ。"
-    },
-    {
-      "kanji": "チョコレート",
-      "hiragana": "チョコレート",
-      "korean": "초콜릿",
-      "level": "N3",
-      "pos": "명사",
-      "example": "板チョコレートを買う。"
-    },
-    {
-      "kanji": "ガム",
-      "hiragana": "ガム",
-      "korean": "껌",
-      "level": "N3",
-      "pos": "명사",
-      "example": "レジ横でガムを買う。"
-    },
-    {
-      "kanji": "茶碗",
-      "hiragana": "ちゃわん",
-      "korean": "밥공기,찻잔",
-      "level": "N3",
-      "pos": "명사",
-      "example": "茶碗にご飯をよそう。,茶碗でお茶を飲む。"
-    },
-    {
-      "kanji": "皿",
-      "hiragana": "さら",
-      "korean": "접시",
-      "level": "N4",
-      "pos": "명사",
-      "example": "皿を重ねて片付ける。"
-    },
-    {
-      "kanji": "丼ぶり",
-      "hiragana": "どんぶり",
-      "korean": "덮밥 그릇",
-      "level": "N2",
-      "pos": "명사",
-      "example": "丼ぶりにご飯をよそう。"
-    },
-    {
-      "kanji": "湯呑み",
-      "hiragana": "ゆのみ",
-      "korean": "찻잔",
-      "level": "N1",
-      "pos": "명사",
-      "example": "湯呑みにお茶を注ぐ。"
-    },
-    {
-      "kanji": "鍋敷き",
-      "hiragana": "なべしき",
-      "korean": "냄비 받침",
-      "level": "N1",
-      "pos": "명사",
-      "example": "熱い鍋を鍋敷きに置く。"
-    },
-    {
-      "kanji": "おたま",
-      "hiragana": "おたま",
-      "korean": "국자",
-      "level": "N1",
-      "pos": "명사",
-      "example": "おたまでスープをよそう。"
-    },
-    {
-      "kanji": "菜箸",
-      "hiragana": "さいばし",
-      "korean": "조리용 긴 젓가락",
-      "level": "N1",
-      "pos": "명사",
-      "example": "菜箸で炒め物を返す。"
-    },
-    {
-      "kanji": "総菜売り場",
-      "hiragana": "そうざいうりば",
-      "korean": "반찬 코너",
-      "level": "N1",
-      "pos": "명사",
-      "example": "総菜売り場で夕飯を選ぶ。"
-    },
-    {
-      "kanji": "冷蔵",
-      "hiragana": "れいぞう",
-      "korean": "냉장",
-      "level": "N2",
-      "pos": "명사",
-      "example": "冷蔵コーナーに牛乳がある。"
-    },
-    {
-      "kanji": "冷凍",
-      "hiragana": "れいとう",
-      "korean": "냉동",
-      "level": "N2",
-      "pos": "명사",
-      "example": "冷凍の餃子を買う。"
-    },
-    {
-      "kanji": "解凍",
-      "hiragana": "かいとう",
-      "korean": "해동",
-      "level": "N1",
-      "pos": "명사",
-      "example": "肉を自然解凍する。"
-    },
-    {
-      "kanji": "原材料",
-      "hiragana": "げんざいりょう",
-      "korean": "원재료",
-      "level": "N1",
-      "pos": "명사",
-      "example": "原材料の表示を確認する。"
-    },
-    {
-      "kanji": "産直",
-      "hiragana": "さんちょく",
-      "korean": "산지직거래",
-      "level": "N1",
-      "pos": "명사",
-      "example": "産直野菜が人気だ。"
-    },
-    {
-      "kanji": "詰め放題",
-      "hiragana": "つめほうだい",
-      "korean": "담는 만큼 정액",
-      "level": "N1",
-      "pos": "명사",
-      "example": "野菜の詰め放題に挑戦する。"
-    },
-    {
-      "kanji": "試飲",
-      "hiragana": "しいん",
-      "korean": "시음",
-      "level": "N1",
-      "pos": "명사",
-      "example": "ワインの試飲ができる。"
-    },
-    {
-      "kanji": "恵方巻き",
-      "hiragana": "えほうまき",
-      "korean": "에호마키(절분 김밥)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "節分に恵方巻きを食べる。"
-    },
-    {
-      "kanji": "おせち",
-      "hiragana": "おせち",
-      "korean": "오세치(설 음식)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "正月におせちを用意する。"
-    },
-    {
-      "kanji": "土用",
-      "hiragana": "どよう",
-      "korean": "도요(복날)",
-      "level": "N1",
-      "pos": "명사",
-      "example": "土用の丑の日に鰻を食べる。"
-    },
-    {
-      "kanji": "中元",
-      "hiragana": "ちゅうげん",
-      "korean": "백중 선물",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お中元の品を選ぶ。"
-    },
-    {
-      "kanji": "歳暮",
-      "hiragana": "せいぼ",
-      "korean": "연말 선물",
-      "level": "N1",
-      "pos": "명사",
-      "example": "お歳暮にビールを贈る。"
-    },
-    {
-      "kanji": "甘い",
-      "hiragana": "あまい",
-      "korean": "달다",
-      "level": "N5",
-      "pos": "い형용사",
-      "example": "このタレは甘い。"
-    },
-    {
-      "kanji": "硬い",
-      "hiragana": "かたい",
-      "korean": "단단하다,질기다",
-      "level": "N3",
-      "pos": "い형용사",
-      "example": "肉が少し硬い。,硬いパンを焼く。"
-    },
-    {
-      "kanji": "温かい",
-      "hiragana": "あたたかい",
-      "korean": "따뜻하다",
-      "level": "N4",
-      "pos": "い형용사",
-      "example": "温かいうちに食べる。"
-    },
-    {
-      "kanji": "美味しそう",
-      "hiragana": "おいしそう",
-      "korean": "맛있어 보이다",
-      "level": "N3",
-      "pos": "な형용사",
-      "example": "どれも美味しそうだ。"
-    },
-    {
-      "kanji": "もちもち",
-      "hiragana": "もちもち",
-      "korean": "쫄깃쫄깃",
-      "level": "N1",
-      "pos": "부사",
-      "example": "もちもちした食感だ。"
-    },
-    {
-      "kanji": "さくさく",
-      "hiragana": "さくさく",
-      "korean": "바삭바삭",
-      "level": "N1",
-      "pos": "부사",
-      "example": "衣がさくさくしている。"
-    },
-    {
-      "kanji": "とろとろ",
-      "hiragana": "とろとろ",
-      "korean": "걸쭉하게,사르르 녹게",
-      "level": "N1",
-      "pos": "부사",
-      "example": "卵がとろとろに仕上がる。,チーズがとろとろに溶ける。"
-    },
-    {
-      "kanji": "ぺこぺこ",
-      "hiragana": "ぺこぺこ",
-      "korean": "배가 몹시 고픔",
-      "level": "N1",
-      "pos": "부사",
-      "example": "お腹がぺこぺこだ。"
-    }
-  ]
+ "version": 1,
+ "name": "일본 이자카야 메뉴 읽기",
+ "words": [
+  {
+   "kanji": "焼き鳥",
+   "hiragana": "やきとり",
+   "korean": "닭꼬치",
+   "level": "N3",
+   "pos": "명사",
+   "example": "焼き鳥を五本ください。"
+  },
+  {
+   "kanji": "刺身",
+   "hiragana": "さしみ",
+   "korean": "회",
+   "level": "N4",
+   "pos": "명사",
+   "example": "刺身の盛り合わせを注文した。"
+  },
+  {
+   "kanji": "枝豆",
+   "hiragana": "えだまめ",
+   "korean": "풋콩",
+   "level": "N2",
+   "pos": "명사",
+   "example": "まず枝豆を頼みましょう。"
+  },
+  {
+   "kanji": "唐揚げ",
+   "hiragana": "からあげ",
+   "korean": "닭튀김",
+   "level": "N3",
+   "pos": "명사",
+   "example": "唐揚げはこの店の名物です。"
+  },
+  {
+   "kanji": "冷奴",
+   "hiragana": "ひややっこ",
+   "korean": "차가운 두부 요리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "冷奴を一つお願いします。"
+  },
+  {
+   "kanji": "餃子",
+   "hiragana": "ぎょうざ",
+   "korean": "만두",
+   "level": "N3",
+   "pos": "명사",
+   "example": "焼き餃子と生ビールを頼んだ。"
+  },
+  {
+   "kanji": "串",
+   "hiragana": "くし",
+   "korean": "꼬치",
+   "level": "N2",
+   "pos": "명사",
+   "example": "串に刺した肉を焼く。"
+  },
+  {
+   "kanji": "揚げ物",
+   "hiragana": "あげもの",
+   "korean": "튀김 요리",
+   "level": "N3",
+   "pos": "명사",
+   "example": "揚げ物は少し重い。"
+  },
+  {
+   "kanji": "煮物",
+   "hiragana": "にもの",
+   "korean": "조림 요리",
+   "level": "N2",
+   "pos": "명사",
+   "example": "煮物は体に優しい味だ。"
+  },
+  {
+   "kanji": "焼き物",
+   "hiragana": "やきもの",
+   "korean": "구이 요리",
+   "level": "N3",
+   "pos": "명사",
+   "example": "焼き物を中心に注文する。"
+  },
+  {
+   "kanji": "漬物",
+   "hiragana": "つけもの",
+   "korean": "절임,장아찌",
+   "level": "N3",
+   "pos": "명사",
+   "example": "漬物でお酒を飲む。,きゅうりの漬物が好きだ。"
+  },
+  {
+   "kanji": "お通し",
+   "hiragana": "おとおし",
+   "korean": "기본 안주",
+   "level": "N1",
+   "pos": "명사",
+   "example": "お通しに小鉢が出てきた。"
+  },
+  {
+   "kanji": "盛り合わせ",
+   "hiragana": "もりあわせ",
+   "korean": "모둠",
+   "level": "N2",
+   "pos": "명사",
+   "example": "刺身の盛り合わせが届いた。"
+  },
+  {
+   "kanji": "生ビール",
+   "hiragana": "なまビール",
+   "korean": "생맥주",
+   "level": "N3",
+   "pos": "명사",
+   "example": "生ビールを二つください。"
+  },
+  {
+   "kanji": "焼酎",
+   "hiragana": "しょうちゅう",
+   "korean": "소주",
+   "level": "N2",
+   "pos": "명사",
+   "example": "焼酎をお湯で割る。"
+  },
+  {
+   "kanji": "日本酒",
+   "hiragana": "にほんしゅ",
+   "korean": "일본 술,청주",
+   "level": "N3",
+   "pos": "명사",
+   "example": "日本酒を冷やで飲む。,日本酒は米から作られる。"
+  },
+  {
+   "kanji": "梅酒",
+   "hiragana": "うめしゅ",
+   "korean": "매실주",
+   "level": "N2",
+   "pos": "명사",
+   "example": "梅酒のソーダ割りが甘い。"
+  },
+  {
+   "kanji": "熱燗",
+   "hiragana": "あつかん",
+   "korean": "따뜻하게 데운 청주",
+   "level": "N1",
+   "pos": "명사",
+   "example": "熱燗を一本ください。"
+  },
+  {
+   "kanji": "冷酒",
+   "hiragana": "れいしゅ",
+   "korean": "차게 마시는 청주",
+   "level": "N1",
+   "pos": "명사",
+   "example": "冷酒でいただきます。"
+  },
+  {
+   "kanji": "ハイボール",
+   "hiragana": "はいぼーる",
+   "korean": "하이볼",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ハイボールをもう一杯ください。"
+  },
+  {
+   "kanji": "飲み放題",
+   "hiragana": "のみほうだい",
+   "korean": "무제한 음료",
+   "level": "N3",
+   "pos": "명사",
+   "example": "飲み放題のコースを選んだ。"
+  },
+  {
+   "kanji": "注文",
+   "hiragana": "ちゅうもん",
+   "korean": "주문",
+   "level": "N4",
+   "pos": "명사",
+   "example": "注文をまとめてお願いします。"
+  },
+  {
+   "kanji": "会計",
+   "hiragana": "かいけい",
+   "korean": "계산,회계",
+   "level": "N3",
+   "pos": "명사",
+   "example": "会計はレジでお願いします。,会計の仕事をしている。"
+  },
+  {
+   "kanji": "乾杯",
+   "hiragana": "かんぱい",
+   "korean": "건배",
+   "level": "N4",
+   "pos": "명사",
+   "example": "みんなで乾杯した。"
+  },
+  {
+   "kanji": "旬",
+   "hiragana": "しゅん",
+   "korean": "제철",
+   "level": "N1",
+   "pos": "명사",
+   "example": "旬の魚を使った料理だ。"
+  },
+  {
+   "kanji": "定番",
+   "hiragana": "ていばん",
+   "korean": "단골 인기 메뉴",
+   "level": "N1",
+   "pos": "명사",
+   "example": "唐揚げは定番のつまみだ。"
+  },
+  {
+   "kanji": "お勧め",
+   "hiragana": "おすすめ",
+   "korean": "추천",
+   "level": "N3",
+   "pos": "명사",
+   "example": "店員にお勧めを聞く。"
+  },
+  {
+   "kanji": "つまみ",
+   "hiragana": "つまみ",
+   "korean": "안주",
+   "level": "N2",
+   "pos": "명사",
+   "example": "お酒のつまみを選ぶ。"
+  },
+  {
+   "kanji": "出汁",
+   "hiragana": "だし",
+   "korean": "육수,국물",
+   "level": "N1",
+   "pos": "명사",
+   "example": "昆布で出汁を取る。,出汁が効いている。"
+  },
+  {
+   "kanji": "揚げ出し豆腐",
+   "hiragana": "あげだしどうふ",
+   "korean": "아게다시 두부",
+   "level": "N1",
+   "pos": "명사",
+   "example": "揚げ出し豆腐を注文した。"
+  },
+  {
+   "kanji": "茶碗蒸し",
+   "hiragana": "ちゃわんむし",
+   "korean": "일본식 계란찜",
+   "level": "N1",
+   "pos": "명사",
+   "example": "茶碗蒸しは熱々が美味しい。"
+  },
+  {
+   "kanji": "厚焼き卵",
+   "hiragana": "あつやきたまご",
+   "korean": "두툼한 계란말이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "厚焼き卵は甘めの味だ。"
+  },
+  {
+   "kanji": "天ぷら",
+   "hiragana": "てんぷら",
+   "korean": "튀김,덴푸라",
+   "level": "N3",
+   "pos": "명사",
+   "example": "海老の天ぷらが好きだ。,天ぷらを塩で食べる。"
+  },
+  {
+   "kanji": "海老",
+   "hiragana": "えび",
+   "korean": "새우",
+   "level": "N2",
+   "pos": "명사",
+   "example": "海老の天ぷらを頼む。"
+  },
+  {
+   "kanji": "烏賊",
+   "hiragana": "いか",
+   "korean": "오징어",
+   "level": "N2",
+   "pos": "명사",
+   "example": "烏賊の刺身が新鮮だ。"
+  },
+  {
+   "kanji": "鮪",
+   "hiragana": "まぐろ",
+   "korean": "참치",
+   "level": "N2",
+   "pos": "명사",
+   "example": "鮪の刺身を注文する。"
+  },
+  {
+   "kanji": "鮭",
+   "hiragana": "さけ",
+   "korean": "연어",
+   "level": "N3",
+   "pos": "명사",
+   "example": "鮭の塩焼きが定番だ。"
+  },
+  {
+   "kanji": "塩",
+   "hiragana": "しお",
+   "korean": "소금",
+   "level": "N4",
+   "pos": "명사",
+   "example": "焼き鳥は塩で食べたい。"
+  },
+  {
+   "kanji": "タレ",
+   "hiragana": "たれ",
+   "korean": "양념 소스",
+   "level": "N2",
+   "pos": "명사",
+   "example": "焼き鳥のタレが甘い。"
+  },
+  {
+   "kanji": "鍋",
+   "hiragana": "なべ",
+   "korean": "전골,냄비",
+   "level": "N3",
+   "pos": "명사",
+   "example": "冬は鍋料理が人気だ。,鍋でお湯を沸かす。"
+  },
+  {
+   "kanji": "一品",
+   "hiragana": "いっぴん",
+   "korean": "일품요리,한 가지 요리",
+   "level": "N2",
+   "pos": "명사",
+   "example": "お勧めの一品を頼んだ。,もう一品注文する。"
+  },
+  {
+   "kanji": "頼む",
+   "hiragana": "たのむ",
+   "korean": "부탁하다,주문하다",
+   "level": "N4",
+   "pos": "1그룹동사",
+   "example": "友達に頼む。,生ビールを頼む。"
+  },
+  {
+   "kanji": "焼く",
+   "hiragana": "やく",
+   "korean": "굽다,태우다",
+   "level": "N4",
+   "pos": "1그룹동사",
+   "example": "肉を焼く。,魚を焼きすぎた。"
+  },
+  {
+   "kanji": "揚げる",
+   "hiragana": "あげる",
+   "korean": "튀기다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "天ぷらを揚げる。"
+  },
+  {
+   "kanji": "注ぐ",
+   "hiragana": "つぐ",
+   "korean": "따르다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "お酒を注ぐ。"
+  },
+  {
+   "kanji": "冷たい",
+   "hiragana": "つめたい",
+   "korean": "차갑다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "冷たいビールが美味しい。"
+  },
+  {
+   "kanji": "もつ煮",
+   "hiragana": "もつに",
+   "korean": "내장 조림",
+   "level": "N1",
+   "pos": "명사",
+   "example": "もつ煮込みを注文した。"
+  },
+  {
+   "kanji": "もつ鍋",
+   "hiragana": "もつなべ",
+   "korean": "곱창전골",
+   "level": "N1",
+   "pos": "명사",
+   "example": "冬はもつ鍋が食べたくなる。"
+  },
+  {
+   "kanji": "串カツ",
+   "hiragana": "くしカツ",
+   "korean": "꼬치 튀김",
+   "level": "N2",
+   "pos": "명사",
+   "example": "串カツをソースに二度漬けしない。"
+  },
+  {
+   "kanji": "手羽先",
+   "hiragana": "てばさき",
+   "korean": "닭날개",
+   "level": "N2",
+   "pos": "명사",
+   "example": "名古屋の手羽先は有名だ。"
+  },
+  {
+   "kanji": "つくね",
+   "hiragana": "つくね",
+   "korean": "닭고기 완자 꼬치",
+   "level": "N2",
+   "pos": "명사",
+   "example": "つくねを卵黄につけて食べる。"
+  },
+  {
+   "kanji": "砂肝",
+   "hiragana": "すなぎも",
+   "korean": "닭모래집",
+   "level": "N1",
+   "pos": "명사",
+   "example": "砂肝のコリコリした食感が好きだ。"
+  },
+  {
+   "kanji": "豚バラ",
+   "hiragana": "ぶたバラ",
+   "korean": "삼겹살",
+   "level": "N2",
+   "pos": "명사",
+   "example": "豚バラ串を塩で頼む。"
+  },
+  {
+   "kanji": "鶏皮",
+   "hiragana": "とりかわ",
+   "korean": "닭껍질",
+   "level": "N2",
+   "pos": "명사",
+   "example": "鶏皮はパリッと焼くのが好きだ。"
+  },
+  {
+   "kanji": "レバー",
+   "hiragana": "レバー",
+   "korean": "간",
+   "level": "N2",
+   "pos": "명사",
+   "example": "レバーの串を注文した。"
+  },
+  {
+   "kanji": "ねぎま",
+   "hiragana": "ねぎま",
+   "korean": "닭고기 파꼬치",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ねぎまを塩で二本ください。"
+  },
+  {
+   "kanji": "肉豆腐",
+   "hiragana": "にくどうふ",
+   "korean": "고기두부조림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "肉豆腐は甘辛い味付けだ。"
+  },
+  {
+   "kanji": "肉じゃが",
+   "hiragana": "にくじゃが",
+   "korean": "고기감자조림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "肉じゃがは家庭的な味だ。"
+  },
+  {
+   "kanji": "牛すじ",
+   "hiragana": "ぎゅうすじ",
+   "korean": "소힘줄",
+   "level": "N1",
+   "pos": "명사",
+   "example": "牛すじの煮込みが柔らかい。"
+  },
+  {
+   "kanji": "馬刺し",
+   "hiragana": "ばさし",
+   "korean": "말고기회",
+   "level": "N1",
+   "pos": "명사",
+   "example": "馬刺しを生姜で食べる。"
+  },
+  {
+   "kanji": "鶏刺し",
+   "hiragana": "とりさし",
+   "korean": "닭고기회",
+   "level": "N1",
+   "pos": "명사",
+   "example": "新鮮な鶏刺しが出てきた。"
+  },
+  {
+   "kanji": "たたき",
+   "hiragana": "たたき",
+   "korean": "겉만 살짝 익힌 회",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鰹のたたきが香ばしい。"
+  },
+  {
+   "kanji": "炙り",
+   "hiragana": "あぶり",
+   "korean": "불에 살짝 그을림",
+   "level": "N1",
+   "pos": "명사",
+   "example": "炙りサーモンを注文した。"
+  },
+  {
+   "kanji": "握り",
+   "hiragana": "にぎり",
+   "korean": "초밥(쥔 것)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "握り寿司を一人前頼む。"
+  },
+  {
+   "kanji": "巻き寿司",
+   "hiragana": "まきずし",
+   "korean": "김초밥",
+   "level": "N3",
+   "pos": "명사",
+   "example": "巻き寿司を半分に切る。"
+  },
+  {
+   "kanji": "軍艦巻き",
+   "hiragana": "ぐんかんまき",
+   "korean": "군함말이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "いくらの軍艦巻きが好きだ。"
+  },
+  {
+   "kanji": "海鮮",
+   "hiragana": "かいせん",
+   "korean": "해산물",
+   "level": "N2",
+   "pos": "명사",
+   "example": "海鮮丼に新鮮なネタが乗る。"
+  },
+  {
+   "kanji": "貝",
+   "hiragana": "かい",
+   "korean": "조개",
+   "level": "N3",
+   "pos": "명사",
+   "example": "焼き貝を注文した。"
+  },
+  {
+   "kanji": "牡蠣",
+   "hiragana": "かき",
+   "korean": "굴",
+   "level": "N2",
+   "pos": "명사",
+   "example": "牡蠣はレモンをかけて食べる。"
+  },
+  {
+   "kanji": "蛤",
+   "hiragana": "はまぐり",
+   "korean": "대합",
+   "level": "N1",
+   "pos": "명사",
+   "example": "蛤の酒蒸しが上品な味だ。"
+  },
+  {
+   "kanji": "蛸",
+   "hiragana": "たこ",
+   "korean": "문어",
+   "level": "N2",
+   "pos": "명사",
+   "example": "蛸の刺身が歯ごたえある。"
+  },
+  {
+   "kanji": "鯵",
+   "hiragana": "あじ",
+   "korean": "전갱이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鯵のなめろうが酒に合う。"
+  },
+  {
+   "kanji": "鯖",
+   "hiragana": "さば",
+   "korean": "고등어",
+   "level": "N2",
+   "pos": "명사",
+   "example": "鯖の味噌煮を頼んだ。"
+  },
+  {
+   "kanji": "鰻",
+   "hiragana": "うなぎ",
+   "korean": "장어",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鰻の蒲焼きは高級だ。"
+  },
+  {
+   "kanji": "穴子",
+   "hiragana": "あなご",
+   "korean": "붕장어",
+   "level": "N1",
+   "pos": "명사",
+   "example": "穴子の天ぷらがふわふわだ。"
+  },
+  {
+   "kanji": "白子",
+   "hiragana": "しらこ",
+   "korean": "이리(생선 정소)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "白子ポン酢は冬の珍味だ。"
+  },
+  {
+   "kanji": "明太子",
+   "hiragana": "めんたいこ",
+   "korean": "명란젓",
+   "level": "N2",
+   "pos": "명사",
+   "example": "明太子の卵焼きが人気だ。"
+  },
+  {
+   "kanji": "数の子",
+   "hiragana": "かずのこ",
+   "korean": "청어알",
+   "level": "N1",
+   "pos": "명사",
+   "example": "数の子の塩漬けを出す。"
+  },
+  {
+   "kanji": "イクラ",
+   "hiragana": "イクラ",
+   "korean": "연어알",
+   "level": "N2",
+   "pos": "명사",
+   "example": "イクラがプチプチして美味しい。"
+  },
+  {
+   "kanji": "ウニ",
+   "hiragana": "ウニ",
+   "korean": "성게알",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ウニの軍艦を一貫食べる。"
+  },
+  {
+   "kanji": "干物",
+   "hiragana": "ひもの",
+   "korean": "건어물",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鯵の干物を焼いてもらう。"
+  },
+  {
+   "kanji": "塩焼き",
+   "hiragana": "しおやき",
+   "korean": "소금구이",
+   "level": "N3",
+   "pos": "명사",
+   "example": "秋刀魚の塩焼きが旬だ。"
+  },
+  {
+   "kanji": "照り焼き",
+   "hiragana": "てりやき",
+   "korean": "데리야키",
+   "level": "N2",
+   "pos": "명사",
+   "example": "鶏の照り焼きが甘辛い。"
+  },
+  {
+   "kanji": "蒲焼き",
+   "hiragana": "かばやき",
+   "korean": "양념구이(장어)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鰻の蒲焼きをご飯に乗せる。"
+  },
+  {
+   "kanji": "味噌煮",
+   "hiragana": "みそに",
+   "korean": "된장조림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "鯖の味噌煮はご飯に合う。"
+  },
+  {
+   "kanji": "煮込み",
+   "hiragana": "にこみ",
+   "korean": "푹 끓인 조림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "牛すじの煮込みを温める。"
+  },
+  {
+   "kanji": "蒸し",
+   "hiragana": "むし",
+   "korean": "찜",
+   "level": "N3",
+   "pos": "명사",
+   "example": "酒蒸しの香りが広がる。"
+  },
+  {
+   "kanji": "炒め物",
+   "hiragana": "いためもの",
+   "korean": "볶음 요리",
+   "level": "N3",
+   "pos": "명사",
+   "example": "野菜の炒め物を追加した。"
+  },
+  {
+   "kanji": "和え物",
+   "hiragana": "あえもの",
+   "korean": "무침 요리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ほうれん草の和え物が出る。"
+  },
+  {
+   "kanji": "酢の物",
+   "hiragana": "すのもの",
+   "korean": "초무침",
+   "level": "N1",
+   "pos": "명사",
+   "example": "蛸の酢の物がさっぱりする。"
+  },
+  {
+   "kanji": "出汁巻き卵",
+   "hiragana": "だしまきたまご",
+   "korean": "육수 계란말이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "出汁巻き卵はふんわり焼く。"
+  },
+  {
+   "kanji": "卵黄",
+   "hiragana": "らんおう",
+   "korean": "노른자",
+   "level": "N2",
+   "pos": "명사",
+   "example": "つくねを卵黄に絡める。"
+  },
+  {
+   "kanji": "豆腐",
+   "hiragana": "とうふ",
+   "korean": "두부",
+   "level": "N4",
+   "pos": "명사",
+   "example": "豆腐の田楽を注文する。"
+  },
+  {
+   "kanji": "納豆",
+   "hiragana": "なっとう",
+   "korean": "낫토",
+   "level": "N3",
+   "pos": "명사",
+   "example": "納豆オムレツが意外と合う。"
+  },
+  {
+   "kanji": "椎茸",
+   "hiragana": "しいたけ",
+   "korean": "표고버섯",
+   "level": "N2",
+   "pos": "명사",
+   "example": "椎茸の網焼きが香ばしい。"
+  },
+  {
+   "kanji": "茸",
+   "hiragana": "きのこ",
+   "korean": "버섯",
+   "level": "N2",
+   "pos": "명사",
+   "example": "茸のバター焼きを頼む。"
+  },
+  {
+   "kanji": "大根",
+   "hiragana": "だいこん",
+   "korean": "무",
+   "level": "N3",
+   "pos": "명사",
+   "example": "大根おろしを添える。"
+  },
+  {
+   "kanji": "大根おろし",
+   "hiragana": "だいこんおろし",
+   "korean": "무즙",
+   "level": "N1",
+   "pos": "명사",
+   "example": "焼き魚に大根おろしを乗せる。"
+  },
+  {
+   "kanji": "葱",
+   "hiragana": "ねぎ",
+   "korean": "파",
+   "level": "N2",
+   "pos": "명사",
+   "example": "葱をたっぷりかける。"
+  },
+  {
+   "kanji": "生姜",
+   "hiragana": "しょうが",
+   "korean": "생강",
+   "level": "N2",
+   "pos": "명사",
+   "example": "生姜をすりおろす。"
+  },
+  {
+   "kanji": "山葵",
+   "hiragana": "わさび",
+   "korean": "고추냉이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "刺身に山葵を少しつける。"
+  },
+  {
+   "kanji": "薬味",
+   "hiragana": "やくみ",
+   "korean": "양념(고명)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "薬味を別の皿で出す。"
+  },
+  {
+   "kanji": "胡麻",
+   "hiragana": "ごま",
+   "korean": "참깨",
+   "level": "N2",
+   "pos": "명사",
+   "example": "胡麻を振りかける。"
+  },
+  {
+   "kanji": "醤油",
+   "hiragana": "しょうゆ",
+   "korean": "간장",
+   "level": "N3",
+   "pos": "명사",
+   "example": "醤油を少しだけつける。"
+  },
+  {
+   "kanji": "味噌",
+   "hiragana": "みそ",
+   "korean": "된장",
+   "level": "N3",
+   "pos": "명사",
+   "example": "味噌だれをつけて食べる。"
+  },
+  {
+   "kanji": "酢",
+   "hiragana": "す",
+   "korean": "식초",
+   "level": "N2",
+   "pos": "명사",
+   "example": "酢を少し加える。"
+  },
+  {
+   "kanji": "ポン酢",
+   "hiragana": "ポンず",
+   "korean": "폰즈 소스",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鍋はポン酢で食べる。"
+  },
+  {
+   "kanji": "辛子",
+   "hiragana": "からし",
+   "korean": "겨자",
+   "level": "N2",
+   "pos": "명사",
+   "example": "おでんに辛子をつける。"
+  },
+  {
+   "kanji": "おでん",
+   "hiragana": "おでん",
+   "korean": "오뎅",
+   "level": "N2",
+   "pos": "명사",
+   "example": "おでんの大根がよく染みている。"
+  },
+  {
+   "kanji": "焼きおにぎり",
+   "hiragana": "やきおにぎり",
+   "korean": "구운 주먹밥",
+   "level": "N3",
+   "pos": "명사",
+   "example": "締めに焼きおにぎりを頼む。"
+  },
+  {
+   "kanji": "お茶漬け",
+   "hiragana": "おちゃづけ",
+   "korean": "오차즈케",
+   "level": "N2",
+   "pos": "명사",
+   "example": "最後に鮭茶漬けで締める。"
+  },
+  {
+   "kanji": "雑炊",
+   "hiragana": "ぞうすい",
+   "korean": "죽(전골 마무리)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鍋の後は雑炊にする。"
+  },
+  {
+   "kanji": "締め",
+   "hiragana": "しめ",
+   "korean": "마무리 음식",
+   "level": "N1",
+   "pos": "명사",
+   "example": "締めにラーメンを食べた。"
+  },
+  {
+   "kanji": "ポテトフライ",
+   "hiragana": "ポテトフライ",
+   "korean": "감자튀김",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ポテトフライを取り分ける。"
+  },
+  {
+   "kanji": "焼きそば",
+   "hiragana": "やきそば",
+   "korean": "야키소바",
+   "level": "N3",
+   "pos": "명사",
+   "example": "締めに焼きそばを頼んだ。"
+  },
+  {
+   "kanji": "出来立て",
+   "hiragana": "できたて",
+   "korean": "갓 만든 것",
+   "level": "N2",
+   "pos": "명사",
+   "example": "出来立てを運んでくれた。"
+  },
+  {
+   "kanji": "食べ放題",
+   "hiragana": "たべほうだい",
+   "korean": "무한리필",
+   "level": "N3",
+   "pos": "명사",
+   "example": "食べ放題のプランにした。"
+  },
+  {
+   "kanji": "お代わり",
+   "hiragana": "おかわり",
+   "korean": "리필,추가",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ご飯をお代わりする。,ビールをお代わりした。"
+  },
+  {
+   "kanji": "突き出し",
+   "hiragana": "つきだし",
+   "korean": "기본 안주(간사이)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "突き出しに小鉢が付く。"
+  },
+  {
+   "kanji": "お新香",
+   "hiragana": "おしんこ",
+   "korean": "절임 반찬",
+   "level": "N1",
+   "pos": "명사",
+   "example": "お新香の盛り合わせを頼む。"
+  },
+  {
+   "kanji": "小鉢",
+   "hiragana": "こばち",
+   "korean": "작은 그릇 요리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "小鉢が三つ並んでいる。"
+  },
+  {
+   "kanji": "大皿",
+   "hiragana": "おおざら",
+   "korean": "큰 접시",
+   "level": "N2",
+   "pos": "명사",
+   "example": "大皿で取り分けて食べる。"
+  },
+  {
+   "kanji": "取り皿",
+   "hiragana": "とりざら",
+   "korean": "앞접시",
+   "level": "N2",
+   "pos": "명사",
+   "example": "取り皿をもう一枚ください。"
+  },
+  {
+   "kanji": "おしぼり",
+   "hiragana": "おしぼり",
+   "korean": "물수건",
+   "level": "N2",
+   "pos": "명사",
+   "example": "おしぼりで手を拭く。"
+  },
+  {
+   "kanji": "箸",
+   "hiragana": "はし",
+   "korean": "젓가락",
+   "level": "N4",
+   "pos": "명사",
+   "example": "割り箸を割って使う。"
+  },
+  {
+   "kanji": "おちょこ",
+   "hiragana": "おちょこ",
+   "korean": "작은 술잔",
+   "level": "N1",
+   "pos": "명사",
+   "example": "おちょこで日本酒を飲む。"
+  },
+  {
+   "kanji": "徳利",
+   "hiragana": "とっくり",
+   "korean": "도쿠리(술병)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "徳利でお酒を温める。"
+  },
+  {
+   "kanji": "ジョッキ",
+   "hiragana": "ジョッキ",
+   "korean": "맥주잔",
+   "level": "N2",
+   "pos": "명사",
+   "example": "大ジョッキで頼む。"
+  },
+  {
+   "kanji": "中ジョッキ",
+   "hiragana": "ちゅうジョッキ",
+   "korean": "중간 맥주잔",
+   "level": "N2",
+   "pos": "명사",
+   "example": "中ジョッキを二つください。"
+  },
+  {
+   "kanji": "瓶ビール",
+   "hiragana": "びんビール",
+   "korean": "병맥주",
+   "level": "N3",
+   "pos": "명사",
+   "example": "瓶ビールを一本追加する。"
+  },
+  {
+   "kanji": "サワー",
+   "hiragana": "サワー",
+   "korean": "사워(술)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "レモンサワーが人気だ。"
+  },
+  {
+   "kanji": "酎ハイ",
+   "hiragana": "チューハイ",
+   "korean": "츄하이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "グレープフルーツ酎ハイを頼む。"
+  },
+  {
+   "kanji": "水割り",
+   "hiragana": "みずわり",
+   "korean": "물을 탄 술",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ウイスキーの水割りを作る。"
+  },
+  {
+   "kanji": "お湯割り",
+   "hiragana": "おゆわり",
+   "korean": "따뜻한 물을 탄 술",
+   "level": "N1",
+   "pos": "명사",
+   "example": "焼酎のお湯割りが体に染みる。"
+  },
+  {
+   "kanji": "ロック",
+   "hiragana": "ロック",
+   "korean": "온더록",
+   "level": "N2",
+   "pos": "명사",
+   "example": "焼酎をロックで飲む。"
+  },
+  {
+   "kanji": "ソフトドリンク",
+   "hiragana": "ソフトドリンク",
+   "korean": "무알코올 음료",
+   "level": "N2",
+   "pos": "명사",
+   "example": "運転なのでソフトドリンクにする。"
+  },
+  {
+   "kanji": "烏龍茶",
+   "hiragana": "ウーロンちゃ",
+   "korean": "우롱차",
+   "level": "N2",
+   "pos": "명사",
+   "example": "烏龍茶を一杯ください。"
+  },
+  {
+   "kanji": "酔う",
+   "hiragana": "よう",
+   "korean": "취하다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "少し酔ってきた。"
+  },
+  {
+   "kanji": "割る",
+   "hiragana": "わる",
+   "korean": "(술을) 타다,깨다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "焼酎をお湯で割る。,コップを割ってしまった。"
+  },
+  {
+   "kanji": "味わう",
+   "hiragana": "あじわう",
+   "korean": "맛보다,음미하다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "旬の味をじっくり味わう。,苦労を味わう。"
+  },
+  {
+   "kanji": "炙る",
+   "hiragana": "あぶる",
+   "korean": "불에 살짝 굽다",
+   "level": "N1",
+   "pos": "1그룹동사",
+   "example": "表面を軽く炙る。"
+  },
+  {
+   "kanji": "煮る",
+   "hiragana": "にる",
+   "korean": "삶다,조리다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "野菜を弱火で煮る。,豆をことことと煮る。"
+  },
+  {
+   "kanji": "蒸す",
+   "hiragana": "むす",
+   "korean": "찌다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "蛤を酒で蒸す。"
+  },
+  {
+   "kanji": "炒める",
+   "hiragana": "いためる",
+   "korean": "볶다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "もやしをさっと炒める。"
+  },
+  {
+   "kanji": "盛る",
+   "hiragana": "もる",
+   "korean": "담다,수북이 담다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "刺身を綺麗に盛る。,ご飯を山盛りに盛る。"
+  },
+  {
+   "kanji": "混ぜる",
+   "hiragana": "まぜる",
+   "korean": "섞다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "納豆をよく混ぜる。"
+  },
+  {
+   "kanji": "付ける",
+   "hiragana": "つける",
+   "korean": "찍다,묻히다",
+   "level": "N4",
+   "pos": "2그룹동사",
+   "example": "醤油に付けて食べる。,わさびをつける。"
+  },
+  {
+   "kanji": "掛ける",
+   "hiragana": "かける",
+   "korean": "뿌리다,끼얹다",
+   "level": "N4",
+   "pos": "2그룹동사",
+   "example": "レモンを掛ける。,醤油を掛ける。"
+  },
+  {
+   "kanji": "添える",
+   "hiragana": "そえる",
+   "korean": "곁들이다",
+   "level": "N2",
+   "pos": "2그룹동사",
+   "example": "薬味を添える。"
+  },
+  {
+   "kanji": "温める",
+   "hiragana": "あたためる",
+   "korean": "데우다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "お酒を温めてもらう。"
+  },
+  {
+   "kanji": "冷やす",
+   "hiragana": "ひやす",
+   "korean": "차게 하다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "グラスをよく冷やす。"
+  },
+  {
+   "kanji": "煮込む",
+   "hiragana": "にこむ",
+   "korean": "푹 끓이다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "牛すじを時間をかけて煮込む。"
+  },
+  {
+   "kanji": "香ばしい",
+   "hiragana": "こうばしい",
+   "korean": "고소하다",
+   "level": "N1",
+   "pos": "い형용사",
+   "example": "焼いた皮が香ばしい。"
+  },
+  {
+   "kanji": "甘辛い",
+   "hiragana": "あまからい",
+   "korean": "달콤짭짤하다",
+   "level": "N2",
+   "pos": "い형용사",
+   "example": "甘辛いタレが食欲をそそる。"
+  },
+  {
+   "kanji": "脂っこい",
+   "hiragana": "あぶらっこい",
+   "korean": "기름지다",
+   "level": "N2",
+   "pos": "い형용사",
+   "example": "揚げ物は少し脂っこい。"
+  },
+  {
+   "kanji": "濃い",
+   "hiragana": "こい",
+   "korean": "진하다",
+   "level": "N3",
+   "pos": "い형용사",
+   "example": "味が濃いめだ。"
+  },
+  {
+   "kanji": "薄い",
+   "hiragana": "うすい",
+   "korean": "연하다,싱겁다",
+   "level": "N4",
+   "pos": "い형용사",
+   "example": "味が少し薄い。,色が薄い。"
+  },
+  {
+   "kanji": "辛い",
+   "hiragana": "からい",
+   "korean": "맵다",
+   "level": "N4",
+   "pos": "い형용사",
+   "example": "この明太子は辛い。"
+  },
+  {
+   "kanji": "酸っぱい",
+   "hiragana": "すっぱい",
+   "korean": "시다",
+   "level": "N3",
+   "pos": "い형용사",
+   "example": "酢の物が少し酸っぱい。"
+  },
+  {
+   "kanji": "苦い",
+   "hiragana": "にがい",
+   "korean": "쓰다",
+   "level": "N3",
+   "pos": "い형용사",
+   "example": "ビールの苦味が好きだ。"
+  },
+  {
+   "kanji": "熱々",
+   "hiragana": "あつあつ",
+   "korean": "갓 만들어 뜨거움",
+   "level": "N2",
+   "pos": "な형용사",
+   "example": "熱々の天ぷらが届く。"
+  },
+  {
+   "kanji": "新鮮",
+   "hiragana": "しんせん",
+   "korean": "신선함",
+   "level": "N3",
+   "pos": "な형용사",
+   "example": "新鮮な魚が自慢の店だ。"
+  },
+  {
+   "kanji": "上品",
+   "hiragana": "じょうひん",
+   "korean": "고급스러움,품위 있음",
+   "level": "N2",
+   "pos": "な형용사",
+   "example": "上品な味付けの煮物だ。,上品な振る舞いの店員だ。"
+  },
+  {
+   "kanji": "ジューシー",
+   "hiragana": "ジューシー",
+   "korean": "육즙이 많음",
+   "level": "N2",
+   "pos": "な형용사",
+   "example": "唐揚げがジューシーだ。"
+  },
+  {
+   "kanji": "あっさり",
+   "hiragana": "あっさり",
+   "korean": "담백하게,산뜻하게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "あっさりした味付けが好みだ。,あっさりと断られた。"
+  },
+  {
+   "kanji": "こってり",
+   "hiragana": "こってり",
+   "korean": "진하고 기름지게",
+   "level": "N1",
+   "pos": "부사",
+   "example": "こってりした豚骨が好きだ。"
+  },
+  {
+   "kanji": "ぷりぷり",
+   "hiragana": "ぷりぷり",
+   "korean": "탱탱하게",
+   "level": "N1",
+   "pos": "부사",
+   "example": "海老がぷりぷりしている。"
+  },
+  {
+   "kanji": "とりあえず",
+   "hiragana": "とりあえず",
+   "korean": "우선,일단",
+   "level": "N2",
+   "pos": "부사",
+   "example": "とりあえず生ビールで。,とりあえず席に座る。"
+  },
+  {
+   "kanji": "別々",
+   "hiragana": "べつべつ",
+   "korean": "따로따로",
+   "level": "N2",
+   "pos": "な형용사",
+   "example": "会計は別々でお願いします。"
+  },
+  {
+   "kanji": "それから",
+   "hiragana": "それから",
+   "korean": "그리고,그다음에",
+   "level": "N4",
+   "pos": "접속사",
+   "example": "枝豆と、それから唐揚げをください。,顔を洗って、それから歯を磨く。"
+  },
+  {
+   "kanji": "味噌汁",
+   "hiragana": "みそしる",
+   "korean": "된장국",
+   "level": "N4",
+   "pos": "명사",
+   "example": "温かい味噌汁を飲むと落ち着きます。"
+  },
+  {
+   "kanji": "定食",
+   "hiragana": "ていしょく",
+   "korean": "정식",
+   "level": "N3",
+   "pos": "명사",
+   "example": "お昼休みに唐揚げ定食を食べました。"
+  },
+  {
+   "kanji": "丼",
+   "hiragana": "どんぶり",
+   "korean": "덮밥",
+   "level": "N3",
+   "pos": "명사",
+   "example": "がっつり食べたい時は牛丼に限る。"
+  },
+  {
+   "kanji": "お冷",
+   "hiragana": "おひや",
+   "korean": "냉수",
+   "level": "N2",
+   "pos": "명사",
+   "example": "すみません、お冷をもう一杯ください。"
+  },
+  {
+   "kanji": "ラーメン",
+   "hiragana": "らーめん",
+   "korean": "라면",
+   "level": "N4",
+   "pos": "명사",
+   "example": "飲んだ後の締めのラーメンは最高だ。"
+  },
+  {
+   "kanji": "うどん",
+   "hiragana": "うどん",
+   "korean": "우동",
+   "level": "N4",
+   "pos": "명사",
+   "example": "寒い日は温かいうどんが体に染みる。"
+  },
+  {
+   "kanji": "カレーライス",
+   "hiragana": "かれーらいす",
+   "korean": "카레라이스",
+   "level": "N4",
+   "pos": "명사",
+   "example": "カレーライスは多めに作っておくと楽だ。"
+  },
+  {
+   "kanji": "デザート",
+   "hiragana": "でざーと",
+   "korean": "디저트",
+   "level": "N3",
+   "pos": "명사",
+   "example": "別腹でデザートを追加注文する。"
+  },
+  {
+   "kanji": "メニュー",
+   "hiragana": "めにゅー",
+   "korean": "메뉴",
+   "level": "N4",
+   "pos": "명사",
+   "example": "メニューを見て何を頼むか決める。"
+  },
+  {
+   "kanji": "大盛り",
+   "hiragana": "おおもり",
+   "korean": "양 많이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ラーメンを大盛りで注文する。"
+  },
+  {
+   "kanji": "ライス",
+   "hiragana": "らいす",
+   "korean": "밥,라이스",
+   "level": "N4",
+   "pos": "명사",
+   "example": "唐揚げにライスを付けてください。,大盛りライスを注文する。"
+  },
+  {
+   "kanji": "おかず",
+   "hiragana": "おかず",
+   "korean": "반찬",
+   "level": "N3",
+   "pos": "명사",
+   "example": "今日のおかずは焼き魚です。"
+  },
+  {
+   "kanji": "生姜焼き",
+   "hiragana": "しょうがやき",
+   "korean": "돼지고기 생강구이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "定食屋で豚の生姜焼きを頼む。"
+  },
+  {
+   "kanji": "炭火焼き",
+   "hiragana": "すみびやき",
+   "korean": "숯불구이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "炭火焼きの焼き鳥は香りがいい。"
+  },
+  {
+   "kanji": "いらっしゃいませ",
+   "hiragana": "いらっしゃいませ",
+   "korean": "어서 오세요",
+   "level": "N4",
+   "pos": "감탄사",
+   "example": "店員がいらっしゃいませと言う。"
+  },
+  {
+   "kanji": "かしこまりました",
+   "hiragana": "かしこまりました",
+   "korean": "알겠습니다(공손)",
+   "level": "N2",
+   "pos": "감탄사",
+   "example": "店員がかしこまりましたと答える。"
+  },
+  {
+   "kanji": "少々",
+   "hiragana": "しょうしょう",
+   "korean": "잠시,조금",
+   "level": "N2",
+   "pos": "부사",
+   "example": "少々お待ちください。,塩を少々加える。"
+  },
+  {
+   "kanji": "以上",
+   "hiragana": "いじょう",
+   "korean": "이상,끝",
+   "level": "N3",
+   "pos": "명사",
+   "example": "注文は以上です。,三人以上で予約する。"
+  },
+  {
+   "kanji": "ラストオーダー",
+   "hiragana": "ラストオーダー",
+   "korean": "라스트오더(마지막 주문)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "そろそろラストオーダーの時間だ。"
+  },
+  {
+   "kanji": "おしまい",
+   "hiragana": "おしまい",
+   "korean": "끝,마감",
+   "level": "N2",
+   "pos": "명사",
+   "example": "本日はこれでおしまいです。,早めにおしまいにする。"
+  },
+  {
+   "kanji": "追加",
+   "hiragana": "ついか",
+   "korean": "추가",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ドリンクを追加する。"
+  },
+  {
+   "kanji": "単品",
+   "hiragana": "たんぴん",
+   "korean": "단품",
+   "level": "N2",
+   "pos": "명사",
+   "example": "単品で頼むこともできる。"
+  },
+  {
+   "kanji": "セット",
+   "hiragana": "セット",
+   "korean": "세트",
+   "level": "N3",
+   "pos": "명사",
+   "example": "お得なセットを注文する。"
+  },
+  {
+   "kanji": "コース",
+   "hiragana": "コース",
+   "korean": "코스",
+   "level": "N3",
+   "pos": "명사",
+   "example": "宴会コースを予約した。"
+  },
+  {
+   "kanji": "一人前",
+   "hiragana": "いちにんまえ",
+   "korean": "1인분",
+   "level": "N2",
+   "pos": "명사",
+   "example": "刺身を一人前頼む。"
+  },
+  {
+   "kanji": "本日",
+   "hiragana": "ほんじつ",
+   "korean": "오늘(공손)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "本日のおすすめを聞く。"
+  },
+  {
+   "kanji": "名物",
+   "hiragana": "めいぶつ",
+   "korean": "명물 요리",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この店の名物を頼む。"
+  },
+  {
+   "kanji": "予約",
+   "hiragana": "よやく",
+   "korean": "예약",
+   "level": "N3",
+   "pos": "명사",
+   "example": "六時に予約を入れる。"
+  },
+  {
+   "kanji": "席",
+   "hiragana": "せき",
+   "korean": "자리,좌석",
+   "level": "N3",
+   "pos": "명사",
+   "example": "窓際の席に座る。,席を予約する。"
+  },
+  {
+   "kanji": "座敷",
+   "hiragana": "ざしき",
+   "korean": "다다미방 좌석",
+   "level": "N1",
+   "pos": "명사",
+   "example": "座敷の席に通された。"
+  },
+  {
+   "kanji": "個室",
+   "hiragana": "こしつ",
+   "korean": "개별룸",
+   "level": "N2",
+   "pos": "명사",
+   "example": "個室を希望する。"
+  },
+  {
+   "kanji": "禁煙",
+   "hiragana": "きんえん",
+   "korean": "금연",
+   "level": "N2",
+   "pos": "명사",
+   "example": "禁煙席をお願いします。"
+  },
+  {
+   "kanji": "満席",
+   "hiragana": "まんせき",
+   "korean": "만석",
+   "level": "N1",
+   "pos": "명사",
+   "example": "週末は満席になりやすい。"
+  },
+  {
+   "kanji": "飲み会",
+   "hiragana": "のみかい",
+   "korean": "회식,술자리",
+   "level": "N2",
+   "pos": "명사",
+   "example": "金曜に飲み会がある。,飲み会の幹事をする。"
+  },
+  {
+   "kanji": "宴会",
+   "hiragana": "えんかい",
+   "korean": "연회",
+   "level": "N1",
+   "pos": "명사",
+   "example": "忘年会の宴会を開く。"
+  },
+  {
+   "kanji": "二次会",
+   "hiragana": "にじかい",
+   "korean": "2차",
+   "level": "N1",
+   "pos": "명사",
+   "example": "二次会はカラオケに行く。"
+  },
+  {
+   "kanji": "幹事",
+   "hiragana": "かんじ",
+   "korean": "총무(간사)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "今日の幹事を任される。"
+  },
+  {
+   "kanji": "割り勘",
+   "hiragana": "わりかん",
+   "korean": "더치페이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "会計は割り勘にする。"
+  },
+  {
+   "kanji": "おごる",
+   "hiragana": "おごる",
+   "korean": "한턱내다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "後輩に一杯おごる。"
+  },
+  {
+   "kanji": "サービス料",
+   "hiragana": "サービスりょう",
+   "korean": "서비스료",
+   "level": "N1",
+   "pos": "명사",
+   "example": "サービス料が別途かかる。"
+  },
+  {
+   "kanji": "味付け",
+   "hiragana": "あじつけ",
+   "korean": "양념,간 맞추기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "味付けが濃いめだ。,味付けを薄くする。"
+  },
+  {
+   "kanji": "食感",
+   "hiragana": "しょっかん",
+   "korean": "식감",
+   "level": "N1",
+   "pos": "명사",
+   "example": "もちもちした食感が良い。"
+  },
+  {
+   "kanji": "歯ごたえ",
+   "hiragana": "はごたえ",
+   "korean": "씹는 맛",
+   "level": "N1",
+   "pos": "명사",
+   "example": "蛸は歯ごたえがある。"
+  },
+  {
+   "kanji": "旨味",
+   "hiragana": "うまみ",
+   "korean": "감칠맛",
+   "level": "N1",
+   "pos": "명사",
+   "example": "出汁の旨味が広がる。"
+  },
+  {
+   "kanji": "風味",
+   "hiragana": "ふうみ",
+   "korean": "풍미",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ごま油の風味が効く。"
+  },
+  {
+   "kanji": "後味",
+   "hiragana": "あとあじ",
+   "korean": "뒷맛",
+   "level": "N1",
+   "pos": "명사",
+   "example": "後味がすっきりしている。"
+  },
+  {
+   "kanji": "香り",
+   "hiragana": "かおり",
+   "korean": "향기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "焼き鳥の香りが食欲をそそる。"
+  },
+  {
+   "kanji": "食欲",
+   "hiragana": "しょくよく",
+   "korean": "식욕",
+   "level": "N2",
+   "pos": "명사",
+   "example": "暑くて食欲がない。"
+  },
+  {
+   "kanji": "満腹",
+   "hiragana": "まんぷく",
+   "korean": "배부름(포만)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "もう満腹で食べられない。"
+  },
+  {
+   "kanji": "残す",
+   "hiragana": "のこす",
+   "korean": "남기다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "料理を残すのはもったいない。"
+  },
+  {
+   "kanji": "取り分ける",
+   "hiragana": "とりわける",
+   "korean": "나눠 담다,덜다",
+   "level": "N2",
+   "pos": "2그룹동사",
+   "example": "大皿から取り分ける。,人数分に取り分ける。"
+  },
+  {
+   "kanji": "片付ける",
+   "hiragana": "かたづける",
+   "korean": "치우다,정리하다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "空いた皿を片付ける。,部屋を片付ける。"
+  },
+  {
+   "kanji": "呼ぶ",
+   "hiragana": "よぶ",
+   "korean": "부르다",
+   "level": "N4",
+   "pos": "1그룹동사",
+   "example": "店員を呼ぶ。"
+  },
+  {
+   "kanji": "美味しい",
+   "hiragana": "おいしい",
+   "korean": "맛있다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "ここの唐揚げは美味しい。"
+  },
+  {
+   "kanji": "柔らかい",
+   "hiragana": "やわらかい",
+   "korean": "부드럽다,연하다",
+   "level": "N3",
+   "pos": "い형용사",
+   "example": "牛すじが柔らかく煮えている。,柔らかい布団だ。"
+  },
+  {
+   "kanji": "しょっぱい",
+   "hiragana": "しょっぱい",
+   "korean": "짜다",
+   "level": "N2",
+   "pos": "い형용사",
+   "example": "このタレは少ししょっぱい。"
+  },
+  {
+   "kanji": "まろやか",
+   "hiragana": "まろやか",
+   "korean": "부드럽고 순한 맛",
+   "level": "N1",
+   "pos": "な형용사",
+   "example": "まろやかな口当たりの酒だ。"
+  },
+  {
+   "kanji": "もんじゃ焼き",
+   "hiragana": "もんじゃやき",
+   "korean": "몬자야키",
+   "level": "N1",
+   "pos": "명사",
+   "example": "下町でもんじゃ焼きを食べる。"
+  },
+  {
+   "kanji": "お好み焼き",
+   "hiragana": "おこのみやき",
+   "korean": "오코노미야키",
+   "level": "N2",
+   "pos": "명사",
+   "example": "お好み焼きを鉄板で焼く。"
+  },
+  {
+   "kanji": "たこ焼き",
+   "hiragana": "たこやき",
+   "korean": "타코야키",
+   "level": "N3",
+   "pos": "명사",
+   "example": "たこ焼きを八個頼む。"
+  },
+  {
+   "kanji": "焼きうどん",
+   "hiragana": "やきうどん",
+   "korean": "야키우동",
+   "level": "N3",
+   "pos": "명사",
+   "example": "締めに焼きうどんを頼む。"
+  },
+  {
+   "kanji": "卵焼き",
+   "hiragana": "たまごやき",
+   "korean": "계란말이",
+   "level": "N3",
+   "pos": "명사",
+   "example": "甘めの卵焼きが好きだ。"
+  },
+  {
+   "kanji": "餡掛け",
+   "hiragana": "あんかけ",
+   "korean": "걸쭉한 소스를 끼얹은 요리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "餡掛け豆腐が温まる。"
+  },
+  {
+   "kanji": "天むす",
+   "hiragana": "てんむす",
+   "korean": "새우튀김 주먹밥",
+   "level": "N1",
+   "pos": "명사",
+   "example": "天むすを土産に買う。"
+  },
+  {
+   "kanji": "ぬか漬け",
+   "hiragana": "ぬかづけ",
+   "korean": "쌀겨 절임",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ぬか漬けの胡瓜を出す。"
+  },
+  {
+   "kanji": "枝豆塩茹で",
+   "hiragana": "えだまめしおゆで",
+   "korean": "소금 삶은 풋콩",
+   "level": "N1",
+   "pos": "명사",
+   "example": "枝豆塩茹でをつまみにする。"
+  },
+  {
+   "kanji": "果実酒",
+   "hiragana": "かじつしゅ",
+   "korean": "과실주",
+   "level": "N1",
+   "pos": "명사",
+   "example": "果実酒を炭酸で割る。"
+  },
+  {
+   "kanji": "甘酒",
+   "hiragana": "あまざけ",
+   "korean": "감주,단술",
+   "level": "N1",
+   "pos": "명사",
+   "example": "寒い日に甘酒を飲む。,正月に甘酒を振る舞う。"
+  },
+  {
+   "kanji": "生搾り",
+   "hiragana": "なましぼり",
+   "korean": "생착즙(과일 사워)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "生搾りレモンサワーを頼む。"
+  },
+  {
+   "kanji": "瓶",
+   "hiragana": "びん",
+   "korean": "병",
+   "level": "N3",
+   "pos": "명사",
+   "example": "瓶の蓋を開ける。"
+  },
+  {
+   "kanji": "栓",
+   "hiragana": "せん",
+   "korean": "마개,뚜껑",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ワインの栓を抜く。,瓶の栓を閉める。"
+  },
+  {
+   "kanji": "甘い",
+   "hiragana": "あまい",
+   "korean": "달다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "このタレは甘い。"
+  },
+  {
+   "kanji": "硬い",
+   "hiragana": "かたい",
+   "korean": "단단하다,질기다",
+   "level": "N3",
+   "pos": "い형용사",
+   "example": "肉が少し硬い。,硬いパンを焼く。"
+  },
+  {
+   "kanji": "温かい",
+   "hiragana": "あたたかい",
+   "korean": "따뜻하다",
+   "level": "N4",
+   "pos": "い형용사",
+   "example": "温かいうちに食べる。"
+  },
+  {
+   "kanji": "美味しそう",
+   "hiragana": "おいしそう",
+   "korean": "맛있어 보이다",
+   "level": "N3",
+   "pos": "な형용사",
+   "example": "どれも美味しそうだ。"
+  },
+  {
+   "kanji": "もちもち",
+   "hiragana": "もちもち",
+   "korean": "쫄깃쫄깃",
+   "level": "N1",
+   "pos": "부사",
+   "example": "もちもちした食感だ。"
+  },
+  {
+   "kanji": "さくさく",
+   "hiragana": "さくさく",
+   "korean": "바삭바삭",
+   "level": "N1",
+   "pos": "부사",
+   "example": "衣がさくさくしている。"
+  },
+  {
+   "kanji": "とろとろ",
+   "hiragana": "とろとろ",
+   "korean": "걸쭉하게,사르르 녹게",
+   "level": "N1",
+   "pos": "부사",
+   "example": "卵がとろとろに仕上がる。,チーズがとろとろに溶ける。"
+  },
+  {
+   "kanji": "ぺこぺこ",
+   "hiragana": "ぺこぺこ",
+   "korean": "배가 몹시 고픔",
+   "level": "N1",
+   "pos": "부사",
+   "example": "お腹がぺこぺこだ。"
+  },
+  {
+   "kanji": "焼き魚",
+   "hiragana": "やきざかな",
+   "korean": "생선구이",
+   "level": "N3",
+   "pos": "명사",
+   "example": "今日の焼き魚は脂ののった鯖です。"
+  },
+  {
+   "kanji": "煮魚",
+   "hiragana": "にざかな",
+   "korean": "생선조림",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この店の煮魚は味付けが絶妙だ。"
+  },
+  {
+   "kanji": "親子丼",
+   "hiragana": "おやこどん",
+   "korean": "오야코동(닭고기 계란 덮밥)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "締めに親子丼を注文した。"
+  },
+  {
+   "kanji": "カツ丼",
+   "hiragana": "カツどん",
+   "korean": "카츠동(돈까스 덮밥)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "昼はボリュームのあるカツ丼にした。"
+  },
+  {
+   "kanji": "海鮮丼",
+   "hiragana": "かいせんどん",
+   "korean": "해산물 덮밥",
+   "level": "N2",
+   "pos": "명사",
+   "example": "港町の海鮮丼は新鮮で有名だ。"
+  },
+  {
+   "kanji": "天丼",
+   "hiragana": "てんどん",
+   "korean": "튀김 덮밥",
+   "level": "N2",
+   "pos": "명사",
+   "example": "海老が二本のった天丼を頼んだ。"
+  },
+  {
+   "kanji": "ホッケ",
+   "hiragana": "ホッケ",
+   "korean": "임연수어",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ホッケの塩焼きは居酒屋の定番だ。"
+  },
+  {
+   "kanji": "シシャモ",
+   "hiragana": "シシャモ",
+   "korean": "열빙어",
+   "level": "N1",
+   "pos": "명사",
+   "example": "シシャモは頭から丸ごと食べられる。"
+  },
+  {
+   "kanji": "エイヒレ",
+   "hiragana": "エイヒレ",
+   "korean": "가오리 지느러미 포",
+   "level": "N1",
+   "pos": "명사",
+   "example": "炙ったエイヒレをマヨネーズで食べる。"
+  },
+  {
+   "kanji": "たこわさ",
+   "hiragana": "たこわさ",
+   "korean": "문어 와사비 무침",
+   "level": "N1",
+   "pos": "명사",
+   "example": "たこわさは日本酒によく合う。"
+  },
+  {
+   "kanji": "軟骨",
+   "hiragana": "なんこつ",
+   "korean": "연골(닭연골 튀김)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鶏軟骨の唐揚げはこりこりしている。"
+  },
+  {
+   "kanji": "ハツ",
+   "hiragana": "ハツ",
+   "korean": "염통 꼬치",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ハツを塩で二本お願いします。"
+  },
+  {
+   "kanji": "ホルモン",
+   "hiragana": "ホルモン",
+   "korean": "곱창",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ホルモン焼きは脂が多いが旨い。"
+  },
+  {
+   "kanji": "塩辛",
+   "hiragana": "しおから",
+   "korean": "젓갈",
+   "level": "N1",
+   "pos": "명사",
+   "example": "イカの塩辛でご飯が進む。"
+  },
+  {
+   "kanji": "キムチ",
+   "hiragana": "キムチ",
+   "korean": "김치",
+   "level": "N3",
+   "pos": "명사",
+   "example": "豚キムチ炒めを一つ追加した。"
+  },
+  {
+   "kanji": "冷やしトマト",
+   "hiragana": "ひやしトマト",
+   "korean": "차게 식힌 토마토",
+   "level": "N2",
+   "pos": "명사",
+   "example": "さっぱりした冷やしトマトを頼んだ。"
+  },
+  {
+   "kanji": "生中",
+   "hiragana": "なまちゅう",
+   "korean": "생맥주(중간 잔)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "とりあえず生中を二つお願いします。"
+  },
+  {
+   "kanji": "レモンサワー",
+   "hiragana": "レモンサワー",
+   "korean": "레몬 사워",
+   "level": "N2",
+   "pos": "명사",
+   "example": "レモンサワーの酸味が爽やかだ。"
+  },
+  {
+   "kanji": "緑茶ハイ",
+   "hiragana": "りょくちゃハイ",
+   "korean": "녹차 하이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "緑茶ハイはすっきりして飲みやすい。"
+  },
+  {
+   "kanji": "梅サワー",
+   "hiragana": "うめサワー",
+   "korean": "매실 사워",
+   "level": "N1",
+   "pos": "명사",
+   "example": "甘めの梅サワーで乾杯した。"
+  },
+  {
+   "kanji": "純米酒",
+   "hiragana": "じゅんまいしゅ",
+   "korean": "준마이슈(순쌀 청주)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この店は純米酒の品揃えが豊富だ。"
+  },
+  {
+   "kanji": "大吟醸",
+   "hiragana": "だいぎんじょう",
+   "korean": "다이긴조(최고급 청주)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "記念日なので大吟醸を開けてもらった。"
+  },
+  {
+   "kanji": "ノンアルコール",
+   "hiragana": "ノンアルコール",
+   "korean": "무알코올",
+   "level": "N2",
+   "pos": "명사",
+   "example": "車なのでノンアルコールにします。"
+  },
+  {
+   "kanji": "お手洗い",
+   "hiragana": "おてあらい",
+   "korean": "화장실",
+   "level": "N4",
+   "pos": "명사",
+   "example": "お手洗いは奥の右側にございます。"
+  },
+  {
+   "kanji": "灰皿",
+   "hiragana": "はいざら",
+   "korean": "재떨이",
+   "level": "N2",
+   "pos": "명사",
+   "example": "喫煙席に灰皿をお持ちしました。"
+  },
+  {
+   "kanji": "呼び出しボタン",
+   "hiragana": "よびだしボタン",
+   "korean": "호출 버튼",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ご注文の際は呼び出しボタンを押してください。"
+  },
+  {
+   "kanji": "お通し代",
+   "hiragana": "おとおしだい",
+   "korean": "기본 안주 요금",
+   "level": "N1",
+   "pos": "명사",
+   "example": "お通し代はお一人様三百円です。"
+  },
+  {
+   "kanji": "席料",
+   "hiragana": "せきりょう",
+   "korean": "자릿세",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この店は席料がかからない。"
+  },
+  {
+   "kanji": "カウンター席",
+   "hiragana": "カウンターせき",
+   "korean": "카운터석",
+   "level": "N2",
+   "pos": "명사",
+   "example": "一人だったのでカウンター席に案内された。"
+  },
+  {
+   "kanji": "テーブル席",
+   "hiragana": "テーブルせき",
+   "korean": "테이블석",
+   "level": "N3",
+   "pos": "명사",
+   "example": "四人用のテーブル席は空いていますか。"
+  },
+  {
+   "kanji": "相席",
+   "hiragana": "あいせき",
+   "korean": "합석",
+   "level": "N1",
+   "pos": "명사",
+   "example": "混雑時は相席をお願いすることがあります。"
+  },
+  {
+   "kanji": "立ち飲み",
+   "hiragana": "たちのみ",
+   "korean": "서서 마시는 술집",
+   "level": "N1",
+   "pos": "명사",
+   "example": "仕事帰りに駅前の立ち飲み屋へ寄った。"
+  },
+  {
+   "kanji": "はしご酒",
+   "hiragana": "はしござけ",
+   "korean": "술집 순례(2차·3차)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "週末は友人とはしご酒を楽しんだ。"
+  },
+  {
+   "kanji": "二日酔い",
+   "hiragana": "ふつかよい",
+   "korean": "숙취",
+   "level": "N2",
+   "pos": "명사",
+   "example": "二日酔いで頭がずきずきする。"
+  },
+  {
+   "kanji": "酔っ払い",
+   "hiragana": "よっぱらい",
+   "korean": "취객",
+   "level": "N2",
+   "pos": "명사",
+   "example": "終電の車内は酔っ払いが多かった。"
+  },
+  {
+   "kanji": "貸切",
+   "hiragana": "かしきり",
+   "korean": "대절,전세(통째 예약)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "本日は宴会のため貸切です。"
+  },
+  {
+   "kanji": "深夜営業",
+   "hiragana": "しんやえいぎょう",
+   "korean": "심야 영업",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この居酒屋は朝五時まで深夜営業だ。"
+  },
+  {
+   "kanji": "ごちそうさま",
+   "hiragana": "ごちそうさま",
+   "korean": "잘 먹었습니다",
+   "level": "N4",
+   "pos": "감탄사",
+   "example": "会計の時に「ごちそうさま」と声をかけた。"
+  },
+  {
+   "kanji": "おかわり自由",
+   "hiragana": "おかわりじゆう",
+   "korean": "리필 무제한",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ご飯とキャベツはおかわり自由です。"
+  },
+  {
+   "kanji": "食べ歩き",
+   "hiragana": "たべあるき",
+   "korean": "맛집 탐방",
+   "level": "N1",
+   "pos": "명사",
+   "example": "休日は下町の食べ歩きが趣味だ。"
+  }
+ ]
 }

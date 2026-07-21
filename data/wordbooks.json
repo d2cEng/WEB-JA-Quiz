@@ -10,6 +10,26 @@
       "file": "izakaya-menu.json"
     },
     {
+      "name": "일본 마트 장보기",
+      "file": "supermarket.json"
+    },
+    {
+      "name": "일본 편의점 이용",
+      "file": "conbini.json"
+    },
+    {
+      "name": "드러그스토어·약국",
+      "file": "drugstore.json"
+    },
+    {
+      "name": "전철·교통 표현",
+      "file": "transport.json"
+    },
+    {
+      "name": "공항·호텔 일본어",
+      "file": "airport-hotel.json"
+    },
+    {
       "name": "온천·료칸 즐기기",
       "file": "onsen-ryokan.json"
     },
