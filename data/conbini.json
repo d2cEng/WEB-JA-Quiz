@@ -1,0 +1,486 @@
+{
+ "version": 1,
+ "name": "일본 편의점 이용",
+ "words": [
+  {
+   "kanji": "公共料金",
+   "hiragana": "こうきょうりょうきん",
+   "korean": "공공요금",
+   "level": "N2",
+   "pos": "명사",
+   "example": "コンビニで公共料金を支払った。"
+  },
+  {
+   "kanji": "収納代行",
+   "hiragana": "しゅうのうだいこう",
+   "korean": "수납 대행",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この用紙は収納代行のサービスで払えます。"
+  },
+  {
+   "kanji": "支払い用紙",
+   "hiragana": "しはらいようし",
+   "korean": "납부 용지",
+   "level": "N2",
+   "pos": "명사",
+   "example": "電気代の支払い用紙を持ってレジへ行った。"
+  },
+  {
+   "kanji": "宅配便",
+   "hiragana": "たくはいびん",
+   "korean": "택배",
+   "level": "N3",
+   "pos": "명사",
+   "example": "コンビニから宅配便を送った。"
+  },
+  {
+   "kanji": "発送",
+   "hiragana": "はっそう",
+   "korean": "발송",
+   "level": "N2",
+   "pos": "명사",
+   "example": "商品の発送手続きを済ませた。"
+  },
+  {
+   "kanji": "伝票",
+   "hiragana": "でんぴょう",
+   "korean": "전표,송장",
+   "level": "N2",
+   "pos": "명사",
+   "example": "宅配の伝票に住所を記入した。"
+  },
+  {
+   "kanji": "着払い",
+   "hiragana": "ちゃくばらい",
+   "korean": "착불",
+   "level": "N1",
+   "pos": "명사",
+   "example": "荷物を着払いで送ってもらった。"
+  },
+  {
+   "kanji": "元払い",
+   "hiragana": "もとばらい",
+   "korean": "선불(발송인 부담)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "送料は元払いでお願いします。"
+  },
+  {
+   "kanji": "現金引き出し",
+   "hiragana": "げんきんひきだし",
+   "korean": "현금 인출",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ATMで現金引き出しをした。"
+  },
+  {
+   "kanji": "振り込み",
+   "hiragana": "ふりこみ",
+   "korean": "계좌 이체",
+   "level": "N2",
+   "pos": "명사",
+   "example": "家賃の振り込みを済ませた。"
+  },
+  {
+   "kanji": "マルチコピー機",
+   "hiragana": "マルチコピーき",
+   "korean": "멀티 복사기",
+   "level": "N1",
+   "pos": "명사",
+   "example": "マルチコピー機でチケットを発券した。"
+  },
+  {
+   "kanji": "証明写真",
+   "hiragana": "しょうめいしゃしん",
+   "korean": "증명사진",
+   "level": "N2",
+   "pos": "명사",
+   "example": "コンビニの機械で証明写真を撮った。"
+  },
+  {
+   "kanji": "発券",
+   "hiragana": "はっけん",
+   "korean": "발권",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ライブのチケットを店内で発券した。"
+  },
+  {
+   "kanji": "年齢確認",
+   "hiragana": "ねんれいかくにん",
+   "korean": "나이 확인",
+   "level": "N2",
+   "pos": "명사",
+   "example": "お酒の購入時に年齢確認ボタンを押した。"
+  },
+  {
+   "kanji": "タッチパネル",
+   "hiragana": "タッチパネル",
+   "korean": "터치패널",
+   "level": "N2",
+   "pos": "명사",
+   "example": "タッチパネルで支払い方法を選んだ。"
+  },
+  {
+   "kanji": "ホットスナック",
+   "hiragana": "ホットスナック",
+   "korean": "핫스낵(계산대 옆 튀김류)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "レジ横のホットスナックをつい買ってしまう。"
+  },
+  {
+   "kanji": "肉まん",
+   "hiragana": "にくまん",
+   "korean": "고기만두(찐빵)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "冬は肉まんがよく売れる。"
+  },
+  {
+   "kanji": "あんまん",
+   "hiragana": "あんまん",
+   "korean": "단팥 찐빵",
+   "level": "N2",
+   "pos": "명사",
+   "example": "甘いあんまんを一つ買った。"
+  },
+  {
+   "kanji": "中華まん",
+   "hiragana": "ちゅうかまん",
+   "korean": "중화풍 찐빵 총칭",
+   "level": "N1",
+   "pos": "명사",
+   "example": "中華まんの蒸し器が新しくなった。"
+  },
+  {
+   "kanji": "おにぎり",
+   "hiragana": "おにぎり",
+   "korean": "주먹밥",
+   "level": "N4",
+   "pos": "명사",
+   "example": "新作のおにぎりを試してみた。"
+  },
+  {
+   "kanji": "サンドイッチ",
+   "hiragana": "サンドイッチ",
+   "korean": "샌드위치",
+   "level": "N3",
+   "pos": "명사",
+   "example": "朝食用にサンドイッチを買った。"
+  },
+  {
+   "kanji": "スイーツ",
+   "hiragana": "スイーツ",
+   "korean": "디저트류",
+   "level": "N2",
+   "pos": "명사",
+   "example": "コンビニスイーツの質が年々上がっている。"
+  },
+  {
+   "kanji": "新商品",
+   "hiragana": "しんしょうひん",
+   "korean": "신상품",
+   "level": "N2",
+   "pos": "명사",
+   "example": "毎週火曜日に新商品が並ぶ。"
+  },
+  {
+   "kanji": "限定",
+   "hiragana": "げんてい",
+   "korean": "한정",
+   "level": "N2",
+   "pos": "명사",
+   "example": "地域限定の味を見つけた。"
+  },
+  {
+   "kanji": "イートイン",
+   "hiragana": "イートイン",
+   "korean": "매장 내 취식",
+   "level": "N1",
+   "pos": "명사",
+   "example": "イートインスペースでコーヒーを飲んだ。"
+  },
+  {
+   "kanji": "店内飲食",
+   "hiragana": "てんないいんしょく",
+   "korean": "매장 내 음식 섭취",
+   "level": "N1",
+   "pos": "명사",
+   "example": "店内飲食の場合は税率が変わります。"
+  },
+  {
+   "kanji": "レジ袋",
+   "hiragana": "レジぶくろ",
+   "korean": "비닐봉지",
+   "level": "N2",
+   "pos": "명사",
+   "example": "レジ袋は三円かかります。"
+  },
+  {
+   "kanji": "電子決済",
+   "hiragana": "でんしけっさい",
+   "korean": "전자결제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "電子決済ならポイントも貯まる。"
+  },
+  {
+   "kanji": "スマホ決済",
+   "hiragana": "スマホけっさい",
+   "korean": "스마트폰 결제",
+   "level": "N1",
+   "pos": "명사",
+   "example": "スマホ決済で小銭いらずになった。"
+  },
+  {
+   "kanji": "交通系IC",
+   "hiragana": "こうつうけいアイシー",
+   "korean": "교통카드(IC)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "交通系ICでそのまま支払った。"
+  },
+  {
+   "kanji": "チャージ",
+   "hiragana": "チャージ",
+   "korean": "충전",
+   "level": "N2",
+   "pos": "명사",
+   "example": "レジでカードに千円チャージした。"
+  },
+  {
+   "kanji": "残高",
+   "hiragana": "ざんだか",
+   "korean": "잔액",
+   "level": "N2",
+   "pos": "명사",
+   "example": "カードの残高が足りなかった。"
+  },
+  {
+   "kanji": "二次元コード",
+   "hiragana": "にじげんコード",
+   "korean": "QR코드",
+   "level": "N1",
+   "pos": "명사",
+   "example": "二次元コードをかざして支払う。"
+  },
+  {
+   "kanji": "クーポン",
+   "hiragana": "クーポン",
+   "korean": "쿠폰",
+   "level": "N3",
+   "pos": "명사",
+   "example": "アプリのクーポンで百円引きになった。"
+  },
+  {
+   "kanji": "キャンペーン",
+   "hiragana": "キャンペーン",
+   "korean": "캠페인,행사",
+   "level": "N2",
+   "pos": "명사",
+   "example": "くじ引きキャンペーンをやっている。"
+  },
+  {
+   "kanji": "くじ",
+   "hiragana": "くじ",
+   "korean": "제비뽑기",
+   "level": "N2",
+   "pos": "명사",
+   "example": "七百円ごとにくじが一回引ける。"
+  },
+  {
+   "kanji": "引き換え",
+   "hiragana": "ひきかえ",
+   "korean": "교환(상품 수령)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "当たり券を商品と引き換えた。"
+  },
+  {
+   "kanji": "予約商品",
+   "hiragana": "よやくしょうひん",
+   "korean": "예약 상품",
+   "level": "N1",
+   "pos": "명사",
+   "example": "クリスマスケーキは予約商品です。"
+  },
+  {
+   "kanji": "品出し",
+   "hiragana": "しなだし",
+   "korean": "상품 진열(작업)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "朝は品出しの作業で忙しい。"
+  },
+  {
+   "kanji": "検品",
+   "hiragana": "けんぴん",
+   "korean": "검품",
+   "level": "N1",
+   "pos": "명사",
+   "example": "届いた荷物を検品してから並べる。"
+  },
+  {
+   "kanji": "廃棄",
+   "hiragana": "はいき",
+   "korean": "폐기",
+   "level": "N1",
+   "pos": "명사",
+   "example": "期限切れの弁当を廃棄した。"
+  },
+  {
+   "kanji": "深夜勤務",
+   "hiragana": "しんやきんむ",
+   "korean": "심야 근무",
+   "level": "N2",
+   "pos": "명사",
+   "example": "コンビニの深夜勤務は時給が高い。"
+  },
+  {
+   "kanji": "店長",
+   "hiragana": "てんちょう",
+   "korean": "점장",
+   "level": "N3",
+   "pos": "명사",
+   "example": "店長がシフトを組んでくれた。"
+  },
+  {
+   "kanji": "アルバイト",
+   "hiragana": "アルバイト",
+   "korean": "아르바이트",
+   "level": "N3",
+   "pos": "명사",
+   "example": "週三日コンビニでアルバイトをしている。"
+  },
+  {
+   "kanji": "防犯カメラ",
+   "hiragana": "ぼうはんカメラ",
+   "korean": "방범 카메라",
+   "level": "N2",
+   "pos": "명사",
+   "example": "店内には防犯カメラが設置されている。"
+  },
+  {
+   "kanji": "立ち読み",
+   "hiragana": "たちよみ",
+   "korean": "서서 읽기",
+   "level": "N1",
+   "pos": "명사",
+   "example": "雑誌の立ち読みはご遠慮ください。"
+  },
+  {
+   "kanji": "切手販売",
+   "hiragana": "きってはんばい",
+   "korean": "우표 판매",
+   "level": "N2",
+   "pos": "명사",
+   "example": "切手販売のマークがレジに貼ってある。"
+  },
+  {
+   "kanji": "はがき",
+   "hiragana": "はがき",
+   "korean": "엽서",
+   "level": "N3",
+   "pos": "명사",
+   "example": "年賀はがきをコンビニで買った。"
+  },
+  {
+   "kanji": "収入印紙",
+   "hiragana": "しゅうにゅういんし",
+   "korean": "수입인지",
+   "level": "N1",
+   "pos": "명사",
+   "example": "契約書用の収入印紙を購入した。"
+  },
+  {
+   "kanji": "セルフコーヒー",
+   "hiragana": "セルフコーヒー",
+   "korean": "셀프 커피",
+   "level": "N1",
+   "pos": "명사",
+   "example": "セルフコーヒーの機械にカップを置いた。"
+  },
+  {
+   "kanji": "淹れたて",
+   "hiragana": "いれたて",
+   "korean": "갓 내린(커피)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "淹れたてのコーヒーの香りが広がる。"
+  },
+  {
+   "kanji": "チンする",
+   "hiragana": "チンする",
+   "korean": "전자레인지에 돌리다(구어)",
+   "level": "N2",
+   "pos": "3그룹동사",
+   "example": "お弁当をチンしてもらった。"
+  },
+  {
+   "kanji": "温かい飲み物",
+   "hiragana": "あたたかいのみもの",
+   "korean": "따뜻한 음료",
+   "level": "N3",
+   "pos": "명사",
+   "example": "温かい飲み物は棚が分かれている。"
+  },
+  {
+   "kanji": "ゴミ箱",
+   "hiragana": "ゴミばこ",
+   "korean": "쓰레기통",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ゴミ箱は店の外に置いてある。"
+  },
+  {
+   "kanji": "トイレ利用",
+   "hiragana": "トイレりよう",
+   "korean": "화장실 이용",
+   "level": "N2",
+   "pos": "명사",
+   "example": "トイレ利用の際は一声かけてください。"
+  },
+  {
+   "kanji": "募金箱",
+   "hiragana": "ぼきんばこ",
+   "korean": "모금함",
+   "level": "N1",
+   "pos": "명사",
+   "example": "おつりを募金箱に入れた。"
+  },
+  {
+   "kanji": "振り分け",
+   "hiragana": "ふりわけ",
+   "korean": "분류",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ゴミの振り分けにご協力ください。"
+  },
+  {
+   "kanji": "コンビニ弁当",
+   "hiragana": "コンビニべんとう",
+   "korean": "편의점 도시락",
+   "level": "N2",
+   "pos": "명사",
+   "example": "忙しくてコンビニ弁当で済ませた。"
+  },
+  {
+   "kanji": "夜食",
+   "hiragana": "やしょく",
+   "korean": "야식",
+   "level": "N2",
+   "pos": "명사",
+   "example": "夜食におでんとおにぎりを買った。"
+  },
+  {
+   "kanji": "買い置き",
+   "hiragana": "かいおき",
+   "korean": "사재기,사 둠",
+   "level": "N1",
+   "pos": "명사",
+   "example": "カップ麺を買い置きしておくと安心だ。"
+  }
+ ]
+}
