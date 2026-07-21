@@ -1,8 +1,33 @@
 {
   "version": 1,
   "wordbooks": [
-    { "name": "JLPT 샘플 단어장", "file": "words.sample.json" },
-    { "name": "일본 이자카야·마트 메뉴 읽기", "file": "izakaya-menu.json" },
-    { "name": "JLPT N5–N1 Vocabulary (Japanese–English)", "file": "words.en.json" }
+    {
+      "name": "JLPT 샘플 단어장",
+      "file": "words.sample.json"
+    },
+    {
+      "name": "일본 이자카야 메뉴 읽기",
+      "file": "izakaya-menu.json"
+    },
+    {
+      "name": "온천·료칸 즐기기",
+      "file": "onsen-ryokan.json"
+    },
+    {
+      "name": "의성어·의태어(オノマトペ)",
+      "file": "onomatopoeia.json"
+    },
+    {
+      "name": "경어(敬語) 표현집",
+      "file": "keigo.json"
+    },
+    {
+      "name": "조수사(세는 말) 마스터",
+      "file": "counters.json"
+    },
+    {
+      "name": "JLPT N5–N1 Vocabulary (Japanese–English)",
+      "file": "words.en.json"
+    }
   ]
 }

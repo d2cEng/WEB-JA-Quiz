@@ -1,0 +1,486 @@
+{
+ "version": 1,
+ "name": "온천·료칸 즐기기",
+ "words": [
+  {
+   "kanji": "温泉",
+   "hiragana": "おんせん",
+   "korean": "온천",
+   "level": "N3",
+   "pos": "명사",
+   "example": "週末は温泉でゆっくりしたい。"
+  },
+  {
+   "kanji": "露天風呂",
+   "hiragana": "ろてんぶろ",
+   "korean": "노천탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "雪を見ながら露天風呂に浸かった。"
+  },
+  {
+   "kanji": "内湯",
+   "hiragana": "うちゆ",
+   "korean": "실내탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "内湯より露天のほうが人気だ。"
+  },
+  {
+   "kanji": "貸切風呂",
+   "hiragana": "かしきりぶろ",
+   "korean": "전세탕(가족탕)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "記念日に貸切風呂を予約した。"
+  },
+  {
+   "kanji": "足湯",
+   "hiragana": "あしゆ",
+   "korean": "족욕탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "駅前の足湯で旅の疲れを癒した。"
+  },
+  {
+   "kanji": "源泉",
+   "hiragana": "げんせん",
+   "korean": "원천(온천물 근원)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "源泉の温度は九十度もある。"
+  },
+  {
+   "kanji": "掛け流し",
+   "hiragana": "かけながし",
+   "korean": "온천수 그대로 흘려보냄",
+   "level": "N1",
+   "pos": "명사",
+   "example": "源泉掛け流しの宿を選んだ。"
+  },
+  {
+   "kanji": "湯船",
+   "hiragana": "ゆぶね",
+   "korean": "욕조,탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "広い湯船で手足を伸ばした。"
+  },
+  {
+   "kanji": "湯加減",
+   "hiragana": "ゆかげん",
+   "korean": "물 온도 상태",
+   "level": "N1",
+   "pos": "명사",
+   "example": "湯加減はいかがですか。"
+  },
+  {
+   "kanji": "脱衣所",
+   "hiragana": "だつえじょ",
+   "korean": "탈의실",
+   "level": "N1",
+   "pos": "명사",
+   "example": "脱衣所に籠が並んでいる。"
+  },
+  {
+   "kanji": "浴衣",
+   "hiragana": "ゆかた",
+   "korean": "유카타",
+   "level": "N2",
+   "pos": "명사",
+   "example": "浴衣に着替えて夕食へ向かった。"
+  },
+  {
+   "kanji": "下駄",
+   "hiragana": "げた",
+   "korean": "나막신",
+   "level": "N1",
+   "pos": "명사",
+   "example": "下駄を鳴らして温泉街を歩いた。"
+  },
+  {
+   "kanji": "温泉街",
+   "hiragana": "おんせんがい",
+   "korean": "온천 거리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "温泉街で射的を楽しんだ。"
+  },
+  {
+   "kanji": "湯めぐり",
+   "hiragana": "ゆめぐり",
+   "korean": "온천 순례",
+   "level": "N1",
+   "pos": "명사",
+   "example": "手形を買って湯めぐりをした。"
+  },
+  {
+   "kanji": "効能",
+   "hiragana": "こうのう",
+   "korean": "효능",
+   "level": "N1",
+   "pos": "명사",
+   "example": "この湯は神経痛に効能がある。"
+  },
+  {
+   "kanji": "美肌の湯",
+   "hiragana": "びはだのゆ",
+   "korean": "피부 미용 온천",
+   "level": "N1",
+   "pos": "명사",
+   "example": "美肌の湯として女性に人気だ。"
+  },
+  {
+   "kanji": "硫黄",
+   "hiragana": "いおう",
+   "korean": "유황",
+   "level": "N1",
+   "pos": "명사",
+   "example": "硫黄の匂いが立ち込めている。"
+  },
+  {
+   "kanji": "にごり湯",
+   "hiragana": "にごりゆ",
+   "korean": "탁한 온천물",
+   "level": "N1",
+   "pos": "명사",
+   "example": "白いにごり湯は成分が濃い。"
+  },
+  {
+   "kanji": "のぼせる",
+   "hiragana": "のぼせる",
+   "korean": "(열기로) 어지러워지다",
+   "level": "N1",
+   "pos": "2그룹동사",
+   "example": "長湯してのぼせてしまった。"
+  },
+  {
+   "kanji": "湯あたり",
+   "hiragana": "ゆあたり",
+   "korean": "온천 후 몸살",
+   "level": "N1",
+   "pos": "명사",
+   "example": "入りすぎると湯あたりを起こす。"
+  },
+  {
+   "kanji": "男湯",
+   "hiragana": "おとこゆ",
+   "korean": "남탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "男湯ののれんは青色だった。"
+  },
+  {
+   "kanji": "女湯",
+   "hiragana": "おんなゆ",
+   "korean": "여탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "女湯は右側でございます。"
+  },
+  {
+   "kanji": "のれん",
+   "hiragana": "のれん",
+   "korean": "노렌(천 간판)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "のれんをくぐって浴場に入った。"
+  },
+  {
+   "kanji": "桶",
+   "hiragana": "おけ",
+   "korean": "대야,물통",
+   "level": "N1",
+   "pos": "명사",
+   "example": "桶でかけ湯をしてから入る。"
+  },
+  {
+   "kanji": "手ぬぐい",
+   "hiragana": "てぬぐい",
+   "korean": "수건(일본식)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "手ぬぐいを頭にのせて浸かった。"
+  },
+  {
+   "kanji": "洗い場",
+   "hiragana": "あらいば",
+   "korean": "씻는 곳",
+   "level": "N1",
+   "pos": "명사",
+   "example": "洗い場で体を洗ってから湯船へ。"
+  },
+  {
+   "kanji": "かけ湯",
+   "hiragana": "かけゆ",
+   "korean": "입욕 전 몸에 물 끼얹기",
+   "level": "N1",
+   "pos": "명사",
+   "example": "かけ湯は入浴のマナーです。"
+  },
+  {
+   "kanji": "日帰り温泉",
+   "hiragana": "ひがえりおんせん",
+   "korean": "당일치기 온천",
+   "level": "N1",
+   "pos": "명사",
+   "example": "近場の日帰り温泉に行ってきた。"
+  },
+  {
+   "kanji": "旅館",
+   "hiragana": "りょかん",
+   "korean": "료칸(일본식 숙소)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "老舗の旅館に一泊した。"
+  },
+  {
+   "kanji": "女将",
+   "hiragana": "おかみ",
+   "korean": "여주인(오카미)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "女将が玄関で出迎えてくれた。"
+  },
+  {
+   "kanji": "仲居",
+   "hiragana": "なかい",
+   "korean": "객실 담당 종업원",
+   "level": "N1",
+   "pos": "명사",
+   "example": "仲居さんが部屋に夕食を運んでくれた。"
+  },
+  {
+   "kanji": "会席料理",
+   "hiragana": "かいせきりょうり",
+   "korean": "연회식 코스 요리",
+   "level": "N1",
+   "pos": "명사",
+   "example": "夕食は豪華な会席料理だった。"
+  },
+  {
+   "kanji": "懐石料理",
+   "hiragana": "かいせきりょうり",
+   "korean": "가이세키(다도식 코스)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "懐石料理は品数が多く上品だ。"
+  },
+  {
+   "kanji": "部屋食",
+   "hiragana": "へやしょく",
+   "korean": "방에서 먹는 식사",
+   "level": "N1",
+   "pos": "명사",
+   "example": "部屋食なので気兼ねなく楽しめた。"
+  },
+  {
+   "kanji": "布団",
+   "hiragana": "ふとん",
+   "korean": "이불",
+   "level": "N3",
+   "pos": "명사",
+   "example": "夕食の間に布団が敷かれていた。"
+  },
+  {
+   "kanji": "敷く",
+   "hiragana": "しく",
+   "korean": "깔다",
+   "level": "N2",
+   "pos": "1그룹동사",
+   "example": "畳に布団を敷いて寝る。"
+  },
+  {
+   "kanji": "床の間",
+   "hiragana": "とこのま",
+   "korean": "도코노마(장식 공간)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "床の間に花が生けてある。"
+  },
+  {
+   "kanji": "障子",
+   "hiragana": "しょうじ",
+   "korean": "장지문",
+   "level": "N1",
+   "pos": "명사",
+   "example": "障子越しの朝日で目が覚めた。"
+  },
+  {
+   "kanji": "襖",
+   "hiragana": "ふすま",
+   "korean": "맹장지(미닫이문)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "襖を開けると次の間があった。"
+  },
+  {
+   "kanji": "畳",
+   "hiragana": "たたみ",
+   "korean": "다다미",
+   "level": "N2",
+   "pos": "명사",
+   "example": "畳の香りに心が落ち着く。"
+  },
+  {
+   "kanji": "縁側",
+   "hiragana": "えんがわ",
+   "korean": "툇마루",
+   "level": "N1",
+   "pos": "명사",
+   "example": "縁側でお茶を飲みながら庭を眺めた。"
+  },
+  {
+   "kanji": "庭園",
+   "hiragana": "ていえん",
+   "korean": "정원",
+   "level": "N2",
+   "pos": "명사",
+   "example": "旅館の庭園は手入れが行き届いている。"
+  },
+  {
+   "kanji": "囲炉裏",
+   "hiragana": "いろり",
+   "korean": "이로리(화로)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "囲炉裏を囲んで魚を焼いた。"
+  },
+  {
+   "kanji": "土産処",
+   "hiragana": "みやげどころ",
+   "korean": "기념품 가게",
+   "level": "N1",
+   "pos": "명사",
+   "example": "土産処で温泉まんじゅうを買った。"
+  },
+  {
+   "kanji": "温泉まんじゅう",
+   "hiragana": "おんせんまんじゅう",
+   "korean": "온천 만주",
+   "level": "N1",
+   "pos": "명사",
+   "example": "蒸したての温泉まんじゅうは格別だ。"
+  },
+  {
+   "kanji": "湯上がり",
+   "hiragana": "ゆあがり",
+   "korean": "목욕 직후",
+   "level": "N1",
+   "pos": "명사",
+   "example": "湯上がりに瓶の牛乳を飲んだ。"
+  },
+  {
+   "kanji": "卓球",
+   "hiragana": "たっきゅう",
+   "korean": "탁구",
+   "level": "N3",
+   "pos": "명사",
+   "example": "温泉旅館で卓球をするのが定番だ。"
+  },
+  {
+   "kanji": "浴場",
+   "hiragana": "よくじょう",
+   "korean": "목욕탕(욕장)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "大浴場は夜十一時まで利用できる。"
+  },
+  {
+   "kanji": "岩風呂",
+   "hiragana": "いわぶろ",
+   "korean": "바위탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "岩風呂は野趣があって良い。"
+  },
+  {
+   "kanji": "檜風呂",
+   "hiragana": "ひのきぶろ",
+   "korean": "히노키탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "檜風呂の香りに癒された。"
+  },
+  {
+   "kanji": "サウナ",
+   "hiragana": "サウナ",
+   "korean": "사우나",
+   "level": "N2",
+   "pos": "명사",
+   "example": "サウナと水風呂を交互に楽しむ。"
+  },
+  {
+   "kanji": "水風呂",
+   "hiragana": "みずぶろ",
+   "korean": "냉탕",
+   "level": "N1",
+   "pos": "명사",
+   "example": "サウナの後の水風呂が気持ちいい。"
+  },
+  {
+   "kanji": "湯治",
+   "hiragana": "とうじ",
+   "korean": "온천 요양",
+   "level": "N1",
+   "pos": "명사",
+   "example": "昔はここで湯治をする人が多かった。"
+  },
+  {
+   "kanji": "秘湯",
+   "hiragana": "ひとう",
+   "korean": "숨은 온천",
+   "level": "N1",
+   "pos": "명사",
+   "example": "山奥の秘湯を訪ねるのが趣味だ。"
+  },
+  {
+   "kanji": "入湯税",
+   "hiragana": "にゅうとうぜい",
+   "korean": "입탕세",
+   "level": "N1",
+   "pos": "명사",
+   "example": "宿泊料金に入湯税が加算される。"
+  },
+  {
+   "kanji": "タオル掛け",
+   "hiragana": "タオルかけ",
+   "korean": "수건걸이",
+   "level": "N1",
+   "pos": "명사",
+   "example": "タオル掛けに手ぬぐいを干した。"
+  },
+  {
+   "kanji": "マナー",
+   "hiragana": "マナー",
+   "korean": "매너",
+   "level": "N2",
+   "pos": "명사",
+   "example": "湯船にタオルを入れないのがマナーだ。"
+  },
+  {
+   "kanji": "長湯",
+   "hiragana": "ながゆ",
+   "korean": "오래 목욕함",
+   "level": "N1",
+   "pos": "명사",
+   "example": "長湯は湯あたりのもとになる。"
+  },
+  {
+   "kanji": "絶景",
+   "hiragana": "ぜっけい",
+   "korean": "절경",
+   "level": "N1",
+   "pos": "명사",
+   "example": "絶景を望む露天風呂が自慢だ。"
+  },
+  {
+   "kanji": "風情",
+   "hiragana": "ふぜい",
+   "korean": "운치",
+   "level": "N1",
+   "pos": "명사",
+   "example": "石畳の温泉街は風情がある。"
+  }
+ ]
+}
