@@ -1,0 +1,486 @@
+{
+ "version": 1,
+ "name": "조수사(세는 말) 마스터",
+ "words": [
+  {
+   "kanji": "〜本",
+   "hiragana": "ほん・ぼん・ぽん",
+   "korean": "자루,병,그루(가늘고 긴 것)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "ビールを三本注文した。"
+  },
+  {
+   "kanji": "〜枚",
+   "hiragana": "まい",
+   "korean": "장(얇고 평평한 것)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "コピーを五枚お願いします。"
+  },
+  {
+   "kanji": "〜匹",
+   "hiragana": "ひき・びき・ぴき",
+   "korean": "마리(작은 동물)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "猫を二匹飼っている。"
+  },
+  {
+   "kanji": "〜頭",
+   "hiragana": "とう",
+   "korean": "마리(큰 동물)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "牧場に牛が十頭いる。"
+  },
+  {
+   "kanji": "〜羽",
+   "hiragana": "わ",
+   "korean": "마리(새,토끼)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "庭に雀が三羽下りてきた。"
+  },
+  {
+   "kanji": "〜台",
+   "hiragana": "だい",
+   "korean": "대(기계,차량)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "駐車場に車が五台止まっている。"
+  },
+  {
+   "kanji": "〜冊",
+   "hiragana": "さつ",
+   "korean": "권(책,노트)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "図書館で本を四冊借りた。"
+  },
+  {
+   "kanji": "〜着",
+   "hiragana": "ちゃく",
+   "korean": "벌(옷)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "スーツを二着仕立てた。"
+  },
+  {
+   "kanji": "〜足",
+   "hiragana": "そく",
+   "korean": "켤레(신발,양말)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "靴下を三足まとめて買った。"
+  },
+  {
+   "kanji": "〜杯",
+   "hiragana": "はい・ばい・ぱい",
+   "korean": "잔,그릇",
+   "level": "N5",
+   "pos": "명사",
+   "example": "お茶を一杯いかがですか。"
+  },
+  {
+   "kanji": "〜個",
+   "hiragana": "こ",
+   "korean": "개(작은 물건)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "りんごを六個ください。"
+  },
+  {
+   "kanji": "〜歳",
+   "hiragana": "さい",
+   "korean": "살,세(나이)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "妹は十八歳になった。"
+  },
+  {
+   "kanji": "〜名",
+   "hiragana": "めい",
+   "korean": "명(정중한 인원수)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ご予約は四名様ですね。"
+  },
+  {
+   "kanji": "〜回",
+   "hiragana": "かい",
+   "korean": "회,번(횟수)",
+   "level": "N5",
+   "pos": "명사",
+   "example": "週に三回ジムに通う。"
+  },
+  {
+   "kanji": "〜度",
+   "hiragana": "ど",
+   "korean": "번,도(횟수·온도)",
+   "level": "N4",
+   "pos": "명사",
+   "example": "この美術館には二度来たことがある。"
+  },
+  {
+   "kanji": "〜軒",
+   "hiragana": "けん",
+   "korean": "채(집,가게)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "角のパン屋から三軒目が我が家だ。"
+  },
+  {
+   "kanji": "〜通",
+   "hiragana": "つう",
+   "korean": "통(편지,문서)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "推薦状を二通用意した。"
+  },
+  {
+   "kanji": "〜箱",
+   "hiragana": "はこ",
+   "korean": "상자",
+   "level": "N4",
+   "pos": "명사",
+   "example": "みかんを一箱送ってもらった。"
+  },
+  {
+   "kanji": "〜袋",
+   "hiragana": "ふくろ",
+   "korean": "봉지",
+   "level": "N4",
+   "pos": "명사",
+   "example": "砂糖を二袋買い足した。"
+  },
+  {
+   "kanji": "〜缶",
+   "hiragana": "かん",
+   "korean": "캔",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ビールを六缶パックで買った。"
+  },
+  {
+   "kanji": "〜切れ",
+   "hiragana": "きれ",
+   "korean": "조각(자른 것)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ケーキを一切れだけ食べた。"
+  },
+  {
+   "kanji": "〜玉",
+   "hiragana": "たま",
+   "korean": "덩이(둥근 것)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "うどんを二玉ゆでた。"
+  },
+  {
+   "kanji": "〜房",
+   "hiragana": "ふさ",
+   "korean": "송이(포도,바나나)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "葡萄を一房いただいた。"
+  },
+  {
+   "kanji": "〜粒",
+   "hiragana": "つぶ",
+   "korean": "알(작은 알갱이)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "薬を二粒飲んだ。"
+  },
+  {
+   "kanji": "〜滴",
+   "hiragana": "てき",
+   "korean": "방울",
+   "level": "N1",
+   "pos": "명사",
+   "example": "目薬を一滴ずつ差す。"
+  },
+  {
+   "kanji": "〜錠",
+   "hiragana": "じょう",
+   "korean": "정(알약)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "一回二錠、一日三回服用する。"
+  },
+  {
+   "kanji": "〜包",
+   "hiragana": "ほう",
+   "korean": "포(가루약 봉지)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "粉薬を一包飲んでください。"
+  },
+  {
+   "kanji": "〜膳",
+   "hiragana": "ぜん",
+   "korean": "공기(밥),벌(젓가락)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "ご飯を二膳もおかわりした。"
+  },
+  {
+   "kanji": "〜丁",
+   "hiragana": "ちょう",
+   "korean": "모(두부),자루(칼)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "豆腐を一丁使って麻婆豆腐を作る。"
+  },
+  {
+   "kanji": "〜貫",
+   "hiragana": "かん",
+   "korean": "점(초밥)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "大トロを二貫注文した。"
+  },
+  {
+   "kanji": "〜合",
+   "hiragana": "ごう",
+   "korean": "홉(쌀,술)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "米を三合炊いた。"
+  },
+  {
+   "kanji": "〜泊",
+   "hiragana": "はく・ぱく",
+   "korean": "박(숙박)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "京都に二泊三日で旅行する。"
+  },
+  {
+   "kanji": "〜便",
+   "hiragana": "びん",
+   "korean": "편(항공·배편)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "午後の便で福岡へ発つ。"
+  },
+  {
+   "kanji": "〜両",
+   "hiragana": "りょう",
+   "korean": "량(열차 칸)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "この電車は八両編成です。"
+  },
+  {
+   "kanji": "〜曲",
+   "hiragana": "きょく",
+   "korean": "곡",
+   "level": "N3",
+   "pos": "명사",
+   "example": "カラオケで五曲歌った。"
+  },
+  {
+   "kanji": "〜話",
+   "hiragana": "わ",
+   "korean": "화(에피소드)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ドラマを最終話まで見た。"
+  },
+  {
+   "kanji": "〜巻",
+   "hiragana": "かん",
+   "korean": "권(만화,두루마리)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "漫画を全巻そろえた。"
+  },
+  {
+   "kanji": "〜件",
+   "hiragana": "けん",
+   "korean": "건(사안)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "問い合わせが十件届いた。"
+  },
+  {
+   "kanji": "〜社",
+   "hiragana": "しゃ",
+   "korean": "개사(회사)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "三社から内定をもらった。"
+  },
+  {
+   "kanji": "〜校",
+   "hiragana": "こう",
+   "korean": "개교(학교)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "市内に高校が五校ある。"
+  },
+  {
+   "kanji": "〜駅",
+   "hiragana": "えき",
+   "korean": "개 역",
+   "level": "N3",
+   "pos": "명사",
+   "example": "ここから三駅先で降ります。"
+  },
+  {
+   "kanji": "〜周",
+   "hiragana": "しゅう",
+   "korean": "바퀴",
+   "level": "N2",
+   "pos": "명사",
+   "example": "グラウンドを二周走った。"
+  },
+  {
+   "kanji": "〜組",
+   "hiragana": "くみ",
+   "korean": "쌍,조,팀",
+   "level": "N2",
+   "pos": "명사",
+   "example": "夫婦二組で旅行に出かけた。"
+  },
+  {
+   "kanji": "〜対",
+   "hiragana": "つい",
+   "korean": "쌍(대칭인 것)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "鶴の置物を一対飾った。"
+  },
+  {
+   "kanji": "〜束",
+   "hiragana": "たば",
+   "korean": "다발,단",
+   "level": "N2",
+   "pos": "명사",
+   "example": "ほうれん草を二束ゆでた。"
+  },
+  {
+   "kanji": "〜席",
+   "hiragana": "せき",
+   "korean": "석(좌석)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "窓側の席を二席予約した。"
+  },
+  {
+   "kanji": "〜品",
+   "hiragana": "しな",
+   "korean": "가지(요리·품목)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "前菜が三品運ばれてきた。"
+  },
+  {
+   "kanji": "〜皿",
+   "hiragana": "さら",
+   "korean": "접시(요리)",
+   "level": "N3",
+   "pos": "명사",
+   "example": "餃子を二皿頼んだ。"
+  },
+  {
+   "kanji": "〜口",
+   "hiragana": "くち",
+   "korean": "모금,입(먹는 횟수)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "スープを一口飲んで味を確かめた。"
+  },
+  {
+   "kanji": "〜名様",
+   "hiragana": "めいさま",
+   "korean": "분(손님 높임)",
+   "level": "N2",
+   "pos": "명사",
+   "example": "三名様、こちらへどうぞ。"
+  },
+  {
+   "kanji": "〜歳児",
+   "hiragana": "さいじ",
+   "korean": "~세 아동",
+   "level": "N1",
+   "pos": "명사",
+   "example": "三歳児向けの絵本を選んだ。"
+  },
+  {
+   "kanji": "〜人前",
+   "hiragana": "にんまえ",
+   "korean": "인분",
+   "level": "N3",
+   "pos": "명사",
+   "example": "すき焼きを二人前注文した。"
+  },
+  {
+   "kanji": "〜株",
+   "hiragana": "かぶ",
+   "korean": "포기,주(주식)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "トマトの苗を三株植えた。"
+  },
+  {
+   "kanji": "〜輪",
+   "hiragana": "りん",
+   "korean": "송이(꽃),대(바퀴)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "バラが一輪咲いた。"
+  },
+  {
+   "kanji": "〜頭身",
+   "hiragana": "とうしん",
+   "korean": "등신(비율)",
+   "level": "N1",
+   "pos": "명사",
+   "example": "モデルは八頭身でスタイルが良い。"
+  },
+  {
+   "kanji": "〜か所",
+   "hiragana": "かしょ",
+   "korean": "군데",
+   "level": "N2",
+   "pos": "명사",
+   "example": "誤字を三か所直した。"
+  },
+  {
+   "kanji": "〜か国",
+   "hiragana": "かこく",
+   "korean": "개국",
+   "level": "N3",
+   "pos": "명사",
+   "example": "十か国を旅した。"
+  },
+  {
+   "kanji": "〜か月",
+   "hiragana": "かげつ",
+   "korean": "개월",
+   "level": "N4",
+   "pos": "명사",
+   "example": "日本に六か月滞在した。"
+  },
+  {
+   "kanji": "〜週間",
+   "hiragana": "しゅうかん",
+   "korean": "주간,주일",
+   "level": "N4",
+   "pos": "명사",
+   "example": "風邪が治るのに二週間かかった。"
+  },
+  {
+   "kanji": "〜年間",
+   "hiragana": "ねんかん",
+   "korean": "년간",
+   "level": "N3",
+   "pos": "명사",
+   "example": "五年間この会社で働いている。"
+  }
+ ]
+}

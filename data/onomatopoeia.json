@@ -1,0 +1,614 @@
+{
+ "version": 1,
+ "name": "의성어·의태어(オノマトペ)",
+ "words": [
+  {
+   "kanji": "わくわく",
+   "hiragana": "わくわく",
+   "korean": "두근두근(설렘)",
+   "level": "N3",
+   "pos": "부사",
+   "example": "遠足の前日はわくわくして眠れない。"
+  },
+  {
+   "kanji": "どきどき",
+   "hiragana": "どきどき",
+   "korean": "두근두근(긴장)",
+   "level": "N3",
+   "pos": "부사",
+   "example": "面接の前は心臓がどきどきした。"
+  },
+  {
+   "kanji": "ぐっすり",
+   "hiragana": "ぐっすり",
+   "korean": "푹(잠)",
+   "level": "N3",
+   "pos": "부사",
+   "example": "昨夜はぐっすり眠れた。"
+  },
+  {
+   "kanji": "うとうと",
+   "hiragana": "うとうと",
+   "korean": "꾸벅꾸벅(졸음)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "授業中にうとうとしてしまった。"
+  },
+  {
+   "kanji": "うっかり",
+   "hiragana": "うっかり",
+   "korean": "깜빡,무심코",
+   "level": "N2",
+   "pos": "부사",
+   "example": "うっかり傘を電車に忘れた。"
+  },
+  {
+   "kanji": "こっそり",
+   "hiragana": "こっそり",
+   "korean": "몰래",
+   "level": "N2",
+   "pos": "부사",
+   "example": "夜中にこっそり冷蔵庫を開けた。"
+  },
+  {
+   "kanji": "ばったり",
+   "hiragana": "ばったり",
+   "korean": "딱(우연히 마주침)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "駅で昔の友人にばったり会った。"
+  },
+  {
+   "kanji": "ぴったり",
+   "hiragana": "ぴったり",
+   "korean": "딱 맞게",
+   "level": "N3",
+   "pos": "부사",
+   "example": "この靴はサイズがぴったりだ。"
+  },
+  {
+   "kanji": "そっくり",
+   "hiragana": "そっくり",
+   "korean": "꼭 닮음",
+   "level": "N2",
+   "pos": "부사",
+   "example": "彼は父親にそっくりだ。"
+  },
+  {
+   "kanji": "のんびり",
+   "hiragana": "のんびり",
+   "korean": "느긋하게",
+   "level": "N3",
+   "pos": "부사",
+   "example": "休日は家でのんびり過ごした。"
+  },
+  {
+   "kanji": "ゆったり",
+   "hiragana": "ゆったり",
+   "korean": "여유롭게,낙낙하게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "温泉でゆったりくつろいだ。"
+  },
+  {
+   "kanji": "ぼんやり",
+   "hiragana": "ぼんやり",
+   "korean": "멍하니",
+   "level": "N2",
+   "pos": "부사",
+   "example": "窓の外をぼんやり眺めていた。"
+  },
+  {
+   "kanji": "しっかり",
+   "hiragana": "しっかり",
+   "korean": "단단히,확실히",
+   "level": "N3",
+   "pos": "부사",
+   "example": "朝ごはんをしっかり食べなさい。"
+  },
+  {
+   "kanji": "ぎりぎり",
+   "hiragana": "ぎりぎり",
+   "korean": "아슬아슬,빠듯하게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "終電にぎりぎり間に合った。"
+  },
+  {
+   "kanji": "くらくら",
+   "hiragana": "くらくら",
+   "korean": "어질어질",
+   "level": "N1",
+   "pos": "부사",
+   "example": "急に立ったら頭がくらくらした。"
+  },
+  {
+   "kanji": "ぺらぺら",
+   "hiragana": "ぺらぺら",
+   "korean": "술술(유창),얇은 모양",
+   "level": "N2",
+   "pos": "부사",
+   "example": "彼女は英語がぺらぺらだ。"
+  },
+  {
+   "kanji": "つるつる",
+   "hiragana": "つるつる",
+   "korean": "미끈미끈,반들반들",
+   "level": "N2",
+   "pos": "부사",
+   "example": "温泉で肌がつるつるになった。"
+  },
+  {
+   "kanji": "ざらざら",
+   "hiragana": "ざらざら",
+   "korean": "까칠까칠",
+   "level": "N2",
+   "pos": "부사",
+   "example": "砂で床がざらざらしている。"
+  },
+  {
+   "kanji": "ふわふわ",
+   "hiragana": "ふわふわ",
+   "korean": "폭신폭신",
+   "level": "N2",
+   "pos": "부사",
+   "example": "ふわふわのパンケーキを食べた。"
+  },
+  {
+   "kanji": "もこもこ",
+   "hiragana": "もこもこ",
+   "korean": "몽실몽실(부풀어)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "もこもこのセーターで冬を越す。"
+  },
+  {
+   "kanji": "かちかち",
+   "hiragana": "かちかち",
+   "korean": "딱딱하게 굳은 모양",
+   "level": "N1",
+   "pos": "부사",
+   "example": "餅がかちかちに固まった。"
+  },
+  {
+   "kanji": "ことこと",
+   "hiragana": "ことこと",
+   "korean": "보글보글(약불로 끓임)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "スープをことこと煮込んだ。"
+  },
+  {
+   "kanji": "ぐつぐつ",
+   "hiragana": "ぐつぐつ",
+   "korean": "부글부글(펄펄 끓임)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "鍋がぐつぐつ煮えている。"
+  },
+  {
+   "kanji": "じゅうじゅう",
+   "hiragana": "じゅうじゅう",
+   "korean": "지글지글",
+   "level": "N1",
+   "pos": "부사",
+   "example": "鉄板の上で肉がじゅうじゅう焼ける。"
+  },
+  {
+   "kanji": "ぱりぱり",
+   "hiragana": "ぱりぱり",
+   "korean": "바삭바삭(얇은 것)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "海苔がぱりぱりで美味しい。"
+  },
+  {
+   "kanji": "かりかり",
+   "hiragana": "かりかり",
+   "korean": "바삭바삭(단단한 것)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "ベーコンをかりかりに焼いた。"
+  },
+  {
+   "kanji": "しっとり",
+   "hiragana": "しっとり",
+   "korean": "촉촉하게",
+   "level": "N1",
+   "pos": "부사",
+   "example": "しっとりしたケーキが好きだ。"
+  },
+  {
+   "kanji": "ねばねば",
+   "hiragana": "ねばねば",
+   "korean": "끈적끈적(점성)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "納豆のねばねばが苦手だ。"
+  },
+  {
+   "kanji": "べたべた",
+   "hiragana": "べたべた",
+   "korean": "끈적끈적(불쾌)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "汗で体がべたべたする。"
+  },
+  {
+   "kanji": "さらさら",
+   "hiragana": "さらさら",
+   "korean": "보송보송,술술",
+   "level": "N2",
+   "pos": "부사",
+   "example": "洗いたての髪がさらさらだ。"
+  },
+  {
+   "kanji": "きらきら",
+   "hiragana": "きらきら",
+   "korean": "반짝반짝",
+   "level": "N3",
+   "pos": "부사",
+   "example": "星がきらきら輝いている。"
+  },
+  {
+   "kanji": "ぴかぴか",
+   "hiragana": "ぴかぴか",
+   "korean": "번쩍번쩍,반들반들",
+   "level": "N3",
+   "pos": "부사",
+   "example": "靴をぴかぴかに磨いた。"
+  },
+  {
+   "kanji": "どんより",
+   "hiragana": "どんより",
+   "korean": "잔뜩 흐린 모양",
+   "level": "N1",
+   "pos": "부사",
+   "example": "空がどんより曇っている。"
+  },
+  {
+   "kanji": "じめじめ",
+   "hiragana": "じめじめ",
+   "korean": "눅눅하게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "梅雨はじめじめして気分も沈む。"
+  },
+  {
+   "kanji": "むしむし",
+   "hiragana": "むしむし",
+   "korean": "후텁지근",
+   "level": "N2",
+   "pos": "부사",
+   "example": "今夜はむしむしして寝苦しい。"
+  },
+  {
+   "kanji": "ひんやり",
+   "hiragana": "ひんやり",
+   "korean": "서늘하게",
+   "level": "N1",
+   "pos": "부사",
+   "example": "洞窟の中はひんやりしていた。"
+  },
+  {
+   "kanji": "ぽかぽか",
+   "hiragana": "ぽかぽか",
+   "korean": "따끈따끈",
+   "level": "N2",
+   "pos": "부사",
+   "example": "日なたはぽかぽかして気持ちいい。"
+  },
+  {
+   "kanji": "そよそよ",
+   "hiragana": "そよそよ",
+   "korean": "산들산들",
+   "level": "N1",
+   "pos": "부사",
+   "example": "春風がそよそよ吹いている。"
+  },
+  {
+   "kanji": "ざあざあ",
+   "hiragana": "ざあざあ",
+   "korean": "좍좍(비)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "雨がざあざあ降っている。"
+  },
+  {
+   "kanji": "ごろごろ",
+   "hiragana": "ごろごろ",
+   "korean": "데굴데굴,빈둥빈둥",
+   "level": "N2",
+   "pos": "부사",
+   "example": "休日は家でごろごろしていた。"
+  },
+  {
+   "kanji": "びしょびしょ",
+   "hiragana": "びしょびしょ",
+   "korean": "흠뻑 젖은 모양",
+   "level": "N2",
+   "pos": "부사",
+   "example": "にわか雨でびしょびしょになった。"
+  },
+  {
+   "kanji": "からから",
+   "hiragana": "からから",
+   "korean": "바싹 마른 모양",
+   "level": "N2",
+   "pos": "부사",
+   "example": "喉がからからで水を一気に飲んだ。"
+  },
+  {
+   "kanji": "へとへと",
+   "hiragana": "へとへと",
+   "korean": "기진맥진",
+   "level": "N2",
+   "pos": "부사",
+   "example": "残業続きでへとへとだ。"
+  },
+  {
+   "kanji": "くたくた",
+   "hiragana": "くたくた",
+   "korean": "녹초가 됨",
+   "level": "N2",
+   "pos": "부사",
+   "example": "一日歩き回ってくたくたになった。"
+  },
+  {
+   "kanji": "ぼろぼろ",
+   "hiragana": "ぼろぼろ",
+   "korean": "너덜너덜,엉망",
+   "level": "N2",
+   "pos": "부사",
+   "example": "ぼろぼろの辞書を大事に使っている。"
+  },
+  {
+   "kanji": "がたがた",
+   "hiragana": "がたがた",
+   "korean": "덜컹덜컹,부들부들",
+   "level": "N2",
+   "pos": "부사",
+   "example": "古いバスががたがた揺れる。"
+  },
+  {
+   "kanji": "ぶるぶる",
+   "hiragana": "ぶるぶる",
+   "korean": "부들부들(떨림)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "寒くて全身がぶるぶる震えた。"
+  },
+  {
+   "kanji": "ぞくぞく",
+   "hiragana": "ぞくぞく",
+   "korean": "오싹오싹",
+   "level": "N1",
+   "pos": "부사",
+   "example": "熱があるのか背中がぞくぞくする。"
+  },
+  {
+   "kanji": "ちくちく",
+   "hiragana": "ちくちく",
+   "korean": "따끔따끔",
+   "level": "N1",
+   "pos": "부사",
+   "example": "セーターが肌にちくちくする。"
+  },
+  {
+   "kanji": "ずきずき",
+   "hiragana": "ずきずき",
+   "korean": "욱신욱신",
+   "level": "N1",
+   "pos": "부사",
+   "example": "虫歯がずきずき痛む。"
+  },
+  {
+   "kanji": "がんがん",
+   "hiragana": "がんがん",
+   "korean": "지끈지끈,쾅쾅",
+   "level": "N1",
+   "pos": "부사",
+   "example": "二日酔いで頭ががんがんする。"
+  },
+  {
+   "kanji": "がらがら",
+   "hiragana": "がらがら",
+   "korean": "텅텅 빈 모양",
+   "level": "N2",
+   "pos": "부사",
+   "example": "平日の映画館はがらがらだった。"
+  },
+  {
+   "kanji": "ぎゅうぎゅう",
+   "hiragana": "ぎゅうぎゅう",
+   "korean": "꽉꽉(빽빽)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "満員電車にぎゅうぎゅうに詰め込まれた。"
+  },
+  {
+   "kanji": "すかすか",
+   "hiragana": "すかすか",
+   "korean": "텅텅,헐렁",
+   "level": "N1",
+   "pos": "부사",
+   "example": "連休明けの冷蔵庫はすかすかだ。"
+  },
+  {
+   "kanji": "こそこそ",
+   "hiragana": "こそこそ",
+   "korean": "소곤소곤,살금살금",
+   "level": "N1",
+   "pos": "부사",
+   "example": "陰でこそこそ話すのはよくない。"
+  },
+  {
+   "kanji": "うろうろ",
+   "hiragana": "うろうろ",
+   "korean": "어슬렁어슬렁",
+   "level": "N2",
+   "pos": "부사",
+   "example": "道に迷って駅前をうろうろした。"
+  },
+  {
+   "kanji": "きょろきょろ",
+   "hiragana": "きょろきょろ",
+   "korean": "두리번두리번",
+   "level": "N2",
+   "pos": "부사",
+   "example": "初めての街できょろきょろしてしまった。"
+  },
+  {
+   "kanji": "にこにこ",
+   "hiragana": "にこにこ",
+   "korean": "싱글벙글",
+   "level": "N3",
+   "pos": "부사",
+   "example": "赤ちゃんがにこにこ笑っている。"
+  },
+  {
+   "kanji": "にやにや",
+   "hiragana": "にやにや",
+   "korean": "히죽히죽",
+   "level": "N1",
+   "pos": "부사",
+   "example": "何を思い出したのかにやにやしている。"
+  },
+  {
+   "kanji": "くすくす",
+   "hiragana": "くすくす",
+   "korean": "킥킥",
+   "level": "N1",
+   "pos": "부사",
+   "example": "後ろの席でくすくす笑う声がした。"
+  },
+  {
+   "kanji": "げらげら",
+   "hiragana": "げらげら",
+   "korean": "껄껄",
+   "level": "N1",
+   "pos": "부사",
+   "example": "コントを見てげらげら笑った。"
+  },
+  {
+   "kanji": "めそめそ",
+   "hiragana": "めそめそ",
+   "korean": "훌쩍훌쩍",
+   "level": "N1",
+   "pos": "부사",
+   "example": "いつまでもめそめそしないで。"
+  },
+  {
+   "kanji": "しくしく",
+   "hiragana": "しくしく",
+   "korean": "훌쩍훌쩍(울음),콕콕(복통)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "迷子の子がしくしく泣いていた。"
+  },
+  {
+   "kanji": "おろおろ",
+   "hiragana": "おろおろ",
+   "korean": "허둥지둥",
+   "level": "N1",
+   "pos": "부사",
+   "example": "突然の知らせにおろおろするばかりだった。"
+  },
+  {
+   "kanji": "そわそわ",
+   "hiragana": "そわそわ",
+   "korean": "안절부절",
+   "level": "N1",
+   "pos": "부사",
+   "example": "合格発表の日は朝からそわそわした。"
+  },
+  {
+   "kanji": "うずうず",
+   "hiragana": "うずうず",
+   "korean": "근질근질(하고 싶어서)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "早く旅行に行きたくてうずうずしている。"
+  },
+  {
+   "kanji": "いきいき",
+   "hiragana": "いきいき",
+   "korean": "생기 있게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "新しい職場で彼女はいきいきしている。"
+  },
+  {
+   "kanji": "のびのび",
+   "hiragana": "のびのび",
+   "korean": "쑥쑥,자유롭게",
+   "level": "N2",
+   "pos": "부사",
+   "example": "子どもはのびのび育てたい。"
+  },
+  {
+   "kanji": "すくすく",
+   "hiragana": "すくすく",
+   "korean": "무럭무럭",
+   "level": "N1",
+   "pos": "부사",
+   "example": "孫がすくすく育っている。"
+  },
+  {
+   "kanji": "ぐんぐん",
+   "hiragana": "ぐんぐん",
+   "korean": "쑥쑥(빠르게)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "春になって草木がぐんぐん伸びる。"
+  },
+  {
+   "kanji": "どんどん",
+   "hiragana": "どんどん",
+   "korean": "척척,계속해서",
+   "level": "N3",
+   "pos": "부사",
+   "example": "質問があればどんどんしてください。"
+  },
+  {
+   "kanji": "じろじろ",
+   "hiragana": "じろじろ",
+   "korean": "빤히(무례하게)",
+   "level": "N2",
+   "pos": "부사",
+   "example": "人をじろじろ見るのは失礼だ。"
+  },
+  {
+   "kanji": "ちらちら",
+   "hiragana": "ちらちら",
+   "korean": "흘끔흘끔,팔랑팔랑",
+   "level": "N1",
+   "pos": "부사",
+   "example": "雪がちらちら舞い始めた。"
+  },
+  {
+   "kanji": "こつこつ",
+   "hiragana": "こつこつ",
+   "korean": "꾸준히",
+   "level": "N2",
+   "pos": "부사",
+   "example": "毎日こつこつ単語を覚えている。"
+  },
+  {
+   "kanji": "てきぱき",
+   "hiragana": "てきぱき",
+   "korean": "척척(일처리)",
+   "level": "N1",
+   "pos": "부사",
+   "example": "新人なのにてきぱき働く。"
+  },
+  {
+   "kanji": "きちんと",
+   "hiragana": "きちんと",
+   "korean": "제대로,깔끔히",
+   "level": "N3",
+   "pos": "부사",
+   "example": "部屋をきちんと片付けた。"
+  }
+ ]
+}
