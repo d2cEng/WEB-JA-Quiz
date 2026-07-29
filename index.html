@@ -3676,6 +3676,11 @@ if(initTab && $("#"+initTab)) showTab(initTab);
 // 서비스워커 등록 (http/https에서만 — 단일 파일 file:// 사용 시엔 건너뜀)
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  // 새 서비스워커가 넘겨받으면 저장소 단어장 목록을 다시 읽는다 —
+  // 교체가 일어난 그 방문에서도 새로 추가된 단어장이 바로 보이도록.
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    try { initRepoWordbooks(); } catch (e) {}
+  });
 }
 // 설치 버튼: beforeinstallprompt를 잡아 사용자 제스처로 설치 안내
 (function () {
