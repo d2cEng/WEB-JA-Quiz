@@ -1,6 +1,6 @@
 // 일본어 단어 암기 · 시험 — 서비스워커 (오프라인 + 설치 지원)
 // 캐시 버전을 올리면 이전 캐시를 정리하고 새 자산을 받습니다.
-const CACHE = 'ja-quiz-v4';
+const CACHE = 'ja-quiz-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -44,6 +44,19 @@ self.addEventListener('fetch', e => {
       fetch(req)
         .then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', cp)); return r; })
         .catch(() => caches.match('./index.html').then(r => r || caches.match('./')))
+    );
+    return;
+  }
+  // 데이터(JSON): 네트워크 우선 → 저장소에 추가된 단어장·어법이 항상 최신으로 보인다.
+  // (캐시 우선으로 두면 한 번 받은 목록이 계속 남아 새 단어장이 나타나지 않는다)
+  if (new URL(req.url).pathname.endsWith('.json')) {
+    e.respondWith(
+      fetch(req)
+        .then(r => {
+          if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+          return r;
+        })
+        .catch(() => caches.match(req).then(r => r || Response.error()))   // 오프라인이면 캐시본
     );
     return;
   }
