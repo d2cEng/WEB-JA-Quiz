@@ -991,6 +991,8 @@ const I18N = {
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
+    toast_noAskable:"이 방향으로 낼 수 있는 단어가 없습니다 (문제와 정답이 같아지는 단어뿐)",
+    toast_skippedSame:"문제와 정답이 같아지는 {n}개는 제외했어요",
     sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
     sheet_answerTitle:"{title} — 정답", sheet_includeAnswer:"정답지도 인쇄에 포함", toast_examSheet:"시험지 생성 완료",
     help_modalTitle:"📖 사용법 한눈에 보기",
@@ -1142,6 +1144,8 @@ const I18N = {
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
+    toast_noAskable:"No words can be asked in this direction (the prompt would equal the answer)",
+    toast_skippedSame:"Skipped {n} word(s) whose prompt equals the answer",
     sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
     sheet_answerTitle:"{title} — Answers", sheet_includeAnswer:"Include answer key in print", toast_examSheet:"Test sheet generated",
     help_modalTitle:"📖 How to use this app",
@@ -2112,12 +2116,18 @@ function daysOf(start,end){
   return days;
 }
 function scheduleDays(){ return daysOf($("#sStart").value,$("#sEnd").value); }
-// 분량 합계가 개수에 가장 가까운 자동 배수(2·3·4)로 평일/주말 cap 계산
+// 하루 분량(평일·주말 중 많은 쪽)이 가장 적어지는 배수로 평일/주말 cap 계산.
+// 동률이면 낭비가 적은 쪽을 택한다. 낭비만 기준으로 삼으면 기간을 하루 늘렸을 때
+// 오히려 배수가 커져 하루 분량이 늘어나는 경우가 생긴다.
 function capsAuto(total, days){
   const we=days.filter(d=>d.weekend).length, wd=days.length-we;
   if(total<=0) return {x:0,y:0};
   let best=null;
-  for(const k of [1,2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+  for(const k of [1,2,3,4]){
+    const c=capsForK(total,wd,we,k); if(!c) continue;
+    const peak=Math.max(c.x, we?c.y:0);
+    if(!best || peak<best.peak || (peak===best.peak && c.over<best.over)) best=Object.assign({peak},c);
+  }
   return best||{x:0,y:0};
 }
 // 단어 풀을 날짜에 평일 cap=x, 주말 cap=y로 순서대로 배치 (마지막 날은 더 적을 수 있음)
@@ -2132,15 +2142,17 @@ function distributeInto(target, pool, days, x, y){
   if(i<pool.length){ const last=Object.keys(target).sort().pop()||days[days.length-1].date;
     target[last]=(target[last]||[]).concat(pool.slice(i).map(w=>w.id)); }
 }
-// 현재·예정(오늘 이후) 단어 풀 + 미배치 단어(미학습 우선)
+// 재배치 대상 = 아직 외우지 않은 단어만.
+// 현재·예정(오늘 이후) 일정의 미완료 단어 + 아직 일정에 없는 미완료 단어.
+// (이미 외운 단어를 넣으면 남은 분량이 부풀려져, 기간을 늘려도 하루 분량이 줄지 않는다)
 function editPoolWords(){
   const today=todayStr();
   const futureIds=[]; Object.keys(state.schedule).filter(d=>d>=today).sort()
     .forEach(d=>state.schedule[d].forEach(id=>{ if(!futureIds.includes(id)) futureIds.push(id); }));
+  const todo=w=>w && !isDone(w.id) && notExcluded(w);
   const scheduledSet=new Set(Object.values(state.schedule).flat());
-  const extra=state.words.filter(w=>!scheduledSet.has(w.id))
-    .sort((a,b)=>(isDone(a.id)?1:0)-(isDone(b.id)?1:0));
-  return futureIds.map(wordById).filter(Boolean).concat(extra);
+  const extra=state.words.filter(w=>!scheduledSet.has(w.id)).filter(todo);
+  return futureIds.map(wordById).filter(todo).concat(extra);
 }
 function applyScheduleEdit(){
   const days=daysOf($("#eStart").value,$("#eEnd").value);
@@ -2151,9 +2163,17 @@ function applyScheduleEdit(){
   const count=Math.min(Math.max(1,+$("#eCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
   const c=capsAuto(pool.length, days);
+  // 이미 외운 단어는 배웠던 날짜에 그대로 남겨 학습 기록·진행률을 보존한다
+  const keepDone={};
+  Object.keys(state.schedule).forEach(d=>{
+    if(d<today) return;
+    const done=state.schedule[d].filter(isDone);
+    if(done.length) keepDone[d]=done;
+  });
   Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });  // 미래만 비우고 재배치
   const fresh={}; distributeInto(fresh, pool, days, c.x, c.y);
-  Object.keys(fresh).forEach(d=>state.schedule[d]=fresh[d]);
+  Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
+  Object.keys(fresh).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(fresh[d]));
   save(); renderSchedule();
   toast(t("toast_redistributed",{d:Object.keys(fresh).length, n:pool.length}));
 }
@@ -2172,7 +2192,7 @@ function computeCaps(total){
   const seg=$("#sWeightSeg .on"); const mode=seg?seg.dataset.w:"auto";
   let best=null;
   if(mode==="auto"){
-    for(const k of [1,2,3,4]){ const c=capsForK(total,wd,we,k); if(c && (!best||c.over<best.over)) best=c; }
+    best=capsAuto(total, days);   // 하루 분량이 가장 적어지는 배수 (일정 수정과 같은 기준)
   } else {
     best=capsForK(total,wd,we,+mode);
   }
@@ -2374,7 +2394,8 @@ function renderSchedule(){
     if(ae!==$("#eStart")) $("#eStart").value=future[0];
     if(ae!==$("#eEnd")) $("#eEnd").value=future[future.length-1];
     const poolMax=editPoolWords().length;
-    const futureWords=new Set(future.flatMap(d=>state.schedule[d])).size;
+    const futureWords=new Set(future.flatMap(d=>state.schedule[d])
+      .filter(id=>{ const w=wordById(id); return w && !isDone(id) && notExcluded(w); })).size;
     $("#eCount").max=Math.max(1,poolMax);
     if(ae!==$("#eCount")) $("#eCount").value=Math.min(Math.max(1,futureWords),Math.max(1,poolMax));
     $("#eCountMax").textContent=poolMax; $("#eCountLabel").textContent=$("#eCount").value;
@@ -2925,8 +2946,19 @@ function startSpeakPhase(){
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
+// 문제와 정답이 같은 값이 되는 단어는 출제에서 뺀다.
+// (漢字 자리에 표기가 없는 히라가나·가타카나 단어는 漢字↔ひらがな 문제가 답을 그대로 보여준다)
+function quizAskable(w, pf, af){ return wField(w,pf)!==wField(w,af); }
+// 현재 설정(범위 + 고정 방향)으로 실제 출제 가능한 단어
+function quizPool(){
+  const pool=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
+  if(segVal("qDirSeg")==="random") return pool;   // 무작위 방향은 단어마다 유효한 쌍을 따로 고른다
+  const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
+  if(pf===af) return pool;                        // 잘못된 설정은 시작할 때 걸러진다
+  return pool.filter(w=>quizAskable(w,pf,af));
+}
 function updateQuizCount(){
-  const max=wordsForScope(segVal('qScopeSeg'),$("#qDate").value).length;
+  const max=quizPool().length;
   const sc=$("#qCount");
   sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
   $("#qCountMax").textContent=max; $("#qCountLabel").textContent=max;
@@ -2942,6 +2974,7 @@ bindSeg("qDirSeg",()=>{
   const rnd=segVal("qDirSeg")==="random";
   $("#qFieldRow").style.opacity=rnd?".45":"";
   $("#qPromptField").disabled=rnd; $("#qAnswerField").disabled=rnd; $("#qSwap").disabled=rnd;
+  updateQuizCount();   // 방향에 따라 출제 가능 단어 수가 달라진다
 });
 // 정답 드롭다운에서 문제로 고른 항목은 제외
 function syncQuizAnswer(){
@@ -2950,18 +2983,22 @@ function syncQuizAnswer(){
   $("#qAnswerField").innerHTML=opts.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("");
   $("#qAnswerField").value = opts.some(([v])=>v===cur) ? cur : opts[0][0];
 }
-$("#qPromptField").addEventListener("change",syncQuizAnswer);
+$("#qPromptField").addEventListener("change",()=>{ syncQuizAnswer(); updateQuizCount(); });
+$("#qAnswerField").addEventListener("change",updateQuizCount);
 $("#qSwap").addEventListener("click",()=>{
   const p=$("#qPromptField").value, a=$("#qAnswerField").value;
   $("#qPromptField").value=a; syncQuizAnswer(); $("#qAnswerField").value=p;  // 서로 교환(유효)
+  updateQuizCount();
 });
 syncQuizAnswer();
 $("#startQuiz").addEventListener("click",()=>{
   const dir=segVal("qDirSeg")||"fixed";
   const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
   if(dir==="fixed" && pf===af){ toast(t("toast_diffFields")); return; }
-  const pool=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
-  if(pool.length<1){ toast(t("toast_noPrintWords")); return; }
+  const scoped=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
+  const pool=quizPool();
+  if(pool.length<1){ toast(scoped.length?t("toast_noAskable"):t("toast_noPrintWords")); return; }
+  if(pool.length<scoped.length) toast(t("toast_skippedSame",{n:scoped.length-pool.length}));
   const count=Math.min(Math.max(1,+$("#qCount").value||pool.length), pool.length);
   const list=shuffle(pool).slice(0,count);   // 설정한 개수만큼 무작위로 출제
   if(list.length<4) toast(t("toast_fewChoices"));
