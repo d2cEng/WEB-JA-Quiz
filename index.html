@@ -718,6 +718,7 @@
       </div>
       <div class="progress"><i id="quizBar"></i></div>
       <div id="quizBody" style="margin-top:14px"></div>
+      <button class="btn ghost noprint" id="qBackPhase" style="margin-top:12px;width:100%" hidden></button>
       <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
         <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
         <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
@@ -996,7 +997,8 @@ const I18N = {
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
     quiz_prev:"◀ 이전", quiz_next:"다음 ▶", quiz_toResults:"결과 보기 ▶",
-    confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’(으)로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
+    quiz_backPhase:"↩︎ {phase} 화면으로 돌아가기",
+    confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’ 화면으로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
     toast_quizResumed:"풀던 시험을 이어서 볼 수 있어요",
     toast_noAskable:"이 방향으로 낼 수 있는 단어가 없습니다 (문제와 정답이 같아지는 단어뿐)",
     toast_skippedSame:"문제와 정답이 같아지는 {n}개는 제외했어요",
@@ -1152,6 +1154,7 @@ const I18N = {
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
     quiz_prev:"◀ Prev", quiz_next:"Next ▶", quiz_toResults:"See results ▶",
+    quiz_backPhase:"↩︎ Back to {phase}",
     confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
     toast_quizResumed:"Your quiz in progress was restored",
     toast_noAskable:"No words can be asked in this direction (the prompt would equal the answer)",
@@ -2792,6 +2795,7 @@ function persistQuiz(){
     localStorage.setItem(QUIZ_KEY, JSON.stringify({
       v:1, book:books.active, at:Date.now(), phase:quiz.phase,
       mainList:(quiz.mainList||quiz.list).map(w=>w.id),
+      prevPhase:quiz.prevPhase||null,
       pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById||null,
       cur:packPhase(quiz), saved
     }));
@@ -2809,7 +2813,7 @@ function restorePersistedQuiz(){
   const cur=unpack(d.cur), main=words(d.mainList||d.cur.list);
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
-  quiz=Object.assign({ mainList:main, phase:d.phase, answered:false,
+  quiz=Object.assign({ mainList:main, phase:d.phase, answered:false, prevPhase:d.prevPhase||null,
     pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved }, cur);
   $("#quizArea").style.display="block";
   if(cur.finished) renderQuizResults(); else renderQuiz();
@@ -3024,8 +3028,11 @@ function startSpeakPhase(){
   const base=(quiz.mainList||quiz.list).filter(speakable);
   if(!base.length){ toast(t("quiz_noSpeakWords")); return; }
   clearAdvance();
+  const from=quiz.phase;
   snapshotPhase();                    // 주관식 결과를 보관
   if(!restorePhase("speak")) startPhaseFresh("speak", base);
+  if(from!=="speak") quiz.prevPhase=from;
+  renderQuizChrome(); persistQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 문제와 정답이 같은 값이 되는 단어는 출제에서 뺀다.
@@ -3089,7 +3096,7 @@ $("#startQuiz").addEventListener("click",()=>{
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}};
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3149,10 +3156,7 @@ function renderQuiz(){
     + `</div>`;
   $("#quizBody").innerHTML=html;
   quiz.answered=review; quiz.finished=false;   // 복습 중인 문제는 다시 채점되지 않도록
-  // 객관식 ↔ 주관식 단계 토글 (서로 자유롭게 이동)
-  const seg=$("#quizPhaseSeg");
-  seg.style.display="flex";
-  $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
+  renderQuizChrome();   // 단계 토글 + 이전 모드로 돌아가기 버튼
   $("#qPrev").addEventListener("click",()=>gotoQuestion(quiz.idx-1));
   $("#qNext").addEventListener("click",()=>{ clearAdvance(); nextQuiz(); });
   if(quiz.phase==="sa" && !review){
@@ -3175,27 +3179,48 @@ function gotoQuestion(i){
 // (재시험 중 같은 단계를 누르면 본시험 전체 단어로 다시 시작)
 $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
-  const ph=b.dataset.ph;
+  goPhase(b.dataset.ph, true);
+});
+/* 단계 이동. ask=true면 시험 도중 실수로 눌렀을 때를 대비해 한 번 확인한다.
+   '이전 모드로 돌아가기'는 되돌리는 동작이므로 확인 없이 바로 옮긴다. */
+function goPhase(ph, ask){
+  if(!quiz.list.length) return;
   if(ph===quiz.phase && !quiz.isRetry) return;
-  // 시험 도중이면 한 번 확인 — 실수로 눌러 화면이 바뀌는 것을 막는다 (진행 내역은 보관된다)
   const inProgress = !quiz.finished && (quiz.idx>0 || Object.keys(quiz.done).length>0);
-  if(inProgress && !confirm(t("confirm_phaseSwitch",{phase:phaseLabel(ph)}))) return;
+  if(ask && inProgress && !confirm(t("confirm_phaseSwitch",{phase:phaseLabel(ph)}))) return;
   clearAdvance(); spAbort();
   const same=(ph===quiz.phase);
+  const from=quiz.phase;
   snapshotPhase();                       // 떠나는 단계 보관
-  if(!same && restorePhase(ph)) return;  // 풀던 내역이 있으면 이어서
+  if(!same && restorePhase(ph)){ quiz.prevPhase=from; renderQuizChrome(); persistQuiz(); return; }
   let base=(quiz.mainList||quiz.list).slice();   // 새로 시작할 땐 본시험 전체 단어
   if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
   startPhaseFresh(ph, base);
-});
+  if(!same) quiz.prevPhase=from;
+  renderQuizChrome(); persistQuiz();
+}
+// 단계 토글 + '이전 모드로 돌아가기' 버튼 상태 갱신
+function renderQuizChrome(){
+  const seg=$("#quizPhaseSeg"); if(!seg) return;
+  seg.style.display="flex";
+  $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
+  const back=$("#qBackPhase"); if(!back) return;
+  const pv=quiz.prevPhase;
+  if(pv && pv!==quiz.phase){
+    back.hidden=false;
+    back.textContent=t("quiz_backPhase",{phase:phaseLabel(pv)});
+  } else back.hidden=true;
+}
 // 단어장을 바꾸면 진행 중이던 시험은 정리한다 (단어 구성이 달라지므로)
 function resetQuizArea(){
   clearAdvance(); spAbort();
   quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:quiz.pf,af:quiz.af,
     dir:quiz.dir,wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{}};
+  quiz.prevPhase=null;
   const a=$("#quizArea"); if(a) a.style.display="none";
   clearPersistedQuiz();
 }
+$("#qBackPhase").addEventListener("click",()=>{ if(quiz.prevPhase) goPhase(quiz.prevPhase, false); });
 function phaseLabel(ph){ return ph==="mc"?t("quiz_mc"):ph==="sa"?t("quiz_sa"):t("quiz_speak"); }
 // 단계를 처음부터 새로 시작
 function startPhaseFresh(ph, base){
@@ -3252,8 +3277,7 @@ function renderQuizResults(){
   quiz.finished=true;
   $("#quizBar").style.width="100%";
   // 결과 화면에서도 단계 토글을 남긴다 — 다른 단계로 갔다가 이 결과로 돌아올 수 있도록
-  $("#quizPhaseSeg").style.display="flex";
-  $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
+  renderQuizChrome();
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
   const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
   quiz.finalWrong=[...quiz.wrong];
@@ -3291,8 +3315,11 @@ function renderQuizResults(){
 // 주관식 본시험은 항상 본시험 전체 단어(mainList)로 출제 — 객관식 재시험 목록이 섞이지 않는다
 function startSAPhase(){
   clearAdvance();
+  const from=quiz.phase;
   snapshotPhase();                    // 객관식 결과를 보관 — 단계 토글로 다시 볼 수 있다
   if(!restorePhase("sa")) startPhaseFresh("sa", (quiz.mainList||quiz.list).slice());
+  if(from!=="sa") quiz.prevPhase=from;
+  renderQuizChrome(); persistQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
@@ -3438,7 +3465,8 @@ function syncMetaObj(){
   if(!syncMeta || typeof syncMeta!=="object") syncMeta={};
   syncMeta.dirty=syncMeta.dirty||{}; syncMeta.deleted=syncMeta.deleted||{};
   syncMeta.lastSeen=syncMeta.lastSeen||{}; syncMeta.lastSyncAt=syncMeta.lastSyncAt||0;
-  syncMeta.chunks=syncMeta.chunks||{};   // 단어장별 원격 조각 문서 수 (분할 저장 정리용)
+  syncMeta.chunks=syncMeta.chunks||{};   // 옛 형식 조각 수 (정리용)
+  syncMeta.parts=syncMeta.parts||{};     // {id:{w,s,hash}} — 올려 둔 단어·진도 조각 수와 단어 목록 해시
   syncMeta.remoteBeat=syncMeta.remoteBeat||0;   // 마지막으로 본 원격 registry updatedAt (변경 감지용)
   return syncMeta;
 }
@@ -3582,19 +3610,26 @@ async function pullMerge(){
   const uref=cloudDb();
   const [udoc,bsnap]=await Promise.all([uref.get(), uref.collection("books").get()]);
   const m=syncMetaObj();
-  const remoteBooks={}, remoteChunks={};
+  const remoteBooks={}, remoteChunks={}, remoteParts={};
   bsnap.forEach(d=>{
-    const i=d.id.indexOf("#");
-    if(i>=0){ const pid=d.id.slice(0,i), seq=+d.id.slice(i+1);
-      (remoteChunks[pid]=remoteChunks[pid]||{})[seq]=d.data()||{}; }
-    else remoteBooks[d.id]=d.data()||{};
+    const id=d.id; let m2;
+    if((m2=id.match(/^(.+)~([ws])(\d+)$/))){        // 새 형식: 단어(~w) / 진도(~s) 조각
+      const box=remoteParts[m2[1]]=remoteParts[m2[1]]||{w:{},s:{}};
+      box[m2[2]][+m2[3]]=d.data()||{};
+    } else if((m2=id.match(/^(.+)#(\d+)$/))){       // 옛 형식 조각
+      (remoteChunks[m2[1]]=remoteChunks[m2[1]]||{})[+m2[2]]=d.data()||{};
+    } else remoteBooks[id]=d.data()||{};
   });
   const remoteDeleted=Object.assign({}, (udoc.exists && udoc.data().deleted)||{});
   let regChanged=false, activeChanged=false;
 
   // ① 이 기기의 삭제(tombstone)를 원격에 반영
   for(const id of Object.keys(m.deleted)){
-    if(remoteBooks[id]){ await deleteBookDocs(uref, id, remoteBooks[id].chunks||1); delete remoteBooks[id]; }
+    if(remoteBooks[id]){
+      const rb=remoteBooks[id];
+      await deleteBookDocs(uref, id, {chunks:rb.chunks||1, w:rb.wordsChunks||0, s:rb.stateChunks||0});
+      delete remoteBooks[id];
+    }
     remoteDeleted[id]=m.deleted[id];
     delete m.deleted[id]; delete m.dirty[id]; delete m.lastSeen[id];
     m.dirty.__registry__=true;
@@ -3620,7 +3655,10 @@ async function pullMerge(){
   const localIds=new Set(books.list.map(b=>b.id));
   for(const id of Object.keys(remoteBooks)){
     const r=remoteBooks[id];
-    const payload=assemblePayload(id, r, remoteChunks);
+    // 새 형식이면 단어+진도를 합치고, 옛 형식이면 통짜 payload를 조립한다
+    const payload = (typeof r.payload==="string")
+      ? assemblePayload(id, r, remoteChunks)
+      : assembleSplit(id, r, remoteParts);
     if(payload==null) continue;   // 조각 불완전(업로드 도중 끊김 등) → 이번 회차는 건너뜀
     const rUp=r.updatedAt||0, seen=m.lastSeen[id]||0, dirty=!!m.dirty[id];
     if(!localIds.has(id)){
@@ -3628,13 +3666,16 @@ async function pullMerge(){
       try{
         localStorage.setItem(bookKey(id), payload);
         books.list.push({id, name:r.name||""});
-        m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1; regChanged=true;
+        m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
+        m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
+        regChanged=true;
       }catch(e){}
     } else if(!dirty){
       if(rUp>seen){
         // 원격이 더 새로움 → 덮어씀
         try{
           localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
+          m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
           const b=books.list.find(x=>x.id===id);
           if(b && r.name && b.name!==r.name){ b.name=r.name; regChanged=true; }
           if(id===books.active) activeChanged=true;
@@ -3645,7 +3686,9 @@ async function pullMerge(){
       const b=books.list.find(x=>x.id===id);
       if(confirm(t("sync_conflict",{name:(b&&b.name)||r.name||id}))){
         try{
-          localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1; delete m.dirty[id];
+          localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
+          m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
+          delete m.dirty[id];
           if(id===books.active) activeChanged=true;
         }catch(e){}
       }
@@ -3693,9 +3736,52 @@ function assemblePayload(id, r, remoteChunks){
   }
   return s;
 }
-async function deleteBookDocs(uref, id, n){
-  await uref.collection("books").doc(id).delete();
-  for(let i=1;i<(n||1);i++) await uref.collection("books").doc(id+"#"+i).delete();
+/* ---- 단어 목록과 진도를 나눠 저장 ----
+   문제를 풀 때마다 단어장 전체(수 MB)를 다시 올리면 데이터·시간이 아깝다.
+   자주 바뀌지 않는 '단어 목록'과 매번 바뀌는 '진도'를 따로 두고,
+   단어 목록은 실제로 달라졌을 때(지문 해시 비교)만 올린다.
+     본문서 books/{id}      = {name, updatedAt, wordsHash, wordsChunks, stateChunks}
+     단어   books/{id}~w{i} = {payload}
+     진도   books/{id}~s{i} = {payload}
+   옛 형식(books/{id}에 payload+chunks, 조각 books/{id}#{i})도 그대로 읽는다. */
+function hashStr(str){
+  let h=5381;
+  for(let i=0;i<str.length;i++) h=(((h*33)^str.charCodeAt(i))>>>0);
+  return h.toString(36)+":"+str.length;
+}
+function splitBook(raw){
+  let o=null; try{ o=JSON.parse(raw); }catch(e){ return null; }
+  return { obj:o,
+    words:JSON.stringify({version:o.version||1, name:o.name||"", words:o.words||[]}),
+    prog:JSON.stringify({name:o.name||"", updatedAt:o.updatedAt||0,
+      selected:o.selected||[], schedule:o.schedule||{}, settings:o.settings||{},
+      progress:o.progress||{}, excluded:o.excluded||[], log:o.log||[]}) };
+}
+function mergeBook(wordsJson, progJson){
+  let w=null,g=null;
+  try{ w=JSON.parse(wordsJson); g=JSON.parse(progJson); }catch(e){ return null; }
+  if(!w||!Array.isArray(w.words)||!g) return null;
+  return JSON.stringify({ version:w.version||1, name:g.name||w.name||"", words:w.words,
+    selected:g.selected||[], schedule:g.schedule||{}, settings:g.settings||{},
+    progress:g.progress||{}, excluded:g.excluded||[], log:g.log||[], updatedAt:g.updatedAt||0 });
+}
+// 나눠 저장한 조각들을 합쳐 단어장 JSON 하나로 (빠진 조각이 있으면 null)
+function assembleSplit(id, r, parts){
+  const pick=(kind,n)=>{ let out="";
+    for(let i=0;i<n;i++){ const d=((parts[id]||{})[kind]||{})[i];
+      if(!d || typeof d.payload!=="string") return null; out+=d.payload; }
+    return out; };
+  const wj=pick("w", r.wordsChunks||0), pj=pick("s", r.stateChunks||0);
+  if(wj==null||pj==null) return null;
+  return mergeBook(wj, pj);
+}
+async function deleteBookDocs(uref, id, meta){
+  const c=uref.collection("books");
+  await c.doc(id).delete();
+  const n=(meta&&meta.chunks)||1, w=(meta&&meta.w)||0, sp=(meta&&meta.s)||0;
+  for(let i=1;i<n;i++) await c.doc(id+"#"+i).delete();      // 옛 형식 조각
+  for(let i=0;i<w;i++) await c.doc(id+"~w"+i).delete();
+  for(let i=0;i<sp;i++) await c.doc(id+"~s"+i).delete();
 }
 
 function scheduleCloudPush(){
@@ -3732,30 +3818,45 @@ async function pushDirtyNow(){
   try{
     const uref=cloudDb();
     for(const id of Object.keys(m.deleted)){
-      await withTimeout(deleteBookDocs(uref, id, m.chunks[id]||1), 30000);
+      const pmeta=m.parts[id]||{};
+      await withTimeout(deleteBookDocs(uref, id, {chunks:m.chunks[id]||1, w:pmeta.w||0, s:pmeta.s||0}), 60000);
       cloudDeletedRemote[id]=m.deleted[id];
-      delete m.deleted[id]; delete m.lastSeen[id]; delete m.chunks[id];
+      delete m.deleted[id]; delete m.lastSeen[id]; delete m.chunks[id]; delete m.parts[id];
       m.dirty.__registry__=true; saveSyncMeta();
     }
     for(const id of Object.keys(m.dirty)){
       if(id==="__registry__") continue;
       const raw=localStorage.getItem(bookKey(id));
       if(raw==null){ delete m.dirty[id]; saveSyncMeta(); continue; }
-      let obj=null; try{ obj=JSON.parse(raw); }catch(e){ delete m.dirty[id]; saveSyncMeta(); continue; }
-      const up=obj.updatedAt||Date.now();
-      // 1MB 초과 대비 분할 업로드: 조각(#1..) 먼저, 본문서는 마지막에 써서 버전을 확정
-      const parts=chunkPayload(raw);
-      for(let i=1;i<parts.length;i++){
-        await withTimeout(uref.collection("books").doc(id+"#"+i).set({parent:id, seq:i, updatedAt:up, payload:parts[i]}), 30000);
+      const sp=splitBook(raw);
+      if(!sp){ delete m.dirty[id]; saveSyncMeta(); continue; }
+      const obj=sp.obj, up=obj.updatedAt||Date.now();
+      const prev=m.parts[id]||{};
+      const wHash=hashStr(sp.words);
+      const wParts=chunkPayload(sp.words), pParts=chunkPayload(sp.prog);
+      const c=uref.collection("books");
+      // 단어 목록은 실제로 바뀌었을 때만 올린다 — 문제를 풀 때마다 다시 보내지 않는다
+      if(prev.hash!==wHash || !prev.w){
+        for(let i=0;i<wParts.length;i++)
+          await withTimeout(c.doc(id+"~w"+i).set({payload:wParts[i]}), 60000);
+        for(let i=wParts.length;i<(prev.w||0);i++)
+          await withTimeout(c.doc(id+"~w"+i).delete(), 30000);
       }
-      await withTimeout(uref.collection("books").doc(id).set({
-        name:obj.name||"", updatedAt:up, chunks:parts.length, payload:parts[0],
+      // 진도(진행·일정·설정·학습일지)는 매번 올린다 — 단어 목록보다 훨씬 가볍다
+      for(let i=0;i<pParts.length;i++)
+        await withTimeout(c.doc(id+"~s"+i).set({payload:pParts[i]}), 60000);
+      for(let i=pParts.length;i<(prev.s||0);i++)
+        await withTimeout(c.doc(id+"~s"+i).delete(), 30000);
+      // 본문서를 마지막에 써서 버전을 확정 (조각이 다 올라간 뒤에만 유효해진다)
+      await withTimeout(c.doc(id).set({
+        name:obj.name||"", updatedAt:up, wordsHash:wHash,
+        wordsChunks:wParts.length, stateChunks:pParts.length,
         syncedAt:firebase.firestore.FieldValue.serverTimestamp()
-      }), 60000);
-      for(let i=parts.length;i<(m.chunks[id]||1);i++){   // 조각 수가 줄었으면 남은 조각 정리
-        await withTimeout(uref.collection("books").doc(id+"#"+i).delete(), 30000);
-      }
-      m.chunks[id]=parts.length;
+      }), 30000);
+      for(let i=1;i<(m.chunks[id]||1);i++)   // 옛 형식으로 올려 둔 조각 정리
+        await withTimeout(c.doc(id+"#"+i).delete(), 30000);
+      m.chunks[id]=1;
+      m.parts[id]={w:wParts.length, s:pParts.length, hash:wHash};
       m.lastSeen[id]=up;
       delete m.dirty[id];
       m.dirty.__registry__=true;   // 단어장을 올렸으면 registry(beat)도 갱신해 다른 기기가 감지하게 함
