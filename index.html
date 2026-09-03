@@ -350,6 +350,10 @@
   .syncpanel .btnrow{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
   .syncuser{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:700;word-break:break-all}
   .syncuser img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+  /* 퀴즈 문제 이동 (이전 / 위치 / 다음) */
+  .qnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+  .qnav .btn{min-width:92px;padding:8px 12px}
+  .qnavpos{font-size:.85em;flex:0 0 auto;white-space:nowrap}
   .syncstatus{color:var(--ink)}
   .synclast{color:var(--muted);font-size:.85em;margin-top:2px}
   /* 모바일: 상단 컨트롤(☁️·❔·언어)이 둘째 줄로 내려가지 않고 제목 오른편에 붙도록 축소 */
@@ -991,6 +995,9 @@ const I18N = {
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
+    quiz_prev:"◀ 이전", quiz_next:"다음 ▶", quiz_toResults:"결과 보기 ▶",
+    confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’(으)로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
+    toast_quizResumed:"풀던 시험을 이어서 볼 수 있어요",
     toast_noAskable:"이 방향으로 낼 수 있는 단어가 없습니다 (문제와 정답이 같아지는 단어뿐)",
     toast_skippedSame:"문제와 정답이 같아지는 {n}개는 제외했어요",
     sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
@@ -1144,6 +1151,9 @@ const I18N = {
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
+    quiz_prev:"◀ Prev", quiz_next:"Next ▶", quiz_toResults:"See results ▶",
+    confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
+    toast_quizResumed:"Your quiz in progress was restored",
     toast_noAskable:"No words can be asked in this direction (the prompt would equal the answer)",
     toast_skippedSame:"Skipped {n} word(s) whose prompt equals the answer",
     sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
@@ -1255,6 +1265,7 @@ function switchBook(id){
   books.active=id; saveBooksReg();
   state=blankState("");
   load();
+  resetQuizArea();
   refreshAll();
   toast(t("toast_bookSwitched",{name:state.dbName}));
 }
@@ -1941,7 +1952,7 @@ function applyWordbook(d, fallbackName){
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
   state.log=Array.isArray(d.log)?d.log:[];
-  normalizeWords(); save(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
+  normalizeWords(); save(); resetQuizArea(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return;
@@ -2764,7 +2775,46 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{}};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{}};
+/* ---- 시험 진행 저장 ----
+   새로고침·앱 재시작 후에도 풀던 시험을 그대로 이어서 풀 수 있도록
+   단어 id만 추려 브라우저에 보관한다(단어장 슬롯별로 구분). */
+const QUIZ_KEY = LS_KEY + ".quiz";
+function packPhase(o){
+  return { list:o.list.map(w=>w.id), idx:o.idx, finished:!!o.finished, score:o.score,
+    wrong:[...o.wrong], saTyped:o.saTyped, mcChosen:o.mcChosen, spHeard:o.spHeard,
+    done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry };
+}
+function persistQuiz(){
+  try{
+    if(!quiz.list.length){ localStorage.removeItem(QUIZ_KEY); return; }
+    const saved={}; Object.keys(quiz.saved||{}).forEach(k=>saved[k]=packPhase(quiz.saved[k]));
+    localStorage.setItem(QUIZ_KEY, JSON.stringify({
+      v:1, book:books.active, at:Date.now(), phase:quiz.phase,
+      mainList:(quiz.mainList||quiz.list).map(w=>w.id),
+      pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById||null,
+      cur:packPhase(quiz), saved
+    }));
+  }catch(e){}
+}
+function clearPersistedQuiz(){ try{ localStorage.removeItem(QUIZ_KEY); }catch(e){} }
+// 저장해 둔 시험 복원 — 단어가 하나라도 사라졌으면(단어장 교체 등) 버린다
+function restorePersistedQuiz(){
+  let d=null; try{ d=JSON.parse(localStorage.getItem(QUIZ_KEY)); }catch(e){}
+  if(!d || d.v!==1 || d.book!==books.active) return false;
+  const words=ids=>{ const out=ids.map(wordById); return out.every(Boolean)?out:null; };
+  const unpack=o=>{ const l=words(o.list); return l?{ list:l, idx:Math.min(o.idx,l.length), finished:!!o.finished,
+    score:o.score||0, wrong:new Set(o.wrong||[]), saTyped:o.saTyped||{}, mcChosen:o.mcChosen||{},
+    spHeard:o.spHeard||{}, done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry }:null; };
+  const cur=unpack(d.cur), main=words(d.mainList||d.cur.list);
+  if(!cur||!main){ clearPersistedQuiz(); return false; }
+  const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
+  quiz=Object.assign({ mainList:main, phase:d.phase, answered:false,
+    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved }, cur);
+  $("#quizArea").style.display="block";
+  if(cur.finished) renderQuizResults(); else renderQuiz();
+  return true;
+}
 // 채점 후 다음 문제로 자동으로 넘기는 타이머. 단계를 옮기면 취소해야
 // 옛 타이머가 새 화면의 문제를 건너뛰지 않는다.
 let quizTimer=null;
@@ -2782,6 +2832,7 @@ function snapshotPhase(){
     list:quiz.list.slice(), idx, finished:done, score:quiz.score,
     wrong:new Set(quiz.wrong), saTyped:Object.assign({},quiz.saTyped),
     mcChosen:Object.assign({},quiz.mcChosen), spHeard:Object.assign({},quiz.spHeard),
+    done:Object.assign({},quiz.done), opts:Object.assign({},quiz.opts),
     isRetry:!!quiz.isRetry
   };
 }
@@ -2790,6 +2841,7 @@ function restorePhase(ph){
   quiz.phase=ph; quiz.list=sv.list.slice(); quiz.idx=sv.idx; quiz.score=sv.score;
   quiz.wrong=new Set(sv.wrong); quiz.saTyped=Object.assign({},sv.saTyped);
   quiz.mcChosen=Object.assign({},sv.mcChosen); quiz.spHeard=Object.assign({},sv.spHeard);
+  quiz.done=Object.assign({},sv.done||{}); quiz.opts=Object.assign({},sv.opts||{});
   quiz.isRetry=sv.isRetry; quiz.answered=false; quiz.finished=sv.finished;
   $("#quizArea").style.display="block";
   if(sv.finished) renderQuizResults(); else renderQuiz();
@@ -2935,6 +2987,7 @@ function startListening(){
     if(quiz.answered || quiz.list[quiz.idx]!==w) return;
     if(spMatch(alts,w)){
       quiz.answered=true; quiz.score++; quizMarkDone(w.id);
+      quiz.done[w.id]={ok:true, given:alts[0]||""};
       fb(true,t("fb_speakCorrect",{ans:w.hiragana}));   // 정답 발음을 보여주며 정답 처리
       speakJa(w.hiragana);
       logEvent(w.id,"sp","o");
@@ -2958,6 +3011,7 @@ function giveUpSpeak(){
   const w=quiz.list[quiz.idx]; if(!w) return;
   quiz.answered=true;
   quiz.wrong.add(w.id);
+  quiz.done[w.id]={ok:false, given:quiz.spHeard[w.id]||""};
   fb(false,t("fb_answer",{ans:w.hiragana}));
   speakJa(w.hiragana);
   logEvent(w.id,"sp","x");
@@ -3035,7 +3089,7 @@ $("#startQuiz").addEventListener("click",()=>{
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}};
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3053,40 +3107,69 @@ function renderQuiz(){
   $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
   $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
   $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
+  // 이미 푼 문제로 돌아온 경우: 채점 결과만 보여주고 다시 채점하지 않는다
+  const rec=quiz.done[w.id]||null, review=!!rec;
+  const ansText=wField(w,af);
   let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
   if(quiz.phase==="mc"){
-    // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시
-    const optWords = shuffle([w, ...pickDistractors(w,3,pf,af)]);
-    html+=`<div class="choices">`+optWords.map(x=>`<button class="choice" data-id="${x.id}">${esc(wField(x,af))}</button>`).join("")+`</div>`;
-    html+=`<div class="feedback" id="qfb"></div>`;
+    // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시.
+    // 한 번 뽑은 보기는 저장해 두어 되돌아와도 같은 보기가 나온다.
+    let optWords;
+    const keep=quiz.opts[w.id];
+    if(keep){ optWords=keep.map(wordById).filter(Boolean); }
+    if(!optWords||!optWords.length){ optWords=shuffle([w, ...pickDistractors(w,3,pf,af)]); quiz.opts[w.id]=optWords.map(x=>x.id); }
+    html+=`<div class="choices">`+optWords.map(x=>{
+      let cls="choice";
+      if(review){ if(x.id===w.id) cls+=" correct"; else if(rec.pick===x.id) cls+=" wrong"; }
+      return `<button class="${cls}" data-id="${x.id}"${review?" disabled":""}>${esc(wField(x,af))}</button>`;
+    }).join("")+`</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
   } else if(quiz.phase==="speak"){
     // 후보군: 객관식과 동일한 추첨 로직 (정답 + 오답 3개) · 토글로 표시/숨김
-    const cands=shuffle([w, ...pickDistractors(w,3,pf,af)]);
+    let cands;
+    const keep=quiz.opts[w.id];
+    if(keep){ cands=keep.map(wordById).filter(Boolean); }
+    if(!cands||!cands.length){ cands=shuffle([w, ...pickDistractors(w,3,pf,af)]); quiz.opts[w.id]=cands.map(x=>x.id); }
     html+=`<div class="candtools"><label class="tgl"><input type="checkbox" id="qShowCand"${spShowCand?" checked":""}><span class="tgltxt">${esc(t("quiz_showCand"))}</span><span class="knob" aria-hidden="true"></span></label></div>`;
     html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+cands.map(x=>`<span class="candchip">${esc(x.hiragana)}</span>`).join("")+`</div>`;
-    html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
-    html+=`<div class="qheard muted" id="qHeard"></div>`;
-    html+=`<div class="feedback" id="qfb"></div>`;
+    if(!review) html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
+    html+=`<div class="qheard muted" id="qHeard">${review&&rec.given?esc(rec.given):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
   } else {
-    html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off">`;
-    html+=`<div class="btnrow"><button class="btn" id="qSubmit">${esc(t("quiz_submit"))}</button></div>`;
-    html+=`<div class="feedback" id="qfb"></div>`;
+    html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off"${review?` value="${esc(rec.given||"")}" disabled`:""}>`;
+    if(!review) html+=`<div class="btnrow"><button class="btn" id="qSubmit">${esc(t("quiz_submit"))}</button></div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
   }
+  // 문제 이동 — 이미 푼 문제는 앞뒤로 오가며 다시 볼 수 있다
+  const last=quiz.idx>=quiz.list.length-1;
+  html+=`<div class="qnav">`
+    + `<button class="btn ghost" id="qPrev"${quiz.idx>0?"":" disabled"}>${esc(t("quiz_prev"))}</button>`
+    + `<span class="muted qnavpos">${quiz.idx+1} / ${quiz.list.length}</span>`
+    + `<button class="btn ghost" id="qNext"${review?"":" disabled"}>${esc(last?t("quiz_toResults"):t("quiz_next"))}</button>`
+    + `</div>`;
   $("#quizBody").innerHTML=html;
-  quiz.answered=false; quiz.finished=false;
+  quiz.answered=review; quiz.finished=false;   // 복습 중인 문제는 다시 채점되지 않도록
   // 객관식 ↔ 주관식 단계 토글 (서로 자유롭게 이동)
   const seg=$("#quizPhaseSeg");
   seg.style.display="flex";
   $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
-  if(quiz.phase==="sa"){
+  $("#qPrev").addEventListener("click",()=>gotoQuestion(quiz.idx-1));
+  $("#qNext").addEventListener("click",()=>{ clearAdvance(); nextQuiz(); });
+  if(quiz.phase==="sa" && !review){
     const inp=$("#qInput"); inp.focus();
     inp.addEventListener("keydown",e=>{ if(e.key==="Enter") submitSA(); });
     $("#qSubmit").addEventListener("click",submitSA);
   } else if(quiz.phase==="speak"){
     $("#qShowCand").addEventListener("change",e=>{ spShowCand=e.target.checked; $("#qCands").style.display=spShowCand?"":"none"; });
-    $("#qMic").addEventListener("click",startListening);
-    $("#qGiveUp").addEventListener("click",giveUpSpeak);
+    if(!review){ $("#qMic").addEventListener("click",startListening); $("#qGiveUp").addEventListener("click",giveUpSpeak); }
   }
+  persistQuiz();
+}
+// 지정한 문제로 이동 (이미 푼 문제는 채점 결과를 보여준다)
+function gotoQuestion(i){
+  if(i<0||i>=quiz.list.length) return;
+  clearAdvance(); spAbort();
+  quiz.idx=i; renderQuiz();
 }
 // 단계 직접 이동 — 풀던 내역이 있으면 중단한 문제부터 이어서 풀고, 없으면 새로 시작.
 // (재시험 중 같은 단계를 누르면 본시험 전체 단어로 다시 시작)
@@ -3094,6 +3177,9 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
   if(ph===quiz.phase && !quiz.isRetry) return;
+  // 시험 도중이면 한 번 확인 — 실수로 눌러 화면이 바뀌는 것을 막는다 (진행 내역은 보관된다)
+  const inProgress = !quiz.finished && (quiz.idx>0 || Object.keys(quiz.done).length>0);
+  if(inProgress && !confirm(t("confirm_phaseSwitch",{phase:phaseLabel(ph)}))) return;
   clearAdvance(); spAbort();
   const same=(ph===quiz.phase);
   snapshotPhase();                       // 떠나는 단계 보관
@@ -3102,11 +3188,21 @@ $("#quizPhaseSeg").addEventListener("click",e=>{
   if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
   startPhaseFresh(ph, base);
 });
+// 단어장을 바꾸면 진행 중이던 시험은 정리한다 (단어 구성이 달라지므로)
+function resetQuizArea(){
+  clearAdvance(); spAbort();
+  quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:quiz.pf,af:quiz.af,
+    dir:quiz.dir,wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{}};
+  const a=$("#quizArea"); if(a) a.style.display="none";
+  clearPersistedQuiz();
+}
+function phaseLabel(ph){ return ph==="mc"?t("quiz_mc"):ph==="sa"?t("quiz_sa"):t("quiz_speak"); }
 // 단계를 처음부터 새로 시작
 function startPhaseFresh(ph, base){
   clearAdvance();
   quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.finished=false; quiz.score=0;
   quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
+  quiz.done={}; quiz.opts={};
   quiz.isRetry=false; quiz.list=shuffle(base);
   delete quiz.saved[ph];
   $("#quizArea").style.display="block";
@@ -3123,8 +3219,10 @@ $("#quizBody").addEventListener("click",e=>{
     c.disabled=true;
   });
   const ans = wField(w,quiz.curAf);
+  const pick=+b.dataset.id;
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
-  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(+b.dataset.id),quiz.curAf); fb(false,t("fb_answer",{ans})); }
+  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(pick),quiz.curAf); fb(false,t("fb_answer",{ans})); }
+  quiz.done[w.id]={ok, pick, given:wField(wordById(pick),quiz.curAf)};
   logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
   scheduleNext(900);
 });
@@ -3139,6 +3237,7 @@ function submitSA(){
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
+  quiz.done[w.id]={ok, given:$("#qInput").value.trim()};
   logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   scheduleNext(1100);
 }
@@ -3186,6 +3285,7 @@ function renderQuizResults(){
     <p style="text-align:center">${scoreLine}</p>
     ${wrongHtml}
     ${footer}`;
+  persistQuiz();
 }
 // 객관식 결과 화면에서 주관식 시험으로 이어가기
 // 주관식 본시험은 항상 본시험 전체 단어(mainList)로 출제 — 객관식 재시험 목록이 섞이지 않는다
@@ -3213,7 +3313,7 @@ function retryWrong(){
   clearAdvance();
   // 본시험 결과를 보관해 두면 재시험 중 단계를 옮겼다 돌아와도 결과를 다시 볼 수 있다
   snapshotPhase();
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}};
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3433,7 +3533,7 @@ function initCloudSync(){
   const btn=$("#syncBtn"); if(btn) btn.hidden=false;
   renderSyncUI();
   ensureCloud().catch(()=>{});   // 오프라인이면 로그인 버튼 클릭/online 이벤트 때 재시도
-  window.addEventListener("online",()=>{ ensureCloud().then(()=>pushDirtyNow()).catch(()=>{}); });
+  window.addEventListener("online",()=>{ resetCloudRetry(); ensureCloud().then(()=>pushDirtyNow()).catch(()=>{}); });
   window.addEventListener("pagehide",()=>{ if(syncUser) pushDirtyNow(); });
   // 앱을 켜둔 동안에도 다른 기기의 변경을 받아오도록: 화면 복귀·포커스 시 + 5분 주기 확인
   document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkCloudFresh(); });
@@ -3469,7 +3569,7 @@ function cloudDb(){ return firebase.firestore().collection("users").doc(syncUser
 // 로그인/앱 시작/수동 동기화 진입점: 원격을 내려받아 병합한 뒤 밀린 변경을 올린다
 async function fullSync(){
   if(!syncUser || syncBusy) return;
-  syncBusy=true; syncErr=false; renderSyncUI();
+  syncBusy=true; syncErr=false; resetCloudRetry(); renderSyncUI();
   try{
     await pullMerge();
     await pushDirtyNow();
@@ -3604,15 +3704,35 @@ function scheduleCloudPush(){
   cloudPushTimer=setTimeout(pushDirtyNow, 3000);
   renderSyncUI();
 }
+/* ---- 인터넷이 안 될 때 ----
+   변경 표시(dirty)는 브라우저에 남으므로 오프라인에서 학습해도 기록은 잃지 않는다.
+   여기서는 올리기를 미뤄 두었다가, 연결이 돌아오거나(online) 아래 재시도 타이머가
+   돌 때 밀린 변경을 한꺼번에 올린다. 실패할수록 간격을 늘려(15초→최대 5분)
+   배터리·데이터를 아낀다. */
+let cloudRetryMs=0, cloudRetryTimer=null;
+function scheduleCloudRetry(){
+  clearTimeout(cloudRetryTimer);
+  cloudRetryMs = cloudRetryMs ? Math.min(cloudRetryMs*2, 300000) : 15000;
+  cloudRetryTimer=setTimeout(()=>{ cloudRetryTimer=null; pushDirtyNow(); }, cloudRetryMs);
+}
+function resetCloudRetry(){ clearTimeout(cloudRetryTimer); cloudRetryTimer=null; cloudRetryMs=0; }
+// 응답이 없으면(끊긴 네트워크 등) 멈춘 채로 남지 않도록 시간 제한을 둔다
+function withTimeout(promise, ms){
+  return new Promise((res,rej)=>{
+    const to=setTimeout(()=>rej(new Error("timeout")), ms);
+    promise.then(v=>{ clearTimeout(to); res(v); }, e=>{ clearTimeout(to); rej(e); });
+  });
+}
 async function pushDirtyNow(){
   if(!syncUser || cloudPushing || !cloudConfigured()) return;
   const m=syncMetaObj();
   if(!Object.keys(m.dirty).length && !Object.keys(m.deleted).length) return;
+  if(navigator.onLine===false){ renderSyncUI(); return; }   // 연결되면 online 이벤트로 다시 올린다
   cloudPushing=true; renderSyncUI();
   try{
     const uref=cloudDb();
     for(const id of Object.keys(m.deleted)){
-      await deleteBookDocs(uref, id, m.chunks[id]||1);
+      await withTimeout(deleteBookDocs(uref, id, m.chunks[id]||1), 30000);
       cloudDeletedRemote[id]=m.deleted[id];
       delete m.deleted[id]; delete m.lastSeen[id]; delete m.chunks[id];
       m.dirty.__registry__=true; saveSyncMeta();
@@ -3626,14 +3746,14 @@ async function pushDirtyNow(){
       // 1MB 초과 대비 분할 업로드: 조각(#1..) 먼저, 본문서는 마지막에 써서 버전을 확정
       const parts=chunkPayload(raw);
       for(let i=1;i<parts.length;i++){
-        await uref.collection("books").doc(id+"#"+i).set({parent:id, seq:i, updatedAt:up, payload:parts[i]});
+        await withTimeout(uref.collection("books").doc(id+"#"+i).set({parent:id, seq:i, updatedAt:up, payload:parts[i]}), 30000);
       }
-      await uref.collection("books").doc(id).set({
+      await withTimeout(uref.collection("books").doc(id).set({
         name:obj.name||"", updatedAt:up, chunks:parts.length, payload:parts[0],
         syncedAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
+      }), 60000);
       for(let i=parts.length;i<(m.chunks[id]||1);i++){   // 조각 수가 줄었으면 남은 조각 정리
-        await uref.collection("books").doc(id+"#"+i).delete();
+        await withTimeout(uref.collection("books").doc(id+"#"+i).delete(), 30000);
       }
       m.chunks[id]=parts.length;
       m.lastSeen[id]=up;
@@ -3643,31 +3763,34 @@ async function pushDirtyNow(){
     }
     if(m.dirty.__registry__){
       const beat=Date.now();
-      await uref.set({
+      await withTimeout(uref.set({
         registry:{active:books.active, list:books.list},
         deleted:cloudDeletedRemote,
         updatedAt:beat,
         syncedAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
+      }), 30000);
       m.remoteBeat=beat;   // 내가 쓴 값 — 다음 변경 감지 때 자기 push에 반응하지 않도록
       delete m.dirty.__registry__; saveSyncMeta();
     }
     m.lastSyncAt=Date.now(); saveSyncMeta();
-    syncErr=false;
+    syncErr=false; resetCloudRetry();
   }catch(e){ syncErr=true; }
   cloudPushing=false; renderSyncUI();
+  if(syncErr){ scheduleCloudRetry(); return; }   // 실패분은 그대로 남겨 두고 나중에 다시 시도
   // push 도중 새로 생긴 변경(위 스냅숏에 없던 dirty)이 있으면 다시 예약
-  if(!syncErr && (Object.keys(m.dirty).length||Object.keys(m.deleted).length)) scheduleCloudPush();
+  if(Object.keys(m.dirty).length||Object.keys(m.deleted).length) scheduleCloudPush();
 }
 
 /* ---- 동기화 UI ---- */
 function computeSyncStatus(){
   if(!syncUser) return "off";
   if(syncBusy||cloudPushing) return "syncing";
-  if(syncErr) return "error";
   const m=syncMetaObj();
-  if(Object.keys(m.dirty).length||Object.keys(m.deleted).length) return "pending";
-  return "synced";
+  const waiting=Object.keys(m.dirty).length||Object.keys(m.deleted).length;
+  // 오프라인은 오류가 아니라 '대기' — 연결되면 밀린 변경을 자동으로 올린다
+  if(waiting && navigator.onLine===false) return "pending";
+  if(syncErr) return "error";
+  return waiting ? "pending" : "synced";
 }
 function fmtLastSync(ms){
   const diff=Date.now()-ms;
@@ -3749,6 +3872,7 @@ updateSchedCalc();   // 기본 날짜 반영해 자동 분량 표시
 renderGrammar();     // 문법 탭 렌더 (동사·형용사 등은 즉시 표시)
 loadIdioms();        // 어법 데이터(data/idioms.json)를 불러온 뒤 어법·문법 어법영역 재렌더
 if(Object.keys(state.schedule).length) $("#schedSettings").open=false;  // 일정 있으면 설정 접기
+restorePersistedQuiz();   // 새로고침·앱 재시작 전에 풀던 시험을 그대로 되살린다
 initCloudSync();     // 클라우드 동기화 (FIREBASE_CONFIG가 비어 있으면 아무것도 안 함)
 const initTab=location.hash.slice(1);
 if(initTab && $("#"+initTab)) showTab(initTab);
