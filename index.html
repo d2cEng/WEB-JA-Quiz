@@ -350,6 +350,21 @@
   .syncpanel .btnrow{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
   .syncuser{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:700;word-break:break-all}
   .syncuser img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+  /* 탭마다 두는 단어장 선택기 + 오늘 할 분량 목록 */
+  .bookpick{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .bookpick label{margin:0;white-space:nowrap;font-weight:700;font-size:.86em;color:var(--muted)}
+  .bookpick select{margin:0;flex:1 1 auto;min-width:0}
+  .bookrow{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 13px;
+    margin-top:8px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+  .bookrow:hover{border-color:var(--brand)}
+  .bookrow.on{border-color:var(--brand);background:var(--accent);cursor:default}
+  .bookrow .bname{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bookrow .bmark{font-size:.72em;font-weight:700;color:var(--brand);border:1px solid var(--brand);
+    border-radius:999px;padding:1px 7px;margin-left:6px;flex:0 0 auto}
+  .bookrow .bcnt{flex:0 0 auto;font-size:.86em;color:var(--muted);white-space:nowrap}
+  .bookrow .bcnt b{color:var(--brand)}
+  .bookrow.alldone .bcnt{color:var(--ok)}
   /* 퀴즈 문제 이동 (이전 / 위치 / 다음) */
   .qnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
   .qnav .btn{min-width:92px;padding:8px 12px}
@@ -543,7 +558,13 @@
 
   <!-- ============ SCHEDULE ============ -->
   <section id="schedule">
+    <div class="card noprint" id="todayAllCard" style="display:none">
+      <h2 data-i18n="sched_todayAllTitle">📅 오늘 할 분량 (단어장별)</h2>
+      <div class="tiphint" data-i18n="sched_todayAllHint">💡 다른 단어장을 누르면 그 단어장으로 전환됩니다. 진도·일정은 단어장마다 따로 관리돼요.</div>
+      <div id="todayAllList"></div>
+    </div>
     <div class="card">
+     <div class="bookpick noprint" data-bookpick style="display:none"></div>
      <details id="schedSettings" open>
       <summary class="setsum" data-i18n="sch_settingsSummary">⚙️ 일정 만들기 (기간·개수·분량)</summary>
       <p class="sub" data-i18n="sch_sub">기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.</p>
@@ -612,6 +633,7 @@
   <!-- ============ MEMORIZE ============ -->
   <section id="memorize">
     <div class="card noprint">
+     <div class="bookpick" data-bookpick style="display:none"></div>
      <details id="memSettings" open>
       <summary class="setsum" data-i18n="mem_settingsSummary">⚙️ 암기 설정 (범위·방식·단어 수)</summary>
       <p class="sub" data-i18n="mem_sub">단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.</p>
@@ -670,6 +692,7 @@
   <!-- ============ QUIZ ============ -->
   <section id="quiz">
     <div class="card noprint">
+     <div class="bookpick" data-bookpick style="display:none"></div>
      <details id="quizSettings" open>
       <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
       <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.</p>
@@ -996,6 +1019,10 @@ const I18N = {
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
+    book_current:"단어장", book_currentMark:"현재",
+    sched_todayAllTitle:"📅 오늘 할 분량 (단어장별)",
+    sched_todayAllHint:"💡 다른 단어장을 누르면 그 단어장으로 전환됩니다. 진도·일정은 단어장마다 따로 관리돼요.",
+    sched_todayRow:"{done} / {total} 완료", sched_todayNone:"오늘 분량 없음", sched_todayAllDone:"오늘 분량 완료 🎉",
     quiz_prev:"◀ 이전", quiz_next:"다음 ▶", quiz_toResults:"결과 보기 ▶",
     quiz_backPhase:"↩︎ {phase} 화면으로 돌아가기",
     confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’ 화면으로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
@@ -1153,6 +1180,10 @@ const I18N = {
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
+    book_current:"Wordbook", book_currentMark:"current",
+    sched_todayAllTitle:"📅 Today's load by wordbook",
+    sched_todayAllHint:"💡 Tap another wordbook to switch to it. Progress and schedules are kept separately for each.",
+    sched_todayRow:"{done} / {total} done", sched_todayNone:"nothing scheduled", sched_todayAllDone:"all done 🎉",
     quiz_prev:"◀ Prev", quiz_next:"Next ▶", quiz_toResults:"See results ▶",
     quiz_backPhase:"↩︎ Back to {phase}",
     confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
@@ -1781,7 +1812,7 @@ function setLang(lang){
   refreshDbFilters(); syncQuizAnswer(); renderGrammar(); renderIdiom();
   gAllOpen=false; if($("#gExpandAll")) $("#gExpandAll").textContent=t("gram_expandAll");
   iAllOpen=false; if($("#iExpandAll")) $("#iExpandAll").textContent=t("gram_expandAll");
-  renderDb(); renderSchedule(); refreshDateSelects();
+  renderDb(); renderSchedule(); refreshDateSelects(); renderBookSelect(); renderBookPickers();
   updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
   $("#dbName").value=state.dbName||"";
   if($("#memStage").style.display!=="none" && mem.list.length) renderFlash();
@@ -2094,6 +2125,62 @@ function renderBookSelect(){
     `<option value="${esc(b.id)}"${b.id===books.active?" selected":""}>${esc(b.name||t("name_unnamed"))}</option>`).join("");
 }
 $("#bookSelect").addEventListener("change",()=>switchBook($("#bookSelect").value));
+/* ---- 일정·암기·퀴즈 탭에도 두는 단어장 선택기 ----
+   단어장을 바꾸려고 단어 DB 탭까지 오가지 않아도 되게 한다. 단어장이 하나면 숨긴다. */
+function renderBookPickers(){
+  const multi=books.list.length>=2;
+  $$("[data-bookpick]").forEach(box=>{
+    box.style.display = multi ? "" : "none";
+    if(!multi){ box.innerHTML=""; return; }
+    box.innerHTML=`<label>${esc(t("book_current"))}</label><select class="bookpicksel">`
+      + books.list.map(b=>`<option value="${esc(b.id)}"${b.id===books.active?" selected":""}>${esc(b.name||t("name_unnamed"))}</option>`).join("")
+      + `</select>`;
+  });
+}
+document.addEventListener("change",e=>{
+  const sel=e.target.closest(".bookpicksel"); if(sel) switchBook(sel.value);
+});
+/* ---- 오늘 할 분량 (단어장별) ----
+   활성 단어장만 보이면 다른 단어장에 남은 오늘 분량을 놓치기 쉬우므로,
+   각 슬롯을 읽어 한 자리에 모아 보여주고 눌러서 바로 전환한다. */
+function todayLoadByBook(){
+  const td=todayStr();
+  return books.list.map(b=>{
+    let sched=null, prog={}, excl=[], name=b.name;
+    if(b.id===books.active){ sched=state.schedule; prog=state.progress||{}; excl=state.excluded||[]; name=state.dbName; }
+    else {
+      try{
+        const sv=JSON.parse(localStorage.getItem(bookKey(b.id)));
+        if(sv){ sched=sv.schedule||{}; prog=sv.progress||{}; excl=sv.excluded||[]; name=sv.name||b.name; }
+      }catch(e){}
+    }
+    const ids=((sched&&sched[td])||[]).filter(id=>!excl.includes(id));
+    const done=ids.filter(id=>prog[id]&&prog[id].done).length;
+    return {id:b.id, name:name||t("name_unnamed"), total:ids.length, done, active:b.id===books.active};
+  });
+}
+function renderTodayAll(){
+  const card=$("#todayAllCard"), list=$("#todayAllList");
+  if(!card||!list) return;
+  const rows=todayLoadByBook();
+  // 단어장이 둘 이상이고, 오늘 분량이 잡힌 단어장이 하나라도 있을 때만 보여준다
+  if(books.list.length<2 || !rows.some(r=>r.total>0)){ card.style.display="none"; return; }
+  card.style.display="";
+  list.innerHTML=rows.map(r=>{
+    const allDone=r.total>0 && r.done>=r.total;
+    const cnt=r.total ? (allDone ? esc(t("sched_todayAllDone"))
+                                 : t("sched_todayRow",{done:r.done, total:r.total}))
+                      : `<span class="muted">${esc(t("sched_todayNone"))}</span>`;
+    return `<button class="bookrow${r.active?" on":""}${allDone?" alldone":""}" data-book="${esc(r.id)}"${r.active?" disabled":""}>`
+      + `<span class="bname">${esc(r.name)}${r.active?`<span class="bmark">${esc(t("book_currentMark"))}</span>`:""}</span>`
+      + `<span class="bcnt">${cnt}</span></button>`;
+  }).join("");
+}
+$("#todayAllList").addEventListener("click",e=>{
+  const b=e.target.closest(".bookrow[data-book]"); if(!b||b.disabled) return;
+  switchBook(b.dataset.book);
+  showTab("schedule");
+});
 $("#bookDelBtn").addEventListener("click",()=>{
   if(books.list.length<2) return;   // 마지막 남은 단어장은 삭제 불가
   const cur=books.list.find(b=>b.id===books.active);
@@ -2368,7 +2455,9 @@ function renderSchedule(){
   const today=todayStr();
   // 제외(빼기)한 단어는 성취도(분모·분자)에서 모두 빼서 성취도가 나빠지지 않게 함
   const learnedWords=state.words.filter(w=>isDone(w.id) && notExcluded(w));
-  if(!dates.length && !learnedWords.length && !(state.log||[]).length){ box.style.display="none"; refreshDateSelects(); return; }
+  if(!dates.length && !learnedWords.length && !(state.log||[]).length){
+    box.style.display="none"; renderTodayAll(); refreshDateSelects(); return;   // 다른 단어장 요약은 계속 보여준다
+  }
   box.style.display="block";
 
   /* ---- 학습 통계 (일정 + 일정 외 모두 포함, 제외 단어는 빼고 집계) ---- */
@@ -2398,7 +2487,7 @@ function renderSchedule(){
   if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
   if(selDate && !state.schedule[selDate]) selDate=null;
   if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
-  renderCalendar(); renderDayDetail(); renderLog();
+  renderCalendar(); renderDayDetail(); renderLog(); renderTodayAll();
 
   /* ---- 일정 수정 패널 기본값 (현재·예정 기준) ---- */
   const ep=$("#editPanel");
@@ -3957,7 +4046,7 @@ function refreshAll(){
   refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
   resetSchedControls(); updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount();
   $("#dbName").value=state.dbName||"";
-  renderBookSelect();
+  renderBookSelect(); renderBookPickers();
 }
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
