@@ -2764,7 +2764,37 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{}};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{}};
+// 채점 후 다음 문제로 자동으로 넘기는 타이머. 단계를 옮기면 취소해야
+// 옛 타이머가 새 화면의 문제를 건너뛰지 않는다.
+let quizTimer=null;
+function scheduleNext(ms){ clearTimeout(quizTimer); quizTimer=setTimeout(()=>{ quizTimer=null; nextQuiz(); }, ms); }
+function clearAdvance(){ if(quizTimer){ clearTimeout(quizTimer); quizTimer=null; } }
+/* ---- 단계(4지선다·주관식·말하기)별 진행 상태 보관 ----
+   단계 토글로 오갈 때 풀던 내역을 잃지 않도록, 떠나는 단계를 저장하고
+   돌아오면 중단한 문제부터 이어서 푼다. */
+function snapshotPhase(){
+  if(!quiz.list.length) return;
+  let idx=quiz.idx, done=!!quiz.finished;
+  // 이미 채점된 문제는 넘어간 것으로 본다 (돌아왔을 때 같은 문제를 다시 채점하지 않도록)
+  if(!done && quiz.answered){ if(idx>=quiz.list.length-1) done=true; else idx++; }
+  quiz.saved[quiz.phase]={
+    list:quiz.list.slice(), idx, finished:done, score:quiz.score,
+    wrong:new Set(quiz.wrong), saTyped:Object.assign({},quiz.saTyped),
+    mcChosen:Object.assign({},quiz.mcChosen), spHeard:Object.assign({},quiz.spHeard),
+    isRetry:!!quiz.isRetry
+  };
+}
+function restorePhase(ph){
+  const sv=quiz.saved[ph]; if(!sv||!sv.list.length) return false;
+  quiz.phase=ph; quiz.list=sv.list.slice(); quiz.idx=sv.idx; quiz.score=sv.score;
+  quiz.wrong=new Set(sv.wrong); quiz.saTyped=Object.assign({},sv.saTyped);
+  quiz.mcChosen=Object.assign({},sv.mcChosen); quiz.spHeard=Object.assign({},sv.spHeard);
+  quiz.isRetry=sv.isRetry; quiz.answered=false; quiz.finished=sv.finished;
+  $("#quizArea").style.display="block";
+  if(sv.finished) renderQuizResults(); else renderQuiz();
+  return true;
+}
 function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
 // 무작위 방향: 문제·정답을 서로 다른 필드로 임의 선택
 // (히라가나 문제에 히라가나가 답으로 나오지 않도록, 표시값이 같아지는 쌍은 제외)
@@ -2908,7 +2938,7 @@ function startListening(){
       fb(true,t("fb_speakCorrect",{ans:w.hiragana}));   // 정답 발음을 보여주며 정답 처리
       speakJa(w.hiragana);
       logEvent(w.id,"sp","o");
-      setTimeout(nextQuiz,1400);
+      scheduleNext(1400);
     } else {
       fb(false,t("quiz_retrySpeak"));   // 오답 확정 아님 · 무제한 재시도
     }
@@ -2931,7 +2961,7 @@ function giveUpSpeak(){
   fb(false,t("fb_answer",{ans:w.hiragana}));
   speakJa(w.hiragana);
   logEvent(w.id,"sp","x");
-  setTimeout(nextQuiz,1400);
+  scheduleNext(1400);
 }
 // 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
 function startSpeakPhase(){
@@ -2939,11 +2969,9 @@ function startSpeakPhase(){
   spReadingMap=null;   // 최신 DB로 한자→읽기 맵 재생성
   const base=(quiz.mainList||quiz.list).filter(speakable);
   if(!base.length){ toast(t("quiz_noSpeakWords")); return; }
-  quiz.phase="speak"; quiz.idx=0; quiz.score=0; quiz.answered=false;
-  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={}; quiz.isRetry=false;
-  quiz.list=shuffle(base);
-  $("#quizArea").style.display="block";
-  renderQuiz();
+  clearAdvance();
+  snapshotPhase();                    // 주관식 결과를 보관
+  if(!restorePhase("speak")) startPhaseFresh("speak", base);
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 문제와 정답이 같은 값이 되는 단어는 출제에서 뺀다.
@@ -3006,7 +3034,8 @@ $("#startQuiz").addEventListener("click",()=>{
   let pairById=null;
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false};
+  clearAdvance();
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3044,7 +3073,7 @@ function renderQuiz(){
     html+=`<div class="feedback" id="qfb"></div>`;
   }
   $("#quizBody").innerHTML=html;
-  quiz.answered=false;
+  quiz.answered=false; quiz.finished=false;
   // 객관식 ↔ 주관식 단계 토글 (서로 자유롭게 이동)
   const seg=$("#quizPhaseSeg");
   seg.style.display="flex";
@@ -3059,18 +3088,30 @@ function renderQuiz(){
     $("#qGiveUp").addEventListener("click",giveUpSpeak);
   }
 }
-// 객관식/주관식 단계 직접 이동 (선택한 단계를 본시험 전체 단어로 처음부터 다시 풉니다)
+// 단계 직접 이동 — 풀던 내역이 있으면 중단한 문제부터 이어서 풀고, 없으면 새로 시작.
+// (재시험 중 같은 단계를 누르면 본시험 전체 단어로 다시 시작)
 $("#quizPhaseSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ph]"); if(!b||!quiz.list.length) return;
   const ph=b.dataset.ph;
   if(ph===quiz.phase && !quiz.isRetry) return;
-  let base=(quiz.mainList||quiz.list).slice();   // 단계 이동 시 항상 본시험 전체 단어
+  clearAdvance(); spAbort();
+  const same=(ph===quiz.phase);
+  snapshotPhase();                       // 떠나는 단계 보관
+  if(!same && restorePhase(ph)) return;  // 풀던 내역이 있으면 이어서
+  let base=(quiz.mainList||quiz.list).slice();   // 새로 시작할 땐 본시험 전체 단어
   if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
-  spAbort();
-  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.score=0; quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
-  quiz.isRetry=false; quiz.list=shuffle(base);
-  renderQuiz();
+  startPhaseFresh(ph, base);
 });
+// 단계를 처음부터 새로 시작
+function startPhaseFresh(ph, base){
+  clearAdvance();
+  quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.finished=false; quiz.score=0;
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
+  quiz.isRetry=false; quiz.list=shuffle(base);
+  delete quiz.saved[ph];
+  $("#quizArea").style.display="block";
+  renderQuiz();
+}
 $("#quizBody").addEventListener("click",e=>{
   const b=e.target.closest(".choice"); if(!b||quiz.answered||quiz.phase!=="mc") return;
   quiz.answered=true;
@@ -3085,7 +3126,7 @@ $("#quizBody").addEventListener("click",e=>{
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(+b.dataset.id),quiz.curAf); fb(false,t("fb_answer",{ans})); }
   logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
-  setTimeout(nextQuiz,900);
+  scheduleNext(900);
 });
 function submitSA(){
   if(quiz.answered) return;
@@ -3099,7 +3140,7 @@ function submitSA(){
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
   logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
-  setTimeout(nextQuiz,1100);
+  scheduleNext(1100);
 }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
 function nextQuiz(){
@@ -3108,9 +3149,12 @@ function nextQuiz(){
 }
 // 시험 결과 화면 — 객관식/주관식 공용 (틀린 단어 + 내가 고른/쓴 답 + 맞음 처리 + 재시험)
 function renderQuizResults(){
-  spAbort();
+  spAbort(); clearAdvance();
+  quiz.finished=true;
   $("#quizBar").style.width="100%";
-  $("#quizPhaseSeg").style.display="none";   // 결과 화면에선 단계 토글 숨김
+  // 결과 화면에서도 단계 토글을 남긴다 — 다른 단계로 갔다가 이 결과로 돌아올 수 있도록
+  $("#quizPhaseSeg").style.display="flex";
+  $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
   const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
   quiz.finalWrong=[...quiz.wrong];
@@ -3146,11 +3190,9 @@ function renderQuizResults(){
 // 객관식 결과 화면에서 주관식 시험으로 이어가기
 // 주관식 본시험은 항상 본시험 전체 단어(mainList)로 출제 — 객관식 재시험 목록이 섞이지 않는다
 function startSAPhase(){
-  quiz.phase="sa"; quiz.idx=0; quiz.score=0; quiz.answered=false;
-  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.isRetry=false;
-  quiz.list=shuffle((quiz.mainList||quiz.list).slice());
-  $("#quizArea").style.display="block";
-  renderQuiz();
+  clearAdvance();
+  snapshotPhase();                    // 객관식 결과를 보관 — 단계 토글로 다시 볼 수 있다
+  if(!restorePhase("sa")) startPhaseFresh("sa", (quiz.mainList||quiz.list).slice());
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
@@ -3168,7 +3210,10 @@ function markCorrect(id){
 function retryWrong(){
   const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true};
+  clearAdvance();
+  // 본시험 결과를 보관해 두면 재시험 중 단계를 옮겼다 돌아와도 결과를 다시 볼 수 있다
+  snapshotPhase();
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved};
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
