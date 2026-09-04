@@ -124,7 +124,9 @@ service cloud.firestore {
 
 ## 파일 구성
 - `index.html` — 앱 전체(시드 단어 데이터 포함). 웹으로 배포되며, 파일 하나만 보내도 그대로 작동합니다.
-- `data/words.sample.json` — 샘플/참고용 단어 데이터 원본
+- `sw.js` / `manifest.webmanifest` — 오프라인 캐시와 앱 설치(PWA) 설정
+- `data/` — 저장소에 준비된 단어장. `data/wordbooks.json`이 앱에 보이는 목록입니다.
+- `CHANGELOG.md` — 날짜별 변경 이력과 구조 요약(인수인계용)
 - `.claude/launch.json` — 로컬 미리보기용 정적 서버 설정(배포에 불필요)
 
 ## 참고
