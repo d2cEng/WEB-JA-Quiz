@@ -1020,6 +1020,7 @@ const I18N = {
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
+    toast_allMemorized:"이 조건의 단어는 이미 다 외웠어요 🎉 레벨·품사를 바꿔보세요",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
     book_current:"단어장", book_currentMark:"현재",
     sched_todayAllTitle:"📅 오늘 할 분량 (단어장별)",
@@ -1181,6 +1182,7 @@ const I18N = {
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
+    toast_allMemorized:"You've already memorized every word matching this filter 🎉 Try another level or part of speech",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
     book_current:"Wordbook", book_currentMark:"current",
     sched_todayAllTitle:"📅 Today's load by wordbook",
@@ -2195,12 +2197,16 @@ $("#bookDelBtn").addEventListener("click",()=>{
 });
 
 /* ====================== 일정 ====================== */
-// 필터 조건에 맞는 단어 풀 (개수 슬라이더 적용 전)
-function schedPoolBase(){
+// 필터 조건에 맞는 단어 (개수 슬라이더 적용 전)
+function schedPoolRaw(){
   if($("#sSelectedOnly").checked) return state.selected.map(wordById).filter(Boolean).filter(notExcluded);
   const pos=$("#sPos").value, lvlSel=levelSel.sLevel;
   return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvlSel.size||lvlSel.has(w.level))).filter(notExcluded);
 }
+// 새 일정에 넣을 단어 — 이미 외운 단어는 뺀다.
+// 진도는 단어 단위라 이미 외운 단어를 다시 배치해 봐야 그 날짜가 곧바로 '완료'로 보일 뿐이고,
+// 학습 기록(외운 날짜)은 아래 일정 생성에서 그대로 보존한다.
+function schedPoolBase(){ return schedPoolRaw().filter(w=>!isDone(w.id)); }
 function updateSchedCount(){
   const max=schedPoolBase().length;
   const sc=$("#sCount");
@@ -2349,7 +2355,11 @@ $("#genSchedule").addEventListener("click",()=>{
   if(!$("#sStart").value||!$("#sEnd").value){ toast(t("toast_enterDates")); return; }
   if($("#sEnd").value<$("#sStart").value){ toast(t("toast_endBeforeStart")); return; }
   let pool=schedPoolBase();
-  if(!pool.length){ toast($("#sSelectedOnly").checked?t("toast_noChecked"):t("toast_noMatch")); return; }
+  if(!pool.length){
+    toast(schedPoolRaw().length ? t("toast_allMemorized")
+      : ($("#sSelectedOnly").checked?t("toast_noChecked"):t("toast_noMatch")));
+    return;
+  }
   if($("#sOrder").value==="random") pool=shuffle(pool);
   const count=Math.min(Math.max(1,+$("#sCount").value||pool.length), pool.length);
   pool=pool.slice(0,count);
@@ -2370,10 +2380,18 @@ $("#genSchedule").addEventListener("click",()=>{
     const lastDate=Object.keys(sched).sort().pop()||days[days.length-1].date;
     sched[lastDate]=(sched[lastDate]||[]).concat(pool.slice(i).map(w=>w.id));
   }
-  // 현재·예정(오늘 이후) 일정을 교체, 지난 기록은 레거시로 보존
+  // 현재·예정(오늘 이후) 일정을 교체, 지난 기록은 레거시로 보존.
+  // 오늘·이후 날짜에 이미 외운 단어가 있으면 그 날짜에 그대로 남겨 캘린더의 학습 기록을 지킨다.
   const today=todayStr();
+  const keepDone={};
+  Object.keys(state.schedule).forEach(d=>{
+    if(d<today) return;
+    const done=state.schedule[d].filter(isDone);
+    if(done.length) keepDone[d]=done;
+  });
   Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });
-  Object.keys(sched).forEach(d=>state.schedule[d]=sched[d]);
+  Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
+  Object.keys(sched).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(sched[d]));
   save(); renderSchedule();
   $("#schedSettings").open=false;   // 생성하면 설정 접기
   toast(t("toast_schedGen",{d:Object.keys(sched).length, x, y, n:pool.length}));
