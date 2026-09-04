@@ -132,6 +132,8 @@
     background:#fff;color:var(--ink)}
   .row{display:flex;gap:12px;flex-wrap:wrap}
   .row>div{flex:1 1 160px;min-width:0}
+  /* hidden 속성이 항상 이기도록 — .btn 등 display를 지정한 요소가 숨겨지지 않던 문제 방지 */
+  [hidden]{display:none!important}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
     background:var(--brand);color:var(--brand-ink);border:none;padding:11px 16px;
     border-radius:10px;font-weight:700;cursor:pointer;min-height:44px}
@@ -1007,7 +1009,7 @@ const I18N = {
     mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
     toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다",
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"점수 {score} / {n}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
     fb_correct:"정답!", fb_answer:"정답: {ans}", toast_enterAnswer:"답을 입력하세요",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
@@ -1168,7 +1170,7 @@ const I18N = {
     mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
     toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage",
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_score:"Score {score} / {n}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
     fb_correct:"Correct!", fb_answer:"Answer: {ans}", toast_enterAnswer:"Enter an answer",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
@@ -3201,8 +3203,10 @@ function renderQuiz(){
   if(quiz.phase==="speak"){ pf="kanji"; af="hira"; }   // 말하기: 항상 漢字 보고 발음
   quiz.curPf=pf; quiz.curAf=af;
   $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
-  $("#quizScore").textContent = t("quiz_score",{score:quiz.score, n:quiz.list.length});
-  $("#quizBar").style.width=(quiz.idx/quiz.list.length*100)+"%";
+  // 상단 표시와 막대는 '몇 문제를 풀었는지'(진행도). 점수는 결과 화면에서 알려준다.
+  const solved=quiz.list.filter(x=>quiz.done[x.id]).length;
+  $("#quizScore").textContent = t("quiz_progress",{done:solved, total:quiz.list.length});
+  $("#quizBar").style.width=(solved/quiz.list.length*100)+"%";
   // 이미 푼 문제로 돌아온 경우: 채점 결과만 보여주고 다시 채점하지 않는다
   const rec=quiz.done[w.id]||null, review=!!rec;
   const ansText=wField(w,af);
@@ -3365,6 +3369,7 @@ function renderQuizResults(){
   spAbort(); clearAdvance();
   quiz.finished=true;
   $("#quizBar").style.width="100%";
+  $("#quizScore").textContent = t("quiz_progress",{done:quiz.list.length, total:quiz.list.length});
   // 결과 화면에서도 단계 토글을 남긴다 — 다른 단계로 갔다가 이 결과로 돌아올 수 있도록
   renderQuizChrome();
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
