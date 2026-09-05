@@ -3012,6 +3012,138 @@ function pickDistractors(w, n, pf, af){
   for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
   return out;   // 같은 품사가 부족하면 다른 품사로 보충
 }
+/* ---- 읽기 오답 만들기 (漢字 → ひらがな 4지선다) ----
+   다른 단어의 읽기를 보기로 쓰면 글자 모양부터 달라 쉽게 걸러진다.
+   정답 읽기에서 '한자에 해당하는 부분'만 조금씩 바꿔 헷갈리는 오답을 만든다.
+   오쿠리가나처럼 한자 표기에 이미 드러난 가나는 그대로 둔다.
+   (한자가 없는 가나 단어는 애초에 이 방향으로 출제되지 않는다) */
+const KANA_ONE=/[ぁ-ゟァ-ヺー]/;
+const KANA_SMALL="ゃゅょぁぃぅぇぉゎ";
+// 가나 오십음 — 행(자음)과 단(모음)으로 글자를 바꿔치기하기 위한 표
+const KANA_ROWS=[
+  "あいうえお","かきくけこ","がぎぐげご","さしすせそ","ざじずぜぞ",
+  "たちつてと","だぢづでど","なにぬねの","はひふへほ","ばびぶべぼ","ぱぴぷぺぽ",
+  "まみむめも","らりるれろ"
+];
+const KANA_POS=(function(){
+  const m={};
+  KANA_ROWS.forEach((row,r)=>{ [...row].forEach((c,v)=>{ m[c]={r,v}; }); });
+  "やゆよ".split("").forEach((c,i)=>{ m[c]={r:-1,v:[0,2,4][i]}; });
+  return m;
+})();
+// 탁점·반탁점 짝 (か↔が, は↔ば↔ぱ)
+const KANA_DAKU={};
+[["かきくけこ","がぎぐげご"],["さしすせそ","ざじずぜぞ"],["たちつてと","だぢづでど"],
+ ["はひふへほ","ばびぶべぼ"],["はひふへほ","ぱぴぷぺぽ"]].forEach(([a,b])=>{
+  [...a].forEach((c,i)=>{ (KANA_DAKU[c]=KANA_DAKU[c]||[]).push(b[i]); (KANA_DAKU[b[i]]=KANA_DAKU[b[i]]||[]).push(c); });
+});
+const KANA_ANY="あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろがぎぐげござじずぜぞだでどばびぶべぼぱぴぷぺぽ";
+function isKanaChar(c){ return KANA_ONE.test(c); }
+function escapeRe(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+// 한 글자 + 뒤따르는 작은 가나를 한 덩어리(모라)로 묶는다
+function toMora(str){
+  const out=[];
+  for(const c of String(str)){
+    if(KANA_SMALL.includes(c) && out.length) out[out.length-1]+=c;
+    else out.push(c);
+  }
+  return out;
+}
+// 한자 표기를 '한자 조각(바꿀 수 있음) / 가나 조각(그대로)'으로 나눠 읽기와 맞춘다
+function splitReading(w){
+  const k=String(w.kanji||""), r=String(w.hiragana||"");
+  if(!k||!r||k===r) return null;
+  if(![...k].some(c=>!isKanaChar(c))) return null;   // 한자가 없으면 대상 아님
+  const toks=[]; let mode=null, cur="";
+  for(const c of k){
+    const m=isKanaChar(c)?"kana":"kanji";
+    if(mode===m) cur+=c; else { if(mode) toks.push({m:mode,s:cur}); mode=m; cur=c; }
+  }
+  if(mode) toks.push({m:mode,s:cur});
+  const re="^"+toks.map(tk=>tk.m==="kanji" ? "([\\s\\S]+?)" : escapeRe(kataToHira(tk.s))).join("")+"$";
+  const mm=kataToHira(r).match(new RegExp(re));
+  if(!mm) return null;
+  // 가타카나→히라가나 변환은 글자 수가 그대로라 원문을 길이로 잘라 쓸 수 있다
+  const parts=[]; let at=0, gi=1;
+  for(const tk of toks){
+    const len = tk.m==="kanji" ? mm[gi++].length : tk.s.length;
+    parts.push({fixed:tk.m==="kana", text:r.slice(at,at+len)});
+    at+=len;
+  }
+  return at===r.length ? parts : null;
+}
+// 읽기 한 조각을 그럴듯하게 비틀기 (모음·자음 바꾸기, 탁점, っ·ん·장음 넣고 빼기, 자리 바꾸기)
+function mutateReading(str){
+  const mora=toMora(str);
+  if(!mora.length) return null;
+  const ops=["vowel","row","daku","sokuon","hatsuon","long","swap","any"];
+  for(let tries=0; tries<12; tries++){
+    const op=ops[Math.floor(Math.random()*ops.length)];
+    const m=mora.slice();
+    const i=Math.floor(Math.random()*m.length);
+    const base=m[i][0], pos=KANA_POS[base];
+    if(op==="vowel" && pos && pos.r>=0){
+      const row=KANA_ROWS[pos.r], v=(pos.v+1+Math.floor(Math.random()*4))%5;
+      m[i]=row[v]+m[i].slice(1);
+    } else if(op==="row" && pos && pos.r>=0){
+      const r2=(pos.r+1+Math.floor(Math.random()*(KANA_ROWS.length-1)))%KANA_ROWS.length;
+      m[i]=KANA_ROWS[r2][pos.v]+m[i].slice(1);
+    } else if(op==="daku" && KANA_DAKU[base]){
+      const alt=KANA_DAKU[base];
+      m[i]=alt[Math.floor(Math.random()*alt.length)]+m[i].slice(1);
+    } else if(op==="sokuon"){
+      if(m.includes("っ")) m.splice(m.indexOf("っ"),1);
+      else if(m.length>=2) m.splice(1+Math.floor(Math.random()*(m.length-1)),0,"っ");
+      else continue;
+    } else if(op==="hatsuon"){
+      if(m.includes("ん")) m.splice(m.indexOf("ん"),1);
+      else m.splice(1+Math.floor(Math.random()*m.length),0,"ん");   // 끝에 붙는 것도 허용
+    } else if(op==="any"){
+      const c=KANA_ANY[Math.floor(Math.random()*KANA_ANY.length)];
+      if(c===base) continue;
+      m[i]=c+m[i].slice(1);
+    } else if(op==="long"){
+      if(!pos || pos.r<0) continue;
+      const tail="あいうえお"[pos.v];
+      if(m[i+1]===tail) m.splice(i+1,1); else m.splice(i+1,0,tail);
+    } else if(op==="swap"){
+      if(m.length<2) continue;
+      const j=(i+1)%m.length; const tmp=m[i]; m[i]=m[j]; m[j]=tmp;
+    } else continue;
+    const out=m.join("");
+    // 말이 안 되는 형태(첫 글자가 っ·ん, 같은 글자 연속 등)는 버린다
+    if(!out || out===str) continue;
+    // 조각만 보면 끝의 っ가 뒤 오쿠리가나와 이어질 수 있으므로 여기선 앞부분만 본다
+    if(/^[っん]/.test(out) || /っっ|んん/.test(out) || /(.)\1\1/.test(out)) continue;
+    return out;
+  }
+  return null;
+}
+// 일본어 읽기로 성립하지 않는 형태 걸러내기
+function validReading(x){
+  if(!x || /^[っん]/.test(x) || /っっ|んん/.test(x) || /(.)\1\1/.test(x)) return false;
+  return !/っ(?![かきくけこさしすせそたちつてとはひふへほぱぴぷぺぽがぎぐげござじずぜぞだぢづでどばびぶべぼ])/.test(x);
+}
+// 정답 읽기를 변형한 오답 n개. 충분히 못 만들면 null (그러면 기존 방식으로 보기를 뽑는다)
+function readingDistractors(w, n){
+  const parts=splitReading(w);
+  if(!parts) return null;
+  const varIdx=parts.map((p,i)=>p.fixed?-1:i).filter(i=>i>=0);
+  if(!varIdx.length) return null;
+  const correct=parts.map(p=>p.text).join("");
+  const seen=new Set([correct, w.hiragana]), out=[];
+  for(let tries=0; tries<120 && out.length<n; tries++){
+    const cur=parts.map(p=>p.text);
+    const i=varIdx[Math.floor(Math.random()*varIdx.length)];
+    const v=mutateReading(cur[i]);
+    if(v==null) continue;
+    cur[i]=v;
+    const cand=cur.join("");
+    if(seen.has(cand) || !validReading(cand)) continue;
+    seen.add(cand); out.push(cand);
+  }
+  return out.length===n ? out : null;
+}
 /* ---- 말하기(음성인식) 퀴즈 ---- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!SR) $$("#quizPhaseSeg button[data-ph='speak']").forEach(b=>{ b.style.display="none"; });   // 미지원 브라우저(Firefox 등)
@@ -3230,26 +3362,34 @@ function renderQuiz(){
   const ansText=wField(w,af);
   let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
   if(quiz.phase==="mc"){
-    // 보기는 단어 단위. 같은 품사·같은 오쿠리가나 우선 오답으로, 정답 필드로 표시.
-    // 한 번 뽑은 보기는 저장해 두어 되돌아와도 같은 보기가 나온다.
-    let optWords;
-    const keep=quiz.opts[w.id];
-    if(keep){ optWords=keep.map(wordById).filter(Boolean); }
-    if(!optWords||!optWords.length){ optWords=shuffle([w, ...pickDistractors(w,3,pf,af)]); quiz.opts[w.id]=optWords.map(x=>x.id); }
-    html+=`<div class="choices">`+optWords.map(x=>{
+    // 보기 만들기 — 漢字→ひらがな는 정답 읽기를 비튼 오답을 쓴다(다른 단어에서 가져오면 너무 쉽다).
+    // 그 밖의 방향은 같은 품사·비슷한 오쿠리가나 단어에서 뽑는다.
+    // 한 번 만든 보기는 저장해 두어 되돌아와도 같은 보기가 나온다.
+    let opt=quiz.opts[w.id];
+    if(!opt || !opt.t){
+      const correct=wField(w,af);
+      let texts=(pf==="kanji" && af==="hira") ? readingDistractors(w,3) : null;
+      if(!texts) texts=pickDistractors(w,3,pf,af).map(x=>wField(x,af));
+      const all=shuffle([correct, ...texts]);
+      opt={t:all, k:all.indexOf(correct)};
+      quiz.opts[w.id]=opt;
+    }
+    html+=`<div class="choices">`+opt.t.map((txt,i)=>{
       let cls="choice";
-      if(review){ if(x.id===w.id) cls+=" correct"; else if(rec.pick===x.id) cls+=" wrong"; }
-      return `<button class="${cls}" data-id="${x.id}"${review?" disabled":""}>${esc(wField(x,af))}</button>`;
+      if(review){ if(i===opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
     }).join("")+`</div>`;
     html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
   } else if(quiz.phase==="speak"){
     // 후보군: 객관식과 동일한 추첨 로직 (정답 + 오답 3개) · 토글로 표시/숨김
-    let cands;
-    const keep=quiz.opts[w.id];
-    if(keep){ cands=keep.map(wordById).filter(Boolean); }
-    if(!cands||!cands.length){ cands=shuffle([w, ...pickDistractors(w,3,pf,af)]); quiz.opts[w.id]=cands.map(x=>x.id); }
+    let opt=quiz.opts[w.id];
+    if(!opt || !opt.t){
+      const cs=shuffle([w, ...pickDistractors(w,3,pf,af)]);
+      opt={t:cs.map(x=>x.hiragana), k:cs.findIndex(x=>x.id===w.id)};
+      quiz.opts[w.id]=opt;
+    }
     html+=`<div class="candtools"><label class="tgl"><input type="checkbox" id="qShowCand"${spShowCand?" checked":""}><span class="tgltxt">${esc(t("quiz_showCand"))}</span><span class="knob" aria-hidden="true"></span></label></div>`;
-    html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+cands.map(x=>`<span class="candchip">${esc(x.hiragana)}</span>`).join("")+`</div>`;
+    html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+opt.t.map(x=>`<span class="candchip">${esc(x)}</span>`).join("")+`</div>`;
     if(!review) html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
     html+=`<div class="qheard muted" id="qHeard">${review&&rec.given?esc(rec.given):""}</div>`;
     html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
@@ -3348,17 +3488,17 @@ $("#quizBody").addEventListener("click",e=>{
   const b=e.target.closest(".choice"); if(!b||quiz.answered||quiz.phase!=="mc") return;
   quiz.answered=true;
   const w=quiz.list[quiz.idx];
-  const ok = +b.dataset.id===w.id;
+  const opt=quiz.opts[w.id]||{t:[],k:-1};
+  const pick=+b.dataset.i, ok=(pick===opt.k);
   $$(".choice").forEach(c=>{
-    if(+c.dataset.id===w.id) c.classList.add("correct");
+    if(+c.dataset.i===opt.k) c.classList.add("correct");
     else if(c===b) c.classList.add("wrong");
     c.disabled=true;
   });
-  const ans = wField(w,quiz.curAf);
-  const pick=+b.dataset.id;
+  const ans = wField(w,quiz.curAf), given=opt.t[pick]||"";
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
-  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=wField(wordById(pick),quiz.curAf); fb(false,t("fb_answer",{ans})); }
-  quiz.done[w.id]={ok, pick, given:wField(wordById(pick),quiz.curAf)};
+  else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=given; fb(false,t("fb_answer",{ans})); }
+  quiz.done[w.id]={ok, pick, given};
   logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
   scheduleNext(900);
 });
