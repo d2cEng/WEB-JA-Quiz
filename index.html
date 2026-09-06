@@ -552,6 +552,9 @@
           <tbody id="dbBody"></tbody>
         </table>
       </div>
+      <div class="btnrow noprint" id="dbMoreRow" style="display:none">
+        <button class="btn sec" id="dbMore"></button>
+      </div>
       <div class="btnrow noprint">
         <button class="btn sec" id="installBtn" data-i18n="db_install">📲 홈 화면에 추가</button>
       </div>
@@ -899,6 +902,7 @@ const I18N = {
     db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
     db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
     db_searchPh:"검색 (漢字·ひらがな·뜻)", pos_all:"품사 전체", level_all:"레벨 전체",
+    db_more:"{n}개 더 보기 (남은 {rest}개)",
     db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
     db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
     th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
@@ -1061,6 +1065,7 @@ const I18N = {
     db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
     db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
     db_searchPh:"Search (漢字·ひらがな·meaning)", pos_all:"All parts of speech", level_all:"All levels",
+    db_more:"Show {n} more ({rest} left)",
     db_selAll:"Select all results", db_selNone:"Clear all",
     db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
     th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
@@ -1905,10 +1910,17 @@ function dbFiltered(){
   rows.sort((a,b)=> String(a[k]||"").localeCompare(String(b[k]||""),"ja")*dbSort.dir);
   return rows;
 }
+/* 단어 표는 화면에 보이는 만큼만 그린다.
+   단어장이 1만 개 규모면 전부 그릴 때 만드는 시간과 배치 비용이 커서
+   로그인·단어장 전환 직후 화면이 멈춘 것처럼 보인다. */
+const DB_PAGE=300;
+let dbLimit=DB_PAGE;
 function renderDb(){
   const rows=dbFiltered();
+  if(dbLimit>DB_PAGE && dbLimit>rows.length) dbLimit=DB_PAGE;
+  const shown=rows.slice(0, dbLimit);
   const sel=new Set(state.selected);
-  $("#dbBody").innerHTML = rows.map(w=>`
+  $("#dbBody").innerHTML = shown.map(w=>`
     <tr>
       <td><input type="checkbox" class="check" data-id="${w.id}" ${sel.has(w.id)?"checked":""}></td>
       <td class="jp">${esc(w.kanji)}</td>
@@ -1919,8 +1931,12 @@ function renderDb(){
     </tr>`).join("") || `<tr><td colspan="6" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
+  const more=rows.length-shown.length;
+  $("#dbMoreRow").style.display = more>0 ? "" : "none";
+  if(more>0) $("#dbMore").textContent=t("db_more",{n:Math.min(more,DB_PAGE), rest:more});
   renderExcluded();
 }
+$("#dbMore").addEventListener("click",()=>{ dbLimit+=DB_PAGE; renderDb(); });
 // 제외된 단어 목록 (단어 DB 하단에서 따로 관리 · 복원)
 function renderExcluded(){
   const box=$("#excludedPanel"); if(!box) return;
@@ -1953,9 +1969,9 @@ $("#dbBody").addEventListener("change",e=>{
   cb.checked?set.add(id):set.delete(id);
   state.selected=[...set]; save(); $("#selCount").textContent=state.selected.length;
 });
-$("#dbSearch").addEventListener("input",renderDb);
-$("#dbPos").addEventListener("change",renderDb);
-bindLevelChips("dbLevel", renderDb);
+$("#dbSearch").addEventListener("input",()=>{ dbLimit=DB_PAGE; renderDb(); });
+$("#dbPos").addEventListener("change",()=>{ dbLimit=DB_PAGE; renderDb(); });
+bindLevelChips("dbLevel", ()=>{ dbLimit=DB_PAGE; renderDb(); });
 $$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
   const k=th.dataset.sort; dbSort.dir = (dbSort.key===k)? -dbSort.dir : 1; dbSort.key=k; renderDb();
 }));
@@ -3858,6 +3874,8 @@ async function fullSync(){
   syncBusy=false; renderSyncUI();
 }
 
+// 무거운 작업 사이에 브라우저가 화면을 그릴 틈을 준다 (한 번에 다 하면 '응답 없음'으로 보인다)
+function yieldUI(){ return new Promise(r=>setTimeout(r,0)); }
 async function pullMerge(){
   const uref=cloudDb();
   const [udoc,bsnap]=await Promise.all([uref.get(), uref.collection("books").get()]);
@@ -3915,6 +3933,7 @@ async function pullMerge(){
     const rUp=r.updatedAt||0, seen=m.lastSeen[id]||0, dirty=!!m.dirty[id];
     if(!localIds.has(id)){
       // 원격에만 있음 → 이 기기에 복원 (새 기기 시나리오)
+      await yieldUI();
       try{
         localStorage.setItem(bookKey(id), payload);
         books.list.push({id, name:r.name||""});
@@ -3925,6 +3944,7 @@ async function pullMerge(){
     } else if(!dirty){
       if(rUp>seen){
         // 원격이 더 새로움 → 덮어씀
+        await yieldUI();
         try{
           localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
           m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
@@ -3957,7 +3977,7 @@ async function pullMerge(){
 
   saveSyncMeta();
   if(regChanged) saveBooksReg();
-  if(activeChanged){ state=blankState(""); load(); refreshAll(); }
+  if(activeChanged){ await yieldUI(); state=blankState(""); load(); await yieldUI(); refreshAll(); }
 }
 
 /* Firestore 문서 1MB 한도 대응 — 큰 단어장은 payload를 여러 문서로 분할 저장.
@@ -4080,6 +4100,7 @@ async function pushDirtyNow(){
       if(id==="__registry__") continue;
       const raw=localStorage.getItem(bookKey(id));
       if(raw==null){ delete m.dirty[id]; saveSyncMeta(); continue; }
+      await yieldUI();
       const sp=splitBook(raw);
       if(!sp){ delete m.dirty[id]; saveSyncMeta(); continue; }
       const obj=sp.obj, up=obj.updatedAt||Date.now();
