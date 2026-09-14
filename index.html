@@ -216,6 +216,9 @@
     text-align:center;cursor:pointer;font-size:1.02em;min-height:54px;
     display:flex;align-items:center;justify-content:center}
   .choice:hover{border-color:var(--brand)}
+  .talkrow{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;
+    font-size:1em;line-height:1;padding:5px 7px;min-height:0}
+  .talkrow:hover{border-color:var(--brand);background:var(--accent)}
   .choice.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
   .choice.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
   /* JLPT N2 어휘 문제 (한자읽기·표기·문맥규정·용법·유의표현) */
@@ -462,8 +465,8 @@
       <button data-tab="schedule" data-i18n="tab_schedule">일정</button>
       <button data-tab="memorize" data-i18n="tab_memorize">암기</button>
       <button data-tab="quiz" data-i18n="tab_quiz">퀴즈</button>
+      <button data-tab="jlpt" data-i18n="tab_jlpt">JLPT 시험</button>
       <button data-tab="grammar" data-i18n="tab_grammar">문법</button>
-      <button data-tab="print" data-i18n="tab_print">시험지 인쇄</button>
       <button data-tab="idiom" data-i18n="tab_idiom">어법</button>
     </nav>
   </header>
@@ -499,6 +502,37 @@
         <p id="repoNote" class="muted" style="display:none;margin:6px 2px 0;font-size:.85em"></p>
         <div class="tiphint" data-i18n="hint_repo">💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. 불러오면 <b>현재 단어와 진도가 교체</b>됩니다(가져오기와 동일).</div>
       </div>
+      <details class="noprint" id="talkBox" style="margin-top:10px">
+        <summary class="setsum" data-i18n="talk_summary">🗣️ 제미나이로 회화 연습 (프롬프트 만들기)</summary>
+        <p class="sub" data-i18n="talk_sub">고른 단어로 일본어 회화 연습 프롬프트를 만들어 복사하고, 제미나이를 엽니다. 제미나이에서 <b>붙여넣기</b>만 하면 바로 대화가 시작돼요.</p>
+        <div class="row">
+          <div><label data-i18n="talk_scope">대상 단어</label>
+            <select id="talkScope">
+              <option value="selected" data-i18n="scope_selected">선택 단어</option>
+              <option value="today" data-i18n="scope_today">오늘 분량</option>
+              <option value="wrong" data-i18n="talk_scopeWrong">최근 틀린 단어</option>
+              <option value="all" data-i18n="scope_all">전체</option>
+            </select>
+          </div>
+          <div><label data-i18n="talk_style">연습 방식</label>
+            <select id="talkStyle">
+              <option value="roleplay" data-i18n="talk_styleRoleplay">상황 회화 (역할극)</option>
+              <option value="word" data-i18n="talk_styleWord">단어 중심 문답</option>
+              <option value="example" data-i18n="talk_styleExample">예문 응용</option>
+            </select>
+          </div>
+        </div>
+        <label><span data-i18n="talk_countPre">사용할 단어 수: </span><b id="talkCountLabel">0</b> / <span id="talkCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
+        <input type="range" id="talkCount" min="1" max="1" value="1">
+        <div class="btnrow">
+          <button class="btn" id="talkGoBtn" data-i18n="talk_copyOpen">📋 복사하고 제미나이 열기</button>
+          <button class="btn sec" id="talkCopyBtn" data-i18n="talk_copyOnly">복사만</button>
+        </div>
+        <div class="tiphint" data-i18n="hint_talk">💡 제미나이는 링크로 질문을 미리 채울 수 없어서, <b>복사 → 열기 → 붙여넣기</b> 순서로 동작합니다. 앱이 깔려 있으면 앱으로, 없으면 웹으로 열립니다.</div>
+        <details style="margin-top:8px"><summary class="setsum" data-i18n="talk_preview">미리 보기</summary>
+          <pre id="talkPreview" style="white-space:pre-wrap;font-size:.82em;line-height:1.55;margin:8px 0 0"></pre>
+        </details>
+      </details>
       <div id="excludedPanel" class="noprint"></div>
       <details class="manual noprint">
         <summary class="setsum" data-i18n="db_manualSummary">📄 JSON 단어장 파일 만드는 법</summary>
@@ -560,6 +594,7 @@
             <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
             <th data-sort="level" data-i18n="th_level">레벨</th>
             <th data-sort="pos" data-i18n="th_pos">품사</th>
+            <th style="width:38px" class="noprint" data-i18n-title="talk_rowTitle" title="이 단어로 회화 연습">🗣️</th>
           </tr></thead>
           <tbody id="dbBody"></tbody>
         </table>
@@ -751,24 +786,63 @@
       <div class="btnrow"><button class="btn" id="startQuiz" data-i18n="btn_start">시작</button></div>
      </details>
     </div>
-    <div class="card" id="quizArea" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <span class="pill" id="quizPhase" data-i18n="quiz_mc">4지선다</span>
-        <span class="scorebar" id="quizScore"></span>
+    <!-- 시험 화면(#quizArea)은 퀴즈 탭과 JLPT 탭이 같은 것을 옮겨 쓴다 (moveQuizArea) -->
+    <div id="quizHost">
+      <div class="card" id="quizArea" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span class="pill" id="quizPhase" data-i18n="quiz_mc">4지선다</span>
+          <span class="scorebar" id="quizScore"></span>
+        </div>
+        <div class="progress"><i id="quizBar"></i></div>
+        <div id="quizBody" style="margin-top:14px"></div>
+        <button class="btn ghost noprint" id="qBackPhase" style="margin-top:12px;width:100%" hidden></button>
+        <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
+          <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
+          <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
+          <button type="button" data-ph="speak" data-i18n="quiz_speak">🎤 말하기</button>
+        </div>
       </div>
-      <div class="progress"><i id="quizBar"></i></div>
-      <div id="quizBody" style="margin-top:14px"></div>
-      <button class="btn ghost noprint" id="qBackPhase" style="margin-top:12px;width:100%" hidden></button>
-      <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
-        <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
-        <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
-        <button type="button" data-ph="n2" data-i18n="quiz_n2">N2 어휘</button>
-        <button type="button" data-ph="speak" data-i18n="quiz_speak">🎤 말하기</button>
-      </div>
+    </div>
+    <div class="card noprint" id="quizPrintCard">
+      <h2 data-i18n="print_title">인쇄</h2>
+      <p class="sub" data-i18n="quiz_printSub">지금까지 고른 단어로 종이 시험지를 만들어 인쇄할 수 있어요.</p>
+      <div class="btnrow"><button class="btn sec" id="goPrintBtn" data-i18n="tab_print">🖨️ 시험지 인쇄</button></div>
     </div>
   </section>
 
-  <!-- ============ PRINT ============ -->
+  <!-- ============ JLPT 시험 ============ -->
+  <section id="jlpt">
+    <div class="card noprint">
+     <details id="jlptSettings" open>
+      <summary class="setsum" data-i18n="jlpt_settingsSummary">⚙️ JLPT 시험 설정 (레벨·범위·문항 수)</summary>
+      <p class="sub" data-i18n="jlpt_sub">실제 JLPT「言語知識(文字・語彙)」형식으로 출제합니다. 한자읽기·표기·문맥규정·용법·유의표현이 번갈아 나옵니다.</p>
+      <div class="tiphint" data-i18n="hint_jlpt">💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체)</div>
+      <label data-i18n="jlpt_level">시험 레벨</label>
+      <div class="seg seg-full" id="jScopeLevelSeg">
+        <button type="button" data-v="N5" data-i18n="lvl_n5">N5</button>
+        <button type="button" data-v="N4" data-i18n="lvl_n4">N4</button>
+        <button type="button" data-v="N3" data-i18n="lvl_n3">N3</button>
+        <button type="button" data-v="N2" class="on" data-i18n="lvl_n2">N2</button>
+      </div>
+      <div class="muted" id="jLevelDesc" style="font-size:.85em;margin:-4px 0 10px"></div>
+      <label data-i18n="quiz_scope">출제 범위</label>
+      <div class="seg seg-full" id="jScopeSeg">
+        <button type="button" data-v="today" data-i18n="scope_today">오늘 분량</button>
+        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
+        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
+        <button type="button" data-v="all" class="on" data-i18n="scope_all">전체</button>
+      </div>
+      <div id="jDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="jDate"></select></div>
+      <label><span data-i18n="quiz_countPre">출제 단어 수: </span><b id="jCountLabel">0</b> / <span id="jCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
+      <input type="range" id="jCount" min="1" max="1" value="1">
+      <div class="btnrow"><button class="btn" id="startJlpt" data-i18n="btn_start">시작</button></div>
+      <p class="muted" style="font-size:.8em;margin:10px 2px 0" data-i18n="jlpt_disclaimer">※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.</p>
+     </details>
+    </div>
+    <div id="jlptHost"></div>
+  </section>
+
+  <!-- ============ PRINT (탭에서 빼고 퀴즈 탭의 버튼으로 들어온다) ============ -->
   <section id="print">
     <div class="card noprint">
       <h2 data-i18n="print_title">인쇄</h2>
@@ -908,7 +982,25 @@ let LANG = (function(){
 const I18N = {
   ko:{
     appTitle:"일본어 단어 암기 · 시험", help_title:"도움말", install_title:"앱으로 설치", install_btn:"설치", toast_installed:"홈 화면에 설치했어요",
-    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
+    tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_jlpt:"JLPT 시험", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
+    lvl_n5:"N5", lvl_n4:"N4", lvl_n3:"N3", lvl_n2:"N2",
+    talk_summary:"🗣️ 제미나이로 회화 연습 (프롬프트 만들기)",
+    talk_sub:"고른 단어로 일본어 회화 연습 프롬프트를 만들어 복사하고, 제미나이를 엽니다. 제미나이에서 <b>붙여넣기</b>만 하면 바로 대화가 시작돼요.",
+    talk_scope:"대상 단어", talk_scopeWrong:"최근 틀린 단어", talk_style:"연습 방식",
+    talk_styleRoleplay:"상황 회화 (역할극)", talk_styleWord:"단어 중심 문답", talk_styleExample:"예문 응용",
+    talk_countPre:"사용할 단어 수: ", talk_copyOpen:"📋 복사하고 제미나이 열기", talk_copyOnly:"복사만",
+    talk_preview:"미리 보기", talk_rowTitle:"이 단어로 회화 연습",
+    talk_copied:"프롬프트 {n}단어 복사됨 — 제미나이에서 붙여넣기 하세요",
+    talk_noWords:"대상 단어가 없어요. 단어를 선택하거나 범위를 바꿔 보세요",
+    hint_talk:"💡 제미나이는 링크로 질문을 미리 채울 수 없어서, <b>복사 → 열기 → 붙여넣기</b> 순서로 동작합니다. 앱이 깔려 있으면 앱으로, 없으면 웹으로 열립니다. (제미나이는 Google의 서비스이며 이 앱과 무관합니다)",
+    jlpt_disclaimer:"※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.",
+    jlpt_settingsSummary:"⚙️ JLPT 시험 설정 (레벨·범위·문항 수)",
+    jlpt_sub:"실제 JLPT「言語知識(文字・語彙)」형식으로 출제합니다. 한자읽기·표기·문맥규정·용법·유의표현이 번갈아 나옵니다.",
+    hint_jlpt:"💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체)",
+    jlpt_level:"시험 레벨", jlpt_levelDesc:"출제 단어 레벨: {levels}",
+    jlpt_examEnd:"{lv} 어휘 시험 종료 🎉", jlpt_score:"{lv} 어휘 점수: <b>{score} / {total}</b>",
+    jlpt_noWords:"이 레벨·범위에 출제할 단어가 없어요. 레벨을 낮추거나 범위를 넓혀 보세요",
+    quiz_printSub:"지금까지 고른 단어로 종이 시험지를 만들어 인쇄할 수 있어요.",
     nav_grammar:"문법 바로가기", nav_idiom:"어법 바로가기", idiom_inGrammar:"모바일에서는 문법 탭에 함께 표시돼요", idiom_title:"자주 쓰는 어법 — 관용어 · 복합동사 · 연어 · 사자성어 · 속담 🗣️", idiom_sub:"문법처럼 통째로 외우면 좋은 표현 모음. 관용어(비유 표현) · 복합동사(동사+동사) · 연어(명사+동사 짝) · 사자성어(四字熟語) · 속담(ことわざ)으로 묶었습니다. 아래 버튼으로 바로 이동하세요.", hint_idiom:"💡 아래 <b>단어장으로 불러오기</b> 버튼을 누르면 이 표현들을 암기·퀴즈·일정·시험지 인쇄에서 그대로 시험볼 수 있어요. 배지 색은 단어 DB·암기·퀴즈와 같습니다.",
     idiom_loadAll:"어법 전체", idiom_loadBtn:"📚 단어장으로 불러오기 (암기·퀴즈)",
     db_title:"단어 데이터베이스",
@@ -1057,8 +1149,8 @@ const I18N = {
     quiz_backPhase:"↩︎ {phase} 화면으로 돌아가기",
     confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’ 화면으로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
     toast_quizResumed:"풀던 시험을 이어서 볼 수 있어요",
-    toast_noAskable:"이 방향으로 낼 수 있는 단어가 없습니다 (문제와 정답이 같아지는 단어뿐)",
-    toast_skippedSame:"문제와 정답이 같아지는 {n}개는 제외했어요",
+    toast_noAskable:"이 방향으로 낼 수 있는 단어가 없어요 (가나·외래어처럼 문제와 정답이 같아지는 단어뿐). 출제 방향을 바꾸거나 무작위로 해 보세요",
+    toast_skippedSame:"문제와 정답이 같아지는 {n}개는 4지선다에서 제외했어요 (N2 어휘에는 나옵니다)",
     sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
     sheet_answerTitle:"{title} — 정답", sheet_includeAnswer:"정답지도 인쇄에 포함", toast_examSheet:"시험지 생성 완료",
     help_modalTitle:"📖 사용법 한눈에 보기",
@@ -1081,7 +1173,25 @@ const I18N = {
   },
   en:{
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help", install_title:"Install as app", install_btn:"Install", toast_installed:"Installed to your home screen",
-    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
+    tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_jlpt:"JLPT exam", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
+    lvl_n5:"N5", lvl_n4:"N4", lvl_n3:"N3", lvl_n2:"N2",
+    talk_summary:"🗣️ Practice conversation with Gemini (build a prompt)",
+    talk_sub:"Builds a Japanese conversation-practice prompt from your words, copies it, and opens Gemini. Just <b>paste</b> there to start.",
+    talk_scope:"Words to use", talk_scopeWrong:"Recently missed", talk_style:"Practice style",
+    talk_styleRoleplay:"Situational role-play", talk_styleWord:"Word-focused Q&A", talk_styleExample:"Example variation",
+    talk_countPre:"Words to use: ", talk_copyOpen:"📋 Copy & open Gemini", talk_copyOnly:"Copy only",
+    talk_preview:"Preview", talk_rowTitle:"Practice conversation with this word",
+    talk_copied:"Prompt with {n} word(s) copied — paste it in Gemini",
+    talk_noWords:"No words to use. Select some words or change the scope",
+    hint_talk:"💡 Gemini cannot be pre-filled from a link, so it works as <b>copy → open → paste</b>. Opens the app if installed, otherwise the web. (Gemini is a Google service, not affiliated with this app.)",
+    jlpt_disclaimer:"※ An unofficial study tool, not affiliated with the JLPT organizers (JEES / The Japan Foundation). Questions are generated from your own wordbook and are not real past papers.",
+    jlpt_settingsSummary:"⚙️ JLPT exam settings (level · scope · questions)",
+    jlpt_sub:"Questions follow the real JLPT 「言語知識(文字・語彙)」 formats: reading, orthography, context, usage and paraphrase, in rotation.",
+    hint_jlpt:"💡 Choosing a level includes that level <b>and everything easier</b>. (N2 also takes in N1, so it covers everything.)",
+    jlpt_level:"Exam level", jlpt_levelDesc:"Word levels: {levels}",
+    jlpt_examEnd:"{lv} vocabulary exam finished 🎉", jlpt_score:"{lv} vocabulary score: <b>{score} / {total}</b>",
+    jlpt_noWords:"No words for this level and scope. Try a lower level or a wider scope",
+    quiz_printSub:"Make a printable paper test from the words you picked.",
     nav_grammar:"Grammar shortcuts", nav_idiom:"Phrase shortcuts", idiom_inGrammar:"shown inside the Grammar tab on mobile", idiom_title:"Common usage — Idioms · Compound verbs · Collocations · 4-char idioms · Proverbs 🗣️", idiom_sub:"Set expressions best learned whole, like grammar. Grouped into idioms, compound verbs (verb+verb), collocations (fixed noun+verb pairs), four-character idioms (四字熟語) and proverbs (ことわざ). Use the buttons below to jump.", hint_idiom:"💡 Tap <b>Load as wordbook</b> below to practice these phrases in Memorize, Quiz, Schedule and Print. Badge colors match Words DB, Memorize and Quiz.",
     idiom_loadAll:"All phrases", idiom_loadBtn:"📚 Load as wordbook (memorize & quiz)",
     db_title:"Word database",
@@ -1230,8 +1340,8 @@ const I18N = {
     quiz_backPhase:"↩︎ Back to {phase}",
     confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
     toast_quizResumed:"Your quiz in progress was restored",
-    toast_noAskable:"No words can be asked in this direction (the prompt would equal the answer)",
-    toast_skippedSame:"Skipped {n} word(s) whose prompt equals the answer",
+    toast_noAskable:"No words can be asked in this direction — kana/loanwords make the prompt equal the answer. Try another direction, or Random",
+    toast_skippedSame:"Skipped {n} word(s) in multiple choice (prompt equals answer) — they still appear in N2 vocabulary",
     sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
     sheet_answerTitle:"{title} — Answers", sheet_includeAnswer:"Include answer key in print", toast_examSheet:"Test sheet generated",
     help_modalTitle:"📖 How to use this app",
@@ -1876,6 +1986,7 @@ function showTab(tab){
   if(tab==="schedule") renderSchedule();   // 진행 통계 최신화
   if(tab==="memorize"){ maybeAskCarryOver(); updateMemCount(); }  // 미완료 단어 이월 확인 + 단어 수 최신화
   if(tab==="quiz") updateQuizCount();      // 범위별 단어 수 최신화
+  if(tab==="jlpt") updateJlptCount();      // JLPT 레벨·범위별 단어 수 최신화
   if(tab==="print") updatePrintCount();    // 문항 수 최신화
   if(tab==="grammar") renderGrammar();     // 모바일이면 어법 포함해 최신화
   if(tab==="idiom") renderIdiom();         // 어법 목록 렌더
@@ -1963,7 +2074,8 @@ function renderDb(){
       <td>${esc(w.korean)}</td>
       <td>${esc(w.level)}</td>
       <td>${esc(w.pos)}</td>
-    </tr>`).join("") || `<tr><td colspan="6" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
+      <td class="noprint"><button class="talkrow" data-talk="${w.id}" data-i18n-title="talk_rowTitle" title="${esc(t("talk_rowTitle"))}">🗣️</button></td>
+    </tr>`).join("") || `<tr><td colspan="7" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
   const more=rows.length-shown.length;
@@ -2149,22 +2261,90 @@ Create a JSON file of Japanese words on the topic "${topic}", exactly matching t
 - korean과 example의 쉼표 개수를 반드시 일치시키세요.
 - 파일 생성 외의 부가 설명은 최소화하세요.`;
 }
-$("#aiCopyBtn").addEventListener("click",async ()=>{
-  const topic=($("#aiTopic").value||"").trim();
-  if(!topic){ toast(t("toast_enterTopic")); $("#aiTopic").focus(); return; }
-  const text=buildAiPrompt(topic);
-  try{
-    await navigator.clipboard.writeText(text);
-    toast(t("toast_promptCopied"));
-  }catch(err){
-    // 클립보드 권한이 없거나 비보안 컨텍스트일 때의 대비책
+// 클립보드 복사 — 권한이 없거나 비보안 컨텍스트(file://)면 textarea로 대체
+async function copyToClipboard(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(err){
     const ta=document.createElement("textarea");
     ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
     document.body.appendChild(ta); ta.focus(); ta.select();
     let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
     document.body.removeChild(ta);
-    toast(ok?t("toast_promptCopied"):t("toast_copyFail"));
+    return ok;
   }
+}
+$("#aiCopyBtn").addEventListener("click",async ()=>{
+  const topic=($("#aiTopic").value||"").trim();
+  if(!topic){ toast(t("toast_enterTopic")); $("#aiTopic").focus(); return; }
+  toast(await copyToClipboard(buildAiPrompt(topic)) ? t("toast_promptCopied") : t("toast_copyFail"));
+});
+
+/* ====================== 제미나이 회화 연습 프롬프트 ======================
+   제미나이는 URL로 질문을 미리 채울 수 없다. 그래서 프롬프트를 클립보드에
+   복사한 뒤 앱(없으면 웹)을 열어 주고, 사용자가 붙여넣는 흐름으로 만든다. */
+const GEMINI_URL="https://gemini.google.com/app";
+// 프롬프트에 넣을 단어 한 줄 (예문이 있으면 함께)
+function talkWordLine(w){
+  const ex=(w.meanings||[]).map(m=>m.example).filter(Boolean)[0]||"";
+  const ko=(w.meanings||[]).map(m=>m.korean).join(", ");
+  return `- ${w.kanji||w.hiragana}（${w.hiragana}）: ${ko}${ex?`  |  예문: ${ex}`:""}`;
+}
+function buildTalkPrompt(words, style){
+  const lines=words.map(talkWordLine).join("\n");
+  // 레벨 표기: 쉬운 것부터 정렬하고, 3개 이상 섞이면 범위로 줄인다 (N5~N1)
+  const order=["N5","N4","N3","N2","N1"];
+  const got=order.filter(x=>words.some(w=>w.level===x));
+  const lv = !got.length ? "N3" : got.length<=2 ? got.join("·") : `${got[0]}~${got[got.length-1]}`;
+  const head=`너는 일본어 회화 선생님이야. 나는 한국어가 모국어인 일본어 학습자야.\n아래 단어들을 써서 회화를 연습하고 싶어. (대략 ${lv} 수준)\n\n[오늘의 단어]\n${lines}\n\n`;
+  const common=`\n[진행 규칙]\n- 일본어 문장에는 항상 히라가나 읽기와 한국어 번역을 함께 달아 줘.\n- 내가 틀리면 무엇이 왜 틀렸는지 한국어로 짧게 고쳐 주고, 자연스러운 표현을 알려 줘.\n- 한 번에 질문은 하나씩만. 내 대답을 기다렸다가 이어 가.\n- 너무 어려운 표현은 피하고 위 단어를 반복해서 쓰도록 유도해 줘.\n\n첫 번째 질문부터 시작해 줘.`;
+  const body = style==="word"
+    ? `[방식] 단어 중심 문답\n위 단어를 하나씩 골라, 그 단어를 반드시 써야 답할 수 있는 질문을 일본어로 던져 줘.\n내가 답하면 자연스러운 표현으로 고쳐 주고 다음 단어로 넘어가 줘.`
+    : style==="example"
+    ? `[방식] 예문 응용\n각 단어의 예문을 먼저 보여 주고, 그 예문을 조금 바꿔 말하도록 시켜 줘.\n(주어·시제·정중체/반말 등을 바꾸는 연습) 내가 만든 문장을 고쳐 주고 다음으로 넘어가 줘.`
+    : `[방식] 상황 회화 (역할극)\n위 단어들이 자연스럽게 나올 만한 상황을 하나 정하고, 너가 상대 역할을 맡아 줘.\n(예: 가게 점원과 손님) 상황 설명을 한국어로 먼저 짧게 해 주고, 일본어로 말을 걸어 줘.`;
+  return head+body+common;
+}
+// 회화 연습 대상 단어
+function talkPool(){
+  const scope=$("#talkScope").value;
+  if(scope==="wrong"){
+    const ids=[...new Set((state.log||[]).filter(e=>e.r==="x").map(e=>e.id))];
+    return ids.map(wordById).filter(Boolean).filter(notExcluded);
+  }
+  return wordsForScope(scope==="selected"?"selected":scope, $("#qDate").value);
+}
+function updateTalkCount(){
+  const max=talkPool().length, sc=$("#talkCount");
+  const want=Math.min(10, Math.max(1,max));            // 회화는 10단어 정도가 알맞다
+  sc.max=Math.max(1,max); sc.value=want; sc.disabled=(max===0);
+  $("#talkCountMax").textContent=max; $("#talkCountLabel").textContent=max?want:0;
+  renderTalkPreview();
+}
+function talkWords(){
+  const n=Math.max(1,+$("#talkCount").value||1);
+  return shuffle(talkPool()).slice(0,n);
+}
+function renderTalkPreview(){
+  const pool=talkPool();
+  const el=$("#talkPreview"); if(!el) return;
+  el.textContent = pool.length ? buildTalkPrompt(pool.slice(0,Math.min(+$("#talkCount").value||1,pool.length)), $("#talkStyle").value)
+                               : t("talk_noWords");
+}
+["#talkScope","#talkStyle"].forEach(s=>$(s).addEventListener("change",updateTalkCount));
+$("#talkCount").addEventListener("input",()=>{ $("#talkCountLabel").textContent=$("#talkCount").value; renderTalkPreview(); });
+async function talkCopy(words, open){
+  if(!words.length){ toast(t("talk_noWords")); return; }
+  const ok=await copyToClipboard(buildTalkPrompt(words, $("#talkStyle").value));
+  toast(ok?t("talk_copied",{n:words.length}):t("toast_copyFail"));
+  if(open) window.open(GEMINI_URL,"_blank","noopener");   // 앱이 있으면 앱으로 열린다
+}
+$("#talkCopyBtn").addEventListener("click",()=>talkCopy(talkWords(), false));
+$("#talkGoBtn").addEventListener("click",()=>talkCopy(talkWords(), true));
+// 단어 표의 🗣️ — 그 단어 하나로 바로 회화 연습
+$("#dbBody").addEventListener("click",e=>{
+  const b=e.target.closest("[data-talk]"); if(!b) return;
+  const w=wordById(+b.dataset.talk); if(!w) return;
+  talkCopy([w], true);
 });
 
 $("#resetBtn").addEventListener("click",()=>{
@@ -2700,7 +2880,7 @@ $("#scheduleResult").addEventListener("click",e=>{
 function refreshDateSelects(){
   const dates=Object.keys(state.schedule).sort();
   const opts=dates.map(d=>`<option value="${d}">${d} (${state.schedule[d].length})</option>`).join("");
-  ["#mDate","#qDate","#pDate"].forEach(sel=>{
+  ["#mDate","#qDate","#jDate","#pDate"].forEach(sel=>{
     const el=$(sel); const cur=el.value;
     el.innerHTML=opts||`<option value="">${esc(t("opt_noSchedule"))}</option>`;
     if([...el.options].some(o=>o.value===cur)) el.value=cur;
@@ -2973,6 +3153,7 @@ function persistQuiz(){
       mainList:(quiz.mainList||quiz.list).map(w=>w.id),
       prevPhase:quiz.prevPhase||null,
       pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById||null,
+      scope:quiz.scope||null, scopeDate:quiz.scopeDate||null, count:quiz.count||null,
       cur:packPhase(quiz), saved
     }));
   }catch(e){}
@@ -2990,7 +3171,8 @@ function restorePersistedQuiz(){
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
   quiz=Object.assign({ mainList:main, phase:d.phase, answered:false, prevPhase:d.prevPhase||null,
-    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved }, cur);
+    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved,
+    scope:d.scope||null, scopeDate:d.scopeDate||null, count:d.count||null }, cur);
   $("#quizArea").style.display="block";
   if(cur.finished) renderQuizResults(); else renderQuiz();
   return true;
@@ -3330,6 +3512,27 @@ function n2Fallback(w){
   const ko=wField(w,"korean");
   return {t:[ko], k:0, n2:"iikae", q:`<div class="qprompt">${esc(wField(w,"kanji"))}</div>`};
 }
+/* 시험 레벨별 출제 단어 레벨 — 고른 레벨과 그보다 쉬운 레벨을 함께 낸다.
+   N2는 N1 전용 유형이 없으므로 N1까지 끌어안아 결과적으로 전체가 된다. */
+const JLPT_LEVELS=["N5","N4","N3","N2"];
+const JLPT_RANGE={ N5:["N5"], N4:["N4","N5"], N3:["N3","N4","N5"], N2:["N1","N2","N3","N4","N5"] };
+function jlptLevelLabel(lv){ return JLPT_RANGE[lv].slice().reverse().join(" · "); }
+// 레벨 범위에 드는 단어만. N2는 전체이므로 레벨이 비어 있는 단어도 버리지 않는다.
+function jlptFilter(pool, lv){
+  if(lv==="N2") return pool;
+  const ok=new Set(JLPT_RANGE[lv]||[]);
+  return pool.filter(w=>ok.has(w.level));
+}
+// JLPT 시험 출제 대상. 4지선다는 「漢字→ひらがな」처럼 문제=정답이 되는 단어(가나·외래어)를
+// 빼지만, 이 시험은 방향 개념이 없고 그런 단어도 文脈規定·用法·言い換え로 낼 수 있으므로
+// 방향 필터를 걷어내고 범위 전체에서 뽑는다. (한자 관련 유형은 유형 단위로 알아서 걸러진다)
+function n2Base(){
+  const scope=quiz.scope||segVal('jScopeSeg');
+  const pool=jlptFilter(wordsForScope(scope, quiz.scopeDate!=null?quiz.scopeDate:$("#jDate").value), quiz.jlptLevel||"N2");
+  const n=quiz.count||(quiz.mainList||quiz.list).length;
+  if(!pool.length) return (quiz.mainList||quiz.list).slice();   // 범위를 못 구하면 기존 목록으로
+  return shuffle(pool).slice(0, Math.max(1, Math.min(n, pool.length)));
+}
 // 현재 문제의 N2 문제 데이터 (없으면 만들어 저장)
 function n2Opt(w){
   let opt=quiz.opts[w.id];
@@ -3529,12 +3732,58 @@ $("#startQuiz").addEventListener("click",()=>{
   let pairById=null;
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
+  // scope/count는 N2 어휘용 — N2는 문제·정답 방향을 쓰지 않으므로 방향 필터 없이 범위 전체에서 뽑는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null};
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
+        scope:segVal('qScopeSeg'), scopeDate:$("#qDate").value, count};
+  quiz.jlpt=false;
+  moveQuizArea("quizHost");        // 시험 화면을 퀴즈 탭으로
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 });
+
+/* ====================== JLPT 시험 탭 ======================
+   퀴즈 탭과 시험 화면(#quizArea)을 공유한다. 하나뿐인 화면을 필요한 탭으로
+   옮겨 쓰므로 id가 겹치지 않고 renderQuiz를 그대로 재사용할 수 있다. */
+function moveQuizArea(hostId){
+  const host=$("#"+hostId), area=$("#quizArea");
+  if(host && area && area.parentElement!==host) host.appendChild(area);
+}
+function jlptLevel(){ return segVal('jScopeLevelSeg')||"N2"; }
+function jlptPool(){ return jlptFilter(wordsForScope(segVal('jScopeSeg'), $("#jDate").value), jlptLevel()); }
+function updateJlptCount(){
+  const max=jlptPool().length, sc=$("#jCount");
+  sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
+  $("#jCountMax").textContent=max; $("#jCountLabel").textContent=max;
+  $("#jLevelDesc").textContent=t("jlpt_levelDesc",{levels:jlptLevelLabel(jlptLevel())});
+}
+bindSeg("jScopeLevelSeg", updateJlptCount);
+bindSeg("jScopeSeg",()=>{
+  $("#jDateWrap").style.display=segVal('jScopeSeg')==="date"?"block":"none";
+  updateJlptCount();
+});
+$("#jDate").addEventListener("change",updateJlptCount);
+$("#jCount").addEventListener("input",()=>{ $("#jCountLabel").textContent=$("#jCount").value; });
+$("#startJlpt").addEventListener("click",()=>{
+  const pool=jlptPool();
+  if(!pool.length){ toast(t("jlpt_noWords")); return; }
+  const count=Math.min(Math.max(1,+$("#jCount").value||pool.length), pool.length);
+  const list=shuffle(pool).slice(0,count);
+  if(list.length<4) toast(t("toast_fewChoices"));
+  clearAdvance(); spAbort();
+  quiz={list, mainList:list.slice(), idx:0, phase:"n2", score:0, answered:false, finished:false,
+        pf:"kanji", af:"korean", dir:"fixed", pairById:null, wrong:new Set(), saTyped:{}, mcChosen:{},
+        spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
+        scope:segVal('jScopeSeg'), scopeDate:$("#jDate").value, count,
+        jlpt:true, jlptLevel:jlptLevel()};
+  moveQuizArea("jlptHost");         // 시험 화면을 JLPT 탭으로
+  $("#jlptSettings").open=false;
+  $("#quizArea").style.display="block"; renderQuiz();
+  $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
+});
+// 퀴즈 탭 하단의 시험지 인쇄 버튼 (인쇄는 탭에서 빼고 여기서 들어간다)
+$("#goPrintBtn").addEventListener("click",()=>showTab("print"));
 // 퀴즈 정답 단어를 학습 기록(캘린더·통계 반영)
 function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
 function renderQuiz(){
@@ -3548,7 +3797,7 @@ function renderQuiz(){
   // N2 어휘는 방향(문제→정답) 대신 유형별 문제를 만든다
   const n2opt = quiz.phase==="n2" ? n2Opt(w) : null;
   $("#quizPhase").textContent = n2opt
-    ? `${t("quiz_n2")} · ${t("n2_tag_"+n2opt.n2)}`
+    ? `${quiz.jlpt?(quiz.jlptLevel||"N2"):t("quiz_n2")} · ${t("n2_tag_"+n2opt.n2)}`
     : t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
   // 상단 표시와 막대는 '몇 문제를 풀었는지'(진행도). 점수는 결과 화면에서 알려준다.
   const solved=quiz.list.filter(x=>quiz.done[x.id]).length;
@@ -3655,6 +3904,7 @@ function goPhase(ph, ask){
   snapshotPhase();                       // 떠나는 단계 보관
   if(!same && restorePhase(ph)){ quiz.prevPhase=from; renderQuizChrome(); persistQuiz(); return; }
   let base=(quiz.mainList||quiz.list).slice();   // 새로 시작할 땐 본시험 전체 단어
+  if(ph==="n2") base=n2Base();                   // N2는 방향 필터 없이 범위 전체에서 (가나 전용 단어 포함)
   if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
   startPhaseFresh(ph, base);
   if(!same) quiz.prevPhase=from;
@@ -3663,6 +3913,8 @@ function goPhase(ph, ask){
 // 단계 토글 + '이전 모드로 돌아가기' 버튼 상태 갱신
 function renderQuizChrome(){
   const seg=$("#quizPhaseSeg"); if(!seg) return;
+  // JLPT 시험은 단계(4지선다·주관식·말하기) 개념이 없으므로 토글을 숨긴다
+  if(quiz.jlpt){ seg.style.display="none"; const bk=$("#qBackPhase"); if(bk) bk.hidden=true; return; }
   seg.style.display="flex";
   $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
   const back=$("#qBackPhase"); if(!back) return;
@@ -3760,14 +4012,17 @@ function renderQuizResults(){
         <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
-  const title = isN2 ? t("n2_examEnd") : isMc ? t("mc_examEnd") : isSp ? t("sp_examEnd") : t("rq_examEnd");
-  const scoreLine = isN2 ? t("n2_score",{score:quiz.score, total}) : isMc ? t("mc_score",{score:quiz.score, total}) : isSp ? t("sp_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
+  const lv = quiz.jlptLevel||"N2";
+  const title = isN2 ? (quiz.jlpt?t("jlpt_examEnd",{lv}):t("n2_examEnd")) : isMc ? t("mc_examEnd") : isSp ? t("sp_examEnd") : t("rq_examEnd");
+  const scoreLine = isN2 ? (quiz.jlpt?t("jlpt_score",{lv, score:quiz.score, total}):t("n2_score",{score:quiz.score, total}))
+    : isMc ? t("mc_score",{score:quiz.score, total}) : isSp ? t("sp_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
   // 객관식 결과 → 주관식 / 주관식 결과 → 말하기(지원 시) / 말하기 결과 → 처음부터 다시
   const mainN=(quiz.mainList||quiz.list).length;
   const restartBtn=`<button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button>`;
   const canSpeak = !isSp && SR && (quiz.mainList||quiz.list).some(speakable);
+  const jlptRestart=`<button class="btn ghost" onclick="document.getElementById('startJlpt').click()">${esc(t("rq_restart"))}</button>`;
   const footer = isN2
-    ? `<div class="btnrow">${restartBtn}</div>`   // N2 어휘는 독립 단계 — 끝나면 다시 풀거나 단계 토글로 이동
+    ? `<div class="btnrow">${quiz.jlpt?jlptRestart:restartBtn}</div>`   // JLPT 시험은 자기 설정으로 다시 시작
     : isMc
     ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(quiz.isRetry?t("mc_goSAFull",{n:mainN}):t("mc_goSA"))}</button></div>`
     : isSp || !canSpeak
@@ -4428,7 +4683,8 @@ function resetSchedControls(){
 }
 function refreshAll(){
   refreshDbFilters(); renderDb(); renderSchedule(); refreshDateSelects();
-  resetSchedControls(); updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount();
+  resetSchedControls(); updateSchedCount(); updateMemCount(); updateQuizCount(); updateJlptCount(); updatePrintCount();
+  updateTalkCount();
   $("#dbName").value=state.dbName||"";
   renderBookSelect(); renderBookPickers();
 }
