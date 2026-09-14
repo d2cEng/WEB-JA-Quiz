@@ -1006,8 +1006,9 @@ const I18N = {
     jlpt_disclaimer:"※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.",
     jlpt_settingsSummary:"⚙️ JLPT 시험 설정 (레벨·범위·문항 수)",
     jlpt_sub:"실제 JLPT「言語知識(文字・語彙)」형식으로 출제합니다. 한자읽기·표기·문맥규정·용법·유의표현이 번갈아 나옵니다.",
-    hint_jlpt:"💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체)",
+    hint_jlpt:"💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체) 출제 유형과 비중도 <b>레벨마다 실제 시험에 맞춰</b> 달라집니다 — 예를 들어 N5에는 用法이 나오지 않아요.",
     jlpt_level:"시험 레벨", jlpt_levelDesc:"출제 단어 레벨: {levels}",
+    jlpt_typeDesc:"출제 유형: {types}",
     jlpt_examEnd:"{lv} 어휘 시험 종료 🎉", jlpt_score:"{lv} 어휘 점수: <b>{score} / {total}</b>",
     jlpt_noWords:"이 레벨·범위에 출제할 단어가 없어요. 레벨을 낮추거나 범위를 넓혀 보세요",
     quiz_printSub:"지금까지 고른 단어로 종이 시험지를 만들어 인쇄할 수 있어요.",
@@ -1203,8 +1204,9 @@ const I18N = {
     jlpt_disclaimer:"※ An unofficial study tool, not affiliated with the JLPT organizers (JEES / The Japan Foundation). Questions are generated from your own wordbook and are not real past papers.",
     jlpt_settingsSummary:"⚙️ JLPT exam settings (level · scope · questions)",
     jlpt_sub:"Questions follow the real JLPT 「言語知識(文字・語彙)」 formats: reading, orthography, context, usage and paraphrase, in rotation.",
-    hint_jlpt:"💡 Choosing a level includes that level <b>and everything easier</b>. (N2 also takes in N1, so it covers everything.)",
+    hint_jlpt:"💡 Choosing a level includes that level <b>and everything easier</b>. (N2 also takes in N1, so it covers everything.) The question types and their mix also follow the real exam for each level — N5 has no 用法, for instance.",
     jlpt_level:"Exam level", jlpt_levelDesc:"Word levels: {levels}",
+    jlpt_typeDesc:"Question types: {types}",
     jlpt_examEnd:"{lv} vocabulary exam finished 🎉", jlpt_score:"{lv} vocabulary score: <b>{score} / {total}</b>",
     jlpt_noWords:"No words for this level and scope. Try a lower level or a wider scope",
     quiz_printSub:"Make a printable paper test from the words you picked.",
@@ -3490,7 +3492,29 @@ function readingDistractors(w, n){
      言い換え類義 — 밑줄 단어와 뜻이 가장 가까운 것 고르기
    語形成(어형성)은 접두·접미사 데이터가 없어 만들지 않는다.
    만든 문제는 quiz.opts[id]에 저장돼 앞뒤로 오가도 같은 문제가 나온다. */
-const N2_TYPES=["yomi","hyoki","bunmyaku","yoho","iikae"];
+/* 레벨마다 출제되는 유형이 다르다. 실제 시험 구성을 따른다.
+     N5 — 用法이 없다
+     N1 — 表記가 없다 (지금은 N1 레벨을 따로 두지 않아 N2가 N1 단어까지 커버)
+     語形成 — N2 전용이지만 접두·접미사 데이터가 없어 만들지 않는다
+   숫자는 대략적인 문항 비중. 회차마다 문항 수가 달라 정확한 개수가 아니라
+   '어떤 유형이 얼마나 자주 나오는가'로만 쓴다. */
+const JLPT_PLAN={
+  N5:{yomi:7, hyoki:5, bunmyaku:6, iikae:3},
+  N4:{yomi:7, hyoki:5, bunmyaku:8, iikae:4, yoho:4},
+  N3:{yomi:8, hyoki:6, bunmyaku:11, iikae:5, yoho:5},
+  N2:{yomi:5, hyoki:5, bunmyaku:7, iikae:5, yoho:5}
+};
+const N2_TYPES=["yomi","hyoki","bunmyaku","yoho","iikae"];   // 전체 유형(생성기 등록용)
+function n2LevelTypes(lv){ return Object.keys(JLPT_PLAN[lv]||JLPT_PLAN.N2); }
+// 비중대로 n문항의 유형을 미리 배정해 섞는다
+function n2MakePlan(lv, n){
+  const wt=JLPT_PLAN[lv]||JLPT_PLAN.N2, types=Object.keys(wt);
+  const total=types.reduce((a,k)=>a+wt[k],0);
+  const out=[];
+  types.forEach(ty=>{ const k=Math.round(n*wt[ty]/total); for(let i=0;i<k;i++) out.push(ty); });
+  let i=0; while(out.length<n) out.push(types[i++%types.length]);   // 반올림으로 모자라면 채운다
+  return shuffle(out).slice(0,n);
+}
 // 표제어 표기 정리 — 사전 기호(〜, 공백) 제거, 「A・B」는 앞쪽만
 function n2Form(s){ return String(s||"").replace(/[〜～\s]/g,"").split("・")[0].trim(); }
 function hasKanjiChar(s){ return /[一-龯]/.test(String(s||"")); }
@@ -3591,11 +3615,13 @@ function n2BuildIikae(w){
   return n2Pack(wField(w,"korean"), wrongs, "iikae", q);
 }
 const N2_BUILD={yomi:n2BuildYomi, hyoki:n2BuildHyoki, bunmyaku:n2BuildBunmyaku, yoho:n2BuildYoho, iikae:n2BuildIikae};
-// 문제 번호에 따라 유형을 돌려가며(균형) 만들 수 있는 첫 유형을 채택한다
-function n2Build(w, seq){
-  const n=N2_TYPES.length, start=((seq%n)+n)%n;
-  for(let i=0;i<n;i++){
-    const q=N2_BUILD[N2_TYPES[(start+i)%n]](w);
+// 미리 배정한 유형을 우선 시도하고, 그 단어로 못 만들면 같은 레벨의 다른 유형으로 넘어간다.
+// (레벨에 없는 유형은 후보에 아예 넣지 않는다 — N5에 用法이 나오지 않는 이유)
+function n2Build(w, seq, lv){
+  const types=n2LevelTypes(lv||"N2");
+  const planned=(quiz.n2Plan&&quiz.n2Plan[seq]) || types[((seq%types.length)+types.length)%types.length];
+  for(const ty of [planned, ...types.filter(t=>t!==planned)]){
+    const q=N2_BUILD[ty](w);
     if(q) return q;
   }
   return null;
@@ -3629,7 +3655,13 @@ function n2Base(){
 // 현재 문제의 N2 문제 데이터 (없으면 만들어 저장)
 function n2Opt(w){
   let opt=quiz.opts[w.id];
-  if(!opt || !opt.t){ opt=n2Build(w, quiz.idx) || n2Fallback(w); quiz.opts[w.id]=opt; }
+  if(!opt || !opt.t){
+    const lv=quiz.jlptLevel||"N2";
+    // 유형 배정표는 시험 시작 때 만들어 두고, 없으면(복원 등) 그때 만든다
+    if(!quiz.n2Plan || quiz.n2Plan.length<quiz.list.length) quiz.n2Plan=n2MakePlan(lv, quiz.list.length);
+    opt=n2Build(w, quiz.idx, lv) || n2Fallback(w);
+    quiz.opts[w.id]=opt;
+  }
   return opt;
 }
 
@@ -3849,7 +3881,10 @@ function updateJlptCount(){
   const max=jlptPool().length, sc=$("#jCount");
   sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
   $("#jCountMax").textContent=max; $("#jCountLabel").textContent=max;
-  $("#jLevelDesc").textContent=t("jlpt_levelDesc",{levels:jlptLevelLabel(jlptLevel())});
+  const lv=jlptLevel();
+  const tys=n2LevelTypes(lv).map(x=>t("n2_tag_"+x)).join(" · ");
+  $("#jLevelDesc").innerHTML=esc(t("jlpt_levelDesc",{levels:jlptLevelLabel(lv)}))
+    +`<br>`+esc(t("jlpt_typeDesc",{types:tys}));
 }
 bindSeg("jScopeLevelSeg", updateJlptCount);
 bindSeg("jScopeSeg",()=>{
@@ -3870,6 +3905,7 @@ $("#startJlpt").addEventListener("click",()=>{
         spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
         scope:segVal('jScopeSeg'), scopeDate:$("#jDate").value, count,
         jlpt:true, jlptLevel:jlptLevel()};
+  quiz.n2Plan=n2MakePlan(quiz.jlptLevel, list.length);   // 레벨 비중대로 유형 미리 배정
   moveQuizArea("jlptHost");         // 시험 화면을 JLPT 탭으로
   $("#jlptSettings").open=false;
   $("#quizArea").style.display="block"; renderQuiz();
