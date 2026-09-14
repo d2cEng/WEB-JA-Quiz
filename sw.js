@@ -1,10 +1,11 @@
 // 일본어 단어 암기 · 시험 — 서비스워커 (오프라인 + 설치 지원)
 // 캐시 버전을 올리면 이전 캐시를 정리하고 새 자산을 받습니다.
-const CACHE = 'ja-quiz-v5';
+const CACHE = 'ja-quiz-v6';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './data/wordbooks.json',      // 단어장 목록 — 없으면 오프라인 첫 실행에서 목록이 비어 보인다
   './data/idioms/index.json',
   './data/idioms/idiom.json',
   './data/idioms/compound.json',
