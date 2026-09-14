@@ -106,7 +106,10 @@ function checkShape(w, label, keys) {
 }
 
 /* ---- 검사 ---- */
-const SHORT_EXAMPLE = 8;   // 이보다 짧은 예문은 문맥이 약해 文脈規定이 애매해진다
+// 文脈規定은 표제어를 （　）로 지운 뒤 남는 글자가 단서다.
+// 그래서 예문 전체 길이가 아니라 '표제어를 뺀 나머지' 길이로 문맥을 잰다.
+// (표제어가 긴 관용어는 예문이 짧아도 단서가 충분할 수 있고, 그 반대도 있다)
+const SHORT_CONTEXT = 3;
 
 function analyse(words) {
   // 정규화 전에 원래 키를 기록해 둔다 (meanings를 붙인 뒤 검사하면 전부 오탐이 된다)
@@ -147,7 +150,8 @@ function analyse(words) {
       can.bunmyaku++;
       if (usable.filter(x => x.id !== w.id).length >= 3) can.yoho++;
       if (n2HasKanji(w) && ex.slice(loc.i, loc.i + loc.len) === nForm(w.kanji)) can.hyoki++;
-      if (ex.length <= SHORT_EXAMPLE) issues.push(["품질", label, `예문이 짧아 문맥이 약함(${ex.length}자) — "${ex}" · 文脈規定이 애매해짐`]);
+      const ctx = ex.length - loc.len;   // （　）를 뺀 나머지 단서
+      if (ctx <= SHORT_CONTEXT) issues.push(["품질", label, `빈칸 빼면 단서가 ${ctx}자뿐 — "${ex}" · 文脈規定이 애매해짐`]);
     }
     if (!w.pos) issues.push(["품질", label, "품사(pos) 없음 — 보기 고르기 품질이 떨어짐"]);
     if (!w.level) issues.push(["정보", label, "레벨(level) 없음"]);
@@ -205,15 +209,22 @@ for (const f of files) {
   if (unknownF.length) qual.push(`모르는 필드 ${unknownF.length}건 — 오타 확인 (${unknownF[0][2].match(/'([^']+)'/)?.[1]})`);
   const badPos = r.issues.filter(i => i[2].startsWith("pos '"));
   if (badPos.length) qual.push(`표준값 아닌 pos ${badPos.length}건 — 보기 선정 품질 저하`);
-  if (pct(r.can.bunmyaku, r.n) < 80)
-    block.push(`文脈規定·用法 생성률 ${pct(r.can.bunmyaku, r.n)}% — 예문 보강 필요 ` +
+  if (pct(r.can.bunmyaku, r.n) < 80) {
+    const conj = r.why.stemOnly + r.why.exampleLacksWord;   // 예문이 활용형이라 못 잡는 경우
+    // 원인이 '예문 없음'이면 진짜 보강이 필요하고, '활용형'이면 敬語처럼 정중형이
+    // 자연스러운 단어장에서 어쩔 수 없이 낮게 나오는 것이라 대응이 다르다
+    const cause = r.why.noExample > conj
+      ? "예문 보강 필요"
+      : "예문이 활용형이라 표제어와 안 맞음 (敬語처럼 정중형이 자연스러운 주제는 낮게 나오는 게 정상)";
+    block.push(`文脈規定·用法 생성률 ${pct(r.can.bunmyaku, r.n)}% — ${cause} ` +
                `(예문없음 ${r.why.noExample}, 표제어불일치 ${r.why.exampleLacksWord}, 활용형 ${r.why.stemOnly})`);
+  }
   if (r.thinPos > r.usableN * 0.3 && r.usableN)
     qual.push(`품사 쏠림 (${r.topPos[0]} 최다) — ${r.thinPos}/${r.usableN}단어가 用法 오답을 다른 품사에서 못 뽑음. ` +
               `같은 품사끼리 바꿔 「家がいい。」처럼 말이 되는 오답이 섞인다. 다른 품사 단어를 3개 이상 넣으면 해결`);
   if (r.dupKo.length) qual.push(`한글 뜻 중복 ${r.dupKo.length}종 — 보기 후보가 줄어듦 (예: ${r.dupKo[0][0].slice(0, 20)})`);
-  const shortEx = r.issues.filter(i => i[0] === "품질" && i[2].includes("짧아")).length;
-  if (shortEx) qual.push(`짧은 예문 ${shortEx}개 — 文脈規定 문맥이 약해 정답이 애매해짐`);
+  const shortEx = r.issues.filter(i => i[0] === "품질" && i[2].includes("단서가")).length;
+  if (shortEx) qual.push(`단서 부족 예문 ${shortEx}개 — 빈칸을 빼면 문맥이 거의 없어 정답이 애매해짐`);
 
   block.forEach(m => console.log(`  ❌ ${m}`));
   qual.forEach(m => console.log(`  💡 ${m}`));

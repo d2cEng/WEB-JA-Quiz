@@ -1654,7 +1654,7 @@ function buildIdiomBlock(b){
     groups:(b.themes||[]).map(th=>({
       ko:th.ko, en:th.en,
       items:(b.entries||[]).filter(e=>e.theme===th.id)
-        .map(e=>({jp:e.jp,hira:e.hira,ko:e.ko,en:e.en,ex:e.ex}))
+        .map(e=>({jp:e.jp,hira:e.hira,ko:e.ko,en:e.en,ex:e.ex,level:e.level}))
     }))
   };
 }
@@ -1679,12 +1679,14 @@ function idiomCount(g){ return g.groups.reduce((n,sg)=>n+sg.items.length,0); }
 function isMobileView(){ return window.matchMedia("(max-width:560px)").matches; }
 // 어법을 암기·퀴즈용 단어장으로 변환 (pos 지정 시 해당 분류만, 없으면 전체)
 // level에는 소그룹 테마의 앞부분(〜出す, 気 등)을 넣어 레벨 칩으로 테마 필터가 되게 한다.
+// 어법 → 단어장 변환. level은 데이터의 JLPT 레벨(N5~N1)을 그대로 쓴다.
+// (예전에는 테마 이름을 level에 넣어 배지·레벨 필터에 '気'·'〜込む' 같은 값이 섞였다.
+//  테마 묶음은 어법 탭이 groups로 따로 보여주므로 level을 겸용할 이유가 없다)
 function idiomWordbook(pos){
   const blocks=IDIOM_DATA.filter(b=>!pos||b.pos===pos);
   let id=1; const words=[];
   blocks.forEach(b=>b.groups.forEach(sg=>{
-    const lvl=idiomGroupLabel(sg).split(" — ")[0].trim();
-    sg.items.forEach(it=>words.push({id:id++, kanji:it.jp, hiragana:it.hira, korean:idiomKo(it), level:lvl, pos:b.pos, example:it.ex||""}));
+    sg.items.forEach(it=>words.push({id:id++, kanji:it.jp, hiragana:it.hira, korean:idiomKo(it), level:it.level||"", pos:b.pos, example:it.ex||""}));
   }));
   return words;
 }

@@ -20,6 +20,7 @@
       "hira": "ななころびやおき",
       "ko": "칠전팔기 (넘어져도 다시 일어남)",
       "en": "fall seven times, stand up eight",
+      "level": "N1",
       "ex": "七転び八起きで頑張る。"
     },
     {
@@ -28,6 +29,7 @@
       "hira": "いしのうえにもさんねん",
       "ko": "참고 견디면 이루어진다",
       "en": "perseverance prevails",
+      "level": "N1",
       "ex": "石の上にも三年だ。"
     },
     {
@@ -36,6 +38,7 @@
       "hira": "ちりもつもればやまとなる",
       "ko": "티끌 모아 태산",
       "en": "many a little makes a mickle",
+      "level": "N1",
       "ex": "塵も積もれば山となる。"
     },
     {
@@ -44,6 +47,7 @@
       "hira": "いそがばまわれ",
       "ko": "급할수록 돌아가라",
       "en": "more haste, less speed",
+      "level": "N1",
       "ex": "急がば回れと言う。"
     },
     {
@@ -52,6 +56,7 @@
       "hira": "あんずるよりうむがやすし",
       "ko": "막상 해보면 쉽다 (걱정보다 실행)",
       "en": "it's easier to do than to worry",
+      "level": "N1",
       "ex": "案ずるより産むが易しだ。"
     },
     {
@@ -60,6 +65,7 @@
       "hira": "さるもきからおちる",
       "ko": "원숭이도 나무에서 떨어진다 (전문가도 실수)",
       "en": "even experts make mistakes",
+      "level": "N1",
       "ex": "猿も木から落ちるものだ。"
     },
     {
@@ -68,6 +74,7 @@
       "hira": "でるくいはうたれる",
       "ko": "모난 돌이 정 맞는다",
       "en": "the nail that sticks out gets hammered",
+      "level": "N1",
       "ex": "出る杭は打たれる。"
     },
     {
@@ -76,6 +83,7 @@
       "hira": "にとをおうものはいっとをもえず",
       "ko": "두 마리 토끼를 쫓다 다 놓친다",
       "en": "grasp all, lose all",
+      "level": "N1",
       "ex": "二兎を追う者は一兎をも得ず。"
     },
     {
@@ -84,6 +92,7 @@
       "hira": "ころばぬさきのつえ",
       "ko": "유비무환 (넘어지기 전 지팡이)",
       "en": "prevention is better than cure",
+      "level": "N1",
       "ex": "転ばぬ先の杖で備える。"
     },
     {
@@ -92,6 +101,7 @@
       "hira": "ふくすいぼんにかえらず",
       "ko": "엎질러진 물 (돌이킬 수 없음)",
       "en": "what's done cannot be undone",
+      "level": "N1",
       "ex": "覆水盆に返らず。"
     },
     {
@@ -100,6 +110,7 @@
       "hira": "しらぬがほとけ",
       "ko": "모르는 게 약",
       "en": "ignorance is bliss",
+      "level": "N1",
       "ex": "知らぬが仏だ。"
     },
     {
@@ -108,6 +119,7 @@
       "hira": "ひゃくぶんはいっけんにしかず",
       "ko": "백문이 불여일견",
       "en": "seeing is believing",
+      "level": "N1",
       "ex": "百聞は一見に如かず。"
     },
     {
@@ -116,6 +128,7 @@
       "hira": "はなよりだんご",
       "ko": "금강산도 식후경 (실리 우선)",
       "en": "substance over style",
+      "level": "N1",
       "ex": "花より団子だね。"
     },
     {
@@ -124,6 +137,7 @@
       "hira": "ねこにこばん",
       "ko": "돼지 목에 진주 (가치를 모름)",
       "en": "pearls before swine",
+      "level": "N1",
       "ex": "猫に小判だ。"
     },
     {
@@ -132,6 +146,7 @@
       "hira": "あめふってじかたまる",
       "ko": "비 온 뒤에 땅이 굳는다",
       "en": "adversity strengthens the foundations",
+      "level": "N1",
       "ex": "雨降って地固まるだ。"
     }
   ]

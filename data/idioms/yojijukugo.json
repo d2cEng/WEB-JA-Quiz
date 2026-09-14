@@ -15,6 +15,7 @@
       "hira": "いっしょうけんめい",
       "ko": "열심히, 죽을힘을 다해",
       "en": "with all one's might",
+      "level": "N4",
       "ex": "一生懸命勉強する。"
     },
     {
@@ -23,6 +24,7 @@
       "hira": "いっせきにちょう",
       "ko": "일석이조",
       "en": "killing two birds with one stone",
+      "level": "N2",
       "ex": "運動になって一石二鳥だ。"
     },
     {
@@ -31,6 +33,7 @@
       "hira": "りんきおうへん",
       "ko": "임기응변",
       "en": "adapting to circumstances",
+      "level": "N1",
       "ex": "臨機応変に対応する。"
     },
     {
@@ -39,6 +42,7 @@
       "hira": "いしんでんしん",
       "ko": "이심전심",
       "en": "heart-to-heart understanding",
+      "level": "N1",
       "ex": "以心伝心で通じ合う。"
     },
     {
@@ -47,6 +51,7 @@
       "hira": "じごうじとく",
       "ko": "자업자득",
       "en": "you reap what you sow",
+      "level": "N1",
       "ex": "遅刻も自業自得だ。"
     },
     {
@@ -55,6 +60,7 @@
       "hira": "じゅうにんといろ",
       "ko": "각양각색, 십인십색",
       "en": "to each their own",
+      "level": "N1",
       "ex": "好みは十人十色だ。"
     },
     {
@@ -63,6 +69,7 @@
       "hira": "ゆだんたいてき",
       "ko": "방심은 금물",
       "en": "carelessness is the great enemy",
+      "level": "N1",
       "ex": "最後まで油断大敵だ。"
     },
     {
@@ -71,6 +78,7 @@
       "hira": "いちごいちえ",
       "ko": "일생에 한 번뿐인 인연",
       "en": "a once-in-a-lifetime encounter",
+      "level": "N1",
       "ex": "一期一会の出会い。"
     }
   ]
