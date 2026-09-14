@@ -1057,8 +1057,8 @@ const I18N = {
     quiz_backPhase:"↩︎ {phase} 화면으로 돌아가기",
     confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’ 화면으로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
     toast_quizResumed:"풀던 시험을 이어서 볼 수 있어요",
-    toast_noAskable:"이 방향으로 낼 수 있는 단어가 없습니다 (문제와 정답이 같아지는 단어뿐)",
-    toast_skippedSame:"문제와 정답이 같아지는 {n}개는 제외했어요",
+    toast_noAskable:"이 방향으로 낼 수 있는 단어가 없어요 (가나·외래어처럼 문제와 정답이 같아지는 단어뿐). 출제 방향을 바꾸거나 무작위로 해 보세요",
+    toast_skippedSame:"문제와 정답이 같아지는 {n}개는 4지선다에서 제외했어요 (N2 어휘에는 나옵니다)",
     sheet_head:"총 {n}문항 · 빈칸을 채우세요", sheet_nameScore:"이름: ____________&nbsp;&nbsp;점수: ______",
     sheet_answerTitle:"{title} — 정답", sheet_includeAnswer:"정답지도 인쇄에 포함", toast_examSheet:"시험지 생성 완료",
     help_modalTitle:"📖 사용법 한눈에 보기",
@@ -1230,8 +1230,8 @@ const I18N = {
     quiz_backPhase:"↩︎ Back to {phase}",
     confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
     toast_quizResumed:"Your quiz in progress was restored",
-    toast_noAskable:"No words can be asked in this direction (the prompt would equal the answer)",
-    toast_skippedSame:"Skipped {n} word(s) whose prompt equals the answer",
+    toast_noAskable:"No words can be asked in this direction — kana/loanwords make the prompt equal the answer. Try another direction, or Random",
+    toast_skippedSame:"Skipped {n} word(s) in multiple choice (prompt equals answer) — they still appear in N2 vocabulary",
     sheet_head:"{n} questions · fill in the blanks", sheet_nameScore:"Name: ____________&nbsp;&nbsp;Score: ______",
     sheet_answerTitle:"{title} — Answers", sheet_includeAnswer:"Include answer key in print", toast_examSheet:"Test sheet generated",
     help_modalTitle:"📖 How to use this app",
@@ -2973,6 +2973,7 @@ function persistQuiz(){
       mainList:(quiz.mainList||quiz.list).map(w=>w.id),
       prevPhase:quiz.prevPhase||null,
       pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById||null,
+      scope:quiz.scope||null, scopeDate:quiz.scopeDate||null, count:quiz.count||null,
       cur:packPhase(quiz), saved
     }));
   }catch(e){}
@@ -2990,7 +2991,8 @@ function restorePersistedQuiz(){
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
   quiz=Object.assign({ mainList:main, phase:d.phase, answered:false, prevPhase:d.prevPhase||null,
-    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved }, cur);
+    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved,
+    scope:d.scope||null, scopeDate:d.scopeDate||null, count:d.count||null }, cur);
   $("#quizArea").style.display="block";
   if(cur.finished) renderQuizResults(); else renderQuiz();
   return true;
@@ -3330,6 +3332,16 @@ function n2Fallback(w){
   const ko=wField(w,"korean");
   return {t:[ko], k:0, n2:"iikae", q:`<div class="qprompt">${esc(wField(w,"kanji"))}</div>`};
 }
+// N2 어휘 출제 대상. 4지선다는 「漢字→ひらがな」처럼 문제=정답이 되는 단어(가나·외래어)를
+// 빼지만, N2는 방향 개념이 없고 그런 단어도 文脈規定·用法·言い換え로 낼 수 있으므로
+// 방향 필터를 걷어내고 범위 전체에서 뽑는다. (한자 관련 유형은 유형 단위로 알아서 걸러진다)
+function n2Base(){
+  const scope=quiz.scope||segVal('qScopeSeg');
+  const pool=wordsForScope(scope, quiz.scopeDate!=null?quiz.scopeDate:$("#qDate").value);
+  const n=quiz.count||(quiz.mainList||quiz.list).length;
+  if(!pool.length) return (quiz.mainList||quiz.list).slice();   // 범위를 못 구하면 기존 목록으로
+  return shuffle(pool).slice(0, Math.max(1, Math.min(n, pool.length)));
+}
 // 현재 문제의 N2 문제 데이터 (없으면 만들어 저장)
 function n2Opt(w){
   let opt=quiz.opts[w.id];
@@ -3529,8 +3541,10 @@ $("#startQuiz").addEventListener("click",()=>{
   let pairById=null;
   if(dir==="random"){ pairById={}; list.forEach(w=>{ pairById[w.id]=randPair(w); }); }
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
+  // scope/count는 N2 어휘용 — N2는 문제·정답 방향을 쓰지 않으므로 방향 필터 없이 범위 전체에서 뽑는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null};
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
+        scope:segVal('qScopeSeg'), scopeDate:$("#qDate").value, count};
   $("#quizSettings").open=false;   // 시작하면 설정 접기
   $("#quizArea").style.display="block"; renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3655,6 +3669,7 @@ function goPhase(ph, ask){
   snapshotPhase();                       // 떠나는 단계 보관
   if(!same && restorePhase(ph)){ quiz.prevPhase=from; renderQuizChrome(); persistQuiz(); return; }
   let base=(quiz.mainList||quiz.list).slice();   // 새로 시작할 땐 본시험 전체 단어
+  if(ph==="n2") base=n2Base();                   // N2는 방향 필터 없이 범위 전체에서 (가나 전용 단어 포함)
   if(ph==="speak"){ spReadingMap=null; base=base.filter(speakable); if(!base.length){ toast(t("quiz_noSpeakWords")); return; } }
   startPhaseFresh(ph, base);
   if(!same) quiz.prevPhase=from;
