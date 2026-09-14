@@ -25,7 +25,10 @@ function deriveMeanings(koreanStr, exampleStr) {
     for (const d of ["、", "。"]) {
       if (String(exampleStr).indexOf(d) < 0) continue;
       const alt = String(exampleStr).split(d).map(s => s.trim()).filter(Boolean);
-      if (alt.length === ko.length) { ex = d === "。" ? alt.map(s => s + "。") : alt; break; }
+      if (alt.length !== ko.length) continue;
+      // 「、」는 문장 안에서도 쓰이므로 조각이 전부 온전한 문장일 때만 인정 (앱과 동일)
+      if (d === "、" && !alt.every(x => /[。!?！？]$/.test(x))) continue;
+      ex = d === "。" ? alt.map(s => s + "。") : alt; break;
     }
   }
   return ko.length ? ko.map((k, i) => ({ korean: k, example: (ex[i] || "").trim() }))
@@ -148,7 +151,9 @@ function analyse(words) {
     if (n2HasKanji(w)) can.yomi++;
     if (ex && loc && loc.exact) {
       can.bunmyaku++;
-      if (usable.filter(x => x.id !== w.id).length >= 3) can.yoho++;
+      // 用法은 정답·오답 문장 모두 문맥이 있어야 한다 (앱의 n2HasContext와 동일)
+      const ctxOk = x => { const e = n2Example(x); const l = e && n2Locate(x, e); return l && l.exact && (e.length - l.len) >= 3; };
+      if (ctxOk(w) && usable.filter(x => x.id !== w.id && ctxOk(x)).length >= 3) can.yoho++;
       if (n2HasKanji(w) && ex.slice(loc.i, loc.i + loc.len) === nForm(w.kanji)) can.hyoki++;
       const ctx = ex.length - loc.len;   // （　）를 뺀 나머지 단서
       if (ctx <= SHORT_CONTEXT) issues.push(["품질", label, `빈칸 빼면 단서가 ${ctx}자뿐 — "${ex}" · 文脈規定이 애매해짐`]);

@@ -1516,7 +1516,11 @@ function deriveMeanings(koreanStr, exampleStr){
     for(const d of ["、","。"]){
       if(String(exampleStr).indexOf(d)<0) continue;
       const alt=String(exampleStr).split(d).map(s=>s.trim()).filter(Boolean);
-      if(alt.length===ko.length){ ex = d==="。" ? alt.map(s=>s+"。") : alt; break; }
+      if(alt.length!==ko.length) continue;
+      // 「、」는 문장 안에서도 흔히 쓰인다. 조각이 전부 온전한 문장(。로 끝남)일 때만
+      // 예문이 여러 개라고 본다. 아니면 「今晩、電話…」이 "今晩" 하나로 잘려 버린다.
+      if(d==="、" && !alt.every(s=>/[。!?！？]$/.test(s))) continue;
+      ex = d==="。" ? alt.map(s=>s+"。") : alt; break;
     }
   }
   return ko.length ? ko.map((k,idx)=>({korean:k, example:(ex[idx]||"").trim()}))
@@ -3467,9 +3471,13 @@ function n2BuildBunmyaku(w){
   return n2Pack(wField(w,"kanji"), wrongs, "bunmyaku", `<div class="n2sent">${n2Swap(ex,loc,`<span class="n2blank">（　　　）</span>`)}</div>`);
 }
 // 用法 — 정답은 그 단어의 예문, 오답은 다른 단어의 예문에 이 단어를 끼워 넣어 만든다
+// 표제어를 뺀 나머지가 문장 구실을 하는지 (빈껍데기 보기 방지)
+const N2_MIN_CTX=3;
+function n2HasContext(ex, loc){ return !!ex && !!loc && (ex.length-loc.len)>=N2_MIN_CTX; }
 function n2BuildYoho(w){
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   if(!ex || !loc || !loc.exact) return null;
+  if(!n2HasContext(ex,loc)) return null;      // 정답 문장부터 문장다워야 한다
   const target=ex.slice(loc.i, loc.i+loc.len);
   const wrongs=[], seen=new Set([ex]);
   const pool=shuffle(state.words.filter(y=>y.id!==w.id && notExcluded(y)));
@@ -3480,8 +3488,10 @@ function n2BuildYoho(w){
       if(wrongs.length>=3) break;
       const xe=n2Example(x); if(!xe) continue;
       const xl=n2Locate(x,xe); if(!xl || !xl.exact) continue;
+      // 남는 문맥이 없으면 바꿔 넣어도 단어만 덩그러니 남는다 (「おにぎり」 같은 보기)
+      if(!n2HasContext(xe,xl)) continue;
       const s=xe.slice(0,xl.i)+target+xe.slice(xl.i+xl.len);
-      if(seen.has(s) || s===ex) continue;
+      if(seen.has(s) || s===ex || s.length-target.length<N2_MIN_CTX) continue;
       seen.add(s); wrongs.push(s);
     }
   };
