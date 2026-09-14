@@ -56,10 +56,62 @@ function n2Example(w) {
   return "";
 }
 
+/* ---- 스키마 (docs/단어장-데이터-구조.md 와 같은 내용) ---- */
+const WORD_FIELDS = ["id", "kanji", "hiragana", "korean", "level", "pos", "example"];
+const REQUIRED = ["kanji", "hiragana", "korean"];
+const LEVELS = ["N5", "N4", "N3", "N2", "N1"];
+const POS_CANON = ["1그룹동사", "2그룹동사", "3그룹동사", "い형용사", "な형용사", "명사", "부사",
+                   "접속사", "조사", "감탄사", "관용어", "복합동사", "연어", "사자성어", "속담"];
+const POS_ALIAS = new Set([...POS_CANON,
+  "group 1 verb","group1 verb","godan verb","godan","u verb","u-verb","五段動詞","五段",
+  "group 2 verb","group2 verb","ichidan verb","ichidan","ru verb","ru-verb","一段動詞","一段",
+  "group 3 verb","group3 verb","irregular verb","irregular","不規則動詞",
+  "i adjective","i-adjective","i adj","i-adj","keiyoushi","形容詞",
+  "na adjective","na-adjective","na adj","na-adj","keiyoudoushi","形容動詞",
+  "noun","名詞","adverb","副詞","conjunction","接続詞","particle","助詞","interjection","感動詞",
+  "관용구","idiom","idiomatic","慣用句","compound verb","compound","複合動詞",
+  "collocation","連語","four character idiom","yojijukugo","四字熟語","proverb","ことわざ","諺"]);
+// 앱의 normalizePos와 동일: 공백·밑줄만 정규화하고, 하이픈 표기는 표에 그대로 들어 있다
+const posKnown = v => {
+  const raw = String(v || "").trim();
+  return POS_ALIAS.has(raw.toLowerCase().replace(/[\s_]+/g, " ")) || POS_ALIAS.has(raw);
+};
+
+// 최상위가 배포용 단어장 형식인지 검사
+function checkTopLevel(book) {
+  const out = [];
+  if (!Array.isArray(book.words) || !book.words.length) out.push(["막힘", "(파일)", "words 배열이 없거나 비어 있음 — 로드 거부됨"]);
+  if (book.version == null) out.push(["정보", "(파일)", "version 없음 — 관례상 1을 넣습니다"]);
+  for (const k of ["selected", "schedule", "progress", "excluded", "log"])
+    if (k in book) out.push(["품질", "(파일)", `최상위에 '${k}' 있음 — 내보내기(백업) 형식입니다. 배포용 단어장에서는 빼세요`]);
+  return out;
+}
+
+// 단어 하나의 구조(필드명·타입·허용값) 검사
+function checkShape(w, label, keys) {
+  const out = [];
+  for (const k of keys) {
+    if (k === "meanings") { out.push(["정보", label, "meanings는 앱이 자동 생성 — 파일에서 빼세요"]); continue; }
+    if (!WORD_FIELDS.includes(k)) out.push(["품질", label, `모르는 필드 '${k}' — 앱이 무시함 (오타 확인)`]);
+  }
+  for (const k of REQUIRED)
+    if (!String(w[k] ?? "").trim()) out.push(["막힘", label, `필수 필드 '${k}' 없음`]);
+  if (w.id != null && typeof w.id !== "number") out.push(["품질", label, `id가 숫자가 아님 (${typeof w.id})`]);
+  for (const k of ["kanji", "hiragana", "korean", "level", "pos", "example"])
+    if (k in w && typeof w[k] !== "string") out.push(["품질", label, `'${k}'가 문자열이 아님 (${typeof w[k]})`]);
+  if (w.level && !LEVELS.includes(w.level)) out.push(["품질", label, `level '${w.level}' — N5~N1 이 아님`]);
+  if (w.pos && !posKnown(w.pos)) out.push(["품질", label, `pos '${w.pos}' — 표준값/별칭에 없음`]);
+  if (/[、]/.test(w.korean || "")) out.push(["품질", label, "korean에 전각 쉼표 「、」 — 구분자는 반각 ','"]);
+  return out;
+}
+
 /* ---- 검사 ---- */
 const SHORT_EXAMPLE = 8;   // 이보다 짧은 예문은 문맥이 약해 文脈規定이 애매해진다
 
 function analyse(words) {
+  // 정규화 전에 원래 키를 기록해 둔다 (meanings를 붙인 뒤 검사하면 전부 오탐이 된다)
+  const origKeys = new WeakMap();
+  words.forEach(w => origKeys.set(w, Object.keys(w)));
   words.forEach((w, i) => {
     if (w.id == null) w.id = i + 1;
     w.meanings = deriveMeanings(w.korean, w.example);
@@ -72,8 +124,14 @@ function analyse(words) {
   // 用法 오답 후보: 예문에 표제어가 그대로 든 단어
   const usable = words.filter(w => { const e = n2Example(w); const l = e && n2Locate(w, e); return l && l.exact; });
 
+  const idSeen = new Map();
   for (const w of words) {
     const label = `${w.kanji || ""}(${w.hiragana || ""})`;
+    issues.push(...checkShape(w, label, origKeys.get(w) || []));
+    if (w.id != null) {
+      if (idSeen.has(w.id)) issues.push(["막힘", label, `id ${w.id} 중복 — ${idSeen.get(w.id)} 와 겹침`]);
+      else idSeen.set(w.id, label);
+    }
     const rawEx = w.meanings.map(m => m.example).filter(Boolean).join("");
     const ex = n2Example(w);
     const loc = ex ? n2Locate(w, ex) : null;
@@ -134,11 +192,19 @@ for (const f of files) {
   if (!Array.isArray(words) || !words.length) { console.log(`\n⚠️  ${f} — words 배열이 비어 있음`); continue; }
 
   const r = analyse(words);
+  r.issues.unshift(...checkTopLevel(book));
   console.log(`\n=== ${f} — ${r.n}단어 ===`);
   console.log(`  생성 가능  漢字読み ${pct(r.can.yomi, r.n)}%  表記 ${pct(r.can.hyoki, r.n)}%  ` +
               `文脈規定 ${pct(r.can.bunmyaku, r.n)}%  用法 ${pct(r.can.yoho, r.n)}%  言い換え 100%`);
   // ❌ 막힘 = 문제를 못 만든다 / 💡 품질 = 만들어지지만 쉽거나 어색해진다
   const block = [], qual = [];
+  // 구조 오류(필수 필드 누락·id 중복·타입 오류)는 내용 품질보다 먼저 잡는다
+  const shapeBlock = r.issues.filter(i => i[0] === "막힘" && !/예문|활용형/.test(i[2]));
+  if (shapeBlock.length) block.push(`구조 오류 ${shapeBlock.length}건 — 예: ${shapeBlock[0][1]} ${shapeBlock[0][2]}`);
+  const unknownF = r.issues.filter(i => i[2].startsWith("모르는 필드"));
+  if (unknownF.length) qual.push(`모르는 필드 ${unknownF.length}건 — 오타 확인 (${unknownF[0][2].match(/'([^']+)'/)?.[1]})`);
+  const badPos = r.issues.filter(i => i[2].startsWith("pos '"));
+  if (badPos.length) qual.push(`표준값 아닌 pos ${badPos.length}건 — 보기 선정 품질 저하`);
   if (pct(r.can.bunmyaku, r.n) < 80)
     block.push(`文脈規定·用法 생성률 ${pct(r.can.bunmyaku, r.n)}% — 예문 보강 필요 ` +
                `(예문없음 ${r.why.noExample}, 표제어불일치 ${r.why.exampleLacksWord}, 활용형 ${r.why.stemOnly})`);
