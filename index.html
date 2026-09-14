@@ -218,6 +218,17 @@
   .choice:hover{border-color:var(--brand)}
   .choice.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
   .choice.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+  /* JLPT N2 어휘 문제 (한자읽기·표기·문맥규정·용법·유의표현) */
+  .n2head{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .n2tag{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--accent);font-weight:700;font-size:.86em}
+  .n2inst{margin:0 0 14px;font-size:.9em;line-height:1.5;text-align:center}
+  .n2sent{font-size:clamp(17px,3.6vw,22px);font-weight:600;line-height:1.95;
+    text-align:center;margin:10px 0 16px;word-break:break-word}
+  .n2sent u{text-decoration-thickness:2px;text-underline-offset:5px;color:var(--brand)}
+  .n2blank{color:var(--brand);font-weight:800}
+  .choices.col{grid-template-columns:1fr}
+  .choice.sent{text-align:left;justify-content:flex-start;display:block;
+    font-size:.98em;font-weight:500;line-height:1.7}
   .feedback{margin-top:12px;font-weight:700;text-align:center}
   .feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
   .scorebar{font-weight:700}
@@ -750,6 +761,7 @@
       <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
         <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
         <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
+        <button type="button" data-ph="n2" data-i18n="quiz_n2">N2 어휘</button>
         <button type="button" data-ph="speak" data-i18n="quiz_speak">🎤 말하기</button>
       </div>
     </div>
@@ -956,14 +968,21 @@ const I18N = {
     hint_db2:"💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.",
     hint_sch:"💡 주말 비중을 <b>자동</b>으로 두면 외울 개수에 맞춰 평일·주말 분량을 알아서 계산해요. 달력에서 날짜·단어를 눌러 수정할 수 있습니다.",
     hint_mem:"💡 4단계(뜻+ひらがな → ひらがな+漢字 → <b>漢字+뜻</b> → 예문)로 외웁니다. 카드의 <b>이 단어 빼기 ✕</b>로 아는 단어는 제외하세요.",
-    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요.",
+    hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요. 시작한 뒤 <b>N2 어휘</b> 단계를 누르면 JLPT N2 형식(한자읽기·표기·문맥규정·용법·유의표현)으로 풀 수 있습니다.",
     hint_print:"💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.",
     hint_grammar:"💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.",
     quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.",
     quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
     quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
     field_kanji:"漢字", field_hira:"ひらがな", field_korean:"한글 뜻",
-    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식", quiz_speak:"🎤 말하기",
+    quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식", quiz_speak:"🎤 말하기", quiz_n2:"N2 어휘",
+    n2_tag_yomi:"漢字読み", n2_tag_hyoki:"表記", n2_tag_bunmyaku:"文脈規定", n2_tag_yoho:"用法", n2_tag_iikae:"言い換え類義",
+    n2_inst_yomi:"밑줄 친 말의 읽는 법으로 가장 알맞은 것을 고르세요.",
+    n2_inst_hyoki:"밑줄 친 말을 한자로 쓸 때 가장 알맞은 것을 고르세요.",
+    n2_inst_bunmyaku:"（　）에 들어갈 말로 가장 알맞은 것을 고르세요.",
+    n2_inst_yoho:"다음 말이 가장 알맞게 쓰인 문장을 고르세요.",
+    n2_inst_iikae:"밑줄 친 말과 뜻이 가장 가까운 것을 고르세요.",
+    n2_examEnd:"N2 어휘 종료 🎉", n2_score:"N2 어휘 점수: <b>{score} / {total}</b>",
     quiz_speakStart:"말하기 (탭하고 발음)", quiz_listening:"듣는 중…", quiz_heard:"들린 발음: {text}",
     quiz_retrySpeak:"조금 달라요 · 다시 말해보세요", quiz_showCand:"정답 후보 보기", quiz_giveUp:"정답 보기 ⏭",
     quiz_noSpeakWords:"말하기로 낼 단어(漢字 표기)가 없습니다", quiz_micDenied:"마이크 권한을 허용해주세요",
@@ -1001,7 +1020,7 @@ const I18N = {
     stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
     log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
     log_hint:"암기·객관식·주관식·말하기·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
-    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_fix:"정정",
+    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_n2:"N2 어휘", log_kind_fix:"정정",
     detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -1119,14 +1138,21 @@ const I18N = {
     hint_db2:"💡 To move to another device, <b>Export</b> a backup and <b>Import</b> it on the new one. Progress and settings are saved automatically.",
     hint_sch:"💡 Leave the weekend weight on <b>Auto</b> to auto-calculate the weekday/weekend load for your target count. Tap a date/word on the calendar to edit.",
     hint_mem:"💡 Learn in 4 stages (meaning+ひらがな → ひらがな+漢字 → <b>漢字+meaning</b> → example). Use <b>Remove this word ✕</b> on a card to drop ones you know.",
-    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer and 🎤 speaking, and you can retry only the words you missed.",
+    hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer and 🎤 speaking, and you can retry only the words you missed. Once started, tap the <b>N2 vocabulary</b> stage to practise real JLPT N2 formats (reading, orthography, context, usage, paraphrase).",
     hint_print:"💡 One of 漢字·ひらがな·meaning is randomly blanked per row. You can also print the <b>answer key</b>.",
     hint_grammar:"💡 Tap a <b>part-of-speech badge</b> in Memorize/Quiz to instantly pop up its grammar. Use the chips above to jump between items.",
     quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer → speaking (pronunciation).",
     quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
     quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
     field_kanji:"Kanji", field_hira:"Hiragana", field_korean:"Meaning",
-    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer", quiz_speak:"🎤 Speaking",
+    quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer", quiz_speak:"🎤 Speaking", quiz_n2:"N2 vocabulary",
+    n2_tag_yomi:"漢字読み", n2_tag_hyoki:"表記", n2_tag_bunmyaku:"文脈規定", n2_tag_yoho:"用法", n2_tag_iikae:"言い換え類義",
+    n2_inst_yomi:"Choose the best reading for the underlined word.",
+    n2_inst_hyoki:"Choose the best kanji spelling for the underlined word.",
+    n2_inst_bunmyaku:"Choose the word that best fits in （　）.",
+    n2_inst_yoho:"Choose the sentence in which the word below is used correctly.",
+    n2_inst_iikae:"Choose the option closest in meaning to the underlined word.",
+    n2_examEnd:"N2 vocabulary finished 🎉", n2_score:"N2 vocabulary score: <b>{score} / {total}</b>",
     quiz_speakStart:"Speak (tap & say it)", quiz_listening:"Listening…", quiz_heard:"Heard: {text}",
     quiz_retrySpeak:"Not quite · try again", quiz_showCand:"Show candidates", quiz_giveUp:"Show answer ⏭",
     quiz_noSpeakWords:"No kanji words available for the speaking quiz", quiz_micDenied:"Please allow microphone access",
@@ -1164,7 +1190,7 @@ const I18N = {
     stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
     log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
     log_hint:"Every Memorize, multiple-choice, short-answer, speaking and correction action is logged by date and time. (last 14 days)",
-    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_fix:"Correction",
+    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_n2:"N2 vocabulary", log_kind_fix:"Correction",
     detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -3160,6 +3186,131 @@ function readingDistractors(w, n){
   }
   return out.length===n ? out : null;
 }
+
+/* ====================== JLPT N2 어휘 문제 ======================
+   실제 N2 「言語知識(文字・語彙)」 출제 형식을 단어 데이터로 흉내 낸다.
+     漢字読み   — 예문 속 밑줄 단어의 읽는 법 고르기
+     表記       — 예문 속 밑줄 히라가나의 한자 표기 고르기
+     文脈規定   — 예문을 （　）로 비우고 들어갈 단어 고르기
+     用法       — 그 단어가 올바르게 쓰인 문장 고르기
+     言い換え類義 — 밑줄 단어와 뜻이 가장 가까운 것 고르기
+   語形成(어형성)은 접두·접미사 데이터가 없어 만들지 않는다.
+   만든 문제는 quiz.opts[id]에 저장돼 앞뒤로 오가도 같은 문제가 나온다. */
+const N2_TYPES=["yomi","hyoki","bunmyaku","yoho","iikae"];
+// 표제어 표기 정리 — 사전 기호(〜, 공백) 제거, 「A・B」는 앞쪽만
+function n2Form(s){ return String(s||"").replace(/[〜～\s]/g,"").split("・")[0].trim(); }
+function hasKanjiChar(s){ return /[一-龯]/.test(String(s||"")); }
+// 한자 표기가 따로 있는 단어인지 (읽기/표기 문제의 전제)
+function n2HasKanji(w){ const k=n2Form(w.kanji); return !!k && k!==n2Form(w.hiragana) && hasKanjiChar(k); }
+// 예문에서 표제어 위치 찾기. exact=표제어 그대로, false=활용해서 어간만 일치
+function n2Locate(w, ex){
+  if(!ex) return null;
+  const k=n2Form(w.kanji), h=n2Form(w.hiragana);
+  if(k && hasKanjiChar(k) && ex.includes(k)) return {i:ex.indexOf(k), len:k.length, exact:true};
+  if(h && h.length>=2 && ex.includes(h)) return {i:ex.indexOf(h), len:h.length, exact:true};
+  if(k && hasKanjiChar(k) && k.length>=2){        // 활용형: 끝 오쿠리가나를 1~2자 떼어 검색
+    for(let cut=1; cut<=2 && k.length-cut>=1; cut++){
+      const stem=k.slice(0,-cut);
+      if(hasKanjiChar(stem) && ex.includes(stem)) return {i:ex.indexOf(stem), len:stem.length, exact:false};
+    }
+  }
+  return null;
+}
+// 표제어가 실제로 들어 있는 예문 (뜻이 여러 개면 먼저 찾히는 것)
+function n2Example(w){
+  for(const m of (w.meanings||[])){
+    const ex=(m.example||"").trim();
+    if(ex && n2Locate(w,ex)) return ex;
+  }
+  return "";
+}
+// 예문의 해당 구간만 다른 내용(밑줄·빈칸)으로 바꿔 끼운다
+function n2Swap(ex, loc, inner){ return esc(ex.slice(0,loc.i)) + inner + esc(ex.slice(loc.i+loc.len)); }
+function n2Underline(ex, loc){ return n2Swap(ex, loc, `<u>${esc(ex.slice(loc.i, loc.i+loc.len))}</u>`); }
+function n2Pack(correct, wrongs, type, q){
+  if(wrongs.length<3) return null;
+  const all=shuffle([correct, ...wrongs.slice(0,3)]);
+  return {t:all, k:all.indexOf(correct), n2:type, q};
+}
+// 漢字読み — 예문 속 한자 단어의 읽는 법. 오답은 정답 읽기를 비틀어 만든다.
+function n2BuildYomi(w){
+  if(!n2HasKanji(w)) return null;
+  let wrongs=readingDistractors(w,3);
+  if(!wrongs) wrongs=pickDistractors(w,3,"kanji","hira").map(x=>wField(x,"hira"));
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  const q=(ex&&loc) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
+                    : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
+  return n2Pack(w.hiragana, wrongs, "yomi", q);
+}
+// 表記 — 예문의 한자 자리를 히라가나로 바꿔 보여주고 올바른 한자 표기를 고르게 한다
+function n2BuildHyoki(w){
+  if(!n2HasKanji(w)) return null;
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  if(!ex || !loc || !loc.exact) return null;                       // 활용형은 읽기를 바꿔 넣을 수 없다
+  if(ex.slice(loc.i, loc.i+loc.len)!==n2Form(w.kanji)) return null; // 한자 표기가 그대로 있을 때만
+  const wrongs=pickDistractors(w,3,"hira","kanji").map(x=>wField(x,"kanji"));
+  return n2Pack(wField(w,"kanji"), wrongs, "hyoki", `<div class="n2sent">${n2Swap(ex,loc,`<u>${esc(w.hiragana)}</u>`)}</div>`);
+}
+// 文脈規定 — 예문에서 단어를 빼고 （　）에 들어갈 말을 고르게 한다
+function n2BuildBunmyaku(w){
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  if(!ex || !loc || !loc.exact) return null;
+  const wrongs=pickDistractors(w,3,"korean","kanji").map(x=>wField(x,"kanji"));
+  return n2Pack(wField(w,"kanji"), wrongs, "bunmyaku", `<div class="n2sent">${n2Swap(ex,loc,`<span class="n2blank">（　　　）</span>`)}</div>`);
+}
+// 用法 — 정답은 그 단어의 예문, 오답은 다른 단어의 예문에 이 단어를 끼워 넣어 만든다
+function n2BuildYoho(w){
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  if(!ex || !loc || !loc.exact) return null;
+  const target=ex.slice(loc.i, loc.i+loc.len);
+  const wrongs=[], seen=new Set([ex]);
+  const pool=shuffle(state.words.filter(y=>y.id!==w.id && notExcluded(y)));
+  // 품사가 다른 단어의 예문에 끼워 넣어야 확실히 어색한 문장이 된다.
+  // (같은 품사끼리 바꾸면 「家がいい。」처럼 말이 되는 오답이 나와 정답이 모호해진다)
+  const collect=list=>{
+    for(const x of list){
+      if(wrongs.length>=3) break;
+      const xe=n2Example(x); if(!xe) continue;
+      const xl=n2Locate(x,xe); if(!xl || !xl.exact) continue;
+      const s=xe.slice(0,xl.i)+target+xe.slice(xl.i+xl.len);
+      if(seen.has(s) || s===ex) continue;
+      seen.add(s); wrongs.push(s);
+    }
+  };
+  collect(pool.filter(x=>x.pos && w.pos && x.pos!==w.pos));
+  collect(pool);   // 품사가 다른 단어가 모자라면 나머지로 채운다
+  return n2Pack(ex, wrongs, "yoho", `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`);
+}
+// 言い換え類義 — 밑줄 단어와 뜻이 가장 가까운 것. (유의어 데이터가 없어 한글 뜻으로 대신한다)
+function n2BuildIikae(w){
+  const wrongs=pickDistractors(w,3,"kanji","korean").map(x=>wField(x,"korean"));
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  const q=(ex&&loc) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
+                    : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
+  return n2Pack(wField(w,"korean"), wrongs, "iikae", q);
+}
+const N2_BUILD={yomi:n2BuildYomi, hyoki:n2BuildHyoki, bunmyaku:n2BuildBunmyaku, yoho:n2BuildYoho, iikae:n2BuildIikae};
+// 문제 번호에 따라 유형을 돌려가며(균형) 만들 수 있는 첫 유형을 채택한다
+function n2Build(w, seq){
+  const n=N2_TYPES.length, start=((seq%n)+n)%n;
+  for(let i=0;i<n;i++){
+    const q=N2_BUILD[N2_TYPES[(start+i)%n]](w);
+    if(q) return q;
+  }
+  return null;
+}
+// 보기를 4개 못 채우는 아주 작은 단어장을 위한 최소 문제
+function n2Fallback(w){
+  const ko=wField(w,"korean");
+  return {t:[ko], k:0, n2:"iikae", q:`<div class="qprompt">${esc(wField(w,"kanji"))}</div>`};
+}
+// 현재 문제의 N2 문제 데이터 (없으면 만들어 저장)
+function n2Opt(w){
+  let opt=quiz.opts[w.id];
+  if(!opt || !opt.t){ opt=n2Build(w, quiz.idx) || n2Fallback(w); quiz.opts[w.id]=opt; }
+  return opt;
+}
+
 /* ---- 말하기(음성인식) 퀴즈 ---- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!SR) $$("#quizPhaseSeg button[data-ph='speak']").forEach(b=>{ b.style.display="none"; });   // 미지원 브라우저(Firefox 등)
@@ -3368,16 +3519,33 @@ function renderQuiz(){
   if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
   if(quiz.phase==="speak"){ pf="kanji"; af="hira"; }   // 말하기: 항상 漢字 보고 발음
   quiz.curPf=pf; quiz.curAf=af;
-  $("#quizPhase").textContent = t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
+  // N2 어휘는 방향(문제→정답) 대신 유형별 문제를 만든다
+  const n2opt = quiz.phase==="n2" ? n2Opt(w) : null;
+  $("#quizPhase").textContent = n2opt
+    ? `${t("quiz_n2")} · ${t("n2_tag_"+n2opt.n2)}`
+    : t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
   // 상단 표시와 막대는 '몇 문제를 풀었는지'(진행도). 점수는 결과 화면에서 알려준다.
   const solved=quiz.list.filter(x=>quiz.done[x.id]).length;
   $("#quizScore").textContent = t("quiz_progress",{done:solved, total:quiz.list.length});
   $("#quizBar").style.width=(solved/quiz.list.length*100)+"%";
   // 이미 푼 문제로 돌아온 경우: 채점 결과만 보여주고 다시 채점하지 않는다
   const rec=quiz.done[w.id]||null, review=!!rec;
-  const ansText=wField(w,af);
-  let html=`<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
-  if(quiz.phase==="mc"){
+  const ansText=n2opt ? n2opt.t[n2opt.k] : wField(w,af);
+  // N2는 문제 지시문 + 예문이 곧 문제. (평소의 '문제 필드' 큰 글씨는 정답을 노출하므로 쓰지 않는다)
+  let html = n2opt
+    ? `<div class="n2head"><span class="n2tag">${esc(t("n2_tag_"+n2opt.n2))}</span>${levelBadge(w.level)}</div>`
+      + `<p class="muted n2inst">${esc(t("n2_inst_"+n2opt.n2))}</p>${n2opt.q}`
+    : `<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
+  if(n2opt){
+    // 채점·이동은 4지선다와 동일한 구조(.choice + data-i)를 그대로 쓴다
+    const sent = n2opt.n2==="yoho";   // 용법은 보기가 문장이라 1열·왼쪽 정렬
+    html+=`<div class="choices${sent?" col":""}">`+n2opt.t.map((txt,i)=>{
+      let cls="choice"+(sent?" sent":"");
+      if(review){ if(i===n2opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
+    }).join("")+`</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+  } else if(quiz.phase==="mc"){
     // 보기 만들기 — 漢字→ひらがな는 정답 읽기를 비튼 오답을 쓴다(다른 단어에서 가져오면 너무 쉽다).
     // 그 밖의 방향은 같은 품사·비슷한 오쿠리가나 단어에서 뽑는다.
     // 한 번 만든 보기는 저장해 두어 되돌아와도 같은 보기가 나온다.
@@ -3488,7 +3656,7 @@ function resetQuizArea(){
   clearPersistedQuiz();
 }
 $("#qBackPhase").addEventListener("click",()=>{ if(quiz.prevPhase) goPhase(quiz.prevPhase, false); });
-function phaseLabel(ph){ return ph==="mc"?t("quiz_mc"):ph==="sa"?t("quiz_sa"):t("quiz_speak"); }
+function phaseLabel(ph){ return ph==="mc"?t("quiz_mc"):ph==="sa"?t("quiz_sa"):ph==="n2"?t("quiz_n2"):t("quiz_speak"); }
 // 단계를 처음부터 새로 시작
 function startPhaseFresh(ph, base){
   clearAdvance();
@@ -3501,7 +3669,8 @@ function startPhaseFresh(ph, base){
   renderQuiz();
 }
 $("#quizBody").addEventListener("click",e=>{
-  const b=e.target.closest(".choice"); if(!b||quiz.answered||quiz.phase!=="mc") return;
+  const isN2=quiz.phase==="n2";
+  const b=e.target.closest(".choice"); if(!b||quiz.answered||!(quiz.phase==="mc"||isN2)) return;
   quiz.answered=true;
   const w=quiz.list[quiz.idx];
   const opt=quiz.opts[w.id]||{t:[],k:-1};
@@ -3511,11 +3680,12 @@ $("#quizBody").addEventListener("click",e=>{
     else if(c===b) c.classList.add("wrong");
     c.disabled=true;
   });
-  const ans = wField(w,quiz.curAf), given=opt.t[pick]||"";
+  // N2는 유형마다 정답 항목이 달라 보기에 담아 둔 정답 텍스트를 쓴다
+  const ans = isN2 ? (opt.t[opt.k]||"") : wField(w,quiz.curAf), given=opt.t[pick]||"";
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=given; fb(false,t("fb_answer",{ans})); }
   quiz.done[w.id]={ok, pick, given};
-  logEvent(w.id,"mc",ok?"o":"x");   // 객관식 정/오답을 학습일지에 기록
+  logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 정/오답을 학습일지에 기록
   scheduleNext(900);
 });
 function submitSA(){
@@ -3547,14 +3717,16 @@ function renderQuizResults(){
   // 결과 화면에서도 단계 토글을 남긴다 — 다른 단계로 갔다가 이 결과로 돌아올 수 있도록
   renderQuizChrome();
   renderSchedule();   // 시험 결과를 캘린더·통계에 반영
+  const isN2=quiz.phase==="n2";
   const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
+  const isPick=isMc||isN2;   // 보기에서 고르는 단계 (N2도 고른 답을 mcChosen에 담는다)
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
-  // 객관식=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
-  const givenMap = isMc?quiz.mcChosen : isSp?quiz.spHeard : quiz.saTyped;
+  // 고르기=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
+  const givenMap = isPick?quiz.mcChosen : isSp?quiz.spHeard : quiz.saTyped;
   const given=w=>{ const tp=givenMap&&givenMap[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
-  const givenLabel = isMc?t("rq_chosen") : isSp?t("rq_heard") : t("rq_typed");
+  const givenLabel = isPick?t("rq_chosen") : isSp?t("rq_heard") : t("rq_typed");
   const wrongHtml = wrong.length
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
@@ -3562,13 +3734,15 @@ function renderQuizResults(){
         <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
-  const title = isMc ? t("mc_examEnd") : isSp ? t("sp_examEnd") : t("rq_examEnd");
-  const scoreLine = isMc ? t("mc_score",{score:quiz.score, total}) : isSp ? t("sp_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
+  const title = isN2 ? t("n2_examEnd") : isMc ? t("mc_examEnd") : isSp ? t("sp_examEnd") : t("rq_examEnd");
+  const scoreLine = isN2 ? t("n2_score",{score:quiz.score, total}) : isMc ? t("mc_score",{score:quiz.score, total}) : isSp ? t("sp_score",{score:quiz.score, total}) : t("rq_saScore",{score:quiz.score, total});
   // 객관식 결과 → 주관식 / 주관식 결과 → 말하기(지원 시) / 말하기 결과 → 처음부터 다시
   const mainN=(quiz.mainList||quiz.list).length;
   const restartBtn=`<button class="btn ghost" onclick="document.getElementById('startQuiz').click()">${esc(t("rq_restart"))}</button>`;
   const canSpeak = !isSp && SR && (quiz.mainList||quiz.list).some(speakable);
-  const footer = isMc
+  const footer = isN2
+    ? `<div class="btnrow">${restartBtn}</div>`   // N2 어휘는 독립 단계 — 끝나면 다시 풀거나 단계 토글로 이동
+    : isMc
     ? `<div class="btnrow"><button class="btn" onclick="startSAPhase()">${esc(quiz.isRetry?t("mc_goSAFull",{n:mainN}):t("mc_goSA"))}</button></div>`
     : isSp || !canSpeak
       ? `<div class="btnrow">${restartBtn}</div>`
