@@ -216,6 +216,9 @@
     text-align:center;cursor:pointer;font-size:1.02em;min-height:54px;
     display:flex;align-items:center;justify-content:center}
   .choice:hover{border-color:var(--brand)}
+  .bupd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;
+    border:1px solid var(--brand);background:var(--accent);border-radius:12px;padding:12px 14px}
+  .bupd .btn{margin:0;white-space:nowrap}
   .talkrow{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;
     font-size:1em;line-height:1;padding:5px 7px;min-height:0}
   .talkrow:hover{border-color:var(--brand);background:var(--accent)}
@@ -493,6 +496,7 @@
         <button class="btn ghost" id="wipeBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="db_wipe">내부 데이터 전체 삭제</button>
       </div>
       <div class="tiphint" data-i18n="hint_db2">💡 다른 기기로 옮길 땐 <b>내보내기</b>로 백업하고, 새 기기에서 <b>가져오기</b> 하세요. 진도와 설정은 자동 저장됩니다.</div>
+      <div id="bookUpdate" class="noprint" style="display:none;margin-top:10px"></div>
       <div id="repoBox" class="noprint" style="display:none;margin-top:6px">
         <label><span data-i18n="db_repoLabel">저장소에 준비된 단어장 불러오기</span> <b id="repoCount" style="color:var(--brand)"></b></label>
         <div class="toolbar">
@@ -984,6 +988,12 @@ const I18N = {
     appTitle:"일본어 단어 암기 · 시험", help_title:"도움말", install_title:"앱으로 설치", install_btn:"설치", toast_installed:"홈 화면에 설치했어요",
     tab_db:"단어 DB", tab_schedule:"일정", tab_memorize:"암기", tab_quiz:"퀴즈", tab_jlpt:"JLPT 시험", tab_print:"시험지 인쇄", tab_grammar:"문법", tab_idiom:"어법",
     lvl_n5:"N5", lvl_n4:"N4", lvl_n3:"N3", lvl_n2:"N2",
+    bu_title:"‘{name}’ 단어장에 새 버전이 있어요", 
+    bu_desc:"단어만 새로 받고 학습 진도·일정·학습일지는 그대로 유지합니다.",
+    bu_btn:"↻ 단어장 업데이트",
+    bu_confirm:"‘{name}’ 단어장을 최신으로 업데이트할까요?\n단어 내용만 교체되고 진도·일정·학습일지는 유지됩니다.\n(새 버전에서 사라진 단어의 기록은 함께 없어집니다)",
+    bu_done:"업데이트 완료 — 단어 {before}개 → {after}개, 학습 기록 {kept}개 유지",
+    bu_fail:"업데이트 실패 ({err}). 인터넷 연결을 확인해 주세요",
     talk_summary:"🗣️ 제미나이로 회화 연습 (프롬프트 만들기)",
     talk_sub:"고른 단어로 일본어 회화 연습 프롬프트를 만들어 복사하고, 제미나이를 엽니다. 제미나이에서 <b>붙여넣기</b>만 하면 바로 대화가 시작돼요.",
     talk_scope:"대상 단어", talk_scopeWrong:"최근 틀린 단어", talk_style:"연습 방식",
@@ -1175,6 +1185,12 @@ const I18N = {
     appTitle:"Japanese Vocabulary · Quiz", help_title:"Help", install_title:"Install as app", install_btn:"Install", toast_installed:"Installed to your home screen",
     tab_db:"Words DB", tab_schedule:"Schedule", tab_memorize:"Memorize", tab_quiz:"Quiz", tab_jlpt:"JLPT exam", tab_print:"Print", tab_grammar:"Grammar", tab_idiom:"Phrases",
     lvl_n5:"N5", lvl_n4:"N4", lvl_n3:"N3", lvl_n2:"N2",
+    bu_title:"A newer version of ‘{name}’ is available",
+    bu_desc:"Refreshes the words only — your progress, schedule and study log are kept.",
+    bu_btn:"↻ Update wordbook",
+    bu_confirm:"Update ‘{name}’ to the latest version?\nOnly the word data is replaced; progress, schedule and study log are kept.\n(Records for words removed in the new version go away with them.)",
+    bu_done:"Updated — {before} → {after} words, {kept} study records kept",
+    bu_fail:"Update failed ({err}). Check your connection",
     talk_summary:"🗣️ Practice conversation with Gemini (build a prompt)",
     talk_sub:"Builds a Japanese conversation-practice prompt from your words, copies it, and opens Gemini. Just <b>paste</b> there to start.",
     talk_scope:"Words to use", talk_scopeWrong:"Recently missed", talk_style:"Practice style",
@@ -2189,8 +2205,10 @@ async function initRepoWordbooks(){
     const data=await res.json();
     const list=Array.isArray(data.wordbooks)?data.wordbooks.filter(w=>w&&w.file):[];
     if(!list.length) throw new Error("empty manifest");
+    repoManifest={}; list.forEach(w=>{ repoManifest[w.file]={name:w.name||w.file, rev:w.rev||""}; });
     sel.innerHTML=""; sel.disabled=false; $("#repoLoadBtn").disabled=false;
     list.forEach(w=>{ const o=document.createElement("option"); o.value=w.file; o.textContent=w.name||w.file; sel.appendChild(o); });
+    renderBookUpdate();   // 매니페스트를 받았으니 새 버전이 있는지 확인
     $("#repoCount").textContent=t("repo_count",{n:list.length});   // 몇 개가 준비돼 있는지 보이게
     note.style.display="none";
     box.style.display="";
@@ -2206,8 +2224,73 @@ $("#repoLoadBtn").addEventListener("click",async ()=>{
     const res=await fetch("data/"+file,{cache:"no-cache"});
     if(!res.ok) throw 0;
     applyWordbook(await res.json(), label);   // JSON에 name이 없으면 목록의 표시 이름 사용
+    markBookSource(file);                     // 어느 저장소 파일에서 왔는지 기록 → 나중에 업데이트 감지
   }catch(e){ toast(t("toast_repoFail")); }
 });
+
+/* ====================== 저장소 단어장 업데이트 ======================
+   불러온 단어장이 어느 파일의 어느 판(rev)인지 기록해 두고, 매니페스트의
+   rev가 달라지면 알린다. 업데이트는 단어만 갈아 끼우고 진도·일정·학습일지는
+   단어 표기(漢字|ひらがな)를 기준으로 옮겨 붙여 살린다.
+   (id는 파일이 바뀌면 밀릴 수 있어 믿을 수 없다) */
+let repoManifest={};
+function activeBook(){ return books.list.find(b=>b.id===books.active)||null; }
+function markBookSource(file){
+  const b=activeBook(); if(!b) return;
+  b.src=file; b.rev=(repoManifest[file]||{}).rev||"";
+  saveBooksReg(); renderBookUpdate();
+}
+function wordKey(w){ return (w.kanji||"")+"|"+(w.hiragana||""); }
+// 새 단어 목록으로 갈아 끼우되 진도를 표기 기준으로 이어 붙인다
+function remapToNewWords(newWords){
+  newWords.forEach((w,i)=>{ if(w.id==null) w.id=i+1; });
+  const keyToNew=new Map(); newWords.forEach(w=>keyToNew.set(wordKey(w), w.id));
+  const oldById=new Map(state.words.map(w=>[w.id,w]));
+  const mapId=oid=>{ const ow=oldById.get(+oid); if(!ow) return null;
+    const nid=keyToNew.get(wordKey(ow)); return nid==null?null:nid; };
+  const prog={}; let kept=0;
+  for(const [oid,v] of Object.entries(state.progress||{})){ const n=mapId(oid); if(n!=null){ prog[n]=v; kept++; } }
+  const sched={};
+  for(const [d,ids] of Object.entries(state.schedule||{})){
+    const arr=[...new Set((ids||[]).map(mapId).filter(x=>x!=null))];
+    if(arr.length) sched[d]=arr;
+  }
+  const sel=[...new Set((state.selected||[]).map(mapId).filter(x=>x!=null))];
+  const exc=[...new Set((state.excluded||[]).map(mapId).filter(x=>x!=null))];
+  const log=(state.log||[]).map(e=>{ const n=mapId(e.id); return n==null?null:Object.assign({},e,{id:n}); }).filter(Boolean);
+  const before=state.words.length;
+  state.words=newWords; state.progress=prog; state.schedule=sched;
+  state.selected=sel; state.excluded=exc; state.log=log;
+  normalizeWords(); save();
+  return {before, after:newWords.length, kept};
+}
+async function updateBookFromRepo(){
+  const b=activeBook(); if(!b||!b.src) return;
+  const info=repoManifest[b.src]; if(!info) return;
+  if(!confirm(t("bu_confirm",{name:b.name||b.src}))) return;
+  try{
+    const res=await fetch("data/"+b.src,{cache:"no-cache"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const d=await res.json();
+    if(!d || !Array.isArray(d.words) || !d.words.length) throw new Error("words 없음");
+    const r=remapToNewWords(d.words);
+    b.rev=info.rev; saveBooksReg();
+    resetQuizArea(); refreshAll();
+    toast(t("bu_done",{before:r.before, after:r.after, kept:r.kept}));
+  }catch(e){ toast(t("bu_fail",{err:String(e&&e.message||e)})); }
+}
+// 업데이트 안내 배너 (단어 DB 탭)
+function renderBookUpdate(){
+  const box=$("#bookUpdate"); if(!box) return;
+  const b=activeBook();
+  const info=b&&b.src?repoManifest[b.src]:null;
+  if(!b || !b.src || !info || !info.rev || info.rev===b.rev){ box.style.display="none"; box.innerHTML=""; return; }
+  box.style.display="";
+  box.innerHTML=`<div class="bupd"><div><b>${esc(t("bu_title",{name:b.name||b.src}))}</b>
+    <div class="muted" style="font-size:.85em;margin-top:2px">${esc(t("bu_desc"))}</div></div>
+    <button class="btn sec" id="bookUpdateBtn">${esc(t("bu_btn"))}</button></div>`;
+  $("#bookUpdateBtn").addEventListener("click",updateBookFromRepo);
+}
 initRepoWordbooks();
 
 /* AI 프롬프트 생성 — 주제를 받아 JSON 형식 지시문을 만들어 클립보드로 복사 */
@@ -4697,6 +4780,7 @@ function refreshAll(){
   updateTalkCount();
   $("#dbName").value=state.dbName||"";
   renderBookSelect(); renderBookPickers();
+  renderBookUpdate();
 }
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
