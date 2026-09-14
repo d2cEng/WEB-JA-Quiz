@@ -3237,9 +3237,10 @@ function n2BuildYomi(w){
   if(!n2HasKanji(w)) return null;
   let wrongs=readingDistractors(w,3);
   if(!wrongs) wrongs=pickDistractors(w,3,"kanji","hira").map(x=>wField(x,"hira"));
+  // 활용형이라 어간만 일치하면 밑줄(明け)과 정답(あける)이 어긋나므로 문맥 없이 단어만 보여준다
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
-  const q=(ex&&loc) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
-                    : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
+  const q=(ex&&loc&&loc.exact) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
+                               : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
   return n2Pack(w.hiragana, wrongs, "yomi", q);
 }
 // 表記 — 예문의 한자 자리를 히라가나로 바꿔 보여주고 올바른 한자 표기를 고르게 한다
@@ -3285,8 +3286,8 @@ function n2BuildYoho(w){
 function n2BuildIikae(w){
   const wrongs=pickDistractors(w,3,"kanji","korean").map(x=>wField(x,"korean"));
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
-  const q=(ex&&loc) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
-                    : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
+  const q=(ex&&loc&&loc.exact) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
+                               : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
   return n2Pack(wField(w,"korean"), wrongs, "iikae", q);
 }
 const N2_BUILD={yomi:n2BuildYomi, hyoki:n2BuildHyoki, bunmyaku:n2BuildBunmyaku, yoho:n2BuildYoho, iikae:n2BuildIikae};
