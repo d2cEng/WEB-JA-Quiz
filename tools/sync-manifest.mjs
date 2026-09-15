@@ -31,8 +31,11 @@ function revOf(words) {
 const check = process.argv.includes("--check");
 const man = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
 let changed = 0, missing = 0;
+const noLang = [];
 
 for (const wb of man.wordbooks || []) {
+  // lang은 뜻(korean 필드)이 어느 말로 쓰였는지다. 앱은 화면 언어와 같은 판만 목록에 보여준다.
+  if (wb.lang !== "ko" && wb.lang !== "en") noLang.push(wb.file);
   const p = path.join(DIR, wb.file);
   if (!fs.existsSync(p)) { console.log(`❌ 파일 없음: ${wb.file}`); missing++; continue; }
   let words;
@@ -44,6 +47,7 @@ for (const wb of man.wordbooks || []) {
   wb.rev = rev; changed++;
 }
 
+if (noLang.length) console.log(`\n⚠️ lang("ko"/"en") 없음 ${noLang.length}건 — 한국어판으로 취급됩니다: ${noLang.join(", ")}`);
 if (missing) { console.log(`\n파일 문제 ${missing}건 — 먼저 해결하세요.`); process.exit(1); }
 if (!changed) { console.log("모든 rev가 최신입니다."); process.exit(0); }
 if (check) {
