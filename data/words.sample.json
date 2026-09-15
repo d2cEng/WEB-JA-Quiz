@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "name": "JLPT 샘플 단어장",
   "words": [
     { "id": 1, "kanji": "明ける", "hiragana": "あける", "korean": "날이 밝다,(기간이) 끝나다", "level": "N4", "pos": "2그룹동사", "example": "夜が明ける。,梅雨が明ける。" },
     { "id": 2, "kanji": "上げる", "hiragana": "あげる", "korean": "올리다,(값을) 인상하다,주다", "level": "N5", "pos": "2그룹동사", "example": "手を上げる。,値段を上げる。,プレゼントを上げる。" },
@@ -24,7 +25,7 @@
     { "id": 21, "kanji": "来る", "hiragana": "くる", "korean": "오다", "level": "N5", "pos": "3그룹동사", "example": "友達が来る。" },
     { "id": 22, "kanji": "勉強する", "hiragana": "べんきょうする", "korean": "공부하다", "level": "N5", "pos": "3그룹동사", "example": "日本語を勉強する。" },
     { "id": 23, "kanji": "そして", "hiragana": "そして", "korean": "그리고", "level": "N5", "pos": "접속사", "example": "ご飯を食べた。そして寝た。" },
-    { "id": 24, "kanji": "でも", "hiragana": "でも", "korean": "하지만,그래도", "level": "N5", "pos": "접속사", "example": "高いです。でも買います。" },
+    { "id": 24, "kanji": "でも", "hiragana": "でも", "korean": "하지만,그래도", "level": "N5", "pos": "접속사", "example": "高いです。でも買います。,失敗した。でもあきらめない。" },
     { "id": 25, "kanji": "とても", "hiragana": "とても", "korean": "매우", "level": "N5", "pos": "부사", "example": "とても楽しい。" },
     { "id": 26, "kanji": "ゆっくり", "hiragana": "ゆっくり", "korean": "천천히", "level": "N4", "pos": "부사", "example": "ゆっくり話す。" }
   ]

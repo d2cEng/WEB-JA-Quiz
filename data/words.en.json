@@ -2268,7 +2268,7 @@
       "korean": "however, but",
       "level": "N5",
       "pos": "conjunction",
-      "example": "行きたいです。しかし時間がありません。"
+      "example": "行きたいです。しかし時間がありません。,安い。しかし品質が悪い。"
     },
     {
       "id": 253,
@@ -6061,7 +6061,7 @@
     },
     {
       "id": 674,
-      "kanji": "あいさつ・する",
+      "kanji": "あいさつする",
       "hiragana": "あいさつする",
       "korean": "to greet, to say hello",
       "level": "N4",
@@ -46413,7 +46413,7 @@
       "korean": "hence, for that reason",
       "level": "N2",
       "pos": "noun",
-      "example": "大雨だった。そのため遠足は中止になった。"
+      "example": "大雨だった。そのため遠足は中止になった。,寝坊した。そのため遅刻した。"
     },
     {
       "id": 5158,
@@ -68211,7 +68211,7 @@
       "korean": "however, but",
       "level": "N1",
       "pos": "conjunction",
-      "example": "努力はした。然し、結果は出なかった。"
+      "example": "努力はした。然し、結果は出なかった。,急いだ。然し間に合わなかった。"
     },
     {
       "id": 7580,
@@ -72792,7 +72792,7 @@
       "korean": "hence, for that reason",
       "level": "N1",
       "pos": "other",
-      "example": "彼は徹夜で作業した。その為、翌日は体調を崩した。"
+      "example": "彼は徹夜で作業した。その為、翌日は体調を崩した。,雪が降った。その為、電車が止まった。"
     },
     {
       "id": 8089,

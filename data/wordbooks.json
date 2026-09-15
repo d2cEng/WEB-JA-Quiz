@@ -4,7 +4,7 @@
     {
       "name": "JLPT 샘플 단어장",
       "file": "words.sample.json",
-      "rev": "1pxf0cf:821"
+      "rev": "1d432r5:836"
     },
     {
       "name": "일본 이자카야 메뉴 읽기",
@@ -49,7 +49,7 @@
     {
       "name": "경어(敬語) 표현집",
       "file": "keigo.json",
-      "rev": "1gfsizy:2637"
+      "rev": "n96rqs:2657"
     },
     {
       "name": "조수사(세는 말) 마스터",
@@ -59,7 +59,7 @@
     {
       "name": "JLPT N5–N1 Vocabulary (Japanese–English)",
       "file": "words.en.json",
-      "rev": "1ma39k6:658227"
+      "rev": "fek83a:658289"
     }
   ]
 }
