@@ -854,7 +854,7 @@
       "hiragana": "あの",
       "korean": "that · those · the",
       "level": "N5",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "あの店に入る。"
     },
     {
@@ -1016,7 +1016,7 @@
       "hiragana": "あらゆる",
       "korean": "all · every",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "あらゆる方法を試す。"
     },
     {
@@ -1259,7 +1259,7 @@
       "hiragana": "あんな",
       "korean": "that sort of · that kind of · like that · such",
       "level": "N4",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "あんな店には行かない。"
     },
     {
@@ -3761,7 +3761,7 @@
       "hiragana": "おおきな",
       "korean": "big · large · great",
       "level": "N5",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "大きな声で話す。"
     },
     {
@@ -11231,7 +11231,7 @@
       "hiragana": "この",
       "korean": "nine",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "この本を読む。"
     },
     {
@@ -11510,7 +11510,7 @@
       "hiragana": "こんな",
       "korean": "this sort of · this kind of · like this · such",
       "level": "N5",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "こんな店は初めてだ。"
     },
     {
@@ -17783,7 +17783,7 @@
       "hiragana": "その",
       "korean": "that · the · part (as in \"part two\") · um ...",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "その本を取る。"
     },
     {
@@ -18053,7 +18053,7 @@
       "hiragana": "そんな",
       "korean": "such · that sort of · that kind of · like that",
       "level": "N4",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "そんな話は知らない。"
     },
     {
@@ -18197,7 +18197,7 @@
       "hiragana": "たいした",
       "korean": "considerable · great · important · significant",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "それは大した問題ではない。"
     },
     {
@@ -19124,7 +19124,7 @@
       "hiragana": "たんなる",
       "korean": "mere · simple · sheer",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "単なるうわさだ。"
     },
     {
@@ -19619,7 +19619,7 @@
       "hiragana": "ちいさな",
       "korean": "small · little · tiny",
       "level": "N5",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "小さな声で話す。"
     },
     {
@@ -20231,7 +20231,7 @@
       "hiragana": "ちょっとした",
       "korean": "slight · minor · trifling · trivial",
       "level": "N4",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "ちょっとした失敗をする。"
     },
     {
@@ -22697,7 +22697,7 @@
       "hiragana": "どの",
       "korean": "Mr. · Mrs. · Miss · Ms.",
       "level": "N5",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "どの店に行く。"
     },
     {
@@ -22805,7 +22805,7 @@
       "hiragana": "どんな",
       "korean": "what kind of · what sort of · what · no matter what (kind of)",
       "level": "N3",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "どんな人が好きですか。"
     },
     {
@@ -35648,7 +35648,7 @@
       "hiragana": "ほんの",
       "korean": "mere · only · just · slight",
       "level": "N2",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "ほんの少しだけ食べる。"
     },
     {
@@ -51704,7 +51704,7 @@
       "hiragana": "わが",
       "korean": "my · our · one's own",
       "level": "N2",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "友人を我が家に招く。"
     },
     {
@@ -53972,7 +53972,7 @@
       "hiragana": "ろくな",
       "korean": "satisfactory·decent",
       "level": "N1",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "ろくな道具がなくて、作業が進まない。"
     },
     {
@@ -54512,7 +54512,7 @@
       "hiragana": "いかなる",
       "korean": "any kind of · every · whatsoever · whatever",
       "level": "N1",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "いかなる困難にも屈しない強い意志を持っている。"
     },
     {
@@ -55862,7 +55862,7 @@
       "hiragana": "かくたる",
       "korean": "certain · definite · clear · credible",
       "level": "N1",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "彼には確たる証拠がない。"
     },
     {
@@ -62063,7 +62063,7 @@
       "hiragana": "とんだ",
       "korean": "unthinkable · unimaginable · inconceivable · unexpected",
       "level": "N1",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "とんだ災難に見舞われて、今年の計画が全て台無しになった。"
     },
     {
@@ -78785,7 +78785,7 @@
       "hiragana": "たとい",
       "korean": "even if · no matter (what) · if · though",
       "level": "N1",
-      "pos": "other",
+      "pos": "rentaishi",
       "example": "仮令雨が降ろうとも、約束の場所で君を待っている。"
     },
     {

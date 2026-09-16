@@ -1512,6 +1512,7 @@ const POS_ALIASES={
   "접속사":"접속사","conjunction":"접속사","接続詞":"접속사",
   "조사":"조사","particle":"조사","助詞":"조사",
   "감탄사":"감탄사","interjection":"감탄사","感動詞":"감탄사",
+  "연체사":"연체사","rentaishi":"연체사","pre-noun adjectival":"연체사","prenominal":"연체사","adnominal":"연체사","連体詞":"연체사",
   "관용어":"관용어","관용구":"관용어","idiom":"관용어","idiomatic":"관용어","慣用句":"관용어",
   "복합동사":"복합동사","compound verb":"복합동사","compound":"복합동사","複合動詞":"복합동사",
   "연어":"연어","collocation":"연어","連語":"연어",
@@ -1575,12 +1576,13 @@ const POS_COLORS={
   "1그룹동사":"#2563eb","2그룹동사":"#0d9488","3그룹동사":"#7c3aed",
   "い형용사":"#ea580c","な형용사":"#db2777",
   "명사":"#475569","부사":"#b45309","접속사":"#4f46e5",
+  "조사":"#0891b2","감탄사":"#c026d3","연체사":"#15803d",
   "관용어":"#be123c","복합동사":"#0e7490","연어":"#65a30d",
   "사자성어":"#9333ea","속담":"#ca8a04"
 };
 function posColor(pos){ return POS_COLORS[pos] || "#64748b"; }
 // 품사 표시 라벨 (데이터 키는 한국어로 유지, 화면엔 언어별 라벨)
-const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle","관용어":"Idiom","복합동사":"Compound verb","연어":"Collocation","사자성어":"4-char idiom","속담":"Proverb"};
+const POS_LABELS_EN={"1그룹동사":"Group 1 verb","2그룹동사":"Group 2 verb","3그룹동사":"Group 3 verb","い형용사":"i-adjective","な형용사":"na-adjective","명사":"Noun","부사":"Adverb","접속사":"Conjunction","조사":"Particle","감탄사":"Interjection","연체사":"Pre-noun adjectival","관용어":"Idiom","복합동사":"Compound verb","연어":"Collocation","사자성어":"4-char idiom","속담":"Proverb"};
 function posLabel(pos){ return (LANG==="en" && POS_LABELS_EN[pos]) ? POS_LABELS_EN[pos] : pos; }
 function posBadge(pos, tap){ if(!pos) return ""; const c=posColor(pos); const lbl=posLabel(pos);
   const style=`background:${c}1a;color:${c};border:1px solid ${c}59`;
