@@ -1,6 +1,6 @@
 {
  "version": 1,
- "name": "공항·호텔 일본어",
+ "name": "[테마] 공항·호텔 일본어",
  "words": [
   {
    "kanji": "搭乗",
@@ -481,6 +481,46 @@
    "level": "N2",
    "pos": "명사",
    "example": "部屋からの眺めが素晴らしかった。"
+  },
+  {
+   "kanji": "預ける",
+   "hiragana": "あずける",
+   "korean": "맡기다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "空港で大きな荷物を預ける。"
+  },
+  {
+   "kanji": "到着する",
+   "hiragana": "とうちゃくする",
+   "korean": "도착하다",
+   "level": "N3",
+   "pos": "3그룹동사",
+   "example": "飛行機が予定より早く到着する。"
+  },
+  {
+   "kanji": "混む",
+   "hiragana": "こむ",
+   "korean": "붐비다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "連休の空港はとても混む。"
+  },
+  {
+   "kanji": "広い",
+   "hiragana": "ひろい",
+   "korean": "넓다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "このホテルの部屋は広い。"
+  },
+  {
+   "kanji": "快適",
+   "hiragana": "かいてき",
+   "korean": "쾌적함",
+   "level": "N2",
+   "pos": "な형용사",
+   "example": "新しい客室はとても快適だ。"
   }
  ]
 }
