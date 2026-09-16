@@ -1,6 +1,6 @@
 {
  "version": 1,
- "name": "조수사(세는 말) 마스터",
+ "name": "[테마] 조수사(세는 말) 마스터",
  "words": [
   {
    "kanji": "〜本",
@@ -481,6 +481,46 @@
    "level": "N3",
    "pos": "명사",
    "example": "五年間この会社で働いている。"
+  },
+  {
+   "kanji": "数える",
+   "hiragana": "かぞえる",
+   "korean": "세다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "レジで商品の数を数える。"
+  },
+  {
+   "kanji": "足りる",
+   "hiragana": "たりる",
+   "korean": "충분하다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "人数に対して椅子が足りる。"
+  },
+  {
+   "kanji": "分ける",
+   "hiragana": "わける",
+   "korean": "나누다",
+   "level": "N3",
+   "pos": "2그룹동사",
+   "example": "ケーキを人数分に分ける。"
+  },
+  {
+   "kanji": "多い",
+   "hiragana": "おおい",
+   "korean": "많다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "今日は注文の数が多い。"
+  },
+  {
+   "kanji": "ちょうど",
+   "hiragana": "ちょうど",
+   "korean": "정확히,딱",
+   "level": "N4",
+   "pos": "부사",
+   "example": "代金はちょうど千円だ。"
   }
  ]
 }

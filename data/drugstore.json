@@ -1,6 +1,6 @@
 {
  "version": 1,
- "name": "드러그스토어·약국",
+ "name": "[테마] 드러그스토어·약국",
  "words": [
   {
    "kanji": "薬局",
@@ -513,6 +513,46 @@
    "level": "N1",
    "pos": "명사",
    "example": "就寝前に一錠服用します。"
+  },
+  {
+   "kanji": "塗る",
+   "hiragana": "ぬる",
+   "korean": "바르다",
+   "level": "N4",
+   "pos": "1그룹동사",
+   "example": "虫刺されに薬を塗る。"
+  },
+  {
+   "kanji": "治る",
+   "hiragana": "なおる",
+   "korean": "낫다",
+   "level": "N3",
+   "pos": "1그룹동사",
+   "example": "薬を飲んで風邪が治る。"
+  },
+  {
+   "kanji": "痛い",
+   "hiragana": "いたい",
+   "korean": "아프다",
+   "level": "N5",
+   "pos": "い형용사",
+   "example": "朝から頭がひどく痛い。"
+  },
+  {
+   "kanji": "眠い",
+   "hiragana": "ねむい",
+   "korean": "졸리다",
+   "level": "N4",
+   "pos": "い형용사",
+   "example": "薬のせいで少し眠い。"
+  },
+  {
+   "kanji": "安全",
+   "hiragana": "あんぜん",
+   "korean": "안전함",
+   "level": "N3",
+   "pos": "な형용사",
+   "example": "用量を守れば安全だ。"
   }
  ]
 }

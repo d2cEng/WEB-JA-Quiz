@@ -64,7 +64,7 @@ const WORD_FIELDS = ["id", "kanji", "hiragana", "korean", "level", "pos", "examp
 const REQUIRED = ["kanji", "hiragana", "korean"];
 const LEVELS = ["N5", "N4", "N3", "N2", "N1"];
 const POS_CANON = ["1그룹동사", "2그룹동사", "3그룹동사", "い형용사", "な형용사", "명사", "부사",
-                   "접속사", "조사", "감탄사", "관용어", "복합동사", "연어", "사자성어", "속담"];
+                   "접속사", "조사", "감탄사", "연체사", "관용어", "복합동사", "연어", "사자성어", "속담"];
 const POS_ALIAS = new Set([...POS_CANON,
   "group 1 verb","group1 verb","godan verb","godan","u verb","u-verb","五段動詞","五段",
   "group 2 verb","group2 verb","ichidan verb","ichidan","ru verb","ru-verb","一段動詞","一段",
@@ -72,6 +72,7 @@ const POS_ALIAS = new Set([...POS_CANON,
   "i adjective","i-adjective","i adj","i-adj","keiyoushi","形容詞",
   "na adjective","na-adjective","na adj","na-adj","keiyoudoushi","形容動詞",
   "noun","名詞","adverb","副詞","conjunction","接続詞","particle","助詞","interjection","感動詞",
+  "rentaishi","pre-noun adjectival","prenominal","adnominal","連体詞",
   "관용구","idiom","idiomatic","慣用句","compound verb","compound","複合動詞",
   "collocation","連語","four character idiom","yojijukugo","四字熟語","proverb","ことわざ","諺"]);
 // 앱의 normalizePos와 동일: 공백·밑줄만 정규화하고, 하이픈 표기는 표에 그대로 들어 있다

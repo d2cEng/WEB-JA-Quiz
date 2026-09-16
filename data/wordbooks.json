@@ -2,64 +2,82 @@
   "version": 1,
   "wordbooks": [
     {
-      "name": "JLPT 샘플 단어장",
-      "file": "words.sample.json",
-      "rev": "1pxf0cf:821"
+      "name": "[종합] JLPT N5–N1 단어장 (일본어–한국어)",
+      "file": "words.ko.json",
+      "rev": "2uugjr:365853",
+      "lang": "ko"
     },
     {
-      "name": "일본 이자카야 메뉴 읽기",
-      "file": "izakaya-menu.json",
-      "rev": "4c7vuq:10288"
-    },
-    {
-      "name": "일본 마트 장보기",
-      "file": "supermarket.json",
-      "rev": "3gxdl5:11007"
-    },
-    {
-      "name": "일본 편의점 이용",
-      "file": "conbini.json",
-      "rev": "jbqe7p:2431"
-    },
-    {
-      "name": "드러그스토어·약국",
-      "file": "drugstore.json",
-      "rev": "1x044fg:2336"
-    },
-    {
-      "name": "전철·교통 표현",
-      "file": "transport.json",
-      "rev": "1nozbem:2127"
-    },
-    {
-      "name": "공항·호텔 일본어",
-      "file": "airport-hotel.json",
-      "rev": "1gxl986:2289"
-    },
-    {
-      "name": "온천·료칸 즐기기",
-      "file": "onsen-ryokan.json",
-      "rev": "1xm6gqw:2198"
-    },
-    {
-      "name": "의성어·의태어(オノマトペ)",
-      "file": "onomatopoeia.json",
-      "rev": "52xf8w:2960"
-    },
-    {
-      "name": "경어(敬語) 표현집",
-      "file": "keigo.json",
-      "rev": "1gfsizy:2637"
-    },
-    {
-      "name": "조수사(세는 말) 마스터",
-      "file": "counters.json",
-      "rev": "ax1c0n:1998"
-    },
-    {
-      "name": "JLPT N5–N1 Vocabulary (Japanese–English)",
+      "name": "[종합] JLPT N5–N1 Vocabulary (Japanese–English)",
       "file": "words.en.json",
-      "rev": "1ma39k6:658227"
+      "rev": "18ytk3t:698216",
+      "lang": "en"
+    },
+    {
+      "name": "[테마] 일본 이자카야·식당 메뉴 읽기",
+      "file": "izakaya-menu.json",
+      "rev": "1myv297:10299",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 일본 마트 장보기",
+      "file": "supermarket.json",
+      "rev": "1brw4fg:11043",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 일본 편의점 이용",
+      "file": "conbini.json",
+      "rev": "mzy4yg:2602",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 드러그스토어·약국",
+      "file": "drugstore.json",
+      "rev": "1ul6je5:2489",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 전철·교통 표현",
+      "file": "transport.json",
+      "rev": "12ythta:2127",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 공항·호텔 일본어",
+      "file": "airport-hotel.json",
+      "rev": "t79it1:2465",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 온천·료칸 즐기기",
+      "file": "onsen-ryokan.json",
+      "rev": "gzmc31:2343",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 의성어·의태어(オノマトペ)",
+      "file": "onomatopoeia.json",
+      "rev": "1oe86hb:3140",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 경어(敬語) 표현집",
+      "file": "keigo.json",
+      "rev": "n96rqs:2657",
+      "lang": "ko"
+    },
+    {
+      "name": "[테마] 조수사(세는 말) 마스터",
+      "file": "counters.json",
+      "rev": "1q2cnn:2166",
+      "lang": "ko"
+    },
+    {
+      "name": "[샘플] JLPT 단어장 형식 예시",
+      "file": "words.sample.json",
+      "rev": "130fzd6:881",
+      "lang": "ko"
     }
   ]
 }
