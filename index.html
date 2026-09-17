@@ -634,6 +634,7 @@
         <div><label data-i18n="sch_levelFilter">레벨 필터</label><div id="sLevel" class="lvlchips"></div></div>
       </div>
       <label class="chk"><input type="checkbox" id="sSelectedOnly" autocomplete="off"> <span data-i18n="sch_selectedOnly">단어 DB에서 체크한 단어만 사용 (위 필터 무시)</span></label>
+      <label class="chk"><input type="checkbox" id="sReview" autocomplete="off"> <span data-i18n="sch_review">이미 외운 단어도 넣기 (복습 일정)</span></label>
       <label data-i18n="sch_orderLabel">추출 순서</label>
       <select id="sOrder">
         <option value="random" data-i18n="order_random">무작위</option>
@@ -1055,7 +1056,7 @@ const I18N = {
     sch_settingsSummary:"⚙️ 일정 만들기 (기간·개수·분량)",
     sch_sub:"기간과 하루 분량을 정하면 날짜별로 단어를 자동 분배합니다.",
     sch_start:"시작일", sch_end:"마지막일", sch_endDate:"종료일", sch_posFilter:"품사 필터", sch_levelFilter:"레벨 필터",
-    sch_selectedOnly:"단어 DB에서 체크한 단어만 사용 (위 필터 무시)", sch_orderLabel:"추출 순서",
+    sch_selectedOnly:"단어 DB에서 체크한 단어만 사용 (위 필터 무시)", sch_review:"이미 외운 단어도 넣기 (복습 일정)", sch_orderLabel:"추출 순서",
     order_random:"무작위", order_dbOrder:"DB 순서대로", order_seq:"순서대로",
     sch_countPre:"외울 단어 개수: ", edit_countPre:"외울 단어 개수: ", unit_geSuf:"개",
     sch_weekendWeight:"주말 비중 (평일 대비)", w_auto:"자동", w_1:"1배", w_2:"2배", w_3:"3배", w_4:"4배",
@@ -1128,7 +1129,7 @@ const I18N = {
     stats_offTitle:"📝 일정 외 학습", stats_offBody:"암기·퀴즈로 학습한 일정에 없는 단어 <b>{off}</b>개가 기록되어 있어요.", stats_offNone:"일정 외에 학습한 단어가 아직 없어요. 암기·퀴즈를 진행하면 여기에 반영됩니다.",
     log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
     log_hint:"암기·객관식·주관식·말하기·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
-    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_n2:"N2 어휘", log_kind_fix:"정정",
+    log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_rev:"복습", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_n2:"N2 어휘", log_kind_fix:"정정",
     detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -1151,7 +1152,7 @@ const I18N = {
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
     sheet_grammarTitle:"일본어 문법 정리", toast_grammarSheet:"문법 정리 생성 완료",
-    toast_allMemorized:"이 조건의 단어는 이미 다 외웠어요 🎉 레벨·품사를 바꿔보세요",
+    toast_allMemorized:"이 조건의 단어는 이미 다 외웠어요 🎉 다시 보려면 '이미 외운 단어도 넣기(복습 일정)'를 켜세요",
     toast_noPrintWords:"출제할 단어가 없습니다", print_dayOrdinal:" {ord}일차",
     book_current:"단어장", book_currentMark:"현재",
     sched_todayAllTitle:"📅 오늘 할 분량 (단어장별)",
@@ -1254,7 +1255,7 @@ const I18N = {
     sch_settingsSummary:"⚙️ Create schedule (period · count · daily load)",
     sch_sub:"Set a period and a daily load to auto-distribute words by date.",
     sch_start:"Start date", sch_end:"End date", sch_endDate:"End date", sch_posFilter:"Part-of-speech filter", sch_levelFilter:"Level filter",
-    sch_selectedOnly:"Use only words checked in the DB (ignore the filters above)", sch_orderLabel:"Selection order",
+    sch_selectedOnly:"Use only words checked in the DB (ignore the filters above)", sch_review:"Include words you already memorized (review round)", sch_orderLabel:"Selection order",
     order_random:"Random", order_dbOrder:"DB order", order_seq:"In order",
     sch_countPre:"Words to learn: ", edit_countPre:"Words to learn: ", unit_geSuf:"",
     sch_weekendWeight:"Weekend weight (vs weekday)", w_auto:"Auto", w_1:"×1", w_2:"×2", w_3:"×3", w_4:"×4",
@@ -1327,7 +1328,7 @@ const I18N = {
     stats_offTitle:"📝 Off-schedule learning", stats_offBody:"<b>{off}</b> words not in the schedule have been recorded from Memorize/Quiz.", stats_offNone:"No off-schedule words yet. They'll appear here once you use Memorize/Quiz.",
     log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
     log_hint:"Every Memorize, multiple-choice, short-answer, speaking and correction action is logged by date and time. (last 14 days)",
-    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_n2:"N2 vocabulary", log_kind_fix:"Correction",
+    log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_rev:"Review", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_n2:"N2 vocabulary", log_kind_fix:"Correction",
     detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -1350,7 +1351,7 @@ const I18N = {
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
     sheet_grammarTitle:"Japanese Grammar Summary", toast_grammarSheet:"Grammar sheet generated",
-    toast_allMemorized:"You've already memorized every word matching this filter 🎉 Try another level or part of speech",
+    toast_allMemorized:"You've already memorized every word matching this filter 🎉 Tick 'Include words you already memorized' to review them",
     toast_noPrintWords:"No words to print", print_dayOrdinal:" Day {ord}",
     book_current:"Wordbook", book_currentMark:"current",
     sched_todayAllTitle:"📅 Today's load by wordbook",
@@ -1432,7 +1433,7 @@ function loadBooksReg(){
 function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} cloudMarkDirty("__registry__"); }
 function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
 function blankState(name){
-  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],dbName:name||""};
+  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},dbName:name||""};
 }
 function load(){
   loadBooksReg();
@@ -1449,6 +1450,7 @@ function load(){
   state.progress = state.progress || {};
   state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
   state.log = Array.isArray(state.log) ? state.log : [];
+  state.rounds = (state.rounds && typeof state.rounds==="object") ? state.rounds : {};
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1456,7 +1458,7 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log,
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds,
     updatedAt:Date.now()   // 클라우드 동기화의 변경 시각(충돌 판정 기준)
   };
   try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
@@ -2158,7 +2160,8 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 /* 가져오기/내보내기 */
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
-    schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log};
+    schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded,
+    log:state.log, rounds:state.rounds};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -2180,6 +2183,7 @@ function applyWordbook(d, fallbackName){
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
   state.log=Array.isArray(d.log)?d.log:[];
+  state.rounds=(d.rounds && typeof d.rounds==="object")?d.rounds:{};
   normalizeWords(); save(); resetQuizArea(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
@@ -2511,16 +2515,17 @@ document.addEventListener("change",e=>{
 function todayLoadByBook(){
   const td=todayStr();
   return books.list.map(b=>{
-    let sched=null, prog={}, excl=[], name=b.name;
-    if(b.id===books.active){ sched=state.schedule; prog=state.progress||{}; excl=state.excluded||[]; name=state.dbName; }
+    let sched=null, prog={}, excl=[], rounds={}, name=b.name;
+    if(b.id===books.active){ sched=state.schedule; prog=state.progress||{}; excl=state.excluded||[]; rounds=state.rounds||{}; name=state.dbName; }
     else {
       try{
         const sv=JSON.parse(localStorage.getItem(bookKey(b.id)));
-        if(sv){ sched=sv.schedule||{}; prog=sv.progress||{}; excl=sv.excluded||[]; name=sv.name||b.name; }
+        if(sv){ sched=sv.schedule||{}; prog=sv.progress||{}; excl=sv.excluded||[]; rounds=sv.rounds||{}; name=sv.name||b.name; }
       }catch(e){}
     }
     const ids=((sched&&sched[td])||[]).filter(id=>!excl.includes(id));
-    const done=ids.filter(id=>prog[id]&&prog[id].done).length;
+    const rs=rounds[td];   // 복습 회차면 그 회차에 외운 것만 오늘 완료로 센다
+    const done=ids.filter(id=>{ const p=prog[id]; if(!p||!p.done) return false; return rs ? (p.t>=rs) : true; }).length;
     return {id:b.id, name:name||t("name_unnamed"), total:ids.length, done, active:b.id===books.active};
   });
 }
@@ -2564,10 +2569,11 @@ function schedPoolRaw(){
   const pos=$("#sPos").value, lvlSel=levelSel.sLevel;
   return state.words.filter(w=>(!pos||w.pos===pos)&&(!lvlSel.size||lvlSel.has(w.level))).filter(notExcluded);
 }
-// 새 일정에 넣을 단어 — 이미 외운 단어는 뺀다.
-// 진도는 단어 단위라 이미 외운 단어를 다시 배치해 봐야 그 날짜가 곧바로 '완료'로 보일 뿐이고,
-// 학습 기록(외운 날짜)은 아래 일정 생성에서 그대로 보존한다.
-function schedPoolBase(){ return schedPoolRaw().filter(w=>!isDone(w.id)); }
+// 새 일정에 넣을 단어. 기본은 이미 외운 단어를 빼지만,
+// '복습 일정'을 켜면 전부 넣는다 — 그 날짜에 회차 시작 시각을 찍어 두므로
+// 다시 외우기 전까지는 완료로 보이지 않는다(doneForDate 참고).
+function schedReview(){ const c=$("#sReview"); return !!(c && c.checked); }
+function schedPoolBase(){ const rev=schedReview(); return schedPoolRaw().filter(w=>rev||!isDone(w.id)); }
 function updateSchedCount(){
   const max=schedPoolBase().length;
   const sc=$("#sCount");
@@ -2619,10 +2625,15 @@ function editPoolWords(){
   const today=todayStr();
   const futureIds=[]; Object.keys(state.schedule).filter(d=>d>=today).sort()
     .forEach(d=>state.schedule[d].forEach(id=>{ if(!futureIds.includes(id)) futureIds.push(id); }));
+  // 아직 안 외운 단어. 복습 회차로 배치된 미래 단어는 그 회차 기준으로 본다
+  // (평생 진도로 보면 전부 '외움'이라 재배치할 것이 하나도 없다고 나온다)
   const todo=w=>w && !isDone(w.id) && notExcluded(w);
+  const todoOn=(w,d)=>w && !doneForDate(w.id,d) && notExcluded(w);
+  const dateOfFuture={}; Object.keys(state.schedule).filter(d=>d>=today)
+    .forEach(d=>state.schedule[d].forEach(id=>{ if(dateOfFuture[id]==null) dateOfFuture[id]=d; }));
   const scheduledSet=new Set(Object.values(state.schedule).flat());
   const extra=state.words.filter(w=>!scheduledSet.has(w.id)).filter(todo);
-  return futureIds.map(wordById).filter(todo).concat(extra);
+  return futureIds.map(wordById).filter(w=>todoOn(w, dateOfFuture[w&&w.id])).concat(extra);
 }
 function applyScheduleEdit(){
   const days=daysOf($("#eStart").value,$("#eEnd").value);
@@ -2637,13 +2648,17 @@ function applyScheduleEdit(){
   const keepDone={};
   Object.keys(state.schedule).forEach(d=>{
     if(d<today) return;
-    const done=state.schedule[d].filter(isDone);
+    const done=state.schedule[d].filter(id=>doneForDate(id,d));
     if(done.length) keepDone[d]=done;
   });
-  Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });  // 미래만 비우고 재배치
+  const keptRounds={}; Object.keys(keepDone).forEach(d=>{ if(state.rounds[d]!=null) keptRounds[d]=state.rounds[d]; });
+  Object.keys(state.schedule).forEach(d=>{ if(d>=today){ delete state.schedule[d]; delete state.rounds[d]; } });  // 미래만 비우고 재배치
   const fresh={}; distributeInto(fresh, pool, days, c.x, c.y);
   Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
-  Object.keys(fresh).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(fresh[d]));
+  Object.assign(state.rounds, keptRounds);       // 남긴 날짜는 원래 회차를 유지
+  const editAt=Date.now();
+  Object.keys(fresh).forEach(d=>{ state.schedule[d]=(state.schedule[d]||[]).concat(fresh[d]);
+    if(state.rounds[d]==null) state.rounds[d]=editAt; });
   save(); renderSchedule();
   toast(t("toast_redistributed",{d:Object.keys(fresh).length, n:pool.length}));
 }
@@ -2695,6 +2710,7 @@ $("#sSelectedOnly").addEventListener("change",()=>{
   $("#sPos").disabled=sel; $("#sLevel").classList.toggle("disabled",sel);   // 체크 단어만 쓸 땐 필터 비활성
   updateSchedCount();
 });
+$("#sReview").addEventListener("change",updateSchedCount);
 $("#sPos").addEventListener("change",updateSchedCount);
 bindLevelChips("sLevel", updateSchedCount);
 // 외울 개수·시작일·마지막일·주말 비중·분량·수동모드를 조작할 때마다 갱신
@@ -2717,6 +2733,7 @@ $("#genSchedule").addEventListener("click",()=>{
   if($("#sEnd").value<$("#sStart").value){ toast(t("toast_endBeforeStart")); return; }
   let pool=schedPoolBase();
   if(!pool.length){
+    // 다 외웠을 땐 '레벨을 바꿔보라'고 해도 바꿀 곳이 없다. 복습 체크박스를 알려준다.
     toast(schedPoolRaw().length ? t("toast_allMemorized")
       : ($("#sSelectedOnly").checked?t("toast_noChecked"):t("toast_noMatch")));
     return;
@@ -2743,21 +2760,47 @@ $("#genSchedule").addEventListener("click",()=>{
   }
   // 현재·예정(오늘 이후) 일정을 교체, 지난 기록은 레거시로 보존.
   // 오늘·이후 날짜에 이미 외운 단어가 있으면 그 날짜에 그대로 남겨 캘린더의 학습 기록을 지킨다.
+  // 복습 일정은 그 단어들을 새로 다시 배치하는 것이므로 남기지 않는다(중복 배치가 된다).
   const today=todayStr();
+  const review=schedReview();
   const keepDone={};
-  Object.keys(state.schedule).forEach(d=>{
+  if(!review) Object.keys(state.schedule).forEach(d=>{
     if(d<today) return;
-    const done=state.schedule[d].filter(isDone);
+    const done=state.schedule[d].filter(id=>doneForDate(id,d));
     if(done.length) keepDone[d]=done;
   });
-  Object.keys(state.schedule).forEach(d=>{ if(d>=today) delete state.schedule[d]; });
+  Object.keys(state.schedule).forEach(d=>{ if(d>=today){ delete state.schedule[d]; delete state.rounds[d]; } });
   Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
   Object.keys(sched).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(sched[d]));
+  // 이번 회차 시작 시각을 배치한 날짜마다 찍는다 — 이 시각 뒤에 외운 것만 그 날짜의 완료로 센다
+  const roundAt=Date.now();
+  Object.keys(sched).forEach(d=>{ state.rounds[d]=roundAt; });
   save(); renderSchedule();
   $("#schedSettings").open=false;   // 생성하면 설정 접기
   toast(t("toast_schedGen",{d:Object.keys(sched).length, x, y, n:pool.length}));
 });
 function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
+/* 복습 회차 — 같은 단어를 다시 배치해도 그 날짜가 처음부터 '완료'로 보이지 않게.
+   일정을 만들 때 그 날짜에 회차 시작 시각(state.rounds[날짜])을 찍어 두고,
+   그 뒤에 외운 것만 그 날짜의 완료로 센다. 성취도('외운 단어 n/전체')는
+   지금까지처럼 isDone으로 세므로 복습해도 내려가지 않는다.
+   회차 기록이 없는 예전 일정은 예전 그대로 단어 단위로 본다. */
+function roundOf(date){ return (state.rounds||{})[date]; }
+function doneForDate(id, date){
+  const rs=roundOf(date); if(!rs) return isDone(id);
+  const p=state.progress[id];
+  return !!(p && p.done && p.t && p.t>=rs);
+}
+function countDoneOn(date, ids){ return ids.filter(id=>doneForDate(id,date)).length; }
+// 회차가 걸린 날짜에 남아 있는(=아직 다시 안 외운) 단어가 있는지 — 일정 통계용
+function schedDoneTotal(){
+  let done=0, total=0;
+  Object.keys(state.schedule).forEach(d=>{
+    const ids=state.schedule[d].filter(id=>!isExcluded(id));
+    total+=ids.length; done+=countDoneOn(d, ids);
+  });
+  return {done, total};
+}
 function studyDate(id){ return state.progress[id] && state.progress[id].date; }
 
 /* ===== 지난 일정에서 못한 단어를 이후 일정에 이월 ===== */
@@ -2847,8 +2890,9 @@ function renderSchedule(){
   const studyDays=new Set(learnedWords.map(w=>studyDate(w.id)).filter(Boolean)).size;
   const schedIds=dates.flatMap(d=>state.schedule[d]).filter(id=>!isExcluded(id));
   const schedSet=new Set(schedIds);
-  const schedDone=schedIds.filter(isDone).length;
-  const schedPct=schedIds.length?Math.round(schedDone/schedIds.length*100):0;
+  const st=schedDoneTotal();   // 날짜별 회차를 반영한 완료 수
+  const schedDone=st.done;
+  const schedPct=st.total?Math.round(schedDone/st.total*100):0;
   const offSched=learnedWords.filter(w=>!schedSet.has(w.id)).length;
   $("#statsPanel").innerHTML=`
     <div class="muted" style="margin:0 0 8px;font-size:.9em">${t("stats_wordbook")}<b style="color:var(--ink)">${esc(state.dbName||t("name_none"))}</b>${t("stats_totalWords",{n:totalW})}</div>
@@ -2859,7 +2903,7 @@ function renderSchedule(){
       ${schedIds.length?`<div class="stat"><b>${schedPct}%</b><span>${esc(t("stat_schedProgress"))}</span></div>`:''}
     </div>
     <div class="muted" style="margin:-2px 0 4px;font-size:.88em">${schedIds.length
-      ? t("stats_schedLine",{done:schedDone, total:schedIds.length})
+      ? t("stats_schedLine",{done:schedDone, total:st.total})
       : t("stats_noSched")}</div>
     <div class="offsched">${offSched>0 ? t("stats_offBody",{off:offSched}) : t("stats_offNone")}</div>`;
 
@@ -2917,7 +2961,7 @@ function renderCalendar(){
     if(ds===selDate) cls.push('sel');
     let info="";
     if(ids && ids.length){
-      cls.push('has'); const done=ids.filter(isDone).length;
+      cls.push('has'); const done=countDoneOn(ds, ids);   // 복습 회차면 그 회차에 외운 것만
       const pct=Math.round(done/ids.length*100);
       if(done===ids.length) cls.push('done');
       else if(done>0) cls.push('partial');   // 부분 진행
@@ -2934,8 +2978,8 @@ function renderDayDetail(){
   if(!selDate || !state.schedule[selDate]){ box.innerHTML=''; return; }
   const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
   const activeIds=ids.filter(id=>!isExcluded(id));   // 제외 단어는 완료율 집계에서 제외
-  const done=activeIds.filter(isDone).length;
-  const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${isDone(w.id)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
+  const done=countDoneOn(selDate, activeIds);
+  const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${doneForDate(w.id,selDate)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:activeIds.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
@@ -2981,12 +3025,12 @@ $("#calToday").addEventListener("click",()=>{ const nowD=new Date(); calRef={y:n
 $("#scheduleResult").addEventListener("click",e=>{
   const del=e.target.closest("[data-deldate]");
   if(del){ const d=del.dataset.deldate;
-    if(confirm(t("confirm_deleteDate",{d}))){ delete state.schedule[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
+    if(confirm(t("confirm_deleteDate",{d}))){ delete state.schedule[d]; delete state.rounds[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
     return; }
   const chip=e.target.closest(".wchip");
   if(chip){ const d=chip.dataset.date, id=+chip.dataset.id;
     state.schedule[d]=(state.schedule[d]||[]).filter(x=>x!==id);
-    if(!state.schedule[d].length){ delete state.schedule[d]; if(selDate===d) selDate=null; }
+    if(!state.schedule[d].length){ delete state.schedule[d]; delete state.rounds[d]; if(selDate===d) selDate=null; }
     save(); renderSchedule(); return; }
   const cell=e.target.closest('.calcell[data-cal]');
   if(cell && state.schedule[cell.dataset.cal]){ selDate=cell.dataset.cal; renderCalendar(); renderDayDetail(); return; }
@@ -3062,8 +3106,9 @@ $("#startMem").addEventListener("click",()=>{
 // 학습 완료 기록 + (선행학습 수정 모드면) 미래 일정에서 제외
 function markLearned(id){
   const already=isDone(id);
-  state.progress[id]={done:true, date:todayStr()};
-  if(!already) logEvent(id,"mem","o");   // 암기 완료를 학습일지에 기록
+  // t(외운 시각)는 복습 회차 판정에 쓴다 — 날짜만으로는 '오늘 외운 뒤 오늘 만든 복습 일정'을 가릴 수 없다
+  state.progress[id]={done:true, date:todayStr(), t:Date.now()};
+  logEvent(id, already?"rev":"mem", "o");   // 암기·복습을 학습일지에 기록
   if(mem.adjustFuture){
     const td=todayStr();
     Object.keys(state.schedule).forEach(d=>{
@@ -4832,7 +4877,7 @@ $("#syncLogoutBtn").addEventListener("click",cloudSignOut);
 /* ====================== 초기화 ====================== */
 function resetSchedControls(){
   // 브라우저의 체크박스 상태 복원으로 0/0에 고착되는 문제 방지
-  $("#sSelectedOnly").checked=false;
+  $("#sSelectedOnly").checked=false; $("#sReview").checked=false;
   $("#sPos").disabled=false; $("#sLevel").classList.remove("disabled");
 }
 function refreshAll(){
