@@ -2835,8 +2835,10 @@ function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
 function roundOf(date){ return (state.rounds||{})[date]; }
 function doneForDate(id, date){
   const rs=roundOf(date); if(!rs) return isDone(id);
-  const p=state.progress[id];
-  return !!(p && p.done && p.t && p.t>=rs);
+  const p=state.progress[id]; if(!p || !p.done) return false;
+  if(p.t) return p.t>=rs;
+  // t가 없는 예전 기록은 날짜만으로 비교한다 (회차가 시작된 날 이후에 풀었으면 완료)
+  return !!p.date && p.date>=fmtDate(new Date(rs));
 }
 function countDoneOn(date, ids){ return ids.filter(id=>doneForDate(id,date)).length; }
 // 회차가 걸린 날짜에 남아 있는(=아직 다시 안 외운) 단어가 있는지 — 일정 통계용
@@ -4033,7 +4035,9 @@ $("#startJlpt").addEventListener("click",()=>{
 // 퀴즈 탭 하단의 시험지 인쇄 버튼 (인쇄는 탭에서 빼고 여기서 들어간다)
 $("#goPrintBtn").addEventListener("click",()=>showTab("print"));
 // 퀴즈 정답 단어를 학습 기록(캘린더·통계 반영)
-function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
+// t(푼 시각)를 반드시 남긴다 — 복습 회차(doneForDate)가 이 값으로 그 날짜의 완료를 가린다.
+// 빠뜨리면 시험을 아무리 풀어도 캘린더·일정 진행률이 갱신되지 않는다.
+function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr(), t:Date.now()}; save(); }
 function renderQuiz(){
   spAbort();   // 문제가 바뀌면 진행 중인 음성 인식 중단
   const w=quiz.list[quiz.idx];
