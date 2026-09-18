@@ -1143,7 +1143,7 @@ const I18N = {
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
-    fb_correct:"정답!", fb_answer:"정답: {ans}", toast_enterAnswer:"답을 입력하세요",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
@@ -1342,7 +1342,7 @@ const I18N = {
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
-    fb_correct:"Correct!", fb_answer:"Answer: {ans}", toast_enterAnswer:"Enter an answer",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
@@ -1433,7 +1433,7 @@ function loadBooksReg(){
 function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} cloudMarkDirty("__registry__"); }
 function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
 function blankState(name){
-  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},dbName:name||""};
+  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},stats:{},dbName:name||""};
 }
 function load(){
   loadBooksReg();
@@ -1451,6 +1451,7 @@ function load(){
   state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
   state.log = Array.isArray(state.log) ? state.log : [];
   state.rounds = (state.rounds && typeof state.rounds==="object") ? state.rounds : {};
+  state.stats = (state.stats && typeof state.stats==="object") ? state.stats : {};
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1458,7 +1459,7 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds,
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds, stats:state.stats,
     updatedAt:Date.now()   // 클라우드 동기화의 변경 시각(충돌 판정 기준)
   };
   try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
@@ -1482,6 +1483,49 @@ function isExcluded(id){ return (state.excluded||[]).includes(id); }
 function excludeWord(id){ if(!isExcluded(id)){ (state.excluded=state.excluded||[]).push(id); save(); } }
 function restoreWord(id){ state.excluded=(state.excluded||[]).filter(x=>x!==id); save(); }
 function notExcluded(w){ return !isExcluded(w.id); }
+/* ---- 문항별 채점 누적 (state.stats) ----
+   학습일지(state.log)는 최근 2000건만 남기므로 만 단어짜리 단어장에선
+   정답률을 낼 수 없다. 단어마다 맞은/틀린 횟수만 따로 쌓아 둔다.
+   이 값으로 ① 다음 시험에서 약한 단어를 더 자주 뽑고
+   ② 정답률이 WEAK_RATE 이하인 단어는 같은 시험·같은 일정에서 다시 낸다. */
+const WEAK_RATE=0.5;
+function statOf(id){ return (state.stats||{})[id] || {o:0,x:0}; }
+function statTries(id){ const s=statOf(id); return s.o+s.x; }
+function statRate(id){ const s=statOf(id), n=s.o+s.x; return n ? s.o/n : null; }   // null = 푼 적 없음
+function isWeak(id){ const r=statRate(id); return r!=null && r<=WEAK_RATE; }
+function statAdd(id, ok){
+  const st=(state.stats=state.stats||{});
+  const r=st[id]||(st[id]={o:0,x:0});
+  if(ok) r.o++; else r.x++;
+  save();
+}
+/* 출제 비중 — 정답률이 낮을수록 다음 시험에 더 자주 뽑힌다.
+   한 번도 안 푼 단어(1)를 기준으로, 잘 맞히는 단어는 덜, 틀리는 단어는 더.
+   시도 횟수가 적으면 우연일 수 있어 가중치를 절반만 반영한다. */
+function pickWeight(id){
+  const r=statRate(id); if(r==null) return 1;
+  const base = r<=WEAK_RATE ? 4 : r<0.7 ? 2 : r<0.9 ? 1 : 0.4;
+  const n=statTries(id);
+  return n>=3 ? base : 1+(base-1)*0.5;
+}
+// 가중치를 반영해 중복 없이 count개를 뽑는다 (가중 무작위 · 복원 없음)
+function weightedSample(pool, count){
+  const items=pool.map(w=>({w, k:pickWeight(w.id)}));
+  const out=[];
+  let total=items.reduce((s,it)=>s+it.k,0);
+  while(out.length<count && items.length){
+    let r=Math.random()*total, i=0;
+    while(i<items.length-1 && (r-=items[i].k)>0) i++;
+    total-=items[i].k; out.push(items[i].w); items.splice(i,1);
+  }
+  return out;
+}
+// '맞음 처리'(정정) — 직전의 오답을 정답으로 되돌린다
+function statFix(id){
+  const st=(state.stats=state.stats||{}); const r=st[id]||(st[id]={o:0,x:0});
+  if(r.x>0) r.x--;
+  r.o++; save();
+}
 // 학습일지: 학습 활동을 세분화해 기록 (암기/객관식/주관식/정정 + 정오답)
 function logEvent(id, kind, result){
   state.log = state.log || [];
@@ -2161,7 +2205,7 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
     schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded,
-    log:state.log, rounds:state.rounds};
+    log:state.log, rounds:state.rounds, stats:state.stats};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -2184,6 +2228,7 @@ function applyWordbook(d, fallbackName){
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
   state.log=Array.isArray(d.log)?d.log:[];
   state.rounds=(d.rounds && typeof d.rounds==="object")?d.rounds:{};
+  state.stats=(d.stats && typeof d.stats==="object")?d.stats:{};
   normalizeWords(); save(); resetQuizArea(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
@@ -2289,9 +2334,11 @@ function remapToNewWords(newWords){
   const sel=[...new Set((state.selected||[]).map(mapId).filter(x=>x!=null))];
   const exc=[...new Set((state.excluded||[]).map(mapId).filter(x=>x!=null))];
   const log=(state.log||[]).map(e=>{ const n=mapId(e.id); return n==null?null:Object.assign({},e,{id:n}); }).filter(Boolean);
+  const stats={};   // 문항별 채점 누적도 표기 기준으로 옮겨 붙인다
+  for(const [oid,v] of Object.entries(state.stats||{})){ const n=mapId(oid); if(n!=null) stats[n]=v; }
   const before=state.words.length;
   state.words=newWords; state.progress=prog; state.schedule=sched;
-  state.selected=sel; state.excluded=exc; state.log=log;
+  state.selected=sel; state.excluded=exc; state.log=log; state.stats=stats;
   normalizeWords(); save();
   return {before, after:newWords.length, kept};
 }
@@ -2788,8 +2835,10 @@ function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
 function roundOf(date){ return (state.rounds||{})[date]; }
 function doneForDate(id, date){
   const rs=roundOf(date); if(!rs) return isDone(id);
-  const p=state.progress[id];
-  return !!(p && p.done && p.t && p.t>=rs);
+  const p=state.progress[id]; if(!p || !p.done) return false;
+  if(p.t) return p.t>=rs;
+  // t가 없는 예전 기록은 날짜만으로 비교한다 (회차가 시작된 날 이후에 풀었으면 완료)
+  return !!p.date && p.date>=fmtDate(new Date(rs));
 }
 function countDoneOn(date, ids){ return ids.filter(id=>doneForDate(id,date)).length; }
 // 회차가 걸린 날짜에 남아 있는(=아직 다시 안 외운) 단어가 있는지 — 일정 통계용
@@ -3293,7 +3342,7 @@ $("#memSkip").addEventListener("click",()=>{
 });
 
 /* ====================== 퀴즈 ====================== */
-let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{}};
+let quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:"kanji",af:"korean",dir:"fixed",wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{},ansIdx:[],reask:[],reasked:{}};
 /* ---- 시험 진행 저장 ----
    새로고침·앱 재시작 후에도 풀던 시험을 그대로 이어서 풀 수 있도록
    단어 id만 추려 브라우저에 보관한다(단어장 슬롯별로 구분). */
@@ -3301,7 +3350,8 @@ const QUIZ_KEY = LS_KEY + ".quiz";
 function packPhase(o){
   return { list:o.list.map(w=>w.id), idx:o.idx, finished:!!o.finished, score:o.score,
     wrong:[...o.wrong], saTyped:o.saTyped, mcChosen:o.mcChosen, spHeard:o.spHeard,
-    done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry };
+    done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry,
+    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{} };
 }
 function persistQuiz(){
   try{
@@ -3325,7 +3375,8 @@ function restorePersistedQuiz(){
   const words=ids=>{ const out=ids.map(wordById); return out.every(Boolean)?out:null; };
   const unpack=o=>{ const l=words(o.list); return l?{ list:l, idx:Math.min(o.idx,l.length), finished:!!o.finished,
     score:o.score||0, wrong:new Set(o.wrong||[]), saTyped:o.saTyped||{}, mcChosen:o.mcChosen||{},
-    spHeard:o.spHeard||{}, done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry }:null; };
+    spHeard:o.spHeard||{}, done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry,
+    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{} }:null; };
   const cur=unpack(d.cur), main=words(d.mainList||d.cur.list);
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
@@ -3826,7 +3877,7 @@ function startListening(){
       quiz.done[w.id]={ok:true, given:alts[0]||""};
       fb(true,t("fb_speakCorrect",{ans:w.hiragana}));   // 정답 발음을 보여주며 정답 처리
       speakJa(w.hiragana);
-      logEvent(w.id,"sp","o");
+      statAdd(w.id,true); logEvent(w.id,"sp","o");
       scheduleNext(1400);
     } else {
       fb(false,t("quiz_retrySpeak"));   // 오답 확정 아님 · 무제한 재시도
@@ -3850,7 +3901,7 @@ function giveUpSpeak(){
   quiz.done[w.id]={ok:false, given:quiz.spHeard[w.id]||""};
   fb(false,t("fb_answer",{ans:w.hiragana}));
   speakJa(w.hiragana);
-  logEvent(w.id,"sp","x");
+  statAdd(w.id,false); logEvent(w.id,"sp","x");
   scheduleNext(1400);
 }
 // 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
@@ -3921,7 +3972,7 @@ $("#startQuiz").addEventListener("click",()=>{
   if(pool.length<1){ toast(scoped.length?t("toast_noAskable"):t("toast_noPrintWords")); return; }
   if(pool.length<scoped.length) toast(t("toast_skippedSame",{n:scoped.length-pool.length}));
   const count=Math.min(Math.max(1,+$("#qCount").value||pool.length), pool.length);
-  const list=shuffle(pool).slice(0,count);   // 설정한 개수만큼 무작위로 출제
+  const list=shuffle(weightedSample(pool,count));   // 개수만큼 뽑되 정답률이 낮은 단어를 더 자주
   if(list.length<4) toast(t("toast_fewChoices"));
   // 무작위 방향: 단어별로 문제·정답 쌍을 미리 정해 페이즈가 바뀌어도 일관되게 유지
   let pairById=null;
@@ -3929,7 +3980,7 @@ $("#startQuiz").addEventListener("click",()=>{
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
   // scope/count는 N2 어휘용 — N2는 문제·정답 방향을 쓰지 않으므로 방향 필터 없이 범위 전체에서 뽑는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
+  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null, ansIdx:[], reask:[], reasked:{},
         scope:segVal('qScopeSeg'), scopeDate:$("#qDate").value, count};
   quiz.jlpt=false;
   moveQuizArea("quizHost");        // 시험 화면을 퀴즈 탭으로
@@ -3967,12 +4018,12 @@ $("#startJlpt").addEventListener("click",()=>{
   const pool=jlptPool();
   if(!pool.length){ toast(t("jlpt_noWords")); return; }
   const count=Math.min(Math.max(1,+$("#jCount").value||pool.length), pool.length);
-  const list=shuffle(pool).slice(0,count);
+  const list=shuffle(weightedSample(pool,count));   // 정답률이 낮은 단어를 더 자주
   if(list.length<4) toast(t("toast_fewChoices"));
   clearAdvance(); spAbort();
   quiz={list, mainList:list.slice(), idx:0, phase:"n2", score:0, answered:false, finished:false,
         pf:"kanji", af:"korean", dir:"fixed", pairById:null, wrong:new Set(), saTyped:{}, mcChosen:{},
-        spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null,
+        spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null, ansIdx:[], reask:[], reasked:{},
         scope:segVal('jScopeSeg'), scopeDate:$("#jDate").value, count,
         jlpt:true, jlptLevel:jlptLevel()};
   quiz.n2Plan=n2MakePlan(quiz.jlptLevel, list.length);   // 레벨 비중대로 유형 미리 배정
@@ -3984,10 +4035,18 @@ $("#startJlpt").addEventListener("click",()=>{
 // 퀴즈 탭 하단의 시험지 인쇄 버튼 (인쇄는 탭에서 빼고 여기서 들어간다)
 $("#goPrintBtn").addEventListener("click",()=>showTab("print"));
 // 퀴즈 정답 단어를 학습 기록(캘린더·통계 반영)
-function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr()}; save(); }
+// t(푼 시각)를 반드시 남긴다 — 복습 회차(doneForDate)가 이 값으로 그 날짜의 완료를 가린다.
+// 빠뜨리면 시험을 아무리 풀어도 캘린더·일정 진행률이 갱신되지 않는다.
+function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr(), t:Date.now()}; save(); }
 function renderQuiz(){
   spAbort();   // 문제가 바뀌면 진행 중인 음성 인식 중단
   const w=quiz.list[quiz.idx];
+  // 재출제 자리에 도착했으면 이전 채점을 지워 새 문제로 다시 묻는다
+  // (보기도 새로 뽑아 같은 문제를 외워서 맞히는 일이 없게)
+  if(quiz.reask && quiz.reask.includes(quiz.idx)){
+    quiz.reask=quiz.reask.filter(i=>i!==quiz.idx);
+    delete quiz.done[w.id]; delete quiz.opts[w.id];
+  }
   // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
   let pf=quiz.pf, af=quiz.af;
   if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
@@ -3999,7 +4058,7 @@ function renderQuiz(){
     ? `${quiz.jlpt?(quiz.jlptLevel||"N2"):t("quiz_n2")} · ${t("n2_tag_"+n2opt.n2)}`
     : t("quiz_phaseFmt",{phase:(quiz.phase==="mc"?t("quiz_mc"):quiz.phase==="sa"?t("quiz_sa"):t("quiz_speak")), pf:fieldLabel(pf), af:fieldLabel(af)});
   // 상단 표시와 막대는 '몇 문제를 풀었는지'(진행도). 점수는 결과 화면에서 알려준다.
-  const solved=quiz.list.filter(x=>quiz.done[x.id]).length;
+  const solved=(quiz.ansIdx||[]).length;
   $("#quizScore").textContent = t("quiz_progress",{done:solved, total:quiz.list.length});
   $("#quizBar").style.width=(solved/quiz.list.length*100)+"%";
   // 이미 푼 문제로 돌아온 경우: 채점 결과만 보여주고 다시 채점하지 않는다
@@ -4127,7 +4186,8 @@ function renderQuizChrome(){
 function resetQuizArea(){
   clearAdvance(); spAbort();
   quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:quiz.pf,af:quiz.af,
-    dir:quiz.dir,wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{}};
+    dir:quiz.dir,wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{},
+    ansIdx:[],reask:[],reasked:{}};
   quiz.prevPhase=null;
   const a=$("#quizArea"); if(a) a.style.display="none";
   clearPersistedQuiz();
@@ -4140,6 +4200,7 @@ function startPhaseFresh(ph, base){
   quiz.phase=ph; quiz.idx=0; quiz.answered=false; quiz.finished=false; quiz.score=0;
   quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
   quiz.done={}; quiz.opts={};
+  quiz.ansIdx=[]; quiz.reask=[]; quiz.reasked={};
   quiz.isRetry=false; quiz.list=shuffle(base);
   delete quiz.saved[ph];
   $("#quizArea").style.display="block";
@@ -4162,7 +4223,10 @@ $("#quizBody").addEventListener("click",e=>{
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=given; fb(false,t("fb_answer",{ans})); }
   quiz.done[w.id]={ok, pick, given};
+  markAnswered();
+  statAdd(w.id, ok);                            // 단어별 정답률 누적 (다음 시험 출제 비중)
   logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 정/오답을 학습일지에 기록
+  if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
   scheduleNext(900);
 });
 function submitSA(){
@@ -4177,13 +4241,54 @@ function submitSA(){
   if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
   quiz.done[w.id]={ok, given:$("#qInput").value.trim()};
+  markAnswered();
+  statAdd(w.id, ok);                // 단어별 정답률 누적
   logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
+  if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
   scheduleNext(1100);
 }
+// 정답률 WEAK_RATE 이하인 단어를 틀리면 같은 시험 안에서 다시 묻는다.
+// 목록 끝에 덧붙이고 그 자리를 '재출제'로 표시해 둔다 (renderQuiz가 채점을 지운다).
+// 한 시험에서 한 단어당 REASK_MAX번까지만.
+const REASK_MAX=2;
+function requeueWeak(w){
+  if(quiz.isRetry) return false;                 // 재시험 라운드에선 더 늘리지 않는다
+  if(!isWeak(w.id)) return false;
+  quiz.reasked=quiz.reasked||{};
+  if((quiz.reasked[w.id]||0)>=REASK_MAX) return false;
+  quiz.reasked[w.id]=(quiz.reasked[w.id]||0)+1;
+  quiz.list.push(w);
+  (quiz.reask=quiz.reask||[]).push(quiz.list.length-1);
+  return true;
+}
+function markAnswered(){ (quiz.ansIdx=quiz.ansIdx||[]).push(quiz.idx); }
 function fb(ok,msg){ const el=$("#qfb"); el.textContent=msg; el.className="feedback "+(ok?"ok":"bad"); }
 function nextQuiz(){
   if(quiz.idx<quiz.list.length-1){ quiz.idx++; renderQuiz(); return; }
   renderQuizResults();   // 객관식·주관식 모두 페이즈 종료 시 결과 화면(정정·재시험)
+}
+/* 정답률이 낮은 단어를 같은 일정의 뒤쪽 날짜에 다시 넣는다.
+   그 날짜의 회차 시각보다 나중에 외워야 완료로 치므로 자연히 복습이 된다.
+   이미 그 날짜에 있는 단어·뺀 단어는 건드리지 않는다. */
+// 화면에 보여줄 정답률 문구 — "60% (3/5)"
+function rateLabel(id){
+  const st=statOf(id), n=st.o+st.x;
+  return n ? Math.round(st.o/n*100)+"% ("+st.o+"/"+n+")" : "–";
+}
+function reinforceSchedule(ids){
+  const today=todayStr();
+  const future=Object.keys(state.schedule).filter(d=>d>today).sort();
+  if(!future.length) return 0;
+  let n=0;
+  ids.forEach((id,i)=>{
+    if(isExcluded(id)) return;
+    const d=future[i % future.length];             // 뒤쪽 날짜들에 고루 나눠 넣는다
+    const arr=state.schedule[d]||(state.schedule[d]=[]);
+    if(arr.includes(id)) return;
+    arr.push(id); n++;
+  });
+  if(n) save();
+  return n;
 }
 // 시험 결과 화면 — 객관식/주관식 공용 (틀린 단어 + 내가 고른/쓴 답 + 맞음 처리 + 재시험)
 function renderQuizResults(){
@@ -4200,6 +4305,13 @@ function renderQuizResults(){
   quiz.finalWrong=[...quiz.wrong];
   const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
   const total=quiz.list.length;
+  // 본시험이 끝나면 약한 단어(정답률 WEAK_RATE 이하)를 같은 일정의 뒤쪽 날짜에 다시 넣는다
+  if(!quiz.isRetry && !quiz.reinforced){
+    quiz.reinforced=true;
+    const weak=quiz.finalWrong.filter(isWeak);
+    const added=reinforceSchedule(weak);
+    if(added){ renderSchedule(); toast(t("toast_reinforced",{n:added})); }
+  }
   // 고르기=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
   const givenMap = isPick?quiz.mcChosen : isSp?quiz.spHeard : quiz.saTyped;
   const given=w=>{ const tp=givenMap&&givenMap[w.id]; return tp? `<span style="color:var(--bad)">${esc(tp)}</span>` : `<span class="muted">${esc(t("rq_blank"))}</span>`; };
@@ -4207,8 +4319,8 @@ function renderQuizResults(){
   const wrongHtml = wrong.length
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
-        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(givenLabel)}</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+        <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(givenLabel)}</th><th>${esc(t("rq_rate"))}</th><th></th></tr></thead>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td style="white-space:nowrap${isWeak(w.id)?';color:var(--bad);font-weight:700':''}">${rateLabel(w.id)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
   const lv = quiz.jlptLevel||"N2";
@@ -4250,6 +4362,7 @@ function markCorrect(id){
   quiz.wrong.delete(id);
   quiz.score++;
   quizMarkDone(id);
+  statFix(id);              // 오답 1건을 정답으로 되돌린다
   logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
   toast(t("toast_markedCorrect"));
   renderQuizResults();
@@ -4262,7 +4375,7 @@ function retryWrong(){
   clearAdvance();
   // 본시험 결과를 보관해 두면 재시험 중 단계를 옮겼다 돌아와도 결과를 다시 볼 수 있다
   snapshotPhase();
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}, ansIdx:[], reask:[], reasked:{}};
   $("#quizArea").style.display="block";
   renderQuiz();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
