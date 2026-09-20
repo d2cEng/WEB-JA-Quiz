@@ -1617,6 +1617,16 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;",
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show");
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1800); }
 function wordById(id){ return state.words.find(w=>w.id===id); }
+// 시험 중에는 그 시험이 쓰는 단어 목록에서 먼저 찾는다.
+// JLPT 탭은 [종합] 단어장이라 state.words에 없어, wordById만 쓰면 재시험·정정이 통째로 실패한다.
+function examWordById(id){
+  if(typeof quiz!=="undefined" && quiz.jlpt){
+    const from=(quiz.mainList||[]).find(w=>w.id===id) || (quiz.list||[]).find(w=>w.id===id);
+    if(from) return from;
+    if(jlptBook.words.length){ const jb=jlptBook.words.find(w=>w.id===id); if(jb) return jb; }
+  }
+  return wordById(id);
+}
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function fmtDate(d){ // 로컬 기준 YYYY-MM-DD (toISOString의 UTC 밀림 방지)
   const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
@@ -3373,7 +3383,9 @@ function packPhase(o){
 }
 function persistQuiz(){
   try{
-    if(!quiz.list.length){ localStorage.removeItem(QUIZ_KEY); return; }
+    // JLPT 시험은 [종합] 단어장을 쓰므로 id로는 복원할 수 없다 (state.words에 없다).
+    // 어설프게 저장해 두면 복원에 실패해 조용히 버려지므로 아예 저장하지 않는다.
+    if(!quiz.list.length || quiz.jlpt){ localStorage.removeItem(QUIZ_KEY); return; }
     const saved={}; Object.keys(quiz.saved||{}).forEach(k=>saved[k]=packPhase(quiz.saved[k]));
     localStorage.setItem(QUIZ_KEY, JSON.stringify({
       v:1, book:books.active, at:Date.now(), phase:quiz.phase,
@@ -4414,7 +4426,7 @@ $("#quizBody").addEventListener("click",e=>{
   quiz.done[w.id]={ok, pick, given};
   markAnswered();
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);   // 정답률 누적 (다음 시험 출제 비중)
-  logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 정/오답을 학습일지에 기록
+  if(!quiz.jlpt) logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 학습일지는 내 단어장 것만
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
   scheduleNext(900);
 });
@@ -4432,7 +4444,7 @@ function submitSA(){
   quiz.done[w.id]={ok, given:$("#qInput").value.trim()};
   markAnswered();
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);
-  logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
+  if(!quiz.jlpt) logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
   scheduleNext(1100);
 }
@@ -4495,7 +4507,7 @@ function renderQuizResults(){
   const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
   const isPick=isMc||isN2;   // 보기에서 고르는 단계 (N2도 고른 답을 mcChosen에 담는다)
   quiz.finalWrong=[...quiz.wrong];
-  const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
+  const wrong=quiz.finalWrong.map(examWordById).filter(Boolean);
   const total=quiz.list.length;
   // 본시험이 끝나면 약한 단어(정답률 WEAK_RATE 이하)를 같은 일정의 뒤쪽 날짜에 다시 넣는다
   if(!quiz.isRetry && !quiz.reinforced && !quiz.jlpt){   // JLPT는 다른 단어장이라 일정에 넣지 않는다
@@ -4554,23 +4566,28 @@ function markCorrect(id){
   quiz.wrong.delete(id);
   quiz.score++;
   if(!quiz.jlpt) quizMarkDone(id);
-  const cw=wordById(id) || (quiz.list.find(x=>x.id===id));
+  const cw=examWordById(id);
   if(quiz.jlpt){ if(cw) jstatFix(cw); } else statFix(id);   // 오답 1건을 정답으로 되돌린다
-  logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
+  if(!quiz.jlpt) logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
 // 틀린 단어만 다시 풀기 — 현재 단계 전용(객관식 재시험은 객관식만, 주관식 재시험은 주관식만).
 // 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
 function retryWrong(){
-  const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
+  const list=(quiz.finalWrong||[]).map(examWordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
   clearAdvance();
   // 본시험 결과를 보관해 두면 재시험 중 단계를 옮겼다 돌아와도 결과를 다시 볼 수 있다
   snapshotPhase();
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}, ansIdx:[], reask:[], reasked:{}};
+  // JLPT 시험이면 그 상태(단어장·레벨·유형)를 그대로 물려받아야 한다.
+  // 빠뜨리면 재시험이 내 단어장 기준으로 돌아가 보기·채점 기록이 어긋난다.
+  const jl={jlpt:!!quiz.jlpt, jlptLevel:quiz.jlptLevel, n2Types:(quiz.n2Types||[]).slice(), count:quiz.count};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}, ansIdx:[], reask:[], reasked:{}, scope:quiz.scope, scopeDate:quiz.scopeDate};
+  Object.assign(quiz, jl);
+  if(quiz.jlpt) quiz.n2Plan=n2MakePlan(quiz.jlptLevel, quiz.list.length, quiz.n2Types);
   $("#quizArea").style.display="block";
-  renderQuiz();
+  renderQuiz(); renderQuizChrome();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
