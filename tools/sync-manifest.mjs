@@ -42,6 +42,10 @@ for (const wb of man.wordbooks || []) {
   try { words = JSON.parse(fs.readFileSync(p, "utf8")).words || []; }
   catch (e) { console.log(`❌ JSON 오류: ${wb.file} — ${e.message}`); missing++; continue; }
   const rev = revOf(words);
+  // 파일 크기도 적어 둔다 — 앱이 큰 단어장을 받을 때 진행률을 낼 수 있게.
+  // Content-Length는 gzip 압축 크기라 스트림으로 받는 바이트 수와 맞지 않는다.
+  const bytes = fs.statSync(p).size;
+  if (wb.bytes !== bytes) { wb.bytes = bytes; if (wb.rev === rev) changed++; }
   if (wb.rev === rev) continue;
   console.log(`${wb.rev ? "↻ 변경" : "＋ 신규"}  ${wb.file.padEnd(24)} ${wb.rev || "(없음)"} → ${rev}  (${words.length}단어)`);
   wb.rev = rev; changed++;

@@ -801,6 +801,7 @@
         <div class="progress"><i id="quizBar"></i></div>
         <div id="quizBody" style="margin-top:14px"></div>
         <button class="btn ghost noprint" id="qBackPhase" style="margin-top:12px;width:100%" hidden></button>
+        <div class="seg seg-full noprint" id="jlptTypeSeg" style="margin-top:14px;display:none;flex-wrap:wrap"></div>
         <div class="seg seg-full noprint" id="quizPhaseSeg" style="margin-top:14px;display:none">
           <button type="button" data-ph="mc" data-i18n="quiz_mc">4지선다</button>
           <button type="button" data-ph="sa" data-i18n="quiz_sa">주관식</button>
@@ -819,7 +820,7 @@
   <section id="jlpt">
     <div class="card noprint">
      <details id="jlptSettings" open>
-      <summary class="setsum" data-i18n="jlpt_settingsSummary">⚙️ JLPT 시험 설정 (레벨·범위·문항 수)</summary>
+      <summary class="setsum" data-i18n="jlpt_settingsSummary">⚙️ JLPT 시험 설정 (레벨·유형·품사·문항 수)</summary>
       <p class="sub" data-i18n="jlpt_sub">실제 JLPT「言語知識(文字・語彙)」형식으로 출제합니다. 한자읽기·표기·문맥규정·용법·유의표현이 번갈아 나옵니다.</p>
       <div class="tiphint" data-i18n="hint_jlpt">💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체)</div>
       <label data-i18n="jlpt_level">시험 레벨</label>
@@ -830,16 +831,13 @@
         <button type="button" data-v="N2" class="on" data-i18n="lvl_n2">N2</button>
       </div>
       <div class="muted" id="jLevelDesc" style="font-size:.85em;margin:-4px 0 10px"></div>
-      <label data-i18n="quiz_scope">출제 범위</label>
-      <div class="seg seg-full" id="jScopeSeg">
-        <button type="button" data-v="today" data-i18n="scope_today">오늘 분량</button>
-        <button type="button" data-v="date" data-i18n="scope_date">날짜</button>
-        <button type="button" data-v="selected" data-i18n="scope_selected">선택 단어</button>
-        <button type="button" data-v="all" class="on" data-i18n="scope_all">전체</button>
-      </div>
-      <div id="jDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="jDate"></select></div>
+      <label data-i18n="jlpt_typeFilter">문제 유형 (여러 개 선택 가능)</label>
+      <div id="jTypeChips" class="lvlchips"></div>
+      <label data-i18n="jlpt_posFilter">단어 유형(품사)</label>
+      <select id="jPos"></select>
       <label><span data-i18n="quiz_countPre">출제 단어 수: </span><b id="jCountLabel">0</b> / <span id="jCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="jCount" min="1" max="1" value="1">
+      <div class="muted" id="jPoolNote" style="font-size:.85em;margin:-4px 0 10px"></div>
       <div class="btnrow"><button class="btn" id="startJlpt" data-i18n="btn_start">시작</button></div>
       <p class="muted" style="font-size:.8em;margin:10px 2px 0" data-i18n="jlpt_disclaimer">※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.</p>
      </details>
@@ -1004,8 +1002,8 @@ const I18N = {
     talk_copied:"프롬프트 {n}단어 복사됨 — 제미나이에서 붙여넣기 하세요",
     talk_noWords:"대상 단어가 없어요. 단어를 선택하거나 범위를 바꿔 보세요",
     hint_talk:"💡 제미나이는 링크로 질문을 미리 채울 수 없어서, <b>복사 → 열기 → 붙여넣기</b> 순서로 동작합니다. 앱이 깔려 있으면 앱으로, 없으면 웹으로 열립니다. (제미나이는 Google의 서비스이며 이 앱과 무관합니다)",
-    jlpt_disclaimer:"※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.",
-    jlpt_settingsSummary:"⚙️ JLPT 시험 설정 (레벨·범위·문항 수)",
+    jlpt_typeAll:"유형 전체", jlpt_typeFilter:"문제 유형 (여러 개 선택 가능)", jlpt_posFilter:"단어 유형(품사)", jlpt_typeMixed:"혼합", jlpt_bookLoading:"[종합] 단어장을 불러오는 중…", jlpt_bookLoadingPct:"[종합] 단어장 받는 중… {pct}% ({got} / {total})", jlpt_bookLoadingSize:"[종합] 단어장 받는 중… {got}", jlpt_bookFail:"⚠️ [종합] 단어장을 불러오지 못했어요 ({err}). 인터넷 연결을 확인한 뒤 새로고침해 주세요.", jlpt_needWeb:"웹 주소로 열어야 합니다", jlpt_poolNote:"단어장 <b>{book}</b>(총 {total}단어) 중 이 레벨·범위에 드는 단어 <b>{n}개</b>", jlpt_noLevel:"⚠️ 이 중 {n}개는 레벨(N1~N5)이 없어 <b>N3~N5로는 출제되지 않습니다</b>. 레벨 전 범위로 풀려면 단어 DB에서 <b>[종합] JLPT N5–N1 단어장</b>을 불러오세요.", jlpt_poolHint:"— 더 내고 싶으면 레벨을 올리거나 출제 범위를 <b>전체</b>로, 단어 DB에서 <b>[종합]</b> 단어장을 불러오세요.", jlpt_disclaimer:"※ JLPT 주관 기관(일본국제교육지원협회·국제교류기금)과 무관한 비공식 학습 도구입니다. 문제는 내 단어장 데이터로 자동 생성되며 실제 기출문제가 아닙니다.",
+    jlpt_settingsSummary:"⚙️ JLPT 시험 설정 (레벨·유형·품사·문항 수)",
     jlpt_sub:"실제 JLPT「言語知識(文字・語彙)」형식으로 출제합니다. 한자읽기·표기·문맥규정·용법·유의표현이 번갈아 나옵니다.",
     hint_jlpt:"💡 레벨을 고르면 그 레벨과 <b>더 쉬운 레벨</b>의 단어가 함께 나옵니다. (N2는 N1까지 포함해 전체) 출제 유형과 비중도 <b>레벨마다 실제 시험에 맞춰</b> 달라집니다 — 예를 들어 N5에는 用法이 나오지 않아요.",
     jlpt_level:"시험 레벨", jlpt_levelDesc:"출제 단어 레벨: {levels}",
@@ -1203,7 +1201,7 @@ const I18N = {
     talk_copied:"Prompt with {n} word(s) copied — paste it in Gemini",
     talk_noWords:"No words to use. Select some words or change the scope",
     hint_talk:"💡 Gemini cannot be pre-filled from a link, so it works as <b>copy → open → paste</b>. Opens the app if installed, otherwise the web. (Gemini is a Google service, not affiliated with this app.)",
-    jlpt_disclaimer:"※ An unofficial study tool, not affiliated with the JLPT organizers (JEES / The Japan Foundation). Questions are generated from your own wordbook and are not real past papers.",
+    jlpt_typeAll:"All types", jlpt_typeFilter:"Question types (pick any)", jlpt_posFilter:"Word type (part of speech)", jlpt_typeMixed:"Mixed", jlpt_bookLoading:"Loading the full wordbook…", jlpt_bookLoadingPct:"Downloading the full wordbook… {pct}% ({got} / {total})", jlpt_bookLoadingSize:"Downloading the full wordbook… {got}", jlpt_bookFail:"⚠️ Could not load the full wordbook ({err}). Check your connection and refresh.", jlpt_needWeb:"This needs the web version", jlpt_poolNote:"<b>{n}</b> of <b>{book}</b> ({total} words) match this level and scope", jlpt_noLevel:"⚠️ {n} of them have no level (N1–N5), so they <b>never appear in N3–N5</b>. Load a full <b>[종합]</b> wordbook from the Words DB for full-range practice.", jlpt_poolHint:"— for more, raise the level, set the scope to <b>All</b>, or load a full <b>[종합]</b> wordbook from the Words DB.", jlpt_disclaimer:"※ An unofficial study tool, not affiliated with the JLPT organizers (JEES / The Japan Foundation). Questions are generated from your own wordbook and are not real past papers.",
     jlpt_settingsSummary:"⚙️ JLPT exam settings (level · scope · questions)",
     jlpt_sub:"Questions follow the real JLPT 「言語知識(文字・語彙)」 formats: reading, orthography, context, usage and paraphrase, in rotation.",
     hint_jlpt:"💡 Choosing a level includes that level <b>and everything easier</b>. (N2 also takes in N1, so it covers everything.) The question types and their mix also follow the real exam for each level — N5 has no 用法, for instance.",
@@ -1499,18 +1497,36 @@ function statAdd(id, ok){
   if(ok) r.o++; else r.x++;
   save();
 }
+/* JLPT 탭은 '내 단어장'이 아닌 [종합] 단어장을 쓰므로, 채점 기록을 state.stats에
+   넣으면 엉뚱한 단어장의 진도·통계를 건드린다. 표기(漢字|かな) 기준으로 따로 쌓는다.
+   단어장 판이 바뀌어도 표기가 같으면 이어진다. */
+const JSTAT_KEY = LS_KEY + ".jlptstats";
+let jstats=null;
+function jstatAll(){ if(!jstats){ try{ jstats=JSON.parse(localStorage.getItem(JSTAT_KEY))||{}; }catch(e){ jstats={}; } } return jstats; }
+function jstatKey(w){ return (w.kanji||"")+"|"+(w.hiragana||""); }
+function jstatOf(w){ return jstatAll()[jstatKey(w)] || {o:0,x:0}; }
+function jstatAdd(w, ok){
+  const all=jstatAll(), k=jstatKey(w), r=all[k]||(all[k]={o:0,x:0});
+  if(ok) r.o++; else r.x++;
+  try{ localStorage.setItem(JSTAT_KEY, JSON.stringify(all)); }catch(e){}
+}
+function jstatFix(w){ const all=jstatAll(), k=jstatKey(w), r=all[k]||(all[k]={o:0,x:0});
+  if(r.x>0) r.x--; r.o++; try{ localStorage.setItem(JSTAT_KEY, JSON.stringify(all)); }catch(e){} }
+
 /* 출제 비중 — 정답률이 낮을수록 다음 시험에 더 자주 뽑힌다.
    한 번도 안 푼 단어(1)를 기준으로, 잘 맞히는 단어는 덜, 틀리는 단어는 더.
    시도 횟수가 적으면 우연일 수 있어 가중치를 절반만 반영한다. */
-function pickWeight(id){
-  const r=statRate(id); if(r==null) return 1;
+function weightFrom(st){
+  const n=st.o+st.x; if(!n) return 1;
+  const r=st.o/n;
   const base = r<=WEAK_RATE ? 4 : r<0.7 ? 2 : r<0.9 ? 1 : 0.4;
-  const n=statTries(id);
   return n>=3 ? base : 1+(base-1)*0.5;
 }
-// 가중치를 반영해 중복 없이 count개를 뽑는다 (가중 무작위 · 복원 없음)
-function weightedSample(pool, count){
-  const items=pool.map(w=>({w, k:pickWeight(w.id)}));
+function pickWeight(id){ return weightFrom(statOf(id)); }
+// 가중치를 반영해 중복 없이 count개를 뽑는다 (가중 무작위 · 복원 없음).
+// srcFn을 주면 그 기록으로 가중치를 낸다 (JLPT 탭은 종합 단어장 전용 기록 사용).
+function weightedSample(pool, count, srcFn){
+  const items=pool.map(w=>({w, k: srcFn ? weightFrom(srcFn(w)) : pickWeight(w.id)}));
   const out=[];
   let total=items.reduce((s,it)=>s+it.k,0);
   while(out.length<count && items.length){
@@ -1601,6 +1617,16 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;",
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show");
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),1800); }
 function wordById(id){ return state.words.find(w=>w.id===id); }
+// 시험 중에는 그 시험이 쓰는 단어 목록에서 먼저 찾는다.
+// JLPT 탭은 [종합] 단어장이라 state.words에 없어, wordById만 쓰면 재시험·정정이 통째로 실패한다.
+function examWordById(id){
+  if(typeof quiz!=="undefined" && quiz.jlpt){
+    const from=(quiz.mainList||[]).find(w=>w.id===id) || (quiz.list||[]).find(w=>w.id===id);
+    if(from) return from;
+    if(jlptBook.words.length){ const jb=jlptBook.words.find(w=>w.id===id); if(jb) return jb; }
+  }
+  return wordById(id);
+}
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function fmtDate(d){ // 로컬 기준 YYYY-MM-DD (toISOString의 UTC 밀림 방지)
   const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
@@ -2040,6 +2066,8 @@ function setLang(lang){
   iAllOpen=false; if($("#iExpandAll")) $("#iExpandAll").textContent=t("gram_expandAll");
   renderDb(); renderSchedule(); refreshDateSelects(); renderBookSelect(); renderBookPickers();
   renderRepoOptions();   // 저장소 단어장 목록도 새 언어에 맞는 것만 남긴다
+  if($("#jlpt").classList.contains("active")) ensureJlptBook();   // JLPT 종합 단어장도 그 언어판으로
+  else jlptBook={lang:null, words:[], name:"", state:"idle", err:""};
   updateSchedCount(); updateMemCount(); updateQuizCount(); updatePrintCount(); updateSchedCalc();
   $("#dbName").value=state.dbName||"";
   if($("#memStage").style.display!=="none" && mem.list.length) renderFlash();
@@ -2059,7 +2087,7 @@ function showTab(tab){
   if(tab==="schedule") renderSchedule();   // 진행 통계 최신화
   if(tab==="memorize"){ maybeAskCarryOver(); updateMemCount(); }  // 미완료 단어 이월 확인 + 단어 수 최신화
   if(tab==="quiz") updateQuizCount();      // 범위별 단어 수 최신화
-  if(tab==="jlpt") updateJlptCount();      // JLPT 레벨·범위별 단어 수 최신화
+  if(tab==="jlpt") ensureJlptBook();       // [종합] 단어장 확보 후 레벨·유형별 단어 수 갱신
   if(tab==="print") updatePrintCount();    // 문항 수 최신화
   if(tab==="grammar") renderGrammar();     // 모바일이면 어법 포함해 최신화
   if(tab==="idiom") renderIdiom();         // 어법 목록 렌더
@@ -2283,7 +2311,7 @@ async function initRepoWordbooks(){
     repoList=list;
     // 업데이트 감지는 언어와 무관하게 전부 기억해 둔다 — 다른 언어로 받아 둔
     // 단어장도 새 판이 나오면 알려야 하기 때문.
-    repoManifest={}; list.forEach(w=>{ repoManifest[w.file]={name:w.name||w.file, rev:w.rev||"", lang:bookLangOf(w)}; });
+    repoManifest={}; list.forEach(w=>{ repoManifest[w.file]={name:w.name||w.file, rev:w.rev||"", lang:bookLangOf(w), bytes:+w.bytes||0}; });
     renderRepoOptions();
     renderBookUpdate();   // 매니페스트를 받았으니 새 버전이 있는지 확인
   }catch(e){
@@ -3087,8 +3115,8 @@ $("#scheduleResult").addEventListener("click",e=>{
 function refreshDateSelects(){
   const dates=Object.keys(state.schedule).sort();
   const opts=dates.map(d=>`<option value="${d}">${d} (${state.schedule[d].length})</option>`).join("");
-  ["#mDate","#qDate","#jDate","#pDate"].forEach(sel=>{
-    const el=$(sel); const cur=el.value;
+  ["#mDate","#qDate","#pDate"].forEach(sel=>{
+    const el=$(sel); const cur=el.value; if(!el) return;
     el.innerHTML=opts||`<option value="">${esc(t("opt_noSchedule"))}</option>`;
     if([...el.options].some(o=>o.value===cur)) el.value=cur;
   });
@@ -3355,7 +3383,9 @@ function packPhase(o){
 }
 function persistQuiz(){
   try{
-    if(!quiz.list.length){ localStorage.removeItem(QUIZ_KEY); return; }
+    // JLPT 시험은 [종합] 단어장을 쓰므로 id로는 복원할 수 없다 (state.words에 없다).
+    // 어설프게 저장해 두면 복원에 실패해 조용히 버려지므로 아예 저장하지 않는다.
+    if(!quiz.list.length || quiz.jlpt){ localStorage.removeItem(QUIZ_KEY); return; }
     const saved={}; Object.keys(quiz.saved||{}).forEach(k=>saved[k]=packPhase(quiz.saved[k]));
     localStorage.setItem(QUIZ_KEY, JSON.stringify({
       v:1, book:books.active, at:Date.now(), phase:quiz.phase,
@@ -3451,6 +3481,9 @@ function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.leng
 function koreanKey(w){ return w.meanings.map(m=>m.korean).join(", "); }
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
 // 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
+/* 오답 보기를 어느 단어 목록에서 뽑을지. JLPT 탭은 [종합] 단어장을 쓰므로
+   내 단어장(state.words)에서 뽑으면 보기가 엉뚱해지고 수도 모자란다. */
+function srcWords(){ return (quiz.jlpt && jlptBook.words.length) ? jlptBook.words : state.words; }
 function pickDistractors(w, n, pf, af){
   const target=w.hiragana||"";
   const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
@@ -3464,7 +3497,7 @@ function pickDistractors(w, n, pf, af){
     if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
     usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
   };
-  const pool=state.words.filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
+  const pool=srcWords().filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
   const out=[];
@@ -3628,8 +3661,10 @@ const JLPT_PLAN={
 const N2_TYPES=["yomi","hyoki","bunmyaku","yoho","iikae"];   // 전체 유형(생성기 등록용)
 function n2LevelTypes(lv){ return Object.keys(JLPT_PLAN[lv]||JLPT_PLAN.N2); }
 // 비중대로 n문항의 유형을 미리 배정해 섞는다
-function n2MakePlan(lv, n){
-  const wt=JLPT_PLAN[lv]||JLPT_PLAN.N2, types=Object.keys(wt);
+function n2MakePlan(lv, n, only){
+  const wt=JLPT_PLAN[lv]||JLPT_PLAN.N2;
+  let types=Object.keys(wt);
+  if(only && only.length){ const keep=types.filter(x=>only.includes(x)); if(keep.length) types=keep; }
   const total=types.reduce((a,k)=>a+wt[k],0);
   const out=[];
   types.forEach(ty=>{ const k=Math.round(n*wt[ty]/total); for(let i=0;i<k;i++) out.push(ty); });
@@ -3708,7 +3743,7 @@ function n2BuildYoho(w){
   if(!n2HasContext(ex,loc)) return null;      // 정답 문장부터 문장다워야 한다
   const target=ex.slice(loc.i, loc.i+loc.len);
   const wrongs=[], seen=new Set([ex]);
-  const pool=shuffle(state.words.filter(y=>y.id!==w.id && notExcluded(y)));
+  const pool=shuffle(srcWords().filter(y=>y.id!==w.id && notExcluded(y)));
   // 품사가 다른 단어의 예문에 끼워 넣어야 확실히 어색한 문장이 된다.
   // (같은 품사끼리 바꾸면 「家がいい。」처럼 말이 되는 오답이 나와 정답이 모호해진다)
   const collect=list=>{
@@ -3739,9 +3774,13 @@ const N2_BUILD={yomi:n2BuildYomi, hyoki:n2BuildHyoki, bunmyaku:n2BuildBunmyaku, 
 // 미리 배정한 유형을 우선 시도하고, 그 단어로 못 만들면 같은 레벨의 다른 유형으로 넘어간다.
 // (레벨에 없는 유형은 후보에 아예 넣지 않는다 — N5에 用法이 나오지 않는 이유)
 function n2Build(w, seq, lv){
-  const types=n2LevelTypes(lv||"N2");
+  const all=n2LevelTypes(lv||"N2");
+  // 유형을 골라 둔 시험(JLPT 탭)이면 그 안에서만 고른다. 그 단어로 못 만들 때만 전체로 넓힌다.
+  const picked=(quiz.n2Types||[]).filter(x=>all.includes(x));
+  const types=picked.length?picked:all;
   const planned=(quiz.n2Plan&&quiz.n2Plan[seq]) || types[((seq%types.length)+types.length)%types.length];
-  for(const ty of [planned, ...types.filter(t=>t!==planned)]){
+  const order=[planned, ...types.filter(t=>t!==planned), ...all.filter(t=>!types.includes(t))];
+  for(const ty of order){
     const q=N2_BUILD[ty](w);
     if(q) return q;
   }
@@ -3767,8 +3806,10 @@ function jlptFilter(pool, lv){
 // 빼지만, 이 시험은 방향 개념이 없고 그런 단어도 文脈規定·用法·言い換え로 낼 수 있으므로
 // 방향 필터를 걷어내고 범위 전체에서 뽑는다. (한자 관련 유형은 유형 단위로 알아서 걸러진다)
 function n2Base(){
-  const scope=quiz.scope||segVal('jScopeSeg');
-  const pool=jlptFilter(wordsForScope(scope, quiz.scopeDate!=null?quiz.scopeDate:$("#jDate").value), quiz.jlptLevel||"N2");
+  // JLPT 탭은 자기 단어 목록을 그대로 쓴다 (종합 단어장에서 이미 뽑아 둔 것)
+  if(quiz.jlpt) return (quiz.mainList||quiz.list).slice();
+  const scope=quiz.scope||segVal('qScopeSeg');
+  const pool=jlptFilter(wordsForScope(scope, quiz.scopeDate!=null?quiz.scopeDate:$("#qDate").value), quiz.jlptLevel||"N2");
   const n=quiz.count||(quiz.mainList||quiz.list).length;
   if(!pool.length) return (quiz.mainList||quiz.list).slice();   // 범위를 못 구하면 기존 목록으로
   return shuffle(pool).slice(0, Math.max(1, Math.min(n, pool.length)));
@@ -3996,41 +4037,188 @@ function moveQuizArea(hostId){
   const host=$("#"+hostId), area=$("#quizArea");
   if(host && area && area.parentElement!==host) host.appendChild(area);
 }
+/* 이 탭은 '내 단어장'이 아니라 저장소의 [종합] 단어장을 고정으로 쓴다.
+   일정·진도와 무관한 순수 시험 연습이고, 레벨이 N1~N5로 채워진 단어장이라야
+   레벨별 출제가 성립하기 때문. 화면 언어에 맞춰 한국어판/영어판을 받는다. */
+let jlptBook={lang:null, words:[], name:"", state:"idle", err:"", got:0, total:0};
+function jlptFile(){ return LANG==="en" ? "words.en.json" : "words.ko.json"; }
+function fmtBytes(n){ return n>=1048576 ? (n/1048576).toFixed(1)+" MB" : Math.round(n/1024)+" KB"; }
+/* 큰 파일(약 2MB)이라 받는 동안 진행률을 보여준다.
+   Content-Length는 gzip 압축 크기라 스트림으로 세는 바이트와 맞지 않으므로
+   매니페스트에 적어 둔 실제 파일 크기(bytes)를 기준으로 삼는다. */
+async function fetchJsonProgress(url, expect, onProgress){
+  const res=await fetch(url,{cache:"no-cache"});
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  if(!res.body || !res.body.getReader) return res.json();   // 스트림 미지원 브라우저
+  const reader=res.body.getReader(), chunks=[]; let got=0;
+  for(;;){
+    const {done,value}=await reader.read();
+    if(done) break;
+    chunks.push(value); got+=value.length;
+    onProgress&&onProgress(got, expect);
+  }
+  const buf=new Uint8Array(got); let off=0;
+  for(const c of chunks){ buf.set(c,off); off+=c.length; }
+  return JSON.parse(new TextDecoder().decode(buf));
+}
+async function ensureJlptBook(){
+  if(jlptBook.lang===LANG && jlptBook.words.length) return true;
+  if(jlptBook.state==="loading") return false;
+  const expect=(repoManifest[jlptFile()]||{}).bytes||0;
+  jlptBook={lang:null, words:[], name:"", state:"loading", err:"", got:0, total:expect};
+  updateJlptCount();
+  try{
+    if(!location.protocol.startsWith("http")) throw new Error(t("jlpt_needWeb"));
+    const d=await fetchJsonProgress("data/"+jlptFile(), expect, (got,total)=>{
+      jlptBook.got=got; jlptBook.total=total; renderJlptLoading();
+    });
+    // state.words와 섞이지 않는 독립 배열. normalizeWords와 같은 정리를 해 둔다.
+    const ws=(d.words||[]).map((w,i)=>Object.assign({},w,{
+      id: w.id!=null ? w.id : i+1,
+      pos: normalizePos(w.pos),
+      meanings: deriveMeanings(w.korean, w.example)
+    }));
+    if(!ws.length) throw new Error("words 없음");
+    jlptBook={lang:LANG, words:ws, name:d.name||jlptFile(), state:"ready", err:"", got:0, total:0};
+  }catch(e){
+    jlptBook={lang:null, words:[], name:"", state:"error", err:String(e&&e.message||e), got:0, total:0};
+  }
+  refreshJlptFilters(); updateJlptCount();
+  return jlptBook.state==="ready";
+}
+
 function jlptLevel(){ return segVal('jScopeLevelSeg')||"N2"; }
-function jlptPool(){ return jlptFilter(wordsForScope(segVal('jScopeSeg'), $("#jDate").value), jlptLevel()); }
+// 선택한 문제 유형 (빈 Set = 그 레벨의 전체 유형)
+const jlptTypeSel=new Set();
+function jlptTypes(){
+  const avail=n2LevelTypes(jlptLevel());
+  const picked=[...jlptTypeSel].filter(x=>avail.includes(x));
+  return picked.length?picked:avail;
+}
+function jlptPos(){ const el=$("#jPos"); return el?el.value:""; }
+/* 그 단어로 그 유형을 만들 수 있는지 (생성기의 전제조건만 싸게 확인).
+   이게 없으면 「漢字読み만」으로 골라도 한자 없는 단어가 섞여 들어와
+   생성기가 다른 유형으로 대체해 버린다 — 고른 유형과 다른 문제가 나온다. */
+function n2Feasible(w, ty){
+  const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
+  const exact=!!(ex&&loc&&loc.exact);
+  switch(ty){
+    case "yomi":     return n2HasKanji(w);
+    case "hyoki":    return n2HasKanji(w) && exact && ex.slice(loc.i,loc.i+loc.len)===n2Form(w.kanji);
+    case "bunmyaku": return exact;
+    case "yoho":     return exact && n2HasContext(ex,loc);
+    case "iikae":    return !!(w.meanings&&w.meanings.length);
+    default:         return true;
+  }
+}
+function n2FeasibleAny(w, types){ return types.some(ty=>n2Feasible(w,ty)); }
+// 종합 단어장 → 레벨 → 품사 순으로 거른다 (범위·일정은 이 탭에서 쓰지 않는다)
+function jlptPool(){
+  const pos=jlptPos();
+  let pool=jlptFilter(jlptBook.words, jlptLevel());
+  if(pos) pool=pool.filter(w=>w.pos===pos);
+  const tys=jlptTypes(), avail=n2LevelTypes(jlptLevel());
+  // 유형을 따로 고른 경우에만 거른다 (전체 선택이면 대체 유형이 있으니 걸러낼 필요가 없다)
+  if(tys.length<avail.length) pool=pool.filter(w=>n2FeasibleAny(w,tys));
+  return pool;
+}
+// 유형 칩 + 품사 목록은 받아 온 단어장 기준으로 다시 그린다
+function refreshJlptFilters(){
+  const box=$("#jTypeChips");
+  if(box){
+    const avail=n2LevelTypes(jlptLevel());
+    [...jlptTypeSel].forEach(v=>{ if(!avail.includes(v)) jlptTypeSel.delete(v); });
+    const allOn=jlptTypeSel.size===0;
+    box.innerHTML=`<button type="button" class="lvlchip${allOn?" on":""}" data-ty="">${esc(t("jlpt_typeAll"))}</button>`
+      + avail.map(ty=>`<button type="button" class="lvlchip${jlptTypeSel.has(ty)?" on":""}" data-ty="${ty}">${esc(t("n2_tag_"+ty))}</button>`).join("");
+  }
+  const sel=$("#jPos");
+  if(sel){
+    const cur=sel.value;
+    const list=[...new Set(jlptFilter(jlptBook.words, jlptLevel()).map(w=>w.pos).filter(Boolean))].sort();
+    sel.innerHTML=`<option value="">${esc(t("pos_all"))}</option>`+list.map(x=>`<option value="${esc(x)}">${esc(posLabel(x))}</option>`).join("");
+    if(list.includes(cur)) sel.value=cur;
+  }
+}
+// 받는 중 표시 — 진행바 + 받은 용량. 크기를 모르면 용량만 센다.
+function renderJlptLoading(){
+  const note=$("#jPoolNote"); if(!note) return;
+  const {got,total}=jlptBook;
+  const pct = total>0 ? Math.min(100, Math.round(got/total*100)) : 0;
+  const label = total>0
+    ? t("jlpt_bookLoadingPct",{pct, got:fmtBytes(got), total:fmtBytes(total)})
+    : t("jlpt_bookLoadingSize",{got:fmtBytes(got)});
+  note.innerHTML=`<div>${esc(label)}</div>`
+    + (total>0 ? `<div class="progress" style="margin:6px 0 0"><i style="width:${pct}%"></i></div>` : "");
+}
 function updateJlptCount(){
-  const max=jlptPool().length, sc=$("#jCount");
-  sc.max=Math.max(1,max); sc.value=Math.max(1,max); sc.disabled=(max===0);
-  $("#jCountMax").textContent=max; $("#jCountLabel").textContent=max;
+  const sc=$("#jCount"), note=$("#jPoolNote");
   const lv=jlptLevel();
-  const tys=n2LevelTypes(lv).map(x=>t("n2_tag_"+x)).join(" · ");
+  const tys=jlptTypes().map(x=>t("n2_tag_"+x)).join(" · ");
   $("#jLevelDesc").innerHTML=esc(t("jlpt_levelDesc",{levels:jlptLevelLabel(lv)}))
     +`<br>`+esc(t("jlpt_typeDesc",{types:tys}));
+  if(jlptBook.state!=="ready"){
+    sc.max=1; sc.value=1; sc.disabled=true;
+    $("#jCountMax").textContent="0"; $("#jCountLabel").textContent="0";
+    if(jlptBook.state==="error"){ if(note) note.innerHTML=esc(t("jlpt_bookFail",{err:jlptBook.err})); }
+    else renderJlptLoading();
+    return;
+  }
+  const max=jlptPool().length;
+  sc.max=Math.max(1,max); sc.value=Math.min(Math.max(1,max), 35);   // 실제 시험 문자·어휘 분량에 맞춘 기본값
+  sc.disabled=(max===0);
+  $("#jCountMax").textContent=max; $("#jCountLabel").textContent=sc.value;
+  if(note) note.innerHTML=t("jlpt_poolNote",{book:esc(jlptBook.name), total:jlptBook.words.length, n:max});
 }
-bindSeg("jScopeLevelSeg", updateJlptCount);
-bindSeg("jScopeSeg",()=>{
-  $("#jDateWrap").style.display=segVal('jScopeSeg')==="date"?"block":"none";
-  updateJlptCount();
+bindSeg("jScopeLevelSeg", ()=>{ refreshJlptFilters(); updateJlptCount(); });
+$("#jTypeChips").addEventListener("click",e=>{
+  const b=e.target.closest(".lvlchip"); if(!b) return;
+  const v=b.dataset.ty;
+  if(v==="") jlptTypeSel.clear(); else jlptTypeSel.has(v)?jlptTypeSel.delete(v):jlptTypeSel.add(v);
+  refreshJlptFilters(); updateJlptCount();
 });
-$("#jDate").addEventListener("change",updateJlptCount);
+$("#jPos").addEventListener("change",updateJlptCount);
 $("#jCount").addEventListener("input",()=>{ $("#jCountLabel").textContent=$("#jCount").value; });
-$("#startJlpt").addEventListener("click",()=>{
+$("#startJlpt").addEventListener("click",async ()=>{
+  if(!(await ensureJlptBook())){ toast(t("jlpt_bookFail",{err:jlptBook.err||"…"})); return; }
   const pool=jlptPool();
   if(!pool.length){ toast(t("jlpt_noWords")); return; }
   const count=Math.min(Math.max(1,+$("#jCount").value||pool.length), pool.length);
-  const list=shuffle(weightedSample(pool,count));   // 정답률이 낮은 단어를 더 자주
+  // 정답률이 낮은 단어를 더 자주 — 이 탭은 종합 단어장 전용 기록(jstat)을 쓴다
+  const list=shuffle(weightedSample(pool,count,jstatOf));
   if(list.length<4) toast(t("toast_fewChoices"));
   clearAdvance(); spAbort();
   quiz={list, mainList:list.slice(), idx:0, phase:"n2", score:0, answered:false, finished:false,
         pf:"kanji", af:"korean", dir:"fixed", pairById:null, wrong:new Set(), saTyped:{}, mcChosen:{},
         spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null, ansIdx:[], reask:[], reasked:{},
-        scope:segVal('jScopeSeg'), scopeDate:$("#jDate").value, count,
-        jlpt:true, jlptLevel:jlptLevel()};
-  quiz.n2Plan=n2MakePlan(quiz.jlptLevel, list.length);   // 레벨 비중대로 유형 미리 배정
+        count, jlpt:true, jlptLevel:jlptLevel(), n2Types:jlptTypes().slice()};
+  quiz.n2Plan=n2MakePlan(quiz.jlptLevel, list.length, quiz.n2Types);
   moveQuizArea("jlptHost");         // 시험 화면을 JLPT 탭으로
   $("#jlptSettings").open=false;
-  $("#quizArea").style.display="block"; renderQuiz();
+  $("#quizArea").style.display="block"; renderQuiz(); renderQuizChrome();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+/* 시험 중 유형 바꾸기 — 같은 단어 목록을 유지한 채 그 유형으로 다시 낸다.
+   퀴즈 탭의 단계 토글(4지선다·주관식·말하기)이 있던 자리를 대신한다. */
+function jlptSwitchType(ty){
+  if(!quiz.jlpt || !quiz.list.length) return;
+  const inProgress = !quiz.finished && (quiz.idx>0 || Object.keys(quiz.done).length>0);
+  const label = ty==="" ? t("jlpt_typeMixed") : t("n2_tag_"+ty);
+  if(inProgress && !confirm(t("confirm_phaseSwitch",{phase:label}))) return;
+  clearAdvance();
+  quiz.n2Types = ty==="" ? n2LevelTypes(quiz.jlptLevel) : [ty];
+  quiz.list=shuffle((quiz.mainList||quiz.list).slice());
+  quiz.idx=0; quiz.answered=false; quiz.finished=false; quiz.score=0;
+  quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
+  quiz.done={}; quiz.opts={}; quiz.ansIdx=[]; quiz.reask=[]; quiz.reasked={};
+  quiz.isRetry=false; quiz.reinforced=false;
+  quiz.n2Plan=n2MakePlan(quiz.jlptLevel, quiz.list.length, quiz.n2Types);
+  renderQuiz(); renderQuizChrome(); persistQuiz();
+}
+$("#jlptTypeSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-ty]"); if(!b) return;
+  jlptSwitchType(b.dataset.ty);
 });
 // 퀴즈 탭 하단의 시험지 인쇄 버튼 (인쇄는 탭에서 빼고 여기서 들어간다)
 $("#goPrintBtn").addEventListener("click",()=>showTab("print"));
@@ -4170,9 +4358,21 @@ function goPhase(ph, ask){
 }
 // 단계 토글 + '이전 모드로 돌아가기' 버튼 상태 갱신
 function renderQuizChrome(){
-  const seg=$("#quizPhaseSeg"); if(!seg) return;
-  // JLPT 시험은 단계(4지선다·주관식·말하기) 개념이 없으므로 토글을 숨긴다
-  if(quiz.jlpt){ seg.style.display="none"; const bk=$("#qBackPhase"); if(bk) bk.hidden=true; return; }
+  const seg=$("#quizPhaseSeg"), tseg=$("#jlptTypeSeg"); if(!seg) return;
+  // JLPT 시험은 단계(4지선다·주관식·말하기) 개념이 없다.
+  // 그 자리에 문제 유형 토글을 띄워 유형을 오가며 풀 수 있게 한다.
+  if(quiz.jlpt){
+    seg.style.display="none"; const bk=$("#qBackPhase"); if(bk) bk.hidden=true;
+    if(tseg){
+      const avail=n2LevelTypes(quiz.jlptLevel||"N2");
+      const cur=(quiz.n2Types||[]).length===1 ? quiz.n2Types[0] : "";
+      tseg.style.display="flex";
+      tseg.innerHTML=`<button type="button" data-ty=""${cur===""?' class="on"':''}>${esc(t("jlpt_typeMixed"))}</button>`
+        + avail.map(ty=>`<button type="button" data-ty="${ty}"${cur===ty?' class="on"':''}>${esc(t("n2_tag_"+ty))}</button>`).join("");
+    }
+    return;
+  }
+  if(tseg) tseg.style.display="none";
   seg.style.display="flex";
   $$("#quizPhaseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.ph===quiz.phase));
   const back=$("#qBackPhase"); if(!back) return;
@@ -4220,12 +4420,13 @@ $("#quizBody").addEventListener("click",e=>{
   });
   // N2는 유형마다 정답 항목이 달라 보기에 담아 둔 정답 텍스트를 쓴다
   const ans = isN2 ? (opt.t[opt.k]||"") : wField(w,quiz.curAf), given=opt.t[pick]||"";
-  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
+  // JLPT 탭은 다른 단어장(종합)이라 내 단어장의 진도·통계를 건드리면 안 된다
+  if(ok){ quiz.score++; if(!quiz.jlpt) quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.mcChosen[w.id]=given; fb(false,t("fb_answer",{ans})); }
   quiz.done[w.id]={ok, pick, given};
   markAnswered();
-  statAdd(w.id, ok);                            // 단어별 정답률 누적 (다음 시험 출제 비중)
-  logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 정/오답을 학습일지에 기록
+  if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);   // 정답률 누적 (다음 시험 출제 비중)
+  if(!quiz.jlpt) logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 학습일지는 내 단어장 것만
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
   scheduleNext(900);
 });
@@ -4238,12 +4439,12 @@ function submitSA(){
   const accept = acceptFor(w,quiz.curAf);
   const ok=accept.some(a=>normAns(a)===val || (normAns(a).length>1 && normAns(a).includes(val) && val.length>=2));
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
-  if(ok){ quiz.score++; quizMarkDone(w.id); fb(true,t("fb_correct")); }
+  if(ok){ quiz.score++; if(!quiz.jlpt) quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
   quiz.done[w.id]={ok, given:$("#qInput").value.trim()};
   markAnswered();
-  statAdd(w.id, ok);                // 단어별 정답률 누적
-  logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
+  if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);
+  if(!quiz.jlpt) logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
   scheduleNext(1100);
 }
@@ -4253,7 +4454,9 @@ function submitSA(){
 const REASK_MAX=2;
 function requeueWeak(w){
   if(quiz.isRetry) return false;                 // 재시험 라운드에선 더 늘리지 않는다
-  if(!isWeak(w.id)) return false;
+  const st = quiz.jlpt ? jstatOf(w) : statOf(w.id);
+  const n=st.o+st.x;
+  if(!n || st.o/n>WEAK_RATE) return false;
   quiz.reasked=quiz.reasked||{};
   if((quiz.reasked[w.id]||0)>=REASK_MAX) return false;
   quiz.reasked[w.id]=(quiz.reasked[w.id]||0)+1;
@@ -4272,7 +4475,8 @@ function nextQuiz(){
    이미 그 날짜에 있는 단어·뺀 단어는 건드리지 않는다. */
 // 화면에 보여줄 정답률 문구 — "60% (3/5)"
 function rateLabel(id){
-  const st=statOf(id), n=st.o+st.x;
+  const w0=quiz.jlpt ? quiz.list.find(x=>x.id===id) : null;
+  const st=(quiz.jlpt && w0) ? jstatOf(w0) : statOf(id), n=st.o+st.x;
   return n ? Math.round(st.o/n*100)+"% ("+st.o+"/"+n+")" : "–";
 }
 function reinforceSchedule(ids){
@@ -4303,10 +4507,10 @@ function renderQuizResults(){
   const isMc=quiz.phase==="mc", isSp=quiz.phase==="speak";
   const isPick=isMc||isN2;   // 보기에서 고르는 단계 (N2도 고른 답을 mcChosen에 담는다)
   quiz.finalWrong=[...quiz.wrong];
-  const wrong=quiz.finalWrong.map(wordById).filter(Boolean);
+  const wrong=quiz.finalWrong.map(examWordById).filter(Boolean);
   const total=quiz.list.length;
   // 본시험이 끝나면 약한 단어(정답률 WEAK_RATE 이하)를 같은 일정의 뒤쪽 날짜에 다시 넣는다
-  if(!quiz.isRetry && !quiz.reinforced){
+  if(!quiz.isRetry && !quiz.reinforced && !quiz.jlpt){   // JLPT는 다른 단어장이라 일정에 넣지 않는다
     quiz.reinforced=true;
     const weak=quiz.finalWrong.filter(isWeak);
     const added=reinforceSchedule(weak);
@@ -4320,7 +4524,7 @@ function renderQuizResults(){
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
         <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(givenLabel)}</th><th>${esc(t("rq_rate"))}</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td style="white-space:nowrap${isWeak(w.id)?';color:var(--bad);font-weight:700':''}">${rateLabel(w.id)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td style="white-space:nowrap${(()=>{const st=quiz.jlpt?jstatOf(w):statOf(w.id),n=st.o+st.x;return n&&st.o/n<=WEAK_RATE;})()?';color:var(--bad);font-weight:700':''}">${rateLabel(w.id)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
   const lv = quiz.jlptLevel||"N2";
@@ -4361,23 +4565,29 @@ function markCorrect(id){
   if(!quiz.wrong.has(id)) return;
   quiz.wrong.delete(id);
   quiz.score++;
-  quizMarkDone(id);
-  statFix(id);              // 오답 1건을 정답으로 되돌린다
-  logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
+  if(!quiz.jlpt) quizMarkDone(id);
+  const cw=examWordById(id);
+  if(quiz.jlpt){ if(cw) jstatFix(cw); } else statFix(id);   // 오답 1건을 정답으로 되돌린다
+  if(!quiz.jlpt) logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
 // 틀린 단어만 다시 풀기 — 현재 단계 전용(객관식 재시험은 객관식만, 주관식 재시험은 주관식만).
 // 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
 function retryWrong(){
-  const list=(quiz.finalWrong||[]).map(wordById).filter(Boolean);
+  const list=(quiz.finalWrong||[]).map(examWordById).filter(Boolean);
   if(!list.length){ toast(t("toast_noRetry")); return; }
   clearAdvance();
   // 본시험 결과를 보관해 두면 재시험 중 단계를 옮겼다 돌아와도 결과를 다시 볼 수 있다
   snapshotPhase();
-  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}, ansIdx:[], reask:[], reasked:{}};
+  // JLPT 시험이면 그 상태(단어장·레벨·유형)를 그대로 물려받아야 한다.
+  // 빠뜨리면 재시험이 내 단어장 기준으로 돌아가 보기·채점 기록이 어긋난다.
+  const jl={jlpt:!!quiz.jlpt, jlptLevel:quiz.jlptLevel, n2Types:(quiz.n2Types||[]).slice(), count:quiz.count};
+  quiz={list:shuffle(list), mainList:quiz.mainList, idx:0, phase:quiz.phase, score:0, answered:false, finished:false, pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:true, saved:quiz.saved, done:{}, opts:{}, ansIdx:[], reask:[], reasked:{}, scope:quiz.scope, scopeDate:quiz.scopeDate};
+  Object.assign(quiz, jl);
+  if(quiz.jlpt) quiz.n2Plan=n2MakePlan(quiz.jlptLevel, quiz.list.length, quiz.n2Types);
   $("#quizArea").style.display="block";
-  renderQuiz();
+  renderQuiz(); renderQuizChrome();
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
