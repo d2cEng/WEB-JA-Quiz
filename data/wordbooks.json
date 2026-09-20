@@ -5,79 +5,92 @@
       "name": "[종합] JLPT N5–N1 단어장 (일본어–한국어)",
       "file": "words.ko.json",
       "rev": "2uugjr:365853",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 2021676
     },
     {
       "name": "[종합] JLPT N5–N1 Vocabulary (Japanese–English)",
       "file": "words.en.json",
       "rev": "18ytk3t:698216",
-      "lang": "en"
+      "lang": "en",
+      "bytes": 2416428
     },
     {
       "name": "[테마] 일본 이자카야·식당 메뉴 읽기",
       "file": "izakaya-menu.json",
       "rev": "1myv297:10299",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 55318
     },
     {
       "name": "[테마] 일본 마트 장보기",
       "file": "supermarket.json",
       "rev": "1brw4fg:11043",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 59921
     },
     {
       "name": "[테마] 일본 편의점 이용",
       "file": "conbini.json",
       "rev": "mzy4yg:2602",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 13342
     },
     {
       "name": "[테마] 드러그스토어·약국",
       "file": "drugstore.json",
       "rev": "1ul6je5:2489",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 13424
     },
     {
       "name": "[테마] 전철·교통 표현",
       "file": "transport.json",
       "rev": "12ythta:2127",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 11541
     },
     {
       "name": "[테마] 공항·호텔 일본어",
       "file": "airport-hotel.json",
       "rev": "t79it1:2465",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 12996
     },
     {
       "name": "[테마] 온천·료칸 즐기기",
       "file": "onsen-ryokan.json",
       "rev": "gzmc31:2343",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 12474
     },
     {
       "name": "[테마] 의성어·의태어(オノマトペ)",
       "file": "onomatopoeia.json",
       "rev": "1oe86hb:3140",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 16304
     },
     {
       "name": "[테마] 경어(敬語) 표현집",
       "file": "keigo.json",
       "rev": "n96rqs:2657",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 12964
     },
     {
       "name": "[테마] 조수사(세는 말) 마스터",
       "file": "counters.json",
       "rev": "1q2cnn:2166",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 11895
     },
     {
       "name": "[샘플] JLPT 단어장 형식 예시",
       "file": "words.sample.json",
       "rev": "130fzd6:881",
-      "lang": "ko"
+      "lang": "ko",
+      "bytes": 5219
     }
   ]
 }
