@@ -79,6 +79,16 @@
   .lvlchip:hover{border-color:var(--brand);color:var(--brand)}
   .lvlchip.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
   .lvlchips.disabled{opacity:.45;pointer-events:none}
+  /* 개수 입력 — 슬라이더만으로는 9,370까지 맞출 수 없어 숫자 입력·빠른 선택을 함께 둔다 */
+  .countbox{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 10px}
+  .countnum{width:6.5em;flex:0 0 auto;text-align:right;font-variant-numeric:tabular-nums}
+  .countpick{display:flex;flex-wrap:wrap;gap:5px}
+  .countpick button{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:7px 11px;border-radius:999px;font-size:.88em;line-height:1;cursor:pointer;
+    font-variant-numeric:tabular-nums}
+  .countpick button:hover{border-color:var(--brand);color:var(--brand)}
+  .countpick button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+  .countbox.disabled{opacity:.45;pointer-events:none}
   /* 캘린더 뷰 */
   .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
   .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
@@ -1016,7 +1026,7 @@ const I18N = {
     db_title:"단어 데이터베이스",
     db_sub:"암기할 단어를 체크하세요. JSON 가져오기/내보내기로 실제 단어와 진도를 옮길 수 있습니다.",
     db_nameLabel:"단어장 이름 (이 데이터셋을 구분하는 이름)", db_namePh:"예: JLPT N4 단어장",
-    db_searchPh:"검색 (漢字·ひらがな·뜻)", pos_all:"품사 전체", level_all:"레벨 전체",
+    db_searchPh:"검색 (漢字·ひらがな·뜻)", pos_all:"품사 전체", count_all:"전체", level_all:"레벨 전체",
     db_more:"{n}개 더 보기 (남은 {rest}개)",
     db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
     db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
@@ -1215,7 +1225,7 @@ const I18N = {
     db_title:"Word database",
     db_sub:"Check the words you want to memorize. Use JSON import/export to move your words and progress.",
     db_nameLabel:"Wordbook name (a name to identify this dataset)", db_namePh:"e.g. JLPT N4 wordbook",
-    db_searchPh:"Search (漢字·ひらがな·meaning)", pos_all:"All parts of speech", level_all:"All levels",
+    db_searchPh:"Search (漢字·ひらがな·meaning)", pos_all:"All parts of speech", count_all:"All", level_all:"All levels",
     db_more:"Show {n} more ({rest} left)",
     db_selAll:"Select all results", db_selNone:"Clear all",
     db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
@@ -2124,6 +2134,56 @@ function renderLevelChips(id){
   box.innerHTML =
     `<button type="button" class="lvlchip${allOn?" on":""}" data-lvl="">${esc(t("level_all"))}</button>`
     + levels.map(v=>`<button type="button" class="lvlchip${sel.has(v)?" on":""}" data-lvl="${esc(v)}">${esc(v)}</button>`).join("");
+}
+/* 개수 슬라이더 옆에 숫자 입력 + 빠른 선택 버튼을 붙인다.
+   최대가 9,370까지 가는 시험에서는 슬라이더를 끌어 값을 맞출 수 없다.
+   기존 코드가 여러 곳에서 슬라이더 value·max를 직접 고치므로, 호출부를 건드리지 않고
+   라벨·최댓값 표시가 바뀌는 것을 지켜보며 따라 맞춘다. */
+const COUNT_PRESETS=[10,20,35,50,100];
+function bindCountBox(id){
+  const sl=$("#"+id); if(!sl || $("#"+id+"Num")) return;
+  const lab=$("#"+id+"Label"), maxEl=$("#"+id+"Max");
+  const box=document.createElement("div");
+  box.className="countbox";
+  box.innerHTML=`<input type="number" class="countnum" id="${id}Num" min="1" step="1" inputmode="numeric">`
+    +`<div class="countpick">`
+    + COUNT_PRESETS.map(n=>`<button type="button" data-n="${n}">${n}</button>`).join("")
+    + `<button type="button" data-n="max" data-i18n="count_all">${esc(t("count_all"))}</button></div>`;
+  sl.insertAdjacentElement("afterend", box);
+  const num=$("#"+id+"Num");
+  const maxOf=()=>Math.max(1, +sl.max||1);
+  const apply=v=>{                       // 슬라이더에 반영하고 기존 리스너를 깨운다
+    sl.value=v; if(lab) lab.textContent=v;
+    sl.dispatchEvent(new Event("input",{bubbles:true}));
+  };
+  const sync=()=>{
+    const max=maxOf();
+    num.max=max;
+    if(document.activeElement!==num) num.value=sl.value;   // 타이핑 중엔 건드리지 않는다
+    box.classList.toggle("disabled", !!sl.disabled);
+    box.querySelectorAll("button[data-n]").forEach(b=>{
+      const isMax=b.dataset.n==="max";
+      b.hidden = !isMax && +b.dataset.n>max;               // 최대보다 큰 값은 감춘다
+      b.classList.toggle("on", isMax ? +sl.value===max : +b.dataset.n===+sl.value);
+    });
+  };
+  sl.addEventListener("input", sync);
+  num.addEventListener("input",()=>{                        // 타이핑 중엔 범위 안일 때만 반영
+    const v=parseInt(num.value,10);
+    if(isFinite(v) && v>=1 && v<=maxOf()) apply(v);
+  });
+  num.addEventListener("change",()=>{                       // 확정될 때 범위로 맞춘다
+    const v=Math.max(1, Math.min(maxOf(), parseInt(num.value,10)||1));
+    num.value=v; apply(v); sync();
+  });
+  box.addEventListener("click",e=>{
+    const b=e.target.closest("button[data-n]"); if(!b) return;
+    apply(b.dataset.n==="max" ? maxOf() : Math.min(maxOf(), +b.dataset.n)); sync();
+  });
+  const mo=new MutationObserver(sync);
+  if(lab) mo.observe(lab,{childList:true,characterData:true,subtree:true});
+  if(maxEl) mo.observe(maxEl,{childList:true,characterData:true,subtree:true});
+  sync();
 }
 function bindLevelChips(id, onChange){
   $("#"+id).addEventListener("click",e=>{
@@ -5214,6 +5274,8 @@ function refreshAll(){
 // bfcache 복원 시에도 동기화
 window.addEventListener("pageshow",()=>{ resetSchedControls(); updateSchedCount(); });
 load();
+// 개수 슬라이더마다 숫자 입력 + 빠른 선택 버튼 (refreshAll보다 먼저 붙여 첫 값부터 맞게)
+["sCount","eCount","mCount","qCount","jCount","pCount","talkCount"].forEach(bindCountBox);
 // 언어 적용 (정적 텍스트 + 언어 토글 활성화) — 동적 렌더 전에
 $$("#langSeg button").forEach(b=>b.classList.toggle("on",b.dataset.lang===LANG));
 applyI18n();
