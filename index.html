@@ -3898,8 +3898,10 @@ function n2Opt(w){
   let opt=quiz.opts[w.id];
   if(!opt || !opt.t){
     const lv=quiz.jlptLevel||"N2";
-    // 유형 배정표는 시험 시작 때 만들어 두고, 없으면(복원 등) 그때 만든다
-    if(!quiz.n2Plan || quiz.n2Plan.length<quiz.list.length) quiz.n2Plan=n2MakePlan(lv, quiz.list.length);
+    // 유형 배정표는 시험 시작 때 만들어 두고, 없으면(복원 등) 그때 만든다.
+    // 고른 유형(n2Types)을 반드시 함께 넘긴다 — 빠뜨리면 재출제로 목록이 길어진 순간
+    // 배정표가 전체 유형으로 새로 만들어져 「表記만」 골라도 혼합으로 바뀐다.
+    if(!quiz.n2Plan || quiz.n2Plan.length<quiz.list.length) quiz.n2Plan=n2MakePlan(lv, quiz.list.length, quiz.n2Types);
     opt=n2Build(w, quiz.idx, lv) || n2Fallback(w);
     quiz.opts[w.id]=opt;
   }
@@ -4550,6 +4552,11 @@ function requeueWeak(w){
   quiz.reasked[w.id]=(quiz.reasked[w.id]||0)+1;
   quiz.list.push(w);
   (quiz.reask=quiz.reask||[]).push(quiz.list.length-1);
+  // 배정표도 같이 늘려 둔다. 길이가 모자라면 n2Opt가 통째로 다시 만든다.
+  if(quiz.n2Plan){
+    const pool=(quiz.n2Types&&quiz.n2Types.length) ? quiz.n2Types : n2LevelTypes(quiz.jlptLevel||"N2");
+    quiz.n2Plan.push(pool[Math.floor(Math.random()*pool.length)]);
+  }
   return true;
 }
 function markAnswered(){ (quiz.ansIdx=quiz.ansIdx||[]).push(quiz.idx); }
