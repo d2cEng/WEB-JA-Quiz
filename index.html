@@ -3439,7 +3439,8 @@ function packPhase(o){
   return { list:o.list.map(w=>w.id), idx:o.idx, finished:!!o.finished, score:o.score,
     wrong:[...o.wrong], saTyped:o.saTyped, mcChosen:o.mcChosen, spHeard:o.spHeard,
     done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry,
-    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{} };
+    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{},
+    n2Plan:o.n2Plan||[], n2Types:o.n2Types||[] };
 }
 function persistQuiz(){
   try{
@@ -3466,7 +3467,8 @@ function restorePersistedQuiz(){
   const unpack=o=>{ const l=words(o.list); return l?{ list:l, idx:Math.min(o.idx,l.length), finished:!!o.finished,
     score:o.score||0, wrong:new Set(o.wrong||[]), saTyped:o.saTyped||{}, mcChosen:o.mcChosen||{},
     spHeard:o.spHeard||{}, done:o.done||{}, opts:o.opts||{}, isRetry:!!o.isRetry,
-    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{} }:null; };
+    ansIdx:o.ansIdx||[], reask:o.reask||[], reasked:o.reasked||{},
+    n2Plan:o.n2Plan||[], n2Types:o.n2Types||[] }:null; };
   const cur=unpack(d.cur), main=words(d.mainList||d.cur.list);
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
@@ -3485,28 +3487,45 @@ function clearAdvance(){ if(quizTimer){ clearTimeout(quizTimer); quizTimer=null;
 /* ---- 단계(4지선다·주관식·말하기)별 진행 상태 보관 ----
    단계 토글로 오갈 때 풀던 내역을 잃지 않도록, 떠나는 단계를 저장하고
    돌아오면 중단한 문제부터 이어서 푼다. */
+// 보관 슬롯의 키. JLPT는 단계가 늘 "n2"라 유형까지 넣어야 유형별로 따로 보관된다.
+function typeKeyOf(types){ return (types||[]).length===1 ? types[0] : "mix"; }
+function phaseKey(types){ return quiz.jlpt ? "n2:"+typeKeyOf(types||quiz.n2Types) : quiz.phase; }
 function snapshotPhase(){
   if(!quiz.list.length) return;
   let idx=quiz.idx, done=!!quiz.finished;
   // 이미 채점된 문제는 넘어간 것으로 본다 (돌아왔을 때 같은 문제를 다시 채점하지 않도록)
   if(!done && quiz.answered){ if(idx>=quiz.list.length-1) done=true; else idx++; }
-  quiz.saved[quiz.phase]={
+  quiz.saved[phaseKey()]={
     list:quiz.list.slice(), idx, finished:done, score:quiz.score,
     wrong:new Set(quiz.wrong), saTyped:Object.assign({},quiz.saTyped),
     mcChosen:Object.assign({},quiz.mcChosen), spHeard:Object.assign({},quiz.spHeard),
     done:Object.assign({},quiz.done), opts:Object.assign({},quiz.opts),
-    isRetry:!!quiz.isRetry
+    isRetry:!!quiz.isRetry,
+    // 재출제 자리·푼 자리와 유형 배정까지 담아야 돌아왔을 때 그대로 이어진다
+    ansIdx:(quiz.ansIdx||[]).slice(), reask:(quiz.reask||[]).slice(),
+    reasked:Object.assign({},quiz.reasked||{}),
+    n2Plan:(quiz.n2Plan||[]).slice(), n2Types:(quiz.n2Types||[]).slice()
   };
 }
-function restorePhase(ph){
-  const sv=quiz.saved[ph]; if(!sv||!sv.list.length) return false;
-  quiz.phase=ph; quiz.list=sv.list.slice(); quiz.idx=sv.idx; quiz.score=sv.score;
+// 보관해 둔 진행 상태를 현재 quiz에 되살린다 (화면 그리기는 호출한 쪽에서)
+function restoreSaved(key){
+  const sv=quiz.saved[key]; if(!sv||!sv.list.length) return false;
+  quiz.list=sv.list.slice(); quiz.idx=sv.idx; quiz.score=sv.score;
   quiz.wrong=new Set(sv.wrong); quiz.saTyped=Object.assign({},sv.saTyped);
   quiz.mcChosen=Object.assign({},sv.mcChosen); quiz.spHeard=Object.assign({},sv.spHeard);
   quiz.done=Object.assign({},sv.done||{}); quiz.opts=Object.assign({},sv.opts||{});
   quiz.isRetry=sv.isRetry; quiz.answered=false; quiz.finished=sv.finished;
+  quiz.ansIdx=(sv.ansIdx||[]).slice(); quiz.reask=(sv.reask||[]).slice();
+  quiz.reasked=Object.assign({},sv.reasked||{});
+  if(sv.n2Plan&&sv.n2Plan.length) quiz.n2Plan=sv.n2Plan.slice();
+  if(sv.n2Types&&sv.n2Types.length) quiz.n2Types=sv.n2Types.slice();
+  return true;
+}
+function restorePhase(ph){
+  if(!restoreSaved(ph)) return false;
+  quiz.phase=ph;
   $("#quizArea").style.display="block";
-  if(sv.finished) renderQuizResults(); else renderQuiz();
+  if(quiz.finished) renderQuizResults(); else renderQuiz();
   return true;
 }
 function fieldLabel(f){ return t("field_"+(f==="hira"?"hira":f)); }
@@ -3879,8 +3898,10 @@ function n2Opt(w){
   let opt=quiz.opts[w.id];
   if(!opt || !opt.t){
     const lv=quiz.jlptLevel||"N2";
-    // 유형 배정표는 시험 시작 때 만들어 두고, 없으면(복원 등) 그때 만든다
-    if(!quiz.n2Plan || quiz.n2Plan.length<quiz.list.length) quiz.n2Plan=n2MakePlan(lv, quiz.list.length);
+    // 유형 배정표는 시험 시작 때 만들어 두고, 없으면(복원 등) 그때 만든다.
+    // 고른 유형(n2Types)을 반드시 함께 넘긴다 — 빠뜨리면 재출제로 목록이 길어진 순간
+    // 배정표가 전체 유형으로 새로 만들어져 「表記만」 골라도 혼합으로 바뀐다.
+    if(!quiz.n2Plan || quiz.n2Plan.length<quiz.list.length) quiz.n2Plan=n2MakePlan(lv, quiz.list.length, quiz.n2Types);
     opt=n2Build(w, quiz.idx, lv) || n2Fallback(w);
     quiz.opts[w.id]=opt;
   }
@@ -4263,18 +4284,27 @@ $("#startJlpt").addEventListener("click",async ()=>{
    퀴즈 탭의 단계 토글(4지선다·주관식·말하기)이 있던 자리를 대신한다. */
 function jlptSwitchType(ty){
   if(!quiz.jlpt || !quiz.list.length) return;
+  const next = ty==="" ? n2LevelTypes(quiz.jlptLevel) : [ty];
+  if(typeKeyOf(next)===typeKeyOf(quiz.n2Types)) return;      // 같은 유형이면 그대로 둔다
   const inProgress = !quiz.finished && (quiz.idx>0 || Object.keys(quiz.done).length>0);
   const label = ty==="" ? t("jlpt_typeMixed") : t("n2_tag_"+ty);
   if(inProgress && !confirm(t("confirm_phaseSwitch",{phase:label}))) return;
   clearAdvance();
-  quiz.n2Types = ty==="" ? n2LevelTypes(quiz.jlptLevel) : [ty];
+  snapshotPhase();                                           // 떠나는 유형의 진행을 보관
+  quiz.n2Types=next;
+  // 그 유형을 풀던 기록이 있으면 이어서 (안내 문구대로 '돌아오면 이어서 풀 수 있게')
+  if(restoreSaved(phaseKey())){
+    $("#quizArea").style.display="block";
+    if(quiz.finished) renderQuizResults(); else renderQuiz();
+    renderQuizChrome(); return;
+  }
   quiz.list=shuffle((quiz.mainList||quiz.list).slice());
   quiz.idx=0; quiz.answered=false; quiz.finished=false; quiz.score=0;
   quiz.wrong=new Set(); quiz.saTyped={}; quiz.mcChosen={}; quiz.spHeard={};
   quiz.done={}; quiz.opts={}; quiz.ansIdx=[]; quiz.reask=[]; quiz.reasked={};
   quiz.isRetry=false; quiz.reinforced=false;
   quiz.n2Plan=n2MakePlan(quiz.jlptLevel, quiz.list.length, quiz.n2Types);
-  renderQuiz(); renderQuizChrome(); persistQuiz();
+  renderQuiz(); renderQuizChrome();
 }
 $("#jlptTypeSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-ty]"); if(!b) return;
@@ -4522,6 +4552,11 @@ function requeueWeak(w){
   quiz.reasked[w.id]=(quiz.reasked[w.id]||0)+1;
   quiz.list.push(w);
   (quiz.reask=quiz.reask||[]).push(quiz.list.length-1);
+  // 배정표도 같이 늘려 둔다. 길이가 모자라면 n2Opt가 통째로 다시 만든다.
+  if(quiz.n2Plan){
+    const pool=(quiz.n2Types&&quiz.n2Types.length) ? quiz.n2Types : n2LevelTypes(quiz.jlptLevel||"N2");
+    quiz.n2Plan.push(pool[Math.floor(Math.random()*pool.length)]);
+  }
   return true;
 }
 function markAnswered(){ (quiz.ansIdx=quiz.ansIdx||[]).push(quiz.idx); }
