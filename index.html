@@ -3557,7 +3557,14 @@ function acceptFor(w,f){
 // 끝에서부터 공통 히라가나(오쿠리가나) 길이
 function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.length&&a[a.length-1-i]===b[b.length-1-i]) i++; return i; }
 // 한글 뜻 묶음(중복 비교용)
-function koreanKey(w){ return w.meanings.map(m=>m.korean).join(", "); }
+/* 뜻 비교용 조각 — 나열 기호(, · / 등)와 공백을 털어 낸 낱개 뜻들.
+   같은 뜻이 단어마다 「아직,여전히」·「아직·여전히」처럼 다르게 적혀 있어서
+   문자열을 그대로 견주면 보기에 같은 뜻이 나란히 뜬다(실제로 265묶음). */
+function koreanParts(w){
+  return [...new Set((w.meanings||[]).flatMap(m=>String(m.korean||"").split(/[,，·・/／]/))
+    .map(x=>x.replace(/\s+/g,"")).filter(Boolean))];
+}
+function koreanKey(w){ return koreanParts(w).slice().sort().join("|"); }
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
 // 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
 /* 오답 보기를 어느 단어 목록에서 뽑을지. JLPT 탭은 [종합] 단어장을 쓰므로
@@ -3566,22 +3573,42 @@ function srcWords(){ return (quiz.jlpt && jlptBook.words.length) ? jlptBook.word
 function pickDistractors(w, n, pf, af){
   const target=w.hiragana||"";
   const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
-  const usedHira=new Set([w.hiragana]);            // 다른 단어의 동일한 히라가나 방지
-  const usedKo=new Set([koreanKey(w)]);            // 동일한 한글 뜻 방지
-  const usedShown=new Set([wField(w,af)]);         // 동일한 표시값(보기 텍스트) 방지
-  const acceptable=x=>{
-    // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
-    if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) return false;
-    const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af);
-    if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
-    usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
-  };
   const pool=srcWords().filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
-  const out=[];
-  for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
-  return out;   // 같은 품사가 부족하면 다른 품사로 보충
+  const order=[...samePos, ...others];              // 같은 품사가 부족하면 다른 품사로 보충
+  // strict=뜻이 한 조각이라도 겹치면 제외. 정답과 뜻이 겹치는 보기는 정답이 둘이 되는 셈이다.
+  const baseKo=koreanKey(w), baseShown=wField(w,af), baseTok=new Set(koreanParts(w));
+  const run=strict=>{
+    // 1) 정답과 부딪히지 않는 후보를 '비슷한 순'으로 모은다. 앞에서부터 그냥 3개를 쓰면
+    //    같은 단어에는 늘 같은 오답이 붙어 보기 자체를 외워 버린다. 창을 넓게 잡고 그 안에서 고른다.
+    const win=[];
+    for(const x of order){
+      if(win.length>=Math.max(n*8,24)) break;
+      // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
+      if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) continue;
+      if(x.hiragana===w.hiragana || koreanKey(x)===baseKo || wField(x,af)===baseShown) continue;
+      if(strict && koreanParts(x).some(tk=>baseTok.has(tk))) continue;
+      win.push(x);
+    }
+    // 2) 창 안에서 섞어 뽑되 보기끼리도 겹치지 않게
+    const usedHira=new Set([w.hiragana]);           // 다른 단어의 동일한 히라가나 방지
+    const usedKo=new Set([baseKo]);                 // 동일한 한글 뜻 방지
+    const usedShown=new Set([baseShown]);           // 동일한 표시값(보기 텍스트) 방지
+    const usedTok=new Set(baseTok);
+    const out=[];
+    for(const x of shuffle(win)){
+      if(out.length>=n) break;
+      const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af), toks=koreanParts(x);
+      if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) continue;
+      if(strict && toks.some(tk=>usedTok.has(tk))) continue;
+      usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); toks.forEach(tk=>usedTok.add(tk));
+      out.push(x);
+    }
+    return out;
+  };
+  const strict=run(true);
+  return strict.length>=n ? strict : run(false);    // 엄격하게 못 채우면 완화 (작은 단어장 대비)
 }
 /* ---- 읽기 오답 만들기 (漢字 → ひらがな 4지선다) ----
    다른 단어의 읽기를 보기로 쓰면 글자 모양부터 달라 쉽게 걸러진다.
