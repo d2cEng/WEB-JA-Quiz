@@ -4606,13 +4606,30 @@ function reinforceSchedule(ids){
   const future=Object.keys(state.schedule).filter(d=>d>today).sort();
   if(!future.length) return 0;
   let n=0;
+  quiz.reinforcedAt=quiz.reinforcedAt||[];
   ids.forEach((id,i)=>{
     if(isExcluded(id)) return;
     const d=future[i % future.length];             // 뒤쪽 날짜들에 고루 나눠 넣는다
     const arr=state.schedule[d]||(state.schedule[d]=[]);
     if(arr.includes(id)) return;
     arr.push(id); n++;
+    quiz.reinforcedAt.push({d, id});               // 어디에 넣었는지 기억 (맞음 처리로 되돌리기)
   });
+  if(n) save();
+  return n;
+}
+// 이 시험이 보강으로 넣은 자리에서 그 단어를 뺀다 (맞음 처리로 더는 약하지 않게 된 경우)
+function undoReinforce(id){
+  const at=(quiz.reinforcedAt||[]).filter(r=>r.id===id);
+  if(!at.length) return 0;
+  let n=0;
+  at.forEach(({d})=>{
+    const arr=state.schedule[d]; if(!arr) return;
+    const i=arr.indexOf(id); if(i<0) return;
+    arr.splice(i,1); n++;
+    if(!arr.length){ delete state.schedule[d]; delete state.rounds[d]; }
+  });
+  quiz.reinforcedAt=(quiz.reinforcedAt||[]).filter(r=>r.id!==id);
   if(n) save();
   return n;
 }
@@ -4687,10 +4704,15 @@ function markCorrect(id){
   if(!quiz.wrong.has(id)) return;
   quiz.wrong.delete(id);
   quiz.score++;
+  // 채점 결과도 정답으로 바꾼다. 안 그러면 그 문제로 되돌아갔을 때 여전히 오답으로 보이고,
+  // 단계를 옮겼다 오면 보관본에도 오답인 채로 남는다. (고른 답은 기록으로 남겨 둔다)
+  if(quiz.done[id]) quiz.done[id]=Object.assign({}, quiz.done[id], {ok:true, fixed:true});
   if(!quiz.jlpt) quizMarkDone(id);
   const cw=examWordById(id);
   if(quiz.jlpt){ if(cw) jstatFix(cw); } else statFix(id);   // 오답 1건을 정답으로 되돌린다
   if(!quiz.jlpt) logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
+  // 정답률이 올라 더는 약한 단어가 아니면, 이 시험이 일정에 넣어 둔 보강도 거둔다
+  if(!quiz.jlpt && !isWeak(id) && undoReinforce(id)) renderSchedule();
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
