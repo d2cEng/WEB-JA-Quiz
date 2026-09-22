@@ -3570,9 +3570,12 @@ function koreanKey(w){ return koreanParts(w).slice().sort().join("|"); }
 /* 오답 보기를 어느 단어 목록에서 뽑을지. JLPT 탭은 [종합] 단어장을 쓰므로
    내 단어장(state.words)에서 뽑으면 보기가 엉뚱해지고 수도 모자란다. */
 function srcWords(){ return (quiz.jlpt && jlptBook.words.length) ? jlptBook.words : state.words; }
-function pickDistractors(w, n, pf, af){
+function pickDistractors(w, n, pf, af, opts){
+  const bySound=!opts || opts.bySound!==false;   // 읽기·표기는 소리가 닮은 보기가 좋고, 뜻 문제는 아니다
   const target=w.hiragana||"";
-  const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
+  const byMatch=arr=>bySound
+    ? shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target))
+    : shuffle(arr);
   const pool=srcWords().filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
@@ -3836,13 +3839,26 @@ function n2BuildHyoki(w){
 function n2BuildBunmyaku(w){
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   if(!ex || !loc || !loc.exact) return null;
-  const wrongs=pickDistractors(w,3,"korean","kanji").map(x=>wField(x,"kanji"));
+  if(!n2HasContext(ex,loc)) return null;      // 빈칸을 뺐을 때 단서가 남는 문장만
+  // 뜻을 묻는 유형이라 '소리가 닮은 단어'로 보기를 채우면 안 된다.
+  // (シチュエーション에 デコレーション·レクリエーション… 처럼 죄다 ～ション이 붙는다)
+  const wrongs=pickDistractors(w,3,"korean","kanji",{bySound:false}).map(x=>wField(x,"kanji"));
   return n2Pack(wField(w,"kanji"), wrongs, "bunmyaku", `<div class="n2sent">${n2Swap(ex,loc,`<span class="n2blank">（　　　）</span>`)}</div>`);
 }
 // 用法 — 정답은 그 단어의 예문, 오답은 다른 단어의 예문에 이 단어를 끼워 넣어 만든다
 // 표제어를 뺀 나머지가 문장 구실을 하는지 (빈껍데기 보기 방지)
 const N2_MIN_CTX=3;
-function n2HasContext(ex, loc){ return !!ex && !!loc && (ex.length-loc.len)>=N2_MIN_CTX; }
+// 빈칸을 뺀 나머지에 내용어(한자 덩어리·가타카나 덩어리)가 몇 개 있는지.
+// 「難しい（　）だ。」는 '難' 하나뿐이라 어떤 명사를 넣어도 말이 된다 — 정답이 하나로 좁혀지지 않는다.
+// 서술어까지 살아 있어야(「部屋に（　）が漂う。」) 그 단어여야 하는 문장이 된다.
+const N2_CONTENT=/[\u4e00-\u9faf]+|[\u30a1-\u30fa\u30fc]+/g;
+function n2ContextRuns(ex, loc){
+  const rest=ex.slice(0,loc.i)+ex.slice(loc.i+loc.len);
+  return (rest.match(N2_CONTENT)||[]).length;
+}
+function n2HasContext(ex, loc){
+  return !!ex && !!loc && (ex.length-loc.len)>=N2_MIN_CTX && n2ContextRuns(ex,loc)>=2;
+}
 function n2BuildYoho(w){
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   if(!ex || !loc || !loc.exact) return null;
@@ -3870,7 +3886,7 @@ function n2BuildYoho(w){
 }
 // 言い換え類義 — 밑줄 단어와 뜻이 가장 가까운 것. (유의어 데이터가 없어 한글 뜻으로 대신한다)
 function n2BuildIikae(w){
-  const wrongs=pickDistractors(w,3,"kanji","korean").map(x=>wField(x,"korean"));
+  const wrongs=pickDistractors(w,3,"kanji","korean",{bySound:false}).map(x=>wField(x,"korean"));
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   const q=(ex&&loc&&loc.exact) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
                                : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
@@ -4213,7 +4229,7 @@ function n2Feasible(w, ty){
   switch(ty){
     case "yomi":     return n2HasKanji(w);
     case "hyoki":    return n2HasKanji(w) && exact && ex.slice(loc.i,loc.i+loc.len)===n2Form(w.kanji);
-    case "bunmyaku": return exact;
+    case "bunmyaku": return exact && n2HasContext(ex,loc);
     case "yoho":     return exact && n2HasContext(ex,loc);
     case "iikae":    return !!(w.meanings&&w.meanings.length);
     default:         return true;
