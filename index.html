@@ -3566,16 +3566,49 @@ function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.leng
    문자열을 그대로 견주면 보기에 같은 뜻이 나란히 뜬다(실제로 265묶음). */
 function koreanParts(w){
   return [...new Set((w.meanings||[]).flatMap(m=>String(m.korean||"").split(/[,，·・/／]/))
-    .map(x=>x.replace(/\s+/g,"")).filter(Boolean))];
+    .map(x=>x.replace(/[(（][^)）]*[)）]/g,"").replace(/\s+/g,"")).filter(Boolean))];   // 괄호 설명은 떼고 비교
 }
 function koreanKey(w){ return koreanParts(w).slice().sort().join("|"); }
+/* 두 뜻이 겹치는지 — 보기에 함께 세우면 정답이 둘이 되는 경우.
+   · 같은 뜻                       섞다 = 섞다
+   · 한쪽이 다른 쪽을 품음(2자 이상)  섞다 ⊂ 뒤섞다, 가다 ⊂ 돌아가다
+   · 피동·사동 짝                   섞다 ↔ 섞이다, 알다 ↔ 알리다 (어간 + 이·히·리·기·우·구·추·지) */
+// 어간 뒤에 붙어도 같은 뜻 계열로 보는 꼬리 — 피동·사동(섞이다·알리다)과 활용형(섞어·섞여)
+const KO_TAIL=/^(이|히|리|기|우|구|추|지|어지|아지|어|아|여|이어|어서|아서|여서)$/;
+function koStem(x){ return x.endsWith("다") ? x.slice(0,-1) : x; }
+function meaningClash(a, b){
+  if(a===b) return true;
+  const [s,l]=a.length<=b.length?[a,b]:[b,a];
+  if(s.length>=2 && l.includes(s)) return true;
+  // 어간끼리 견줄 때는 '짧은 어간'을 기준으로 삼아야 순서에 따라 결과가 달라지지 않는다
+  const sa=koStem(a), sb=koStem(b);
+  const [ss,ls]=sa.length<=sb.length?[sa,sb]:[sb,sa];
+  return !!ss && ls.startsWith(ss) && KO_TAIL.test(ls.slice(ss.length));
+}
+function meaningsClash(xs, ys){ for(const x of xs) for(const y of ys) if(meaningClash(x,y)) return true; return false; }
+/* 겹침 비교용 조각 — 뜻 전체에 더해 띄어쓴 낱말도 따로 본다.
+   「섞여 들다」「끼어 섞이다」는 공백을 지우면 '섞다'와 이어지지 않는다.
+   다만 뒤에 붙는 보조 낱말(하다·들다·주다…)은 빼야 모든 동사와 겹친다고 나오지 않는다. */
+const KO_AUX=new Set(["하다","되다","있다","없다","주다","들다","내다","보다","가다","오다","지다","놓다","두다","버리다","싶다","않다"]);
+function koreanClashParts(w){
+  const out=new Set();
+  (w.meanings||[]).forEach(m=>String(m.korean||"").split(/[,，·・/／]/).forEach(seg=>{
+    seg=seg.replace(/[(（][^)）]*[)）]/g,"").trim(); if(!seg) return;
+    out.add(seg.replace(/\s+/g,""));
+    const ch=seg.split(/\s+/).filter(Boolean);
+    if(ch.length>1) ch.forEach(c=>{ if(c.length>=2 && !KO_AUX.has(c)) out.add(c); });
+  }));
+  return [...out];
+}
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
 // 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
 /* 오답 보기를 어느 단어 목록에서 뽑을지. JLPT 탭은 [종합] 단어장을 쓰므로
    내 단어장(state.words)에서 뽑으면 보기가 엉뚱해지고 수도 모자란다. */
 function srcWords(){ return (quiz.jlpt && jlptBook.words.length) ? jlptBook.words : state.words; }
 function pickDistractors(w, n, pf, af, opts){
-  const bySound=!opts || opts.bySound!==false;   // 읽기·표기는 소리가 닮은 보기가 좋고, 뜻 문제는 아니다
+  // 읽기·표기는 소리가 닮은 보기가 좋고, 뜻을 고르는 문제는 아니다.
+  // 보기가 한글 뜻이면 소리가 닮은 단어(交ぜる↔取り混ぜる)는 거의 동의어라 정답이 둘이 된다.
+  const bySound=(!opts || opts.bySound!==false) && af!=="korean";
   const target=w.hiragana||"";
   const byMatch=arr=>bySound
     ? shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target))
@@ -3585,7 +3618,7 @@ function pickDistractors(w, n, pf, af, opts){
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
   const order=[...samePos, ...others];              // 같은 품사가 부족하면 다른 품사로 보충
   // strict=뜻이 한 조각이라도 겹치면 제외. 정답과 뜻이 겹치는 보기는 정답이 둘이 되는 셈이다.
-  const baseKo=koreanKey(w), baseShown=wField(w,af), baseTok=new Set(koreanParts(w));
+  const baseKo=koreanKey(w), baseShown=wField(w,af), baseTok=new Set(koreanClashParts(w));
   const run=strict=>{
     // 1) 정답과 부딪히지 않는 후보를 '비슷한 순'으로 모은다. 앞에서부터 그냥 3개를 쓰면
     //    같은 단어에는 늘 같은 오답이 붙어 보기 자체를 외워 버린다. 창을 넓게 잡고 그 안에서 고른다.
@@ -3595,7 +3628,7 @@ function pickDistractors(w, n, pf, af, opts){
       // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
       if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) continue;
       if(x.hiragana===w.hiragana || koreanKey(x)===baseKo || wField(x,af)===baseShown) continue;
-      if(strict && koreanParts(x).some(tk=>baseTok.has(tk))) continue;
+      if(strict && meaningsClash(koreanClashParts(x), [...baseTok])) continue;
       win.push(x);
     }
     // 2) 창 안에서 섞어 뽑되 보기끼리도 겹치지 않게
@@ -3606,9 +3639,9 @@ function pickDistractors(w, n, pf, af, opts){
     const out=[];
     for(const x of shuffle(win)){
       if(out.length>=n) break;
-      const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af), toks=koreanParts(x);
+      const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af), toks=koreanClashParts(x);
       if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) continue;
-      if(strict && toks.some(tk=>usedTok.has(tk))) continue;
+      if(strict && meaningsClash(toks, [...usedTok])) continue;   // 보기끼리도 뜻이 겹치지 않게
       usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); toks.forEach(tk=>usedTok.add(tk));
       out.push(x);
     }
