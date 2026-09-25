@@ -89,6 +89,10 @@
   .countpick button:hover{border-color:var(--brand);color:var(--brand)}
   .countpick button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
   .countbox.disabled{opacity:.45;pointer-events:none}
+  /* 시험 중 맞음 처리 버튼 — 오답 피드백 옆 */
+  .fixbtn{margin-left:8px;border:1px solid var(--ok,#16a34a);background:var(--card);color:var(--ok,#16a34a);
+    padding:5px 10px;border-radius:999px;font-size:.85em;font-weight:700;cursor:pointer;vertical-align:middle}
+  .fixbtn:hover{background:var(--ok,#16a34a);color:#fff}
   /* 캘린더 뷰 */
   .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
   .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
@@ -1151,7 +1155,7 @@ const I18N = {
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
-    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
@@ -1350,7 +1354,7 @@ const I18N = {
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
-    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
@@ -4067,7 +4071,7 @@ function giveUpSpeak(){
   fb(false,t("fb_answer",{ans:w.hiragana}));
   speakJa(w.hiragana);
   statAdd(w.id,false); logEvent(w.id,"sp","x");
-  scheduleNext(1400);
+  showFixBtn(w.id);   // 음성 인식이 못 알아들었을 뿐이면 맞음 처리
 }
 // 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
 function startSpeakPhase(){
@@ -4395,10 +4399,10 @@ function renderQuiz(){
     const sent = n2opt.n2==="yoho";   // 용법은 보기가 문장이라 1열·왼쪽 정렬
     html+=`<div class="choices${sent?" col":""}">`+n2opt.t.map((txt,i)=>{
       let cls="choice"+(sent?" sent":"");
-      if(review){ if(i===n2opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      if(review){ if(i===n2opt.k || (rec.fixed&&rec.pick===i)) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
       return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
     }).join("")+`</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else if(quiz.phase==="mc"){
     // 보기 만들기 — 漢字→ひらがな는 정답 읽기를 비튼 오답을 쓴다(다른 단어에서 가져오면 너무 쉽다).
     // 그 밖의 방향은 같은 품사·비슷한 오쿠리가나 단어에서 뽑는다.
@@ -4414,10 +4418,10 @@ function renderQuiz(){
     }
     html+=`<div class="choices">`+opt.t.map((txt,i)=>{
       let cls="choice";
-      if(review){ if(i===opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      if(review){ if(i===opt.k || (rec.fixed&&rec.pick===i)) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
       return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
     }).join("")+`</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else if(quiz.phase==="speak"){
     // 후보군: 객관식과 동일한 추첨 로직 (정답 + 오답 3개) · 토글로 표시/숨김
     let opt=quiz.opts[w.id];
@@ -4430,11 +4434,11 @@ function renderQuiz(){
     html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+opt.t.map(x=>`<span class="candchip">${esc(x)}</span>`).join("")+`</div>`;
     if(!review) html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
     html+=`<div class="qheard muted" id="qHeard">${review&&rec.given?esc(rec.given):""}</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else {
     html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off"${review?` value="${esc(rec.given||"")}" disabled`:""}>`;
     if(!review) html+=`<div class="btnrow"><button class="btn" id="qSubmit">${esc(t("quiz_submit"))}</button></div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   }
   // 문제 이동 — 이미 푼 문제는 앞뒤로 오가며 다시 볼 수 있다
   const last=quiz.idx>=quiz.list.length-1;
@@ -4540,6 +4544,8 @@ function startPhaseFresh(ph, base){
   renderQuiz();
 }
 $("#quizBody").addEventListener("click",e=>{
+  const fx=e.target.closest(".fixbtn[data-fix]");
+  if(fx){ markCorrectNow(+fx.dataset.fix); return; }
   const isN2=quiz.phase==="n2";
   const b=e.target.closest(".choice"); if(!b||quiz.answered||!(quiz.phase==="mc"||isN2)) return;
   quiz.answered=true;
@@ -4561,7 +4567,8 @@ $("#quizBody").addEventListener("click",e=>{
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);   // 정답률 누적 (다음 시험 출제 비중)
   if(!quiz.jlpt) logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 학습일지는 내 단어장 것만
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
-  scheduleNext(900);
+  // 틀렸으면 멈춰서 정답을 보게 하고, 맞게 답했다고 판단하면 바로 '맞음 처리'할 수 있게 한다
+  if(ok) scheduleNext(900); else showFixBtn(w.id);
 });
 function submitSA(){
   if(quiz.answered) return;
@@ -4579,7 +4586,7 @@ function submitSA(){
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);
   if(!quiz.jlpt) logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
-  scheduleNext(1100);
+  if(ok) scheduleNext(1100); else showFixBtn(w.id);
 }
 // 정답률 WEAK_RATE 이하인 단어를 틀리면 같은 시험 안에서 다시 묻는다.
 // 목록 끝에 덧붙이고 그 자리를 '재출제'로 표시해 둔다 (renderQuiz가 채점을 지운다).
@@ -4716,8 +4723,9 @@ function startSAPhase(){
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
-function markCorrect(id){
-  if(!quiz.wrong.has(id)) return;
+/* 맞음 처리 — 결과 화면과 시험 중 모두 같은 상태 변경을 거친다 */
+function applyCorrection(id){
+  if(!quiz.wrong.has(id)) return false;
   quiz.wrong.delete(id);
   quiz.score++;
   // 채점 결과도 정답으로 바꾼다. 안 그러면 그 문제로 되돌아갔을 때 여전히 오답으로 보이고,
@@ -4727,10 +4735,43 @@ function markCorrect(id){
   const cw=examWordById(id);
   if(quiz.jlpt){ if(cw) jstatFix(cw); } else statFix(id);   // 오답 1건을 정답으로 되돌린다
   if(!quiz.jlpt) logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
+  return true;
+}
+function markCorrect(id){
+  if(!applyCorrection(id)) return;
   // 정답률이 올라 더는 약한 단어가 아니면, 이 시험이 일정에 넣어 둔 보강도 거둔다
   if(!quiz.jlpt && !isWeak(id) && undoReinforce(id)) renderSchedule();
   toast(t("toast_markedCorrect"));
   renderQuizResults();
+}
+// 방금 틀려서 뒤에 붙여 둔 재출제를 거둔다 (맞음 처리했으니 다시 물을 이유가 없다)
+function cancelPendingReask(id){
+  const js=(quiz.reask||[]).filter(i=>i>quiz.idx && quiz.list[i] && quiz.list[i].id===id);
+  if(!js.length) return false;
+  const j=js[js.length-1];                        // 가장 나중에 붙인 것
+  quiz.list.splice(j,1);
+  if(quiz.n2Plan && quiz.n2Plan.length>j) quiz.n2Plan.splice(j,1);
+  quiz.reask=quiz.reask.filter(i=>i!==j).map(i=>i>j?i-1:i);
+  quiz.ansIdx=(quiz.ansIdx||[]).map(i=>i>j?i-1:i);
+  if(quiz.reasked && quiz.reasked[id]) quiz.reasked[id]--;
+  return true;
+}
+// 시험 중 맞음 처리 — 지금 보고 있는 문제만
+function markCorrectNow(id){
+  const w=quiz.list[quiz.idx]; if(!w || w.id!==id) return;
+  if(!applyCorrection(id)) return;
+  cancelPendingReask(id);
+  clearAdvance();
+  renderQuiz();
+  toast(t("toast_markedCorrect"));
+  scheduleNext(800);
+}
+function fixBtn(id){ return `<button type="button" class="fixbtn" data-fix="${id}">${esc(t("rq_markCorrect"))}</button>`; }
+function showFixBtn(id){ const el=$("#qfb"); if(el && !el.querySelector(".fixbtn")) el.insertAdjacentHTML("beforeend", fixBtn(id)); }
+// 되돌아본 문제의 피드백 — 오답이면 맞음 처리 버튼, 맞음 처리한 문제는 그렇게 표시
+function fbReviewHtml(w, rec, ans){
+  if(rec.ok) return esc(rec.fixed ? t("fb_fixed",{ans}) : t("fb_correct"));
+  return esc(t("fb_answer",{ans})) + fixBtn(w.id);
 }
 // 틀린 단어만 다시 풀기 — 현재 단계 전용(객관식 재시험은 객관식만, 주관식 재시험은 주관식만).
 // 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
