@@ -16,6 +16,16 @@ import path from "node:path";
 const KANJI = /[一-龯]/;
 const nForm = s => String(s || "").replace(/[〜～\s]/g, "").split("・")[0].trim();
 const hasKanji = s => KANJI.test(String(s || ""));
+/* 빈칸을 뺀 나머지에 내용어(한자·가타카나 덩어리)가 둘 이상 남아야 문맥 문제가 성립한다.
+   「難しい（　）だ。」「（　）で働く。」는 내용어가 하나뿐이라 어떤 단어를 넣어도 말이 된다.
+   (index.html의 n2HasContext와 같은 기준 — 바뀌면 함께 고칠 것) */
+const CONTENT_RUN = /[\u4e00-\u9faf]+|[\u30a1-\u30fa\u30fc]+/g;
+function hasContext(ex, loc) {
+  if (!ex || !loc) return false;
+  if ((ex.length - loc.len) < 3) return false;
+  const rest = ex.slice(0, loc.i) + ex.slice(loc.i + loc.len);
+  return (rest.match(CONTENT_RUN) || []).length >= 2;
+}
 
 // korean·example을 쉼표로 1:1 대응시켜 뜻 묶음을 만든다 (deriveMeanings와 동일)
 function deriveMeanings(koreanStr, exampleStr) {
@@ -151,13 +161,15 @@ function analyse(words) {
 
     if (n2HasKanji(w)) can.yomi++;
     if (ex && loc && loc.exact) {
-      can.bunmyaku++;
-      // 用法은 정답·오답 문장 모두 문맥이 있어야 한다 (앱의 n2HasContext와 동일)
-      const ctxOk = x => { const e = n2Example(x); const l = e && n2Locate(x, e); return l && l.exact && (e.length - l.len) >= 3; };
+      // 文脈規定·用法은 빈칸을 뺀 나머지가 단어를 고르게 해 줘야 한다 (앱의 n2HasContext와 동일)
+      if (hasContext(ex, loc)) can.bunmyaku++;
+      const ctxOk = x => { const e = n2Example(x); const l = e && n2Locate(x, e); return l && l.exact && hasContext(e, l); };
       if (ctxOk(w) && usable.filter(x => x.id !== w.id && ctxOk(x)).length >= 3) can.yoho++;
       if (n2HasKanji(w) && ex.slice(loc.i, loc.i + loc.len) === nForm(w.kanji)) can.hyoki++;
-      const ctx = ex.length - loc.len;   // （　）를 뺀 나머지 단서
-      if (ctx <= SHORT_CONTEXT) issues.push(["품질", label, `빈칸 빼면 단서가 ${ctx}자뿐 — "${ex}" · 文脈規定이 애매해짐`]);
+      if (!hasContext(ex, loc)) {
+        const rest = ex.slice(0, loc.i) + ex.slice(loc.i + loc.len);
+        issues.push(["품질", label, `빈칸을 빼면 단서가 "${rest}"뿐 — 어떤 단어든 들어맞아 文脈規定·用法 불가`]);
+      }
     }
     if (!w.pos) issues.push(["품질", label, "품사(pos) 없음 — 보기 고르기 품질이 떨어짐"]);
     if (!w.level) issues.push(["정보", label, "레벨(level) 없음"]);
@@ -219,11 +231,15 @@ for (const f of files) {
     const conj = r.why.stemOnly + r.why.exampleLacksWord;   // 예문이 활용형이라 못 잡는 경우
     // 원인이 '예문 없음'이면 진짜 보강이 필요하고, '활용형'이면 敬語처럼 정중형이
     // 자연스러운 단어장에서 어쩔 수 없이 낮게 나오는 것이라 대응이 다르다
-    const cause = r.why.noExample > conj
+    // 빈칸을 뺀 나머지에 단서가 없어 걸러진 건수 (구조는 멀쩡한데 문장이 허전한 경우)
+    const thin = r.issues.filter(i => i[0] === "품질" && i[2].includes("빈칸을 빼면")).length;
+    const cause = thin > Math.max(r.why.noExample, conj)
+      ? "예문이 허전해 빈칸을 빼면 어떤 단어든 들어맞음 — 서술어가 있는 문장으로 바꾸세요"
+      : r.why.noExample > conj
       ? "예문 보강 필요"
       : "예문이 활용형이라 표제어와 안 맞음 (敬語처럼 정중형이 자연스러운 주제는 낮게 나오는 게 정상)";
     block.push(`文脈規定·用法 생성률 ${pct(r.can.bunmyaku, r.n)}% — ${cause} ` +
-               `(예문없음 ${r.why.noExample}, 표제어불일치 ${r.why.exampleLacksWord}, 활용형 ${r.why.stemOnly})`);
+               `(예문없음 ${r.why.noExample}, 표제어불일치 ${r.why.exampleLacksWord}, 활용형 ${r.why.stemOnly}, 단서부족 ${thin})`);
   }
   if (r.thinPos > r.usableN * 0.3 && r.usableN)
     qual.push(`품사 쏠림 (${r.topPos[0]} 최다) — ${r.thinPos}/${r.usableN}단어가 用法 오답을 다른 품사에서 못 뽑음. ` +

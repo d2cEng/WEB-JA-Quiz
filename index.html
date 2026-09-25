@@ -89,6 +89,10 @@
   .countpick button:hover{border-color:var(--brand);color:var(--brand)}
   .countpick button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
   .countbox.disabled{opacity:.45;pointer-events:none}
+  /* 시험 중 맞음 처리 버튼 — 오답 피드백 옆 */
+  .fixbtn{margin-left:8px;border:1px solid var(--ok,#16a34a);background:var(--card);color:var(--ok,#16a34a);
+    padding:5px 10px;border-radius:999px;font-size:.85em;font-weight:700;cursor:pointer;vertical-align:middle}
+  .fixbtn:hover{background:var(--ok,#16a34a);color:#fff}
   /* 캘린더 뷰 */
   .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
   .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
@@ -1151,7 +1155,7 @@ const I18N = {
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
-    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
@@ -1350,7 +1354,7 @@ const I18N = {
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
-    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
@@ -3557,31 +3561,94 @@ function acceptFor(w,f){
 // 끝에서부터 공통 히라가나(오쿠리가나) 길이
 function suffixMatch(a,b){ a=a||""; b=b||""; let i=0; while(i<a.length&&i<b.length&&a[a.length-1-i]===b[b.length-1-i]) i++; return i; }
 // 한글 뜻 묶음(중복 비교용)
-function koreanKey(w){ return w.meanings.map(m=>m.korean).join(", "); }
+/* 뜻 비교용 조각 — 나열 기호(, · / 등)와 공백을 털어 낸 낱개 뜻들.
+   같은 뜻이 단어마다 「아직,여전히」·「아직·여전히」처럼 다르게 적혀 있어서
+   문자열을 그대로 견주면 보기에 같은 뜻이 나란히 뜬다(실제로 265묶음). */
+function koreanParts(w){
+  return [...new Set((w.meanings||[]).flatMap(m=>String(m.korean||"").split(/[,，·・/／]/))
+    .map(x=>x.replace(/[(（][^)）]*[)）]/g,"").replace(/\s+/g,"")).filter(Boolean))];   // 괄호 설명은 떼고 비교
+}
+function koreanKey(w){ return koreanParts(w).slice().sort().join("|"); }
+/* 두 뜻이 겹치는지 — 보기에 함께 세우면 정답이 둘이 되는 경우.
+   · 같은 뜻                       섞다 = 섞다
+   · 한쪽이 다른 쪽을 품음(2자 이상)  섞다 ⊂ 뒤섞다, 가다 ⊂ 돌아가다
+   · 피동·사동 짝                   섞다 ↔ 섞이다, 알다 ↔ 알리다 (어간 + 이·히·리·기·우·구·추·지) */
+// 어간 뒤에 붙어도 같은 뜻 계열로 보는 꼬리 — 피동·사동(섞이다·알리다)과 활용형(섞어·섞여)
+const KO_TAIL=/^(이|히|리|기|우|구|추|지|어지|아지|어|아|여|이어|어서|아서|여서)$/;
+function koStem(x){ return x.endsWith("다") ? x.slice(0,-1) : x; }
+function meaningClash(a, b){
+  if(a===b) return true;
+  const [s,l]=a.length<=b.length?[a,b]:[b,a];
+  if(s.length>=2 && l.includes(s)) return true;
+  // 어간끼리 견줄 때는 '짧은 어간'을 기준으로 삼아야 순서에 따라 결과가 달라지지 않는다
+  const sa=koStem(a), sb=koStem(b);
+  const [ss,ls]=sa.length<=sb.length?[sa,sb]:[sb,sa];
+  return !!ss && ls.startsWith(ss) && KO_TAIL.test(ls.slice(ss.length));
+}
+function meaningsClash(xs, ys){ for(const x of xs) for(const y of ys) if(meaningClash(x,y)) return true; return false; }
+/* 겹침 비교용 조각 — 뜻 전체에 더해 띄어쓴 낱말도 따로 본다.
+   「섞여 들다」「끼어 섞이다」는 공백을 지우면 '섞다'와 이어지지 않는다.
+   다만 뒤에 붙는 보조 낱말(하다·들다·주다…)은 빼야 모든 동사와 겹친다고 나오지 않는다. */
+const KO_AUX=new Set(["하다","되다","있다","없다","주다","들다","내다","보다","가다","오다","지다","놓다","두다","버리다","싶다","않다"]);
+function koreanClashParts(w){
+  const out=new Set();
+  (w.meanings||[]).forEach(m=>String(m.korean||"").split(/[,，·・/／]/).forEach(seg=>{
+    seg=seg.replace(/[(（][^)）]*[)）]/g,"").trim(); if(!seg) return;
+    out.add(seg.replace(/\s+/g,""));
+    const ch=seg.split(/\s+/).filter(Boolean);
+    if(ch.length>1) ch.forEach(c=>{ if(c.length>=2 && !KO_AUX.has(c)) out.add(c); });
+  }));
+  return [...out];
+}
 // 오답 보기: 같은 품사 우선 + 오쿠리가나(끝 히라가나) 많이 겹치는 순으로 n개
 // 정답과 히라가나·한글 뜻·표시값이 겹치는 단어는 제외해 보기 중복을 막는다
 /* 오답 보기를 어느 단어 목록에서 뽑을지. JLPT 탭은 [종합] 단어장을 쓰므로
    내 단어장(state.words)에서 뽑으면 보기가 엉뚱해지고 수도 모자란다. */
 function srcWords(){ return (quiz.jlpt && jlptBook.words.length) ? jlptBook.words : state.words; }
-function pickDistractors(w, n, pf, af){
+function pickDistractors(w, n, pf, af, opts){
+  // 읽기·표기는 소리가 닮은 보기가 좋고, 뜻을 고르는 문제는 아니다.
+  // 보기가 한글 뜻이면 소리가 닮은 단어(交ぜる↔取り混ぜる)는 거의 동의어라 정답이 둘이 된다.
+  const bySound=(!opts || opts.bySound!==false) && af!=="korean";
   const target=w.hiragana||"";
-  const byMatch=arr=>shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target));
-  const usedHira=new Set([w.hiragana]);            // 다른 단어의 동일한 히라가나 방지
-  const usedKo=new Set([koreanKey(w)]);            // 동일한 한글 뜻 방지
-  const usedShown=new Set([wField(w,af)]);         // 동일한 표시값(보기 텍스트) 방지
-  const acceptable=x=>{
-    // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
-    if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) return false;
-    const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af);
-    if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) return false;
-    usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); return true;
-  };
+  const byMatch=arr=>bySound
+    ? shuffle(arr).sort((a,b)=>suffixMatch(b.hiragana,target)-suffixMatch(a.hiragana,target))
+    : shuffle(arr);
   const pool=srcWords().filter(x=>x.id!==w.id && notExcluded(x));   // 후보군에서 제외 단어 제거
   const samePos=byMatch(pool.filter(x=>x.pos===w.pos));
   const others=byMatch(pool.filter(x=>x.pos!==w.pos));
-  const out=[];
-  for(const x of [...samePos, ...others]){ if(out.length>=n) break; if(acceptable(x)) out.push(x); }
-  return out;   // 같은 품사가 부족하면 다른 품사로 보충
+  const order=[...samePos, ...others];              // 같은 품사가 부족하면 다른 품사로 보충
+  // strict=뜻이 한 조각이라도 겹치면 제외. 정답과 뜻이 겹치는 보기는 정답이 둘이 되는 셈이다.
+  const baseKo=koreanKey(w), baseShown=wField(w,af), baseTok=new Set(koreanClashParts(w));
+  const run=strict=>{
+    // 1) 정답과 부딪히지 않는 후보를 '비슷한 순'으로 모은다. 앞에서부터 그냥 3개를 쓰면
+    //    같은 단어에는 늘 같은 오답이 붙어 보기 자체를 외워 버린다. 창을 넓게 잡고 그 안에서 고른다.
+    const win=[];
+    for(const x of order){
+      if(win.length>=Math.max(n*8,24)) break;
+      // 히라가나 문제일 때 보기(정답 필드)가 히라가나로 표시되는 단어는 제외
+      if(pf==="hira" && af==="kanji" && (!x.kanji || x.kanji===x.hiragana)) continue;
+      if(x.hiragana===w.hiragana || koreanKey(x)===baseKo || wField(x,af)===baseShown) continue;
+      if(strict && meaningsClash(koreanClashParts(x), [...baseTok])) continue;
+      win.push(x);
+    }
+    // 2) 창 안에서 섞어 뽑되 보기끼리도 겹치지 않게
+    const usedHira=new Set([w.hiragana]);           // 다른 단어의 동일한 히라가나 방지
+    const usedKo=new Set([baseKo]);                 // 동일한 한글 뜻 방지
+    const usedShown=new Set([baseShown]);           // 동일한 표시값(보기 텍스트) 방지
+    const usedTok=new Set(baseTok);
+    const out=[];
+    for(const x of shuffle(win)){
+      if(out.length>=n) break;
+      const hira=x.hiragana, ko=koreanKey(x), shown=wField(x,af), toks=koreanClashParts(x);
+      if(usedHira.has(hira) || usedKo.has(ko) || usedShown.has(shown)) continue;
+      if(strict && meaningsClash(toks, [...usedTok])) continue;   // 보기끼리도 뜻이 겹치지 않게
+      usedHira.add(hira); usedKo.add(ko); usedShown.add(shown); toks.forEach(tk=>usedTok.add(tk));
+      out.push(x);
+    }
+    return out;
+  };
+  const strict=run(true);
+  return strict.length>=n ? strict : run(false);    // 엄격하게 못 채우면 완화 (작은 단어장 대비)
 }
 /* ---- 읽기 오답 만들기 (漢字 → ひらがな 4지선다) ----
    다른 단어의 읽기를 보기로 쓰면 글자 모양부터 달라 쉽게 걸러진다.
@@ -3809,13 +3876,26 @@ function n2BuildHyoki(w){
 function n2BuildBunmyaku(w){
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   if(!ex || !loc || !loc.exact) return null;
-  const wrongs=pickDistractors(w,3,"korean","kanji").map(x=>wField(x,"kanji"));
+  if(!n2HasContext(ex,loc)) return null;      // 빈칸을 뺐을 때 단서가 남는 문장만
+  // 뜻을 묻는 유형이라 '소리가 닮은 단어'로 보기를 채우면 안 된다.
+  // (シチュエーション에 デコレーション·レクリエーション… 처럼 죄다 ～ション이 붙는다)
+  const wrongs=pickDistractors(w,3,"korean","kanji",{bySound:false}).map(x=>wField(x,"kanji"));
   return n2Pack(wField(w,"kanji"), wrongs, "bunmyaku", `<div class="n2sent">${n2Swap(ex,loc,`<span class="n2blank">（　　　）</span>`)}</div>`);
 }
 // 用法 — 정답은 그 단어의 예문, 오답은 다른 단어의 예문에 이 단어를 끼워 넣어 만든다
 // 표제어를 뺀 나머지가 문장 구실을 하는지 (빈껍데기 보기 방지)
 const N2_MIN_CTX=3;
-function n2HasContext(ex, loc){ return !!ex && !!loc && (ex.length-loc.len)>=N2_MIN_CTX; }
+// 빈칸을 뺀 나머지에 내용어(한자 덩어리·가타카나 덩어리)가 몇 개 있는지.
+// 「難しい（　）だ。」는 '難' 하나뿐이라 어떤 명사를 넣어도 말이 된다 — 정답이 하나로 좁혀지지 않는다.
+// 서술어까지 살아 있어야(「部屋に（　）が漂う。」) 그 단어여야 하는 문장이 된다.
+const N2_CONTENT=/[\u4e00-\u9faf]+|[\u30a1-\u30fa\u30fc]+/g;
+function n2ContextRuns(ex, loc){
+  const rest=ex.slice(0,loc.i)+ex.slice(loc.i+loc.len);
+  return (rest.match(N2_CONTENT)||[]).length;
+}
+function n2HasContext(ex, loc){
+  return !!ex && !!loc && (ex.length-loc.len)>=N2_MIN_CTX && n2ContextRuns(ex,loc)>=2;
+}
 function n2BuildYoho(w){
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   if(!ex || !loc || !loc.exact) return null;
@@ -3843,7 +3923,7 @@ function n2BuildYoho(w){
 }
 // 言い換え類義 — 밑줄 단어와 뜻이 가장 가까운 것. (유의어 데이터가 없어 한글 뜻으로 대신한다)
 function n2BuildIikae(w){
-  const wrongs=pickDistractors(w,3,"kanji","korean").map(x=>wField(x,"korean"));
+  const wrongs=pickDistractors(w,3,"kanji","korean",{bySound:false}).map(x=>wField(x,"korean"));
   const ex=n2Example(w), loc=ex?n2Locate(w,ex):null;
   const q=(ex&&loc&&loc.exact) ? `<div class="n2sent">${n2Underline(ex,loc)}</div>`
                                : `<div class="qprompt">${esc(wField(w,"kanji"))}</div>`;
@@ -4024,7 +4104,7 @@ function giveUpSpeak(){
   fb(false,t("fb_answer",{ans:w.hiragana}));
   speakJa(w.hiragana);
   statAdd(w.id,false); logEvent(w.id,"sp","x");
-  scheduleNext(1400);
+  showFixBtn(w.id);   // 음성 인식이 못 알아들었을 뿐이면 맞음 처리
 }
 // 주관식 결과 화면에서 말하기 시험으로 이어가기 (본시험 전체 중 말하기 가능 단어)
 function startSpeakPhase(){
@@ -4186,7 +4266,7 @@ function n2Feasible(w, ty){
   switch(ty){
     case "yomi":     return n2HasKanji(w);
     case "hyoki":    return n2HasKanji(w) && exact && ex.slice(loc.i,loc.i+loc.len)===n2Form(w.kanji);
-    case "bunmyaku": return exact;
+    case "bunmyaku": return exact && n2HasContext(ex,loc);
     case "yoho":     return exact && n2HasContext(ex,loc);
     case "iikae":    return !!(w.meanings&&w.meanings.length);
     default:         return true;
@@ -4352,10 +4432,10 @@ function renderQuiz(){
     const sent = n2opt.n2==="yoho";   // 용법은 보기가 문장이라 1열·왼쪽 정렬
     html+=`<div class="choices${sent?" col":""}">`+n2opt.t.map((txt,i)=>{
       let cls="choice"+(sent?" sent":"");
-      if(review){ if(i===n2opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      if(review){ if(i===n2opt.k || (rec.fixed&&rec.pick===i)) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
       return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
     }).join("")+`</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else if(quiz.phase==="mc"){
     // 보기 만들기 — 漢字→ひらがな는 정답 읽기를 비튼 오답을 쓴다(다른 단어에서 가져오면 너무 쉽다).
     // 그 밖의 방향은 같은 품사·비슷한 오쿠리가나 단어에서 뽑는다.
@@ -4371,10 +4451,10 @@ function renderQuiz(){
     }
     html+=`<div class="choices">`+opt.t.map((txt,i)=>{
       let cls="choice";
-      if(review){ if(i===opt.k) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
+      if(review){ if(i===opt.k || (rec.fixed&&rec.pick===i)) cls+=" correct"; else if(rec.pick===i) cls+=" wrong"; }
       return `<button class="${cls}" data-i="${i}"${review?" disabled":""}>${esc(txt)}</button>`;
     }).join("")+`</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else if(quiz.phase==="speak"){
     // 후보군: 객관식과 동일한 추첨 로직 (정답 + 오답 3개) · 토글로 표시/숨김
     let opt=quiz.opts[w.id];
@@ -4387,11 +4467,11 @@ function renderQuiz(){
     html+=`<div class="candwrap" id="qCands"${spShowCand?"":' style="display:none"'}>`+opt.t.map(x=>`<span class="candchip">${esc(x)}</span>`).join("")+`</div>`;
     if(!review) html+=`<div class="microw"><button class="btn" id="qMic">🎤 ${esc(t("quiz_speakStart"))}</button><button class="btn ghost" id="qGiveUp">${esc(t("quiz_giveUp"))}</button></div>`;
     html+=`<div class="qheard muted" id="qHeard">${review&&rec.given?esc(rec.given):""}</div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   } else {
     html+=`<input type="text" id="qInput" placeholder="${esc(t("quiz_inputPh",{af:fieldLabel(af)}))}" autocomplete="off"${review?` value="${esc(rec.given||"")}" disabled`:""}>`;
     if(!review) html+=`<div class="btnrow"><button class="btn" id="qSubmit">${esc(t("quiz_submit"))}</button></div>`;
-    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?esc(rec.ok?t("fb_correct"):t("fb_answer",{ans:ansText})):""}</div>`;
+    html+=`<div class="feedback${review?(rec.ok?" ok":" bad"):""}" id="qfb">${review?fbReviewHtml(w,rec,ansText):""}</div>`;
   }
   // 문제 이동 — 이미 푼 문제는 앞뒤로 오가며 다시 볼 수 있다
   const last=quiz.idx>=quiz.list.length-1;
@@ -4497,6 +4577,8 @@ function startPhaseFresh(ph, base){
   renderQuiz();
 }
 $("#quizBody").addEventListener("click",e=>{
+  const fx=e.target.closest(".fixbtn[data-fix]");
+  if(fx){ markCorrectNow(+fx.dataset.fix); return; }
   const isN2=quiz.phase==="n2";
   const b=e.target.closest(".choice"); if(!b||quiz.answered||!(quiz.phase==="mc"||isN2)) return;
   quiz.answered=true;
@@ -4518,7 +4600,8 @@ $("#quizBody").addEventListener("click",e=>{
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);   // 정답률 누적 (다음 시험 출제 비중)
   if(!quiz.jlpt) logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 학습일지는 내 단어장 것만
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
-  scheduleNext(900);
+  // 틀렸으면 멈춰서 정답을 보게 하고, 맞게 답했다고 판단하면 바로 '맞음 처리'할 수 있게 한다
+  if(ok) scheduleNext(900); else showFixBtn(w.id);
 });
 function submitSA(){
   if(quiz.answered) return;
@@ -4536,7 +4619,7 @@ function submitSA(){
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);
   if(!quiz.jlpt) logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
-  scheduleNext(1100);
+  if(ok) scheduleNext(1100); else showFixBtn(w.id);
 }
 // 정답률 WEAK_RATE 이하인 단어를 틀리면 같은 시험 안에서 다시 묻는다.
 // 목록 끝에 덧붙이고 그 자리를 '재출제'로 표시해 둔다 (renderQuiz가 채점을 지운다).
@@ -4579,13 +4662,30 @@ function reinforceSchedule(ids){
   const future=Object.keys(state.schedule).filter(d=>d>today).sort();
   if(!future.length) return 0;
   let n=0;
+  quiz.reinforcedAt=quiz.reinforcedAt||[];
   ids.forEach((id,i)=>{
     if(isExcluded(id)) return;
     const d=future[i % future.length];             // 뒤쪽 날짜들에 고루 나눠 넣는다
     const arr=state.schedule[d]||(state.schedule[d]=[]);
     if(arr.includes(id)) return;
     arr.push(id); n++;
+    quiz.reinforcedAt.push({d, id});               // 어디에 넣었는지 기억 (맞음 처리로 되돌리기)
   });
+  if(n) save();
+  return n;
+}
+// 이 시험이 보강으로 넣은 자리에서 그 단어를 뺀다 (맞음 처리로 더는 약하지 않게 된 경우)
+function undoReinforce(id){
+  const at=(quiz.reinforcedAt||[]).filter(r=>r.id===id);
+  if(!at.length) return 0;
+  let n=0;
+  at.forEach(({d})=>{
+    const arr=state.schedule[d]; if(!arr) return;
+    const i=arr.indexOf(id); if(i<0) return;
+    arr.splice(i,1); n++;
+    if(!arr.length){ delete state.schedule[d]; delete state.rounds[d]; }
+  });
+  quiz.reinforcedAt=(quiz.reinforcedAt||[]).filter(r=>r.id!==id);
   if(n) save();
   return n;
 }
@@ -4656,16 +4756,55 @@ function startSAPhase(){
   $("#quizArea").scrollIntoView({behavior:"smooth",block:"start"});
 }
 // 오타·다른 표기 등을 정답으로 정정 (점수 +1, 학습 기록, 틀린 목록에서 제거)
-function markCorrect(id){
-  if(!quiz.wrong.has(id)) return;
+/* 맞음 처리 — 결과 화면과 시험 중 모두 같은 상태 변경을 거친다 */
+function applyCorrection(id){
+  if(!quiz.wrong.has(id)) return false;
   quiz.wrong.delete(id);
   quiz.score++;
+  // 채점 결과도 정답으로 바꾼다. 안 그러면 그 문제로 되돌아갔을 때 여전히 오답으로 보이고,
+  // 단계를 옮겼다 오면 보관본에도 오답인 채로 남는다. (고른 답은 기록으로 남겨 둔다)
+  if(quiz.done[id]) quiz.done[id]=Object.assign({}, quiz.done[id], {ok:true, fixed:true});
   if(!quiz.jlpt) quizMarkDone(id);
   const cw=examWordById(id);
   if(quiz.jlpt){ if(cw) jstatFix(cw); } else statFix(id);   // 오답 1건을 정답으로 되돌린다
   if(!quiz.jlpt) logEvent(id,"fix","o");   // 맞음 처리(정정)를 학습일지에 기록
+  return true;
+}
+function markCorrect(id){
+  if(!applyCorrection(id)) return;
+  // 정답률이 올라 더는 약한 단어가 아니면, 이 시험이 일정에 넣어 둔 보강도 거둔다
+  if(!quiz.jlpt && !isWeak(id) && undoReinforce(id)) renderSchedule();
   toast(t("toast_markedCorrect"));
   renderQuizResults();
+}
+// 방금 틀려서 뒤에 붙여 둔 재출제를 거둔다 (맞음 처리했으니 다시 물을 이유가 없다)
+function cancelPendingReask(id){
+  const js=(quiz.reask||[]).filter(i=>i>quiz.idx && quiz.list[i] && quiz.list[i].id===id);
+  if(!js.length) return false;
+  const j=js[js.length-1];                        // 가장 나중에 붙인 것
+  quiz.list.splice(j,1);
+  if(quiz.n2Plan && quiz.n2Plan.length>j) quiz.n2Plan.splice(j,1);
+  quiz.reask=quiz.reask.filter(i=>i!==j).map(i=>i>j?i-1:i);
+  quiz.ansIdx=(quiz.ansIdx||[]).map(i=>i>j?i-1:i);
+  if(quiz.reasked && quiz.reasked[id]) quiz.reasked[id]--;
+  return true;
+}
+// 시험 중 맞음 처리 — 지금 보고 있는 문제만
+function markCorrectNow(id){
+  const w=quiz.list[quiz.idx]; if(!w || w.id!==id) return;
+  if(!applyCorrection(id)) return;
+  cancelPendingReask(id);
+  clearAdvance();
+  renderQuiz();
+  toast(t("toast_markedCorrect"));
+  scheduleNext(800);
+}
+function fixBtn(id){ return `<button type="button" class="fixbtn" data-fix="${id}">${esc(t("rq_markCorrect"))}</button>`; }
+function showFixBtn(id){ const el=$("#qfb"); if(el && !el.querySelector(".fixbtn")) el.insertAdjacentHTML("beforeend", fixBtn(id)); }
+// 되돌아본 문제의 피드백 — 오답이면 맞음 처리 버튼, 맞음 처리한 문제는 그렇게 표시
+function fbReviewHtml(w, rec, ans){
+  if(rec.ok) return esc(rec.fixed ? t("fb_fixed",{ans}) : t("fb_correct"));
+  return esc(t("fb_answer",{ans})) + fixBtn(w.id);
 }
 // 틀린 단어만 다시 풀기 — 현재 단계 전용(객관식 재시험은 객관식만, 주관식 재시험은 주관식만).
 // 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
