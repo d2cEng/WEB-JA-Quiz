@@ -1155,7 +1155,7 @@ const I18N = {
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
-    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"자주 틀리는 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"정답률 90% 미만 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
@@ -1354,7 +1354,7 @@ const I18N = {
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
-    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} weak words back to later dates in your schedule 🔁", rq_rate:"Accuracy",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} words under 90% accuracy back to later dates 🔁", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
@@ -1445,7 +1445,7 @@ function loadBooksReg(){
 function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} cloudMarkDirty("__registry__"); }
 function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
 function blankState(name){
-  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},stats:{},dbName:name||""};
+  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},stats:{},reinforceAt:{},dbName:name||""};
 }
 function load(){
   loadBooksReg();
@@ -1464,6 +1464,7 @@ function load(){
   state.log = Array.isArray(state.log) ? state.log : [];
   state.rounds = (state.rounds && typeof state.rounds==="object") ? state.rounds : {};
   state.stats = (state.stats && typeof state.stats==="object") ? state.stats : {};
+  state.reinforceAt = (state.reinforceAt && typeof state.reinforceAt==="object") ? state.reinforceAt : {};
   state.dbName = state.dbName || t("name_sample");
   normalizeWords();
 }
@@ -1471,7 +1472,7 @@ function save(){
   const out = {
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds, stats:state.stats,
+    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt,
     updatedAt:Date.now()   // 클라우드 동기화의 변경 시각(충돌 판정 기준)
   };
   try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
@@ -1500,11 +1501,13 @@ function notExcluded(w){ return !isExcluded(w.id); }
    정답률을 낼 수 없다. 단어마다 맞은/틀린 횟수만 따로 쌓아 둔다.
    이 값으로 ① 다음 시험에서 약한 단어를 더 자주 뽑고
    ② 정답률이 WEAK_RATE 이하인 단어는 같은 시험·같은 일정에서 다시 낸다. */
-const WEAK_RATE=0.5;
+const WEAK_RATE=0.5;       // 이 이하면 같은 시험 안에서 다시 묻는다
+const REVIEW_UNTIL=0.9;    // 이 미만이면 뒤쪽 날짜에 다시 넣는다 (90%가 될 때까지 다른 날에도 계속)
 function statOf(id){ return (state.stats||{})[id] || {o:0,x:0}; }
 function statTries(id){ const s=statOf(id); return s.o+s.x; }
 function statRate(id){ const s=statOf(id), n=s.o+s.x; return n ? s.o/n : null; }   // null = 푼 적 없음
 function isWeak(id){ const r=statRate(id); return r!=null && r<=WEAK_RATE; }
+function needsReview(id){ const r=statRate(id); return r!=null && r<REVIEW_UNTIL; }
 function statAdd(id, ok){
   const st=(state.stats=state.stats||{});
   const r=st[id]||(st[id]={o:0,x:0});
@@ -2297,7 +2300,7 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
     schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded,
-    log:state.log, rounds:state.rounds, stats:state.stats};
+    log:state.log, rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -2321,6 +2324,7 @@ function applyWordbook(d, fallbackName){
   state.log=Array.isArray(d.log)?d.log:[];
   state.rounds=(d.rounds && typeof d.rounds==="object")?d.rounds:{};
   state.stats=(d.stats && typeof d.stats==="object")?d.stats:{};
+  state.reinforceAt=(d.reinforceAt && typeof d.reinforceAt==="object")?d.reinforceAt:{};
   normalizeWords(); save(); resetQuizArea(); refreshAll(); toast(t("toast_imported",{name:state.dbName, n:state.words.length}));
 }
 $("#impFile").addEventListener("change",e=>{
@@ -2428,9 +2432,11 @@ function remapToNewWords(newWords){
   const log=(state.log||[]).map(e=>{ const n=mapId(e.id); return n==null?null:Object.assign({},e,{id:n}); }).filter(Boolean);
   const stats={};   // 문항별 채점 누적도 표기 기준으로 옮겨 붙인다
   for(const [oid,v] of Object.entries(state.stats||{})){ const n=mapId(oid); if(n!=null) stats[n]=v; }
+  const rAt={};
+  for(const [k,v] of Object.entries(state.reinforceAt||{})){ const [d,oid]=k.split("|"); const n=mapId(oid); if(n!=null) rAt[d+"|"+n]=v; }
   const before=state.words.length;
   state.words=newWords; state.progress=prog; state.schedule=sched;
-  state.selected=sel; state.excluded=exc; state.log=log; state.stats=stats;
+  state.selected=sel; state.excluded=exc; state.log=log; state.stats=stats; state.reinforceAt=rAt;
   normalizeWords(); save();
   return {before, after:newWords.length, kept};
 }
@@ -2654,17 +2660,18 @@ document.addEventListener("change",e=>{
 function todayLoadByBook(){
   const td=todayStr();
   return books.list.map(b=>{
-    let sched=null, prog={}, excl=[], rounds={}, name=b.name;
-    if(b.id===books.active){ sched=state.schedule; prog=state.progress||{}; excl=state.excluded||[]; rounds=state.rounds||{}; name=state.dbName; }
+    let sched=null, prog={}, excl=[], rounds={}, rAtAll={}, name=b.name;
+    if(b.id===books.active){ sched=state.schedule; prog=state.progress||{}; excl=state.excluded||[]; rounds=state.rounds||{}; rAtAll=state.reinforceAt||{}; name=state.dbName; }
     else {
       try{
         const sv=JSON.parse(localStorage.getItem(bookKey(b.id)));
-        if(sv){ sched=sv.schedule||{}; prog=sv.progress||{}; excl=sv.excluded||[]; rounds=sv.rounds||{}; name=sv.name||b.name; }
+        if(sv){ sched=sv.schedule||{}; prog=sv.progress||{}; excl=sv.excluded||[]; rounds=sv.rounds||{}; rAtAll=sv.reinforceAt||{}; name=sv.name||b.name; }
       }catch(e){}
     }
     const ids=((sched&&sched[td])||[]).filter(id=>!excl.includes(id));
-    const rs=rounds[td];   // 복습 회차면 그 회차에 외운 것만 오늘 완료로 센다
-    const done=ids.filter(id=>{ const p=prog[id]; if(!p||!p.done) return false; return rs ? (p.t>=rs) : true; }).length;
+    const done=ids.filter(id=>{ const p=prog[id]; if(!p||!p.done) return false;
+      const rs=Math.max(rounds[td]||0, (rAtAll[td+"|"+id])||0);   // 회차·보강 시각 이후에 외운 것만
+      return rs ? (p.t>=rs) : true; }).length;
     return {id:b.id, name:name||t("name_unnamed"), total:ids.length, done, active:b.id===books.active};
   });
 }
@@ -2926,7 +2933,11 @@ function isDone(id){ return !!(state.progress[id] && state.progress[id].done); }
    회차 기록이 없는 예전 일정은 예전 그대로 단어 단위로 본다. */
 function roundOf(date){ return (state.rounds||{})[date]; }
 function doneForDate(id, date){
-  const rs=roundOf(date); if(!rs) return isDone(id);
+  // 뒤쪽 날짜에 보강으로 넣은 단어는 '넣은 시각'부터 다시 센다.
+  // 그 날짜의 회차 시각은 일정을 만든 날(며칠 전)이라, 그것만 보면 오늘 푼 기록으로
+  // 이미 완료처럼 보여 보강한 의미가 없어진다.
+  const ra=(state.reinforceAt||{})[date+"|"+id];
+  const rs=Math.max(roundOf(date)||0, ra||0) || null; if(!rs) return isDone(id);
   const p=state.progress[id]; if(!p || !p.done) return false;
   if(p.t) return p.t>=rs;
   // t가 없는 예전 기록은 날짜만으로 비교한다 (회차가 시작된 날 이후에 풀었으면 완료)
@@ -4663,12 +4674,17 @@ function reinforceSchedule(ids){
   if(!future.length) return 0;
   let n=0;
   quiz.reinforcedAt=quiz.reinforcedAt||[];
-  ids.forEach((id,i)=>{
+  const now=Date.now();
+  state.reinforceAt=state.reinforceAt||{};
+  let k=0;
+  ids.forEach(id=>{
     if(isExcluded(id)) return;
-    const d=future[i % future.length];             // 뒤쪽 날짜들에 고루 나눠 넣는다
+    // 이미 뒤쪽 날짜에 잡혀 있으면 그날 다시 나오므로 또 넣지 않는다 (날마다 불어나지 않게)
+    if(future.some(d=>(state.schedule[d]||[]).includes(id))) return;
+    const d=future[(k++) % future.length];         // 뒤쪽 날짜들에 고루 나눠 넣는다
     const arr=state.schedule[d]||(state.schedule[d]=[]);
-    if(arr.includes(id)) return;
     arr.push(id); n++;
+    state.reinforceAt[d+"|"+id]=now;               // 이 시각 이후에 다시 풀어야 그날 완료
     quiz.reinforcedAt.push({d, id});               // 어디에 넣었는지 기억 (맞음 처리로 되돌리기)
   });
   if(n) save();
@@ -4683,6 +4699,7 @@ function undoReinforce(id){
     const arr=state.schedule[d]; if(!arr) return;
     const i=arr.indexOf(id); if(i<0) return;
     arr.splice(i,1); n++;
+    if(state.reinforceAt) delete state.reinforceAt[d+"|"+id];
     if(!arr.length){ delete state.schedule[d]; delete state.rounds[d]; }
   });
   quiz.reinforcedAt=(quiz.reinforcedAt||[]).filter(r=>r.id!==id);
@@ -4707,8 +4724,9 @@ function renderQuizResults(){
   // 본시험이 끝나면 약한 단어(정답률 WEAK_RATE 이하)를 같은 일정의 뒤쪽 날짜에 다시 넣는다
   if(!quiz.isRetry && !quiz.reinforced && !quiz.jlpt){   // JLPT는 다른 단어장이라 일정에 넣지 않는다
     quiz.reinforced=true;
-    const weak=quiz.finalWrong.filter(isWeak);
-    const added=reinforceSchedule(weak);
+    // 이번에 맞혔더라도 누적 정답률이 90% 전이면 다른 날에 다시 나오게 한다
+    const answered=[...new Set((quiz.mainList||quiz.list).map(w=>w.id))].filter(id=>quiz.done[id]);
+    const added=reinforceSchedule(answered.filter(needsReview));
     if(added){ renderSchedule(); toast(t("toast_reinforced",{n:added})); }
   }
   // 고르기=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
@@ -4773,7 +4791,7 @@ function applyCorrection(id){
 function markCorrect(id){
   if(!applyCorrection(id)) return;
   // 정답률이 올라 더는 약한 단어가 아니면, 이 시험이 일정에 넣어 둔 보강도 거둔다
-  if(!quiz.jlpt && !isWeak(id) && undoReinforce(id)) renderSchedule();
+  if(!quiz.jlpt && !needsReview(id) && undoReinforce(id)) renderSchedule();
   toast(t("toast_markedCorrect"));
   renderQuizResults();
 }
