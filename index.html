@@ -4800,7 +4800,21 @@ function markCorrectNow(id){
   scheduleNext(800);
 }
 function fixBtn(id){ return `<button type="button" class="fixbtn" data-fix="${id}">${esc(t("rq_markCorrect"))}</button>`; }
-function showFixBtn(id){ const el=$("#qfb"); if(el && !el.querySelector(".fixbtn")) el.insertAdjacentHTML("beforeend", fixBtn(id)); }
+// 틀렸을 때 멈춘 화면 — 맞음 처리 버튼을 붙이고 '다음'을 살린다.
+// '다음'은 풀기 전 화면에서 잠긴 채 그려지는데, 채점 후 다시 그리지 않으므로 여기서 연다.
+function showFixBtn(id){
+  const el=$("#qfb"); if(el && !el.querySelector(".fixbtn")) el.insertAdjacentHTML("beforeend", fixBtn(id));
+  enableNext();
+}
+function enableNext(){
+  const nb=$("#qNext"); if(!nb) return;
+  const last=quiz.idx>=quiz.list.length-1;          // 재출제가 붙었으면 마지막 문제가 아닐 수 있다
+  nb.textContent=last?t("quiz_toResults"):t("quiz_next");
+  nb.disabled=false; nb.classList.remove("ghost");   // 눈에 띄게
+  // 키보드면 Enter로 넘어간다. 다만 주관식은 답을 낸 그 Enter가 아직 끝나지 않아,
+  // 곧바로 포커스를 옮기면 같은 키 입력이 '다음'까지 눌러 오답 화면이 바로 사라진다.
+  setTimeout(()=>{ if(!nb.disabled && document.body.contains(nb)) try{ nb.focus({preventScroll:true}); }catch(e){} }, 300);
+}
 // 되돌아본 문제의 피드백 — 오답이면 맞음 처리 버튼, 맞음 처리한 문제는 그렇게 표시
 function fbReviewHtml(w, rec, ans){
   if(rec.ok) return esc(rec.fixed ? t("fb_fixed",{ans}) : t("fb_correct"));
