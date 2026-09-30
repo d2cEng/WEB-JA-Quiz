@@ -1143,7 +1143,8 @@ const I18N = {
     log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
     log_hint:"암기·객관식·주관식·말하기·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
     log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_rev:"복습", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_n2:"N2 어휘", log_kind_fix:"정정",
-    detail_done:"{done}/{total} 완료", detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
+    detail_done:"{done}/{total} 완료", detail_studied:"이날 학습 {n}개 (일정 외 기록)", detail_studiedHint:"일정은 없지만 이날 외우거나 맞힌 단어입니다.",
+detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
     stage1:"1단계 · 뜻 + ひらがな", stage2:"2단계 · ひらがな + 漢字", stage3:"3단계 · 漢字 + 뜻", stage4:"4단계 · 예문",
@@ -1342,7 +1343,8 @@ const I18N = {
     log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
     log_hint:"Every Memorize, multiple-choice, short-answer, speaking and correction action is logged by date and time. (last 14 days)",
     log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_rev:"Review", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_n2:"N2 vocabulary", log_kind_fix:"Correction",
-    detail_done:"{done}/{total} done", detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
+    detail_done:"{done}/{total} done", detail_studied:"Studied {n} this day (outside the schedule)", detail_studiedHint:"No schedule for this day, but these words were memorized or answered correctly.",
+detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
     stage1:"Stage 1 · meaning + ひらがな", stage2:"Stage 2 · ひらがな + 漢字", stage3:"Stage 3 · 漢字 + meaning", stage4:"Stage 4 · example",
@@ -2977,6 +2979,14 @@ function schedDoneTotal(){
   return {done, total};
 }
 function studyDate(id){ return state.progress[id] && state.progress[id].date; }
+// 날짜별 실제 학습 기록 {날짜: Set(id)} — 일정과 상관없이 그날 외우거나 맞힌 단어.
+// 일정을 다시 만들며 지난 날짜가 지워졌어도 캘린더에 그날 학습량이 남도록 이것도 본다.
+function studyByDate(){
+  const out={}, add=(d,id)=>{ if(!d || isExcluded(id) || !wordById(id)) return; (out[d]=out[d]||new Set()).add(id); };
+  Object.keys(state.progress).forEach(k=>{ const p=state.progress[k]; if(p && p.done) add(p.date, +k); });
+  (state.log||[]).forEach(e=>{ if(e.r!=="x") add(e.d, e.id); });
+  return out;
+}
 
 /* ===== 지난 일정에서 못한 단어를 이후 일정에 이월 ===== */
 // 오늘 이전 일정에 있었지만 아직 학습(완료)하지 못한 단어 id 목록
@@ -3085,8 +3095,9 @@ function renderSchedule(){
   /* ---- 캘린더 뷰 ---- */
   const future=dates.filter(d=>d>=today);
   if(!calRef){ const nowD=new Date(); calRef={y:nowD.getFullYear(), m:nowD.getMonth()}; }  // 기본: 이번 달
-  if(selDate && !state.schedule[selDate]) selDate=null;
-  if(!selDate){ selDate = state.schedule[today] ? today : (future[0]||dates[dates.length-1]||null); }
+  const studied=studyByDate();
+  if(selDate && !state.schedule[selDate] && !studied[selDate]) selDate=null;
+  if(!selDate){ selDate = (state.schedule[today]||studied[today]) ? today : (future[0]||dates[dates.length-1]||null); }
   renderCalendar(); renderDayDetail(); renderLog(); renderTodayAll();
 
   /* ---- 일정 수정 패널 기본값 (현재·예정 기준) ---- */
@@ -3124,6 +3135,7 @@ function renderCalendar(){
   const WK = LANG==="en" ? WK_EN : WK_KO;
   const startDow=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
   const head=WK.map((d,i)=>`<div class="calhcell ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join("");
+  const studied=studyByDate();
   let cells="";
   for(let i=0;i<startDow;i++) cells+=`<div class="calcell empty"></div>`;
   for(let day=1;day<=daysInMonth;day++){
@@ -3143,6 +3155,10 @@ function renderCalendar(){
       const mark=done===ids.length?'✅':(done>0?'…':'');
       info=`<div class="cinfo">${done}/${ids.length}${mark}</div>`+
         (done>0&&done<ids.length?`<div class="cbar"><i style="width:${pct}%"></i></div>`:'');
+    } else if(studied[ds] && studied[ds].size){
+      // 일정은 없지만(지워졌거나 일정 밖 학습) 그날 공부한 기록이 있는 날
+      cls.push('has','done');
+      info=`<div class="cinfo">📖${studied[ds].size}</div>`;
     }
     cells+=`<div class="${cls.join(' ')}" data-cal="${ds}"><div class="cnum">${day}</div>${info}</div>`;
   }
@@ -3150,7 +3166,19 @@ function renderCalendar(){
 }
 function renderDayDetail(){
   const box=$("#dayDetail");
-  if(!selDate || !state.schedule[selDate]){ box.innerHTML=''; return; }
+  if(!selDate){ box.innerHTML=''; return; }
+  const studied=[...(studyByDate()[selDate]||[])];
+  if(!state.schedule[selDate]){
+    if(!studied.length){ box.innerHTML=''; return; }
+    // 일정 없이 학습 기록만 있는 날 — 그날 공부한 단어를 보여준다(지울 것이 없으니 ✕ 없음)
+    const sw=studied.map(wordById).filter(Boolean);
+    box.innerHTML=`<div class="daydetail">
+      <div><b>${selDate}</b> <span class="muted">${esc(t("detail_studied",{n:sw.length}))}</span></div>
+      <div style="margin-top:8px">${sw.map(w=>`<span class="wchip" style="cursor:default">${esc(w.kanji||w.hiragana)}</span>`).join("")}</div>
+      <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_studiedHint"))}</div>
+    </div>`;
+    return;
+  }
   const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
   const activeIds=ids.filter(id=>!isExcluded(id));   // 제외 단어는 완료율 집계에서 제외
   const done=countDoneOn(selDate, activeIds);
@@ -3202,13 +3230,13 @@ $("#scheduleResult").addEventListener("click",e=>{
   if(del){ const d=del.dataset.deldate;
     if(confirm(t("confirm_deleteDate",{d}))){ delete state.schedule[d]; delete state.rounds[d]; if(selDate===d) selDate=null; save(); renderSchedule(); }
     return; }
-  const chip=e.target.closest(".wchip");
+  const chip=e.target.closest(".wchip[data-date]");
   if(chip){ const d=chip.dataset.date, id=+chip.dataset.id;
     state.schedule[d]=(state.schedule[d]||[]).filter(x=>x!==id);
     if(!state.schedule[d].length){ delete state.schedule[d]; delete state.rounds[d]; if(selDate===d) selDate=null; }
     save(); renderSchedule(); return; }
   const cell=e.target.closest('.calcell[data-cal]');
-  if(cell && state.schedule[cell.dataset.cal]){ selDate=cell.dataset.cal; renderCalendar(); renderDayDetail(); return; }
+  if(cell && cell.classList.contains('has')){ selDate=cell.dataset.cal; renderCalendar(); renderDayDetail(); return; }
 });
 function refreshDateSelects(){
   const dates=Object.keys(state.schedule).sort();
