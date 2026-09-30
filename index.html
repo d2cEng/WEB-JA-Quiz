@@ -1485,7 +1485,7 @@ function loadBooksReg(){
 function saveBooksReg(){ try{ localStorage.setItem(BOOKS_KEY, JSON.stringify(books)); }catch(e){} cloudMarkDirty("__registry__"); }
 function bookKey(id){ return id==="main" ? LS_KEY : LS_KEY+".book."+id; }
 function blankState(name){
-  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],rounds:{},stats:{},reinforceAt:{},dbName:name||""};
+  return {words:[],selected:[],schedule:{},settings:{},progress:{},excluded:[],log:[],logSum:{},rounds:{},stats:{},reinforceAt:{},dbName:name||""};
 }
 function load(){
   loadBooksReg();
@@ -1494,6 +1494,7 @@ function load(){
   if(saved && Array.isArray(saved.words) && saved.words.length){
     state = Object.assign(state, saved);
     if(saved.name && !state.dbName) state.dbName = saved.name;
+    unpackLogInto(state, saved);
   } else {
     state.words = SEED.words.slice();
   }
@@ -1502,6 +1503,8 @@ function load(){
   state.progress = state.progress || {};
   state.excluded = Array.isArray(state.excluded) ? state.excluded : [];
   state.log = Array.isArray(state.log) ? state.log : [];
+  state.logSum = (state.logSum && typeof state.logSum==="object") ? state.logSum : {};
+  compactLog(LOG_DETAIL_DAYS);
   state.rounds = (state.rounds && typeof state.rounds==="object") ? state.rounds : {};
   state.stats = (state.stats && typeof state.stats==="object") ? state.stats : {};
   state.reinforceAt = (state.reinforceAt && typeof state.reinforceAt==="object") ? state.reinforceAt : {};
@@ -1509,13 +1512,19 @@ function load(){
   normalizeWords();
 }
 function save(){
-  const out = {
+  const build=()=>Object.assign({
     version:1, name:state.dbName, words:state.words.map(stripDerived),
     selected:state.selected, schedule:state.schedule,
-    settings:state.settings, progress:state.progress, excluded:state.excluded, log:state.log, rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt,
+    settings:state.settings, progress:state.progress, excluded:state.excluded, rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt,
     updatedAt:Date.now()   // 클라우드 동기화의 변경 시각(충돌 판정 기준)
-  };
-  try { localStorage.setItem(bookKey(books.active), JSON.stringify(out)); } catch(e){ toast(t("toast_storageFull")); }
+  }, packLog(state));
+  try { localStorage.setItem(bookKey(books.active), JSON.stringify(build())); }
+  catch(e){
+    // 저장 공간이 모자라면 오래된 학습일지의 세부 시각만 날짜별 요약으로 접고 다시 시도한다
+    // (그날 공부한 단어·정답/오답 수는 요약에 남는다)
+    compactLog(LOG_TIGHT_DAYS);
+    try { localStorage.setItem(bookKey(books.active), JSON.stringify(build())); } catch(e2){ toast(t("toast_storageFull")); }
+  }
   cloudMarkDirty(books.active);
   const b=books.list.find(x=>x.id===books.active);
   if(b && b.name!==state.dbName){ b.name=state.dbName; saveBooksReg(); }
@@ -1537,8 +1546,8 @@ function excludeWord(id){ if(!isExcluded(id)){ (state.excluded=state.excluded||[
 function restoreWord(id){ state.excluded=(state.excluded||[]).filter(x=>x!==id); save(); }
 function notExcluded(w){ return !isExcluded(w.id); }
 /* ---- 문항별 채점 누적 (state.stats) ----
-   학습일지(state.log)는 최근 2000건만 남기므로 만 단어짜리 단어장에선
-   정답률을 낼 수 없다. 단어마다 맞은/틀린 횟수만 따로 쌓아 둔다.
+   학습일지(state.log)를 매번 다 훑으면 느리고, 오래된 날은 요약으로 접히므로
+   정답률은 단어마다 맞은/틀린 횟수를 따로 쌓아 둔다.
    이 값으로 ① 다음 시험에서 약한 단어를 더 자주 뽑고
    ② 정답률이 WEAK_RATE 이하인 단어는 같은 시험·같은 일정에서 다시 낸다. */
 const WEAK_RATE=0.5;       // 이 이하면 같은 시험 안에서 다시 묻는다
@@ -1604,8 +1613,73 @@ function logEvent(id, kind, result){
   state.log = state.log || [];
   const now=new Date();
   state.log.push({ t: now.getTime(), d: todayStr(), id, k: kind, r: result });
-  if(state.log.length>2000) state.log = state.log.slice(-2000);   // 무한 증가 방지
   save();
+}
+/* ---- 학습일지 저장 형식 ----
+   예전엔 {t,d,id,k,r} 객체를 그대로 저장하고 최근 2000건만 남겨, 하루 100~200개씩 공부하면
+   일주일 남짓 지난 기록이 지워졌다. 이제 지우지 않는다.
+   · 메모리(state.log)는 예전처럼 객체 배열 — 쓰는 쪽 코드는 그대로다.
+   · 저장할 때는 날짜별 한 줄 문자열로 줄인다(logz). 한 건 = "초,단어id,종류" (36진수, 한 건 10바이트 안팎)
+     종류는 한 글자, 오답이면 대문자.
+   · LOG_DETAIL_DAYS보다 오래된 날은 세부 시각만 접어 날짜별 요약(logSum)으로 옮긴다.
+     요약: "정답수|오답수|공부한 단어 id들|틀린 단어 id들" — 그날 무엇을 공부했는지는 계속 남는다.
+   · 저장 공간이 모자라면 LOG_TIGHT_DAYS까지 접는다. */
+const LOG_DETAIL_DAYS=180, LOG_TIGHT_DAYS=30;
+const LOG_KIND={mem:"m",rev:"v",sp:"p",n2:"n",mc:"c",sa:"s",fix:"f"};
+const LOG_KIND_R=Object.fromEntries(Object.entries(LOG_KIND).map(([k,v])=>[v,k]));
+const b36=n=>n.toString(36), p36=s=>parseInt(s,36);
+function dayStart(d){ return new Date(d+"T00:00:00").getTime(); }
+function packLog(st){
+  const logz={}, logx=[];
+  (st.log||[]).forEach(e=>{
+    const c=LOG_KIND[e.k];
+    if(!c || !Number.isInteger(e.id) || e.id<0 || !e.d || typeof e.t!=="number"){ logx.push(e); return; }   // 예외 형식은 그대로
+    const sec=Math.round((e.t-dayStart(e.d))/1000);
+    (logz[e.d]=logz[e.d]||[]).push(b36(sec)+","+b36(e.id)+","+(e.r==="x"?c.toUpperCase():c));
+  });
+  Object.keys(logz).forEach(d=>logz[d]=logz[d].join(" "));
+  const out={logz, logSum:st.logSum||{}};
+  if(logx.length) out.logx=logx;
+  return out;
+}
+function unpackLogInto(st, saved){
+  let log=[];
+  if(Array.isArray(saved.log)) log=saved.log.slice();          // 예전 형식
+  if(saved.logz && typeof saved.logz==="object"){
+    Object.keys(saved.logz).forEach(d=>{ const base=dayStart(d);
+      String(saved.logz[d]||"").split(" ").forEach(tok=>{ if(!tok) return;
+        const [a,b,c]=tok.split(","); const k=LOG_KIND_R[c.toLowerCase()]; if(!k) return;
+        log.push({t:base+p36(a)*1000, d, id:p36(b), k, r:c===c.toUpperCase()?"x":"o"}); }); });
+  }
+  if(Array.isArray(saved.logx)) log=log.concat(saved.logx);
+  log.sort((a,b)=>a.t-b.t);
+  st.log=log;
+  st.logSum=(saved.logSum && typeof saved.logSum==="object") ? saved.logSum : {};
+  delete st.logz; delete st.logx;
+}
+// 요약 한 줄 ↔ {o,x,ok:Set,bad:Set}
+function sumParse(str){
+  const [o,x,a,b]=String(str||"").split("|");
+  const ids=s=>new Set((s||"").split(".").filter(Boolean).map(p36));
+  return {o:+o||0, x:+x||0, ok:ids(a), bad:ids(b)};
+}
+function sumFormat(v){
+  const j=set=>[...set].filter(Number.isInteger).map(b36).join(".");
+  return `${v.o}|${v.x}|${j(v.ok)}|${j(v.bad)}`;
+}
+// keepDays보다 오래된 날의 세부 기록을 날짜별 요약으로 접는다
+function compactLog(keepDays){
+  const c=new Date(); c.setDate(c.getDate()-keepDays); const cut=fmtDate(c);
+  if(!(state.log||[]).some(e=>e.d<cut)) return false;
+  const acc={};
+  state.log=state.log.filter(e=>{
+    if(e.d>=cut) return true;
+    const v=acc[e.d]||(acc[e.d]=sumParse(state.logSum[e.d]));
+    if(e.r==="x"){ v.x++; v.bad.add(e.id); } else { v.o++; v.ok.add(e.id); }
+    return false;
+  });
+  Object.keys(acc).forEach(d=>state.logSum[d]=sumFormat(acc[d]));
+  return true;
 }
 function stripDerived(w){
   const {meanings, ...rest} = w; return rest;
@@ -2340,7 +2414,7 @@ $("#selNone").addEventListener("click",()=>{ state.selected=[]; save(); renderDb
 $("#expBtn").addEventListener("click",()=>{
   const data={version:1, name:state.dbName, words:state.words.map(stripDerived), selected:state.selected,
     schedule:state.schedule, settings:state.settings, progress:state.progress, excluded:state.excluded,
-    log:state.log, rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt};
+    rounds:state.rounds, stats:state.stats, reinforceAt:state.reinforceAt, ...packLog(state)};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(state.dbName||"jaquiz")+"-"+todayStr()+".json"; a.click();
@@ -2361,7 +2435,7 @@ function applyWordbook(d, fallbackName){
   state.selected=Array.isArray(d.selected)?d.selected:[];
   state.schedule=d.schedule||{}; state.settings=d.settings||{}; state.progress=d.progress||{};
   state.excluded=Array.isArray(d.excluded)?d.excluded:[];
-  state.log=Array.isArray(d.log)?d.log:[];
+  unpackLogInto(state, d);
   state.rounds=(d.rounds && typeof d.rounds==="object")?d.rounds:{};
   state.stats=(d.stats && typeof d.stats==="object")?d.stats:{};
   state.reinforceAt=(d.reinforceAt && typeof d.reinforceAt==="object")?d.reinforceAt:{};
@@ -2470,13 +2544,17 @@ function remapToNewWords(newWords){
   const sel=[...new Set((state.selected||[]).map(mapId).filter(x=>x!=null))];
   const exc=[...new Set((state.excluded||[]).map(mapId).filter(x=>x!=null))];
   const log=(state.log||[]).map(e=>{ const n=mapId(e.id); return n==null?null:Object.assign({},e,{id:n}); }).filter(Boolean);
+  const logSum={};   // 접어 둔 날짜별 요약의 단어 id도 옮긴다
+  for(const [d,str] of Object.entries(state.logSum||{})){ const v=sumParse(str);
+    const mv=set=>new Set([...set].map(mapId).filter(x=>x!=null));
+    logSum[d]=sumFormat({o:v.o, x:v.x, ok:mv(v.ok), bad:mv(v.bad)}); }
   const stats={};   // 문항별 채점 누적도 표기 기준으로 옮겨 붙인다
   for(const [oid,v] of Object.entries(state.stats||{})){ const n=mapId(oid); if(n!=null) stats[n]=v; }
   const rAt={};
   for(const [k,v] of Object.entries(state.reinforceAt||{})){ const [d,oid]=k.split("|"); const n=mapId(oid); if(n!=null) rAt[d+"|"+n]=v; }
   const before=state.words.length;
   state.words=newWords; state.progress=prog; state.schedule=sched;
-  state.selected=sel; state.excluded=exc; state.log=log; state.stats=stats; state.reinforceAt=rAt;
+  state.selected=sel; state.excluded=exc; state.log=log; state.logSum=logSum; state.stats=stats; state.reinforceAt=rAt;
   normalizeWords(); save();
   return {before, after:newWords.length, kept};
 }
@@ -2611,7 +2689,8 @@ function buildTalkPrompt(words, style){
 function talkPool(){
   const scope=$("#talkScope").value;
   if(scope==="wrong"){
-    const ids=[...new Set((state.log||[]).filter(e=>e.r==="x").map(e=>e.id))];
+    const ids=[...new Set((state.log||[]).filter(e=>e.r==="x").map(e=>e.id)
+      .concat(Object.values(state.logSum||{}).flatMap(s=>[...sumParse(s).bad])))];
     return ids.map(wordById).filter(Boolean).filter(notExcluded);
   }
   return wordsForScope(scope==="selected"?"selected":scope, $("#qDate").value);
@@ -3026,6 +3105,7 @@ function studyByDate(){
   const out={}, add=(d,id)=>{ if(!d || isExcluded(id) || !wordById(id)) return; (out[d]=out[d]||new Set()).add(id); };
   Object.keys(state.progress).forEach(k=>{ const p=state.progress[k]; if(p && p.done) add(p.date, +k); });
   (state.log||[]).forEach(e=>{ if(e.r!=="x") add(e.d, e.id); });
+  Object.keys(state.logSum||{}).forEach(d=>sumParse(state.logSum[d]).ok.forEach(id=>add(d, id)));   // 요약으로 접힌 날
   return out;
 }
 
@@ -3105,7 +3185,7 @@ function renderSchedule(){
   const today=todayStr();
   // 제외(빼기)한 단어는 성취도(분모·분자)에서 모두 빼서 성취도가 나빠지지 않게 함
   const learnedWords=state.words.filter(w=>isDone(w.id) && notExcluded(w));
-  if(!dates.length && !learnedWords.length && !(state.log||[]).length){
+  if(!dates.length && !learnedWords.length && !(state.log||[]).length && !Object.keys(state.logSum||{}).length){
     box.style.display="none"; renderTodayAll(); refreshDateSelects(); return;   // 다른 단어장 요약은 계속 보여준다
   }
   box.style.display="block";
@@ -5481,7 +5561,9 @@ function splitBook(raw){
     words:JSON.stringify({version:o.version||1, name:o.name||"", words:o.words||[]}),
     prog:JSON.stringify({name:o.name||"", updatedAt:o.updatedAt||0,
       selected:o.selected||[], schedule:o.schedule||{}, settings:o.settings||{},
-      progress:o.progress||{}, excluded:o.excluded||[], log:o.log||[]}) };
+      progress:o.progress||{}, excluded:o.excluded||[], log:o.log||[],
+      logz:o.logz||{}, logx:o.logx||[], logSum:o.logSum||{},
+      rounds:o.rounds||{}, stats:o.stats||{}, reinforceAt:o.reinforceAt||{}}) };
 }
 function mergeBook(wordsJson, progJson){
   let w=null,g=null;
@@ -5489,7 +5571,9 @@ function mergeBook(wordsJson, progJson){
   if(!w||!Array.isArray(w.words)||!g) return null;
   return JSON.stringify({ version:w.version||1, name:g.name||w.name||"", words:w.words,
     selected:g.selected||[], schedule:g.schedule||{}, settings:g.settings||{},
-    progress:g.progress||{}, excluded:g.excluded||[], log:g.log||[], updatedAt:g.updatedAt||0 });
+    progress:g.progress||{}, excluded:g.excluded||[], log:g.log||[],
+    logz:g.logz||{}, logx:g.logx||[], logSum:g.logSum||{},
+    rounds:g.rounds||{}, stats:g.stats||{}, reinforceAt:g.reinforceAt||{}, updatedAt:g.updatedAt||0 });
 }
 // 나눠 저장한 조각들을 합쳐 단어장 JSON 하나로 (빠진 조각이 있으면 null)
 function assembleSplit(id, r, parts){
