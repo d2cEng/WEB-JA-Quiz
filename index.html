@@ -2720,7 +2720,19 @@ function schedPoolRaw(){
 // '복습 일정'을 켜면 전부 넣는다 — 그 날짜에 회차 시작 시각을 찍어 두므로
 // 다시 외우기 전까지는 완료로 보이지 않는다(doneForDate 참고).
 function schedReview(){ const c=$("#sReview"); return !!(c && c.checked); }
-function schedPoolBase(){ const rev=schedReview(); return schedPoolRaw().filter(w=>rev||!isDone(w.id)); }
+// 새 일정은 '시작일'부터 교체한다. 오늘~시작일 전날의 기존 일정은 그대로 둔다.
+// (예전에는 시작일과 무관하게 오늘부터 지워서, 내일부터 시작하면 오늘 분량이 사라졌다)
+function schedReplaceFrom(){ const today=todayStr(), st=$("#sStart").value||today; return st>today?st:today; }
+// 그대로 남는 날짜(오늘~시작일 전날)에 잡혀 있는 단어 — 새 일정에 또 넣으면 두 번 배치된다
+function schedHeldIds(){
+  const today=todayStr(), from=schedReplaceFrom(), out=new Set();
+  Object.keys(state.schedule).forEach(d=>{ if(d>=today && d<from) state.schedule[d].forEach(id=>out.add(id)); });
+  return out;
+}
+function schedPoolBase(){
+  const rev=schedReview(), held=schedHeldIds();
+  return schedPoolRaw().filter(w=>(rev||!isDone(w.id)) && !held.has(w.id));
+}
 function updateSchedCount(){
   const max=schedPoolBase().length;
   const sc=$("#sCount");
@@ -2867,7 +2879,7 @@ $("#sCount").addEventListener("input",()=>{ $("#sCountLabel").textContent=$("#sC
 $("#sStart").addEventListener("input",()=>{
   $("#sEnd").min=$("#sStart").value;
   if($("#sEnd").value && $("#sEnd").value<$("#sStart").value) $("#sEnd").value=$("#sStart").value;
-  updateSchedCalc();
+  updateSchedCount();   // 시작일에 따라 그대로 남는 날짜가 달라져 배치할 단어 수도 바뀐다
 });
 $("#sWeightSeg").addEventListener("click",e=>{
   const b=e.target.closest("button[data-w]"); if(!b) return;
@@ -2908,15 +2920,16 @@ $("#genSchedule").addEventListener("click",()=>{
   // 현재·예정(오늘 이후) 일정을 교체, 지난 기록은 레거시로 보존.
   // 오늘·이후 날짜에 이미 외운 단어가 있으면 그 날짜에 그대로 남겨 캘린더의 학습 기록을 지킨다.
   // 복습 일정은 그 단어들을 새로 다시 배치하는 것이므로 남기지 않는다(중복 배치가 된다).
-  const today=todayStr();
+  // 시작일(오늘보다 앞이면 오늘)부터만 교체한다. 그 전날까지의 일정은 손대지 않는다.
+  const from=schedReplaceFrom();
   const review=schedReview();
   const keepDone={};
   if(!review) Object.keys(state.schedule).forEach(d=>{
-    if(d<today) return;
+    if(d<from) return;
     const done=state.schedule[d].filter(id=>doneForDate(id,d));
     if(done.length) keepDone[d]=done;
   });
-  Object.keys(state.schedule).forEach(d=>{ if(d>=today){ delete state.schedule[d]; delete state.rounds[d]; } });
+  Object.keys(state.schedule).forEach(d=>{ if(d>=from){ delete state.schedule[d]; delete state.rounds[d]; } });
   Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
   Object.keys(sched).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(sched[d]));
   // 이번 회차 시작 시각을 배치한 날짜마다 찍는다 — 이 시각 뒤에 외운 것만 그 날짜의 완료로 센다
