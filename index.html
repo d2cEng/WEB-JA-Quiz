@@ -126,9 +126,6 @@
   .calcell.done .cring{--ring:var(--ok);--ring-bg:var(--ok);--p:100%}          /* 완료: 초록 원 */
   .calcell.done .cnum{background:var(--ok);color:#fff}
   .calcell.done .cinfo{color:var(--ok)}
-  .calcell.studied .cring{--ring:#9fd8b6;--ring-bg:#9fd8b6;--p:100%}          /* 일정 밖 학습: 옅은 초록 */
-  .calcell.studied .cnum{background:var(--ok-bg);color:var(--ok)}
-  .calcell.studied .cinfo{color:var(--ok)}
   .calcell.today .cnum{font-weight:800;color:var(--brand)}
   .calcell.today.done .cnum{color:#fff}
   .calcell.today::after{content:"";position:absolute;bottom:2px;width:16px;height:3px;border-radius:2px;background:var(--brand)}
@@ -1118,7 +1115,7 @@ const I18N = {
     sch_gen:"일정 생성", sch_statusTitle:"학습 현황",
     sch_editSummary:"✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)",
     sch_editHint:"미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.",
-    sch_reapply:"다시 배치", cal_today:"오늘", cal_lgDone:"완료", cal_lgPartial:"진행 중", cal_lgPlan:"예정", cal_lgStudied:"일정 외 학습", cal_lgMiss:"놓침", cal_tileMonth:"일정 {done}/{total}", cal_tileStreak:"연속 학습", cal_tileDays:"이달 학습일", cal_tileMiss:"놓친 날",
+    sch_reapply:"다시 배치", cal_today:"오늘", cal_lgDone:"완료", cal_lgPartial:"진행 중", cal_lgPlan:"예정", cal_lgMiss:"놓침", cal_tileMonth:"완료 {done}/{total}", cal_tileStreak:"연속 학습", cal_tileDays:"이달 학습일", cal_tileMiss:"놓친 날",
     mem_settingsSummary:"⚙️ 암기 설정 (범위·방식·단어 수)",
     mem_sub:"단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.",
     mem_scope:"학습 범위", scope_today:"오늘 분량", scope_date:"날짜", scope_selected:"선택 단어", scope_all:"전체", lbl_date:"날짜",
@@ -1184,7 +1181,7 @@ const I18N = {
     log_title:"🗒️ 학습일지 (자세히 보기)", log_empty:"아직 학습 기록이 없어요. 암기·퀴즈를 진행하면 여기에 날짜·시간별로 쌓입니다.",
     log_hint:"암기·객관식·주관식·말하기·정정 활동을 날짜·시간별로 모두 기록합니다. (최근 14일)",
     log_dayCount:"✅ {o} · ❌ {x} (총 {n})", log_kind_mem:"암기", log_kind_rev:"복습", log_kind_mc:"객관식", log_kind_sa:"주관식", log_kind_sp:"말하기", log_kind_n2:"N2 어휘", log_kind_fix:"정정",
-    detail_done:"{done}/{total} 완료", detail_studied:"이날 학습 {n}개 (일정 외 기록)", detail_goMem:"📖 암기하기", detail_goMemAgain:"📖 다시 암기", detail_goQuiz:"✏️ 퀴즈", detail_studiedHint:"일정은 없지만 이날 외우거나 맞힌 단어입니다.",
+    detail_done:"{done}/{total} 완료", detail_studied:"{n}개 학습 완료", detail_goMem:"📖 암기하기", detail_goMemAgain:"📖 다시 암기", detail_goQuiz:"✏️ 퀴즈", detail_studiedHint:"이날 외우거나 맞힌 단어입니다.",
 detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     detail_hint:"칩(✕)을 누르면 제외 · 달력에서 날짜를 누르면 선택", confirm_deleteDate:"{d} 일정을 삭제할까요?", opt_noSchedule:"일정 없음",
     toast_noMemWords:"학습할 단어가 없습니다",
@@ -1212,7 +1209,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     book_current:"단어장", book_currentMark:"현재",
     sched_todayAllTitle:"📅 오늘 할 분량 (단어장별)",
     sched_todayAllHint:"💡 다른 단어장을 누르면 그 단어장으로 전환됩니다. 진도·일정은 단어장마다 따로 관리돼요.",
-    sched_todayRow:"{done} / {total} 완료", sched_todayNone:"오늘 분량 없음", sched_todayAllDone:"오늘 분량 완료 🎉",
+    sched_todayRow:"{done} / {total} 완료", sched_todayNone:"오늘 분량 없음", sched_todayAllDone:"오늘 분량 완료 🎉", sched_todayLearned:"오늘 {n}개 학습 완료 🎉",
     quiz_prev:"◀ 이전", quiz_next:"다음 ▶", quiz_toResults:"결과 보기 ▶",
     quiz_backPhase:"↩︎ {phase} 화면으로 돌아가기",
     confirm_phaseSwitch:"풀던 문제를 두고 ‘{phase}’ 화면으로 이동할까요?\n진행 내역은 저장되어 돌아오면 이어서 풀 수 있습니다.",
@@ -1318,7 +1315,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     sch_gen:"Generate schedule", sch_statusTitle:"Learning status",
     sch_editSummary:"✏️ Edit current/upcoming schedule — change dates and count (tap to expand)",
     sch_editHint:"The future (today onward) schedule is re-distributed with the new settings. Past records and progress are kept.",
-    sch_reapply:"Re-distribute", cal_today:"Today", cal_lgDone:"Done", cal_lgPartial:"In progress", cal_lgPlan:"Planned", cal_lgStudied:"Off-schedule", cal_lgMiss:"Missed", cal_tileMonth:"Plan {done}/{total}", cal_tileStreak:"Day streak", cal_tileDays:"Study days", cal_tileMiss:"Missed",
+    sch_reapply:"Re-distribute", cal_today:"Today", cal_lgDone:"Done", cal_lgPartial:"In progress", cal_lgPlan:"Planned", cal_lgMiss:"Missed", cal_tileMonth:"Done {done}/{total}", cal_tileStreak:"Day streak", cal_tileDays:"Study days", cal_tileMiss:"Missed",
     mem_settingsSummary:"⚙️ Memorize settings (scope · mode · count)",
     mem_sub:"Proceed in stages: Stage 1 meaning+ひらがな → Stage 2 ひらがな+漢字 → Stage 3 漢字+meaning → Stage 4 examples.",
     mem_scope:"Study scope", scope_today:"Today's load", scope_date:"Date", scope_selected:"Selected words", scope_all:"All", lbl_date:"Date",
@@ -1384,7 +1381,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     log_title:"🗒️ Study log (detailed)", log_empty:"No study records yet. They'll build up here by date and time as you study with Memorize/Quiz.",
     log_hint:"Every Memorize, multiple-choice, short-answer, speaking and correction action is logged by date and time. (last 14 days)",
     log_dayCount:"✅ {o} · ❌ {x} (total {n})", log_kind_mem:"Memorize", log_kind_rev:"Review", log_kind_mc:"Multiple choice", log_kind_sa:"Short answer", log_kind_sp:"Speaking", log_kind_n2:"N2 vocabulary", log_kind_fix:"Correction",
-    detail_done:"{done}/{total} done", detail_studied:"Studied {n} this day (outside the schedule)", detail_goMem:"📖 Memorize", detail_goMemAgain:"📖 Review", detail_goQuiz:"✏️ Quiz", detail_studiedHint:"No schedule for this day, but these words were memorized or answered correctly.",
+    detail_done:"{done}/{total} done", detail_studied:"{n} words studied", detail_goMem:"📖 Memorize", detail_goMemAgain:"📖 Review", detail_goQuiz:"✏️ Quiz", detail_studiedHint:"Words memorized or answered correctly this day.",
 detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     detail_hint:"Tap a chip (✕) to remove · tap a date on the calendar to select", confirm_deleteDate:"Delete the schedule for {d}?", opt_noSchedule:"No schedule",
     toast_noMemWords:"No words to study",
@@ -1412,7 +1409,7 @@ detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     book_current:"Wordbook", book_currentMark:"current",
     sched_todayAllTitle:"📅 Today's load by wordbook",
     sched_todayAllHint:"💡 Tap another wordbook to switch to it. Progress and schedules are kept separately for each.",
-    sched_todayRow:"{done} / {total} done", sched_todayNone:"nothing scheduled", sched_todayAllDone:"all done 🎉",
+    sched_todayRow:"{done} / {total} done", sched_todayNone:"nothing scheduled", sched_todayAllDone:"all done 🎉", sched_todayLearned:"{n} studied today 🎉",
     quiz_prev:"◀ Prev", quiz_next:"Next ▶", quiz_toResults:"See results ▶",
     quiz_backPhase:"↩︎ Back to {phase}",
     confirm_phaseSwitch:"Leave this question and switch to ‘{phase}’?\nYour progress is saved, so you can pick up where you left off.",
@@ -2715,7 +2712,10 @@ function todayLoadByBook(){
     const done=ids.filter(id=>{ const p=prog[id]; if(!p||!p.done) return false;
       const rs=Math.max(rounds[td]||0, (rAtAll[td+"|"+id])||0);   // 회차·보강 시각 이후에 외운 것만
       return rs ? (p.t>=rs) : true; }).length;
-    return {id:b.id, name:name||t("name_unnamed"), total:ids.length, done, active:b.id===books.active};
+    // 오늘 일정 칸이 없어도 오늘 공부한 단어 수는 보여준다
+    const learned = b.id===books.active ? ((studyByDate()[td]||new Set()).size)
+      : Object.keys(prog).filter(k=>prog[k] && prog[k].done && prog[k].date===td).length;
+    return {id:b.id, name:name||t("name_unnamed"), total:ids.length, done, learned, active:b.id===books.active};
   });
 }
 function renderTodayAll(){
@@ -2723,12 +2723,13 @@ function renderTodayAll(){
   if(!card||!list) return;
   const rows=todayLoadByBook();
   // 단어장이 둘 이상이고, 오늘 분량이 잡힌 단어장이 하나라도 있을 때만 보여준다
-  if(books.list.length<2 || !rows.some(r=>r.total>0)){ card.style.display="none"; return; }
+  if(books.list.length<2 || !rows.some(r=>r.total>0 || r.learned>0)){ card.style.display="none"; return; }
   card.style.display="";
   list.innerHTML=rows.map(r=>{
-    const allDone=r.total>0 && r.done>=r.total;
+    const allDone=(r.total>0 && r.done>=r.total) || (!r.total && r.learned>0);
     const cnt=r.total ? (allDone ? esc(t("sched_todayAllDone"))
                                  : t("sched_todayRow",{done:r.done, total:r.total}))
+                      : r.learned ? esc(t("sched_todayLearned",{n:r.learned}))
                       : `<span class="muted">${esc(t("sched_todayNone"))}</span>`;
     return `<button class="bookrow${r.active?" on":""}${allDone?" alldone":""}" data-book="${esc(r.id)}"${r.active?" disabled":""}>`
       + `<span class="bname">${esc(r.name)}${r.active?`<span class="bmark">${esc(t("book_currentMark"))}</span>`:""}</span>`
@@ -3206,11 +3207,13 @@ function renderCalendar(slide){
       tip+=` · ${t("detail_done",{done, total:ids.length})}`;
       mDone+=done; mTotal+=ids.length; if(done>0) mDays++; if(!done && ds<today) mMiss++;
     } else if(studied[ds] && studied[ds].size){
-      // 일정은 없지만(지워졌거나 일정 밖 학습) 그날 공부한 기록이 있는 날
-      cls.push('has','studied'); act=true;
-      info=`<span class="cinfo">+${studied[ds].size}</span>`;
-      tip+=` · ${t("detail_studied",{n:studied[ds].size})}`;
-      mDays++;
+      // 일정 칸은 없지만(예전 버전이 일정을 다시 만들며 지웠거나 따로 공부한 날) 학습 기록이 있는 날 —
+      // 그날 공부를 마친 것이므로 완료로 보여준다
+      const n=studied[ds].size;
+      cls.push('has','done'); act=true; p=100;
+      info=`<span class="cinfo">${n}/${n}</span>`;
+      tip+=` · ${t("detail_studied",{n})}`;
+      mDone+=n; mTotal+=n; mDays++;
     }
     if(ds===today) tip+=` (${t("cal_today")})`;
     list.push({cls, ds, day, p, info, tip, act});
@@ -3231,7 +3234,7 @@ function renderCalendar(slide){
     ${mMiss?`<div class="ctile bad"><b>${mMiss}</b><span>${esc(t("cal_tileMiss"))}</span></div>`:''}
   </div>`;
   const lg=(bg,k)=>`<span class="lg"><i style="background:${bg}"></i>${esc(t(k))}</span>`;
-  const foot=`<div class="calfoot">${lg("var(--ok)","cal_lgDone")}${lg("conic-gradient(#f59e0b 50%,#fbe3bd 0)","cal_lgPartial")}${lg("#dbe3fb","cal_lgPlan")}${lg("#f3c4bd","cal_lgMiss")}${lg("#9fd8b6","cal_lgStudied")}</div>`;
+  const foot=`<div class="calfoot">${lg("var(--ok)","cal_lgDone")}${lg("conic-gradient(#f59e0b 50%,#fbe3bd 0)","cal_lgPartial")}${lg("#dbe3fb","cal_lgPlan")}${lg("#f3c4bd","cal_lgMiss")}</div>`;
   $("#calendar").innerHTML=`${sum}<div class="calhead">${head}</div><div class="calgrid${slide?' slide-'+slide:''}">${cells}</div>${foot}`;
 }
 // 달 넘기기 — 버튼·스와이프 공용
