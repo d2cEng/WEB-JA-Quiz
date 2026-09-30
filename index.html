@@ -205,6 +205,17 @@
   /* DB 셀값 중앙정렬 (한글 뜻 4번째 열만 좌측) */
   #dbTable td{text-align:center}
   #dbTable td:nth-child(4){text-align:left}
+  #dbTable th[data-sort]{white-space:nowrap;user-select:none}
+  #dbTable th[data-sort]:hover{color:var(--brand)}
+  #dbTable th.sorted{color:var(--brand)}
+  #dbTable th[data-dir="asc"]::after{content:" ▲";font-size:.75em}
+  #dbTable th[data-dir="desc"]::after{content:" ▼";font-size:.75em}
+  .wr{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1;font-weight:700;font-variant-numeric:tabular-nums;
+    padding:2px 7px;border-radius:8px;font-size:.88em}
+  .wr small{font-weight:500;font-size:.72em;opacity:.8}
+  .wr.good{background:var(--ok-bg);color:var(--ok)}
+  .wr.mid{background:#fff4e0;color:#b45309}
+  .wr.bad{background:var(--bad-bg);color:var(--bad)}
   td.jp{font-size:1.05em}
   tr:last-child td{border-bottom:none}
   .check{width:18px;height:18px}
@@ -633,6 +644,13 @@
       <div class="toolbar noprint" style="margin-top:10px">
         <input id="dbSearch" type="text" data-i18n-ph="db_searchPh" placeholder="검색 (漢字·ひらがな·뜻)">
         <select id="dbPos"><option value="">품사 전체</option></select>
+        <select id="dbStat">
+          <option value="" data-i18n="dbst_all">채점 전체</option>
+          <option value="tried" data-i18n="dbst_tried">푼 단어</option>
+          <option value="wrong" data-i18n="dbst_wrong">틀린 적 있는 단어</option>
+          <option value="review" data-i18n="dbst_review">복습 필요 (정답률 90% 미만)</option>
+          <option value="new" data-i18n="dbst_new">아직 안 푼 단어</option>
+        </select>
         <span id="dbLevel" class="lvlchips" aria-label="레벨 필터(복수 선택)"></span>
         <button class="btn sec" id="selAll" data-i18n="db_selAll">검색결과 전체선택</button>
         <button class="btn ghost" id="selNone" data-i18n="db_selNone">전체해제</button>
@@ -650,6 +668,7 @@
             <th data-sort="korean" data-i18n="th_korean">한글 뜻</th>
             <th data-sort="level" data-i18n="th_level">레벨</th>
             <th data-sort="pos" data-i18n="th_pos">품사</th>
+            <th data-sort="wrong" data-i18n="th_wrong" data-i18n-title="th_wrongTitle" title="오답률 (틀림/푼 횟수) — 퀴즈·말하기 채점 누적">오답률</th>
             <th style="width:38px" class="noprint" data-i18n-title="talk_rowTitle" title="이 단어로 회화 연습">🗣️</th>
           </tr></thead>
           <tbody id="dbBody"></tbody>
@@ -1073,7 +1092,7 @@ const I18N = {
     db_more:"{n}개 더 보기 (남은 {rest}개)",
     db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
     db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
-    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사",
+    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사", th_wrong:"오답률", th_wrongTitle:"오답률 (틀림/푼 횟수) — 퀴즈·말하기 채점 누적", dbst_all:"채점 전체", dbst_tried:"푼 단어", dbst_wrong:"틀린 적 있는 단어", dbst_review:"복습 필요 (정답률 90% 미만)", dbst_new:"아직 안 푼 단어", db_wrTitle:"맞음 {o} · 틀림 {x}",
     db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
     db_repoLabel:"저장소에 준비된 단어장 불러오기", db_repoLoad:"📦 불러오기",
     repo_count:"({n}개)",
@@ -1273,7 +1292,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     db_more:"Show {n} more ({rest} left)",
     db_selAll:"Select all results", db_selNone:"Clear all",
     db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
-    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech",
+    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech", th_wrong:"Miss rate", th_wrongTitle:"Miss rate (wrong/attempts) — accumulated from quizzes and speaking", dbst_all:"All scores", dbst_tried:"Attempted", dbst_wrong:"Missed at least once", dbst_review:"Needs review (under 90%)", dbst_new:"Not attempted", db_wrTitle:"Correct {o} · Wrong {x}",
     db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
     db_repoLabel:"Load a built-in wordbook from the repository", db_repoLoad:"📦 Load",
     repo_count:"({n})",
@@ -2215,6 +2234,7 @@ function showTab(tab){
   if(tab==="idiom" && isMobileView()) tab="grammar";
   $$("#nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===tab));
   $$("section").forEach(s=>s.classList.toggle("active",s.id===tab));
+  if(tab==="db") renderDb();               // 오답률 최신화 (퀴즈 뒤 돌아왔을 때)
   if(tab==="schedule") renderSchedule();   // 진행 통계 최신화
   if(tab==="memorize"){ maybeAskCarryOver(); updateMemCount(); }  // 미완료 단어 이월 확인 + 단어 수 최신화
   if(tab==="quiz") updateQuizCount();      // 범위별 단어 수 최신화
@@ -2323,19 +2343,31 @@ function fillSelect(sel, items, allLabel){
   if(allLabel==="") {} else if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
 }
 function dbFiltered(){
-  const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvlSel=levelSel.dbLevel;
+  const q=normAns($("#dbSearch").value), pos=$("#dbPos").value, lvlSel=levelSel.dbLevel, st=$("#dbStat").value;
   let rows = state.words.filter(w=>{
     if(isExcluded(w.id)) return false;   // 제외된 단어는 본 목록에서 숨기고 아래 '제외된 단어'에서 관리
     if(pos && w.pos!==pos) return false;
     if(lvlSel.size && !lvlSel.has(w.level)) return false;
+    if(st){ const r=statOf(w.id), n=r.o+r.x;
+      if(st==="tried" && !n) return false;
+      if(st==="new" && n) return false;
+      if(st==="wrong" && !r.x) return false;
+      if(st==="review" && !needsReview(w.id)) return false; }
     if(q){
       const hay=normAns(w.kanji+w.hiragana+w.korean);
       if(!hay.includes(q)) return false;
     }
     return true;
   });
-  const k=dbSort.key;
-  rows.sort((a,b)=> String(a[k]||"").localeCompare(String(b[k]||""),"ja")*dbSort.dir);
+  const k=dbSort.key, dir=dbSort.dir;
+  if(k==="wrong"){
+    // 오답률 순. 같은 비율이면 많이 틀린 것 먼저, 안 푼 단어는 방향과 상관없이 맨 뒤
+    const key=w=>{ const r=statOf(w.id), n=r.o+r.x; return n ? [r.x/n, r.x, n] : null; };
+    rows=rows.map(w=>[w,key(w)]).sort((A,B)=>{ const a=A[1], b=B[1];
+      if(!a||!b) return (a?0:1)-(b?0:1);
+      return ((a[0]-b[0]) || (a[1]-b[1]) || (a[2]-b[2]))*dir; }).map(x=>x[0]);
+  } else if(k==="id") rows.sort((a,b)=>((+a.id||0)-(+b.id||0))*dir);   // 숫자로 (문자열로 비교하면 10이 2 앞에 온다)
+  else rows.sort((a,b)=> String(a[k]||"").localeCompare(String(b[k]||""),"ja")*dir);
   return rows;
 }
 /* 단어 표는 화면에 보이는 만큼만 그린다.
@@ -2343,6 +2375,13 @@ function dbFiltered(){
    로그인·단어장 전환 직후 화면이 멈춘 것처럼 보인다. */
 const DB_PAGE=300;
 let dbLimit=DB_PAGE;
+// 오답률 칸: 비율(색) + 틀림/푼 횟수. 안 푼 단어는 –
+function wrongCell(id){
+  const r=statOf(id), n=r.o+r.x;
+  if(!n) return `<span class="muted">–</span>`;
+  const pct=Math.round(r.x/n*100), cls=pct>=50?"bad":pct>=10?"mid":"good";
+  return `<span class="wr ${cls}" title="${esc(t("db_wrTitle",{o:r.o,x:r.x}))}">${pct}%<small>${r.x}/${n}</small></span>`;
+}
 function renderDb(){
   const rows=dbFiltered();
   if(dbLimit>DB_PAGE && dbLimit>rows.length) dbLimit=DB_PAGE;
@@ -2356,8 +2395,12 @@ function renderDb(){
       <td>${esc(w.korean)}</td>
       <td>${esc(w.level)}</td>
       <td>${esc(w.pos)}</td>
+      <td>${wrongCell(w.id)}</td>
       <td class="noprint"><button class="talkrow" data-talk="${w.id}" data-i18n-title="talk_rowTitle" title="${esc(t("talk_rowTitle"))}">🗣️</button></td>
-    </tr>`).join("") || `<tr><td colspan="7" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="8" class="empty">${esc(t("toast_noMemWords"))}</td></tr>`;
+  // 정렬 중인 머리글에 방향 표시
+  $$("#dbTable th[data-sort]").forEach(th=>{ const on=th.dataset.sort===dbSort.key;
+    th.classList.toggle("sorted", on); th.dataset.dir = on ? (dbSort.dir>0?"asc":"desc") : ""; });
   $("#shownCount").textContent=rows.length;
   $("#selCount").textContent=state.selected.length;
   const more=rows.length-shown.length;
@@ -2400,9 +2443,14 @@ $("#dbBody").addEventListener("change",e=>{
 });
 $("#dbSearch").addEventListener("input",()=>{ dbLimit=DB_PAGE; renderDb(); });
 $("#dbPos").addEventListener("change",()=>{ dbLimit=DB_PAGE; renderDb(); });
+$("#dbStat").addEventListener("change",()=>{
+  // '틀린 적 있는'·'복습 필요'를 고르면 오답률 높은 순으로 바로 정렬
+  const v=$("#dbStat").value; if(v==="wrong"||v==="review") dbSort={key:"wrong", dir:-1};
+  dbLimit=DB_PAGE; renderDb(); });
 bindLevelChips("dbLevel", ()=>{ dbLimit=DB_PAGE; renderDb(); });
 $$("#dbTable th[data-sort]").forEach(th=>th.addEventListener("click",()=>{
-  const k=th.dataset.sort; dbSort.dir = (dbSort.key===k)? -dbSort.dir : 1; dbSort.key=k; renderDb();
+  // 오답률은 처음 누르면 높은 순(많이 틀린 단어부터)
+  const k=th.dataset.sort; dbSort.dir = (dbSort.key===k)? -dbSort.dir : (k==="wrong"?-1:1); dbSort.key=k; dbLimit=DB_PAGE; renderDb();
 }));
 $("#selAll").addEventListener("click",()=>{
   const set=new Set(state.selected); dbFiltered().forEach(w=>set.add(w.id));
