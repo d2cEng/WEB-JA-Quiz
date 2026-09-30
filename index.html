@@ -2926,15 +2926,24 @@ $("#genSchedule").addEventListener("click",()=>{
   const keepDone={};
   if(!review) Object.keys(state.schedule).forEach(d=>{
     if(d<from) return;
-    const done=state.schedule[d].filter(id=>doneForDate(id,d));
+    // 그날 외운 단어도 남긴다 — 예전 버전에서 같은 날 다시 만들어 회차 시각이 공부한 뒤로
+    // 밀린 경우(캘린더 0으로 보이던 데이터)도 다시 만들면 바로잡힌다
+    const done=state.schedule[d].filter(id=>doneForDate(id,d) || (isDone(id) && studyDate(id)===d));
     if(done.length) keepDone[d]=done;
   });
   Object.keys(state.schedule).forEach(d=>{ if(d>=from){ delete state.schedule[d]; delete state.rounds[d]; } });
   Object.keys(keepDone).forEach(d=>state.schedule[d]=keepDone[d].slice());
   Object.keys(sched).forEach(d=>state.schedule[d]=(state.schedule[d]||[]).concat(sched[d]));
-  // 이번 회차 시작 시각을 배치한 날짜마다 찍는다 — 이 시각 뒤에 외운 것만 그 날짜의 완료로 센다
+  // 이번 회차 시작 시각을 찍는다 — 이 시각 뒤에 외운 것만 그 날짜의 완료로 센다.
+  // 단, 이미 외운 단어를 남겨 둔 날짜(같은 날 다시 만든 경우의 오늘)는 날짜 전체에 찍으면
+  // 남겨 둔 단어까지 '지금 이후에 외워야 완료'가 되어 캘린더가 0으로 돌아간다.
+  // 그런 날은 새로 넣은 단어에만 시각을 찍는다.
   const roundAt=Date.now();
-  Object.keys(sched).forEach(d=>{ state.rounds[d]=roundAt; });
+  state.reinforceAt=state.reinforceAt||{};
+  Object.keys(sched).forEach(d=>{
+    if(keepDone[d]) sched[d].forEach(id=>{ state.reinforceAt[d+"|"+id]=roundAt; });
+    else state.rounds[d]=roundAt;
+  });
   save(); renderSchedule();
   $("#schedSettings").open=false;   // 생성하면 설정 접기
   toast(t("toast_schedGen",{d:Object.keys(sched).length, x, y, n:pool.length}));
