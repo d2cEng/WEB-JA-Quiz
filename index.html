@@ -173,6 +173,13 @@
   summary.setsum::before{content:"▸";transition:transform .15s}
   details[open]>summary.setsum::before{transform:rotate(90deg)}
   details[open]>summary.setsum{margin-bottom:12px}
+  .bmrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 4px;border-bottom:1px solid var(--line)}
+  .bmrow.on .bminfo b{color:var(--brand)}
+  .bminfo{flex:1 1 180px;min-width:0}
+  .bminfo .muted{font-size:.82em}
+  .bmacts{display:flex;gap:6px;flex-wrap:wrap}
+  .bmacts .btn{padding:7px 11px;min-height:0;font-size:.85em;margin:0}
+  .bmacts .btn.bmdel{color:var(--bad);border-color:var(--bad)}
   .daydetail{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:#fff}
   .daydetail .ddel{border:none;background:var(--bad-bg);color:var(--bad);border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700;font-size:.85em}
   label.chk{display:flex;align-items:center;gap:8px;cursor:pointer}
@@ -442,7 +449,7 @@
   .bookrow:hover{border-color:var(--brand)}
   .bookrow.on{border-color:var(--brand);background:var(--accent);cursor:default}
   .bookrow .bname{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .bookrow .bmark{font-size:.72em;font-weight:700;color:var(--brand);border:1px solid var(--brand);
+  .bookrow .bmark,.bminfo .bmark{font-size:.72em;font-weight:700;color:var(--brand);border:1px solid var(--brand);
     border-radius:999px;padding:1px 7px;margin-left:6px;flex:0 0 auto}
   .bookrow .bcnt{flex:0 0 auto;font-size:.86em;color:var(--muted);white-space:nowrap}
   .bookrow .bcnt b{color:var(--brand)}
@@ -548,6 +555,11 @@
           <select id="bookSelect"></select>
           <button class="btn ghost" id="bookDelBtn" style="color:var(--bad);border-color:var(--bad)" data-i18n="book_delete">이 단어장 삭제</button>
         </div>
+        <details id="bookMgr" style="margin-top:6px">
+          <summary class="setsum" id="bookMgrSum"></summary>
+          <div id="bookMgrList"></div>
+          <p class="muted" style="font-size:.8em;margin:6px 2px 0" data-i18n="bm_hint">삭제하면 그 단어장의 단어·진도·일정·학습일지가 이 기기와 클라우드에서 모두 지워집니다. 필요하면 ‘백업 후 삭제’로 파일을 받아 두세요.</p>
+        </details>
       </div>
       <label data-i18n="db_nameLabel">단어장 이름 (이 데이터셋을 구분하는 이름)</label>
       <input type="text" id="dbName" data-i18n-ph="db_namePh" placeholder="예: JLPT N4 단어장">
@@ -1123,7 +1135,7 @@ const I18N = {
     confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n현재 단어장은 진도와 함께 보관되며, 단어 DB의 ‘내 단어장’에서 언제든 전환할 수 있습니다. (같은 이름의 단어장이 이미 있으면 그 단어장이 갱신됩니다)",
     book_switchLabel:"내 단어장 (각각 진도 별도 보관 · 선택하면 전환)", book_delete:"이 단어장 삭제",
     toast_bookSwitched:"‘{name}’ 단어장으로 전환했어요 (진도 유지)", toast_bookDeleted:"단어장을 삭제했어요",
-    confirm_bookDelete:"‘{name}’ 단어장과 그 진도를 삭제할까요?",
+    confirm_bookDelete:"‘{name}’ 단어장과 그 진도를 삭제할까요?", bm_summary:"🗂️ 불러온 단어장 관리 ({n}개)", bm_hint:"삭제하면 그 단어장의 단어·진도·일정·학습일지가 이 기기와 클라우드에서 모두 지워집니다. 필요하면 ‘백업 후 삭제’로 파일을 받아 두세요.", bm_info:"{w}단어 · 외운 단어 {d}개", bm_current:"사용 중", bm_open:"열기", bm_del:"삭제", bm_backupDel:"백업 후 삭제", bm_last:"마지막 남은 단어장은 삭제할 수 없어요",
     toast_repoFail:"단어장을 불러오지 못했습니다",
     db_manualSummary:"📄 JSON 단어장 파일 만드는 법",
     ai_hd:"🤖 AI로 만들기 (가장 쉬움)",
@@ -1323,7 +1335,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     confirm_repoLoad:"Load the ‘{name}’ wordbook?\nYour current wordbook is kept with its progress; switch anytime from ‘My wordbooks’ in the Words DB tab. (If a wordbook with the same name exists, it will be updated.)",
     book_switchLabel:"My wordbooks (each keeps its own progress · select to switch)", book_delete:"Delete this wordbook",
     toast_bookSwitched:"Switched to ‘{name}’ (progress kept)", toast_bookDeleted:"Wordbook deleted",
-    confirm_bookDelete:"Delete the ‘{name}’ wordbook and its progress?",
+    confirm_bookDelete:"Delete the ‘{name}’ wordbook and its progress?", bm_summary:"🗂️ Manage loaded wordbooks ({n})", bm_hint:"Deleting removes that wordbook's words, progress, schedule and study log from this device and the cloud. Use ‘Back up & delete’ to keep a file first.", bm_info:"{w} words · {d} memorized", bm_current:"in use", bm_open:"Open", bm_del:"Delete", bm_backupDel:"Back up & delete", bm_last:"You can't delete the last wordbook",
     toast_repoFail:"Could not load the wordbook",
     db_manualSummary:"📄 How to make a JSON wordbook file",
     ai_hd:"🤖 Make it with AI (easiest)",
@@ -2964,6 +2976,7 @@ function renderBookSelect(){
   const bar=$("#bookBar"); if(!bar) return;
   if(books.list.length<2){ bar.style.display="none"; return; }
   bar.style.display="";
+  renderBookMgr();
   $("#bookSelect").innerHTML=books.list.map(b=>
     `<option value="${esc(b.id)}"${b.id===books.active?" selected":""}>${esc(b.name||t("name_unnamed"))}</option>`).join("");
 }
@@ -3030,15 +3043,59 @@ $("#todayAllList").addEventListener("click",e=>{
   switchBook(b.dataset.book);
   showTab("schedule");
 });
-$("#bookDelBtn").addEventListener("click",()=>{
-  if(books.list.length<2) return;   // 마지막 남은 단어장은 삭제 불가
-  const cur=books.list.find(b=>b.id===books.active);
-  if(!confirm(t("confirm_bookDelete",{name:(cur&&cur.name)||t("name_unnamed")}))) return;
-  localStorage.removeItem(bookKey(books.active));
-  cloudMarkDeleted(books.active);   // 클라우드에도 삭제 전파 (tombstone)
-  books.list=books.list.filter(b=>b.id!==books.active);
-  books.active=books.list[0].id; saveBooksReg();
-  state=blankState(""); load(); refreshAll(); toast(t("toast_bookDeleted"));
+$("#bookDelBtn").addEventListener("click",()=>deleteBook(books.active));
+/* ---- 불러온 단어장 관리 ----
+   지금 쓰는 단어장만 지울 수 있어서, 안 쓰는 단어장을 지우려면 그리로 전환해야 했다.
+   목록에서 어느 단어장이든 바로 지우거나(필요하면 백업 파일을 받은 뒤) 열 수 있게 한다. */
+function bookSummary(b){
+  let sv=null;
+  if(b.id===books.active) sv={words:state.words, progress:state.progress, name:state.dbName};
+  else { try{ sv=JSON.parse(localStorage.getItem(bookKey(b.id))); }catch(e){} }
+  return { name:(sv&&sv.name)||b.name||t("name_unnamed"), w:sv&&sv.words?sv.words.length:0,
+    d:sv&&sv.progress?Object.values(sv.progress).filter(v=>v&&v.done).length:0 };
+}
+function downloadBook(id){
+  if(id===books.active) save();
+  const raw=localStorage.getItem(bookKey(id)); if(!raw) return false;
+  let name="jaquiz"; try{ name=JSON.parse(raw).name||name; }catch(e){}
+  const blob=new Blob([raw],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=name+"-"+todayStr()+".json"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  return true;
+}
+function deleteBook(id, backup){
+  if(books.list.length<2){ toast(t("bm_last")); return; }   // 마지막 남은 단어장은 삭제 불가
+  const b=books.list.find(x=>x.id===id); if(!b) return;
+  const name=bookSummary(b).name;
+  if(!confirm(t("confirm_bookDelete",{name}))) return;
+  if(backup && !downloadBook(id)) return;
+  localStorage.removeItem(bookKey(id));
+  cloudMarkDeleted(id);   // 클라우드에도 삭제 전파 (tombstone)
+  books.list=books.list.filter(x=>x.id!==id);
+  if(id===books.active){ books.active=books.list[0].id; saveBooksReg(); state=blankState(""); load(); refreshAll(); }
+  else { saveBooksReg(); renderBookSelect(); renderBookPickers(); renderTodayAll(); }
+  toast(t("toast_bookDeleted"));
+}
+function renderBookMgr(){
+  const box=$("#bookMgrList"); if(!box) return;
+  $("#bookMgrSum").textContent=t("bm_summary",{n:books.list.length});
+  if(!$("#bookMgr").open){ box.innerHTML=""; return; }   // 펼쳤을 때만 각 단어장을 읽는다(큰 단어장은 무겁다)
+  box.innerHTML=books.list.map(b=>{ const s=bookSummary(b), cur=b.id===books.active;
+    return `<div class="bmrow${cur?" on":""}">
+      <div class="bminfo"><b>${esc(s.name)}</b>${cur?`<span class="bmark">${esc(t("bm_current"))}</span>`:""}
+        <div class="muted">${esc(t("bm_info",s))}</div></div>
+      <div class="bmacts">
+        ${cur?"":`<button class="btn sec" data-bmopen="${esc(b.id)}">${esc(t("bm_open"))}</button>`}
+        <button class="btn ghost" data-bmbackup="${esc(b.id)}">${esc(t("bm_backupDel"))}</button>
+        <button class="btn ghost bmdel" data-bmdel="${esc(b.id)}">${esc(t("bm_del"))}</button>
+      </div></div>`; }).join("");
+}
+$("#bookMgr").addEventListener("toggle",renderBookMgr);
+$("#bookMgrList").addEventListener("click",e=>{
+  const o=e.target.closest("[data-bmopen]"); if(o){ switchBook(o.dataset.bmopen); return; }
+  const k=e.target.closest("[data-bmbackup]"); if(k){ deleteBook(k.dataset.bmbackup, true); return; }
+  const d=e.target.closest("[data-bmdel]"); if(d){ deleteBook(d.dataset.bmdel, false); return; }
 });
 
 /* ====================== 일정 ====================== */
