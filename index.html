@@ -71,7 +71,10 @@
     padding:7px 12px;cursor:pointer;font-weight:700;font-size:.85em}
   .wchip{display:inline-block;padding:4px 9px;margin:2px;border-radius:8px;background:var(--accent);
     font-size:.9em;cursor:pointer;border:1px solid transparent}
-  .wchip:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  .wchip .x{font-style:normal;font-size:.75em;margin-left:5px;color:var(--muted)}
+  .wchip.ok{background:var(--ok-bg);color:var(--ok)}
+  .wchip[data-date]:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+  .wchip[data-date]:hover .x{color:var(--bad)}
   /* 레벨 다중 선택 칩 (빈 선택 = 전체) */
   .lvlchips{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:center;vertical-align:middle}
   .lvlchip{border:1px solid var(--line);background:var(--card);color:var(--ink);
@@ -94,31 +97,51 @@
     padding:5px 10px;border-radius:999px;font-size:.85em;font-weight:700;cursor:pointer;vertical-align:middle}
   .fixbtn:hover{background:var(--ok,#16a34a);color:#fff}
   /* 캘린더 뷰 */
-  .calnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px}
-  .calnav button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700}
-  .calnav #calLabel{min-width:110px;text-align:center}
-  .calnav #calToday{font-size:.85em;color:var(--brand)}
-  .calhead,.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-  .calhead{margin-bottom:4px}
-  .calhcell{text-align:center;font-size:.78em;font-weight:700;color:var(--muted);padding:2px 0}
-  .calhcell.sun{color:#dc2626} .calhcell.sat{color:#2563eb}
-  .calcell{min-height:52px;border:1px solid var(--line);border-radius:8px;padding:3px 4px;
-    display:flex;flex-direction:column;gap:2px;overflow:hidden}
-  .calcell.empty{border:none;background:transparent}
-  .calcell .cnum{font-size:.82em;font-weight:700}
-  .calcell.sun .cnum{color:#dc2626} .calcell.sat .cnum{color:#2563eb}
-  .calcell.has{cursor:pointer;background:var(--accent)}
-  .calcell.done{background:var(--ok-bg)}
-  .calcell.today{border-color:var(--brand);border-width:2px;padding:2px 3px}   /* 오늘: 파란 테두리 */
-  .calcell.sel{outline:3px solid #f59e0b;outline-offset:-3px;box-shadow:0 0 0 1px #f59e0b inset} /* 선택: 주황 */
-  .calcell.today .cnum::after{content:var(--today-label,"·오늘");font-size:.85em;color:var(--brand);font-weight:700}
-  .calcell.past{opacity:.6}
-  .calcell .cinfo{font-size:.74em;font-weight:700;color:var(--brand);line-height:1.1}
-  .calcell.done .cinfo{color:var(--ok)}
-  .calcell.partial{background:#fff7e6}            /* 부분 진행: 옅은 주황 */
+  /* 날짜 숫자를 진행률 링으로 감싼다 — 칸마다 글자를 늘어놓지 않고 한눈에 보이게.
+     --ring(채운 색)·--ring-bg(남은 색)·--p(완료율)만 바꿔 상태를 나타낸다 */
+  .calnav{display:flex;align-items:center;gap:6px;margin:16px 0 10px}
+  .calnav #calLabel{font-size:1.08em;margin-right:auto;font-variant-numeric:tabular-nums}
+  .calnav button{border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;
+    font-weight:700;height:34px;min-width:34px;border-radius:999px;padding:0 10px;line-height:1;font-size:.95em}
+  .calnav button:hover{border-color:var(--brand);color:var(--brand)}
+  .calnav #calToday{color:var(--brand);font-size:.85em;padding:0 14px}
+  .calhead,.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
+  .calhead{margin-bottom:2px}
+  .calhcell{text-align:center;font-size:.74em;font-weight:700;color:var(--muted);padding:2px 0 4px}
+  .calhcell.sun{color:#e05252} .calhcell.sat{color:#4a78e0}
+  .calcell{height:56px;border-radius:12px;padding:4px 0 3px;display:flex;flex-direction:column;
+    align-items:center;gap:2px;position:relative;transition:background .12s}
+  .calcell .cring{--ring:transparent;--ring-bg:transparent;--p:0%;width:34px;height:34px;flex:0 0 auto;border-radius:50%;
+    display:grid;place-items:center;background:conic-gradient(var(--ring) var(--p),var(--ring-bg) 0)}
+  .calcell .cnum{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--card);
+    font-size:.84em;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .calcell.sun .cnum{color:#e05252} .calcell.sat .cnum{color:#4a78e0}
+  .calcell.past:not(.has) .cnum{opacity:.4}
+  .calcell .cinfo{font-size:.66em;font-weight:700;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .calcell.has{cursor:pointer}
+  .calcell.has:hover{background:var(--accent)}
+  .calcell.plan .cring{--ring:var(--brand);--ring-bg:#dbe3fb}                 /* 예정: 옅은 파랑 링 */
+  .calcell.partial .cring{--ring:#f59e0b;--ring-bg:#fbe3bd}                   /* 진행 중: 주황으로 채워짐 */
   .calcell.partial .cinfo{color:#b45309}
-  .calcell .cbar{height:4px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:1px}
-  .calcell .cbar>i{display:block;height:100%;background:#f59e0b}
+  .calcell.done .cring{--ring:var(--ok);--ring-bg:var(--ok);--p:100%}          /* 완료: 초록 원 */
+  .calcell.done .cnum{background:var(--ok);color:#fff}
+  .calcell.done .cinfo{color:var(--ok)}
+  .calcell.studied .cring{--ring:#9fd8b6;--ring-bg:#9fd8b6;--p:100%}          /* 일정 밖 학습: 옅은 초록 */
+  .calcell.studied .cnum{background:var(--ok-bg);color:var(--ok)}
+  .calcell.studied .cinfo{color:var(--ok)}
+  .calcell.today .cnum{font-weight:800;color:var(--brand)}
+  .calcell.today.done .cnum{color:#fff}
+  .calcell.today::after{content:"";position:absolute;bottom:2px;width:16px;height:3px;border-radius:2px;background:var(--brand)}
+  .calcell.sel{background:#eaf0ff;box-shadow:inset 0 0 0 1.5px var(--brand)}  /* 선택한 날 */
+  .calfoot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;font-size:.78em;color:var(--muted)}
+  .calfoot .lg{display:inline-flex;align-items:center;gap:5px}
+  .calfoot .lg i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .calfoot .sum{margin-left:auto;color:var(--ink);font-weight:600}
+  @media(min-width:640px){
+    .calcell{height:72px;padding-top:7px}
+    .calcell .cring{width:40px;height:40px} .calcell .cnum{width:33px;height:33px;font-size:.9em}
+    .calcell .cinfo{font-size:.72em}
+  }
   /* 일정 수정 펼치기 헤더 */
   #editPanel>summary{list-style:none;cursor:pointer;background:var(--accent);color:var(--brand);
     border:1px solid var(--brand);border-radius:10px;padding:11px 14px;font-weight:700;
@@ -690,10 +713,10 @@
         <div class="btnrow"><button class="btn" id="eApply" data-i18n="sch_reapply">다시 배치</button></div>
       </details>
       <div class="calnav">
-        <button id="calPrev" type="button">◀</button>
         <b id="calLabel"></b>
-        <button id="calNext" type="button">▶</button>
         <button id="calToday" type="button" data-i18n="cal_today">오늘</button>
+        <button id="calPrev" type="button" aria-label="prev">‹</button>
+        <button id="calNext" type="button" aria-label="next">›</button>
       </div>
       <div id="calendar"></div>
       <div id="dayDetail"></div>
@@ -1077,7 +1100,7 @@ const I18N = {
     sch_gen:"일정 생성", sch_statusTitle:"학습 현황",
     sch_editSummary:"✏️ 현재·예정 일정 수정 — 시작일·종료일·개수 변경 (눌러서 펼치기)",
     sch_editHint:"미래(오늘 이후) 일정을 새 조건으로 자동 재배치합니다. 지난 기록과 학습 진도는 유지됩니다.",
-    sch_reapply:"다시 배치", cal_today:"오늘", cal_todayMark:"·오늘",
+    sch_reapply:"다시 배치", cal_today:"오늘", cal_lgDone:"완료", cal_lgPartial:"진행 중", cal_lgPlan:"예정", cal_lgStudied:"일정 외 학습", cal_sum:"학습 {d}일 · 일정 {done}/{total}",
     mem_settingsSummary:"⚙️ 암기 설정 (범위·방식·단어 수)",
     mem_sub:"단계별로 진행합니다. 1단계 뜻+ひらがな → 2단계 ひらがな+漢字 → 3단계 漢字+뜻 → 4단계 예문 순으로 넘어갑니다.",
     mem_scope:"학습 범위", scope_today:"오늘 분량", scope_date:"날짜", scope_selected:"선택 단어", scope_all:"전체", lbl_date:"날짜",
@@ -1277,7 +1300,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     sch_gen:"Generate schedule", sch_statusTitle:"Learning status",
     sch_editSummary:"✏️ Edit current/upcoming schedule — change dates and count (tap to expand)",
     sch_editHint:"The future (today onward) schedule is re-distributed with the new settings. Past records and progress are kept.",
-    sch_reapply:"Re-distribute", cal_today:"Today", cal_todayMark:" ·today",
+    sch_reapply:"Re-distribute", cal_today:"Today", cal_lgDone:"Done", cal_lgPartial:"In progress", cal_lgPlan:"Planned", cal_lgStudied:"Off-schedule", cal_sum:"{d} study days · {done}/{total} scheduled",
     mem_settingsSummary:"⚙️ Memorize settings (scope · mode · count)",
     mem_sub:"Proceed in stages: Stage 1 meaning+ひらがな → Stage 2 ひらがな+漢字 → Stage 3 漢字+meaning → Stage 4 examples.",
     mem_scope:"Study scope", scope_today:"Today's load", scope_date:"Date", scope_selected:"Selected words", scope_all:"All", lbl_date:"Date",
@@ -1419,7 +1442,6 @@ function applyI18n(){
     if(isDefault) el.value=nv;
     el._i18nDefault=nv;
   });
-  document.documentElement.style.setProperty("--today-label", JSON.stringify(t("cal_todayMark")));
   renderSyncUI();   // 동기화 패널의 상태 문구도 현재 언어로 갱신
 }
 
@@ -3136,8 +3158,8 @@ function renderCalendar(){
   const startDow=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
   const head=WK.map((d,i)=>`<div class="calhcell ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join("");
   const studied=studyByDate();
-  let cells="";
-  for(let i=0;i<startDow;i++) cells+=`<div class="calcell empty"></div>`;
+  let cells="", mDone=0, mTotal=0, mDays=0;
+  for(let i=0;i<startDow;i++) cells+=`<div class="calcell calpad"></div>`;
   for(let day=1;day<=daysInMonth;day++){
     const ds=fmtDate(new Date(y,m,day)), dow=new Date(y,m,day).getDay();
     const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));   // 제외 단어는 완료율에서 제외
@@ -3146,23 +3168,28 @@ function renderCalendar(){
     if(ds===today) cls.push('today');
     if(ds<today) cls.push('past');
     if(ds===selDate) cls.push('sel');
-    let info="";
-    if(ids && ids.length){
+    let info="", p=0, tip=ds;
+    if(ids.length){
       cls.push('has'); const done=countDoneOn(ds, ids);   // 복습 회차면 그 회차에 외운 것만
-      const pct=Math.round(done/ids.length*100);
-      if(done===ids.length) cls.push('done');
-      else if(done>0) cls.push('partial');   // 부분 진행
-      const mark=done===ids.length?'✅':(done>0?'…':'');
-      info=`<div class="cinfo">${done}/${ids.length}${mark}</div>`+
-        (done>0&&done<ids.length?`<div class="cbar"><i style="width:${pct}%"></i></div>`:'');
+      p=Math.round(done/ids.length*100);
+      cls.push(done===ids.length?'done':done>0?'partial':'plan');
+      info=`<span class="cinfo">${done}/${ids.length}</span>`;
+      tip+=` · ${t("detail_done",{done, total:ids.length})}`;
+      mDone+=done; mTotal+=ids.length; if(done>0) mDays++;
     } else if(studied[ds] && studied[ds].size){
       // 일정은 없지만(지워졌거나 일정 밖 학습) 그날 공부한 기록이 있는 날
-      cls.push('has','done');
-      info=`<div class="cinfo">📖${studied[ds].size}</div>`;
+      cls.push('has','studied');
+      info=`<span class="cinfo">+${studied[ds].size}</span>`;
+      tip+=` · ${t("detail_studied",{n:studied[ds].size})}`;
+      mDays++;
     }
-    cells+=`<div class="${cls.join(' ')}" data-cal="${ds}"><div class="cnum">${day}</div>${info}</div>`;
+    if(ds===today) tip+=` (${t("cal_today")})`;
+    cells+=`<div class="${cls.join(' ')}" data-cal="${ds}" title="${esc(tip)}"><span class="cring" style="--p:${p}%"><span class="cnum">${day}</span></span>${info}</div>`;
   }
-  $("#calendar").innerHTML=`<div class="calhead">${head}</div><div class="calgrid">${cells}</div>`;
+  const lg=(bg,k)=>`<span class="lg"><i style="background:${bg}"></i>${esc(t(k))}</span>`;
+  const foot=`<div class="calfoot">${lg("var(--ok)","cal_lgDone")}${lg("conic-gradient(#f59e0b 50%,#fbe3bd 0)","cal_lgPartial")}${lg("#dbe3fb","cal_lgPlan")}${lg("#9fd8b6","cal_lgStudied")}
+    ${mDays||mTotal?`<span class="sum">${esc(t("cal_sum",{d:mDays, done:mDone, total:mTotal}))}</span>`:''}</div>`;
+  $("#calendar").innerHTML=`<div class="calhead">${head}</div><div class="calgrid">${cells}</div>${foot}`;
 }
 function renderDayDetail(){
   const box=$("#dayDetail");
@@ -3173,8 +3200,8 @@ function renderDayDetail(){
     // 일정 없이 학습 기록만 있는 날 — 그날 공부한 단어를 보여준다(지울 것이 없으니 ✕ 없음)
     const sw=studied.map(wordById).filter(Boolean);
     box.innerHTML=`<div class="daydetail">
-      <div><b>${selDate}</b> <span class="muted">${esc(t("detail_studied",{n:sw.length}))}</span></div>
-      <div style="margin-top:8px">${sw.map(w=>`<span class="wchip" style="cursor:default">${esc(w.kanji||w.hiragana)}</span>`).join("")}</div>
+      <div><b>${dayLabel(selDate)}</b> <span class="muted">${esc(t("detail_studied",{n:sw.length}))}</span></div>
+      <div style="margin-top:8px">${sw.map(w=>`<span class="wchip ok" style="cursor:default">✓ ${esc(w.kanji||w.hiragana)}</span>`).join("")}</div>
       <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_studiedHint"))}</div>
     </div>`;
     return;
@@ -3182,15 +3209,25 @@ function renderDayDetail(){
   const ids=state.schedule[selDate], words=ids.map(wordById).filter(Boolean);
   const activeIds=ids.filter(id=>!isExcluded(id));   // 제외 단어는 완료율 집계에서 제외
   const done=countDoneOn(selDate, activeIds);
-  const chips=words.map(w=>`<span class="wchip" data-date="${selDate}" data-id="${w.id}" style="${doneForDate(w.id,selDate)?'opacity:.45;text-decoration:line-through':''}">${esc(w.kanji||w.hiragana)} ✕</span>`).join("");
+  // 외운 단어는 초록 칩(✓), 남은 단어는 기본 칩 — 줄 긋기보다 한눈에 구분된다
+  const chips=words.map(w=>{ const ok=doneForDate(w.id,selDate);
+    return `<span class="wchip${ok?' ok':''}" data-date="${selDate}" data-id="${w.id}">${ok?'✓ ':''}${esc(w.kanji||w.hiragana)}<i class="x">✕</i></span>`; }).join("");
+  const pct=activeIds.length?Math.round(done/activeIds.length*100):0;
   box.innerHTML=`<div class="daydetail">
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <b>${selDate}</b> <span class="muted">${t("detail_done",{done, total:activeIds.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
+      <b>${dayLabel(selDate)}</b> <span class="muted">${t("detail_done",{done, total:activeIds.length})}${selDate<todayStr()?t("detail_pastRecord"):''}</span>
       <button class="ddel" data-deldate="${selDate}" style="margin-left:auto">${esc(t("detail_deleteDate"))}</button>
     </div>
-    <div style="margin-top:8px">${chips}</div>
+    <div class="daybar"><i style="width:${pct}%;background:${pct===100?'var(--ok)':'#f59e0b'}"></i></div>
+    <div style="margin-top:10px">${chips}</div>
     <div class="muted" style="font-size:.8em;margin-top:6px">${esc(t("detail_hint"))}</div>
   </div>`;
+}
+// 상세 제목: 2026-09-30 → "9월 30일 (수)" / "Wed, Sep 30"
+function dayLabel(ds){
+  const d=new Date(ds+"T00:00:00");
+  return LANG==="en" ? `${WK_EN[d.getDay()]}, ${MON_EN[d.getMonth()].slice(0,3)} ${d.getDate()}`
+    : `${d.getMonth()+1}월 ${d.getDate()}일 (${WK_KO[d.getDay()]})`;
 }
 // 학습일지: 날짜·시간별로 세분화된 학습 기록(암기·객관식·주관식·정정 + 정/오답) 표시
 function renderLog(){
