@@ -1159,7 +1159,7 @@ const I18N = {
     gram_sub:"동사 3그룹, 형용사 2종, 기타 품사, 필수 표현. 암기·퀴즈의 품사 배지와 같은 색이에요. 아래 버튼으로 바로 이동하세요.",
     gram_expandAll:"전부 열기", gram_collapseAll:"전부 접기", gram_tipLabel:"구분법·활용", gram_teDefault:"て형 변환",
     gram_noExplain:"이 품사의 문법 설명은 아직 없어요.", modal_close:"닫기", totop_title:"맨 위로",
-    toast_storageFull:"저장 공간 부족", toast_selAdded:"검색결과를 선택에 추가", toast_exported:"내보내기 완료",
+    toast_storageFull:"저장 공간 부족", toast_newVersion:"새 버전이 있어요 — 지금 하던 학습을 마치면 자동으로 새로고침됩니다", toast_selAdded:"검색결과를 선택에 추가", toast_exported:"내보내기 완료",
     toast_imported:"가져오기 완료: {name} · {n}개", toast_badJson:"올바른 JSON 파일이 아닙니다",
     toast_enterTopic:"단어장 주제를 입력하세요", toast_promptCopied:"프롬프트 복사됨 · AI에 붙여넣으세요", toast_copyFail:"복사 실패 · 길게 눌러 직접 복사하세요",
     confirm_reset:"샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)", toast_reset:"초기화 완료", name_sample:"샘플 데이터",
@@ -1359,7 +1359,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     gram_sub:"3 verb groups, 2 adjective types, other parts of speech, and essential patterns. Same colors as the badges in Memorize/Quiz. Use the buttons below to jump.",
     gram_expandAll:"Expand all", gram_collapseAll:"Collapse all", gram_tipLabel:"How to tell & conjugate", gram_teDefault:"Te-form change",
     gram_noExplain:"No grammar explanation for this part of speech yet.", modal_close:"Close", totop_title:"To top",
-    toast_storageFull:"Storage full", toast_selAdded:"Added results to selection", toast_exported:"Export complete",
+    toast_storageFull:"Storage full", toast_newVersion:"A new version is available — the app will refresh when you finish this session", toast_selAdded:"Added results to selection", toast_exported:"Export complete",
     toast_imported:"Imported: {name} · {n} words", toast_badJson:"Not a valid JSON file",
     toast_enterTopic:"Enter a wordbook topic", toast_promptCopied:"Prompt copied · paste it into an AI", toast_copyFail:"Copy failed · long-press to copy manually",
     confirm_reset:"Reset to sample data? (imported words & progress will be deleted)", toast_reset:"Reset complete", name_sample:"Sample data",
@@ -3249,21 +3249,30 @@ let calRef=null, selDate=null;
 const WK_KO=['일','월','화','수','목','금','토'];
 const WK_EN=['Su','Mo','Tu','We','Th','Fr','Sa'];
 const MON_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
-// 연속 학습일 — 오늘부터 거꾸로 공부한 날이 이어진 만큼.
-// 학습일지는 최근 2000건만 남고 외운 날짜도 마지막 날로 덮이므로, 일정에서 완료한 날도 공부한 날로 센다.
-// 일정도 기록도 없는 날(쉬는 날)은 끊지 않고 건너뛴다. 끊기는 건 일정이 있었는데 하나도 못 한 날뿐.
+// 캘린더 한 칸의 상태 — 달력 그리기와 연속 학습일이 같은 판정을 쓴다
+//  done/partial/plan/miss: 일정 있는 날, studied: 일정 칸 없이 학습 기록만 있는 날(완료로 표시), null: 빈 날
+function dayStatus(ds, studied, today){
+  const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));   // 제외 단어는 완료율에서 제외
+  if(ids.length){
+    const done=countDoneOn(ds, ids);   // 복습 회차면 그 회차에 외운 것만
+    return {kind: done===ids.length?'done':done>0?'partial':ds<today?'miss':'plan', done, total:ids.length};
+  }
+  const n=studied[ds] ? studied[ds].size : 0;
+  return n ? {kind:'studied', done:n, total:n} : null;
+}
+// 연속 학습일 — 캘린더에서 공부한 날(완료·진행 중·학습 기록)이 오늘부터 거꾸로 이어진 만큼.
+// 빈 날(쉬는 날)은 끊지 않고 건너뛰고, '놓침'(일정이 있었는데 하나도 못 한 날)에서만 끊는다.
 // 오늘은 아직 끝나지 않았으니 못 했어도 끊지 않는다.
 function studyStreak(studied){
-  const keys=Object.keys(studied).concat(Object.keys(state.schedule));
+  const keys=Object.keys(studied).concat(Object.keys(state.schedule)).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k));
   if(!keys.length) return 0;
   const first=keys.sort()[0], today=todayStr();
   let n=0;
   for(const d=new Date();; d.setDate(d.getDate()-1)){
     const ds=fmtDate(d); if(ds<first) break;
-    const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));
-    const did=(studied[ds] && studied[ds].size) || (ids.length && countDoneOn(ds, ids)>0);
-    if(did){ n++; continue; }
-    if(ids.length && ds!==today) break;
+    const st=dayStatus(ds, studied, today);
+    if(st && st.done>0){ n++; continue; }
+    if(st && st.kind==='miss') break;
   }
   return n;
 }
@@ -3282,29 +3291,21 @@ function renderCalendar(slide){
   for(let i=0;i<startDow;i++) list.push({pad:true});
   for(let day=1;day<=daysInMonth;day++){
     const ds=fmtDate(new Date(y,m,day)), dow=new Date(y,m,day).getDay();
-    const ids=(state.schedule[ds]||[]).filter(id=>!isExcluded(id));   // 제외 단어는 완료율에서 제외
+    const st=dayStatus(ds, studied, today);
     const cls=['calcell'];
     if(dow===0) cls.push('sun'); else if(dow===6) cls.push('sat');
     if(ds===today) cls.push('today');
     if(ds<today) cls.push('past');
     if(ds===selDate) cls.push('sel');
     let info="", p=0, tip=ds, act=ds===today;
-    if(ids.length){
-      cls.push('has'); act=true; const done=countDoneOn(ds, ids);   // 복습 회차면 그 회차에 외운 것만
-      p=Math.round(done/ids.length*100);
-      // 지난날인데 하나도 못 했으면 '놓침'으로 구분한다
-      cls.push(done===ids.length?'done':done>0?'partial':ds<today?'miss':'plan');
-      info=`<span class="cinfo">${done}/${ids.length}</span>`;
-      tip+=` · ${t("detail_done",{done, total:ids.length})}`;
-      mDone+=done; mTotal+=ids.length; if(done>0) mDays++; if(!done && ds<today) mMiss++;
-    } else if(studied[ds] && studied[ds].size){
-      // 일정 칸은 없지만(예전 버전이 일정을 다시 만들며 지웠거나 따로 공부한 날) 학습 기록이 있는 날 —
-      // 그날 공부를 마친 것이므로 완료로 보여준다
-      const n=studied[ds].size;
-      cls.push('has','done'); act=true; p=100;
-      info=`<span class="cinfo">${n}/${n}</span>`;
-      tip+=` · ${t("detail_studied",{n})}`;
-      mDone+=n; mTotal+=n; mDays++;
+    if(st){
+      const {kind, done, total}=st;
+      // 일정 칸 없이 학습 기록만 있는 날(예전 버전이 일정을 지웠거나 따로 공부한 날)도 그날 공부를 마친 것이므로 완료로 보여준다
+      cls.push('has', kind==='studied'?'done':kind); act=true;
+      p=Math.round(done/total*100);
+      info=`<span class="cinfo">${done}/${total}</span>`;
+      tip+=` · ${kind==='studied' ? t("detail_studied",{n:done}) : t("detail_done",{done, total})}`;
+      mDone+=done; mTotal+=total; if(done>0) mDays++; if(kind==='miss') mMiss++;
     }
     if(ds===today) tip+=` (${t("cal_today")})`;
     list.push({cls, ds, day, p, info, tip, act});
@@ -5804,6 +5805,42 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
     try { initRepoWordbooks(); } catch (e) {}
   });
 }
+/* 새 버전 감지 — 홈 화면 앱은 백그라운드에서 돌아올 때 페이지를 다시 읽지 않고,
+   index.html은 HTTP 캐시(10분)도 걸려 있어 배포한 수정이 한동안 안 보였다.
+   앱으로 돌아올 때 서버의 index.html 버전(ETag)을 확인해, 바뀌었으면 새로고침한다.
+   시험·암기 도중이면 끝난 뒤(탭을 옮길 때) 새로고침한다. */
+const APP_URL=location.pathname.replace(/[^/]*$/,"")+"index.html";
+let _appTag=null, _appChecked=0, _reloadPending=false;
+async function headTag(cache){
+  const r=await fetch(APP_URL,{method:"HEAD",cache});
+  return r.ok ? (r.headers.get("etag")||r.headers.get("last-modified")) : null;
+}
+function appBusy(){
+  return ($("#quizArea").style.display!=="none" && quiz.list.length && !quiz.finished)
+    || ($("#memStage").style.display!=="none" && mem.list.length);
+}
+function reloadForUpdate(){
+  if(appBusy()){ if(!_reloadPending) toast(t("toast_newVersion")); _reloadPending=true; return; }
+  // 같은 판 때문에 두 번 새로고침하지 않는다(캐시 비교가 어긋나도 무한 새로고침 방지)
+  try{ if(sessionStorage.getItem("jaq.reloadedFor")===_appTag) return; sessionStorage.setItem("jaq.reloadedFor", _appTag); }catch(e){}
+  try{ save(); }catch(e){}
+  location.reload();
+}
+async function checkAppUpdate(){
+  if(!location.protocol.startsWith("http") || Date.now()-_appChecked<60000) return;
+  _appChecked=Date.now();
+  try{
+    const now=await headTag("no-store"); if(!now) return;
+    if(_appTag==null){
+      // 처음: 지금 떠 있는 판(브라우저 캐시본)과 서버 판을 비교
+      _appTag=await headTag("force-cache").catch(()=>null) || now;
+    }
+    if(now!==_appTag){ _appTag=now; reloadForUpdate(); }
+  }catch(e){}
+}
+window.addEventListener("load",()=>setTimeout(checkAppUpdate,3000));
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkAppUpdate(); });
+$("#nav").addEventListener("click",()=>{ if(_reloadPending && !appBusy()) setTimeout(reloadForUpdate,0); });
 // 설치 버튼: beforeinstallprompt를 잡아 사용자 제스처로 설치 안내
 (function () {
   let deferredPrompt = null;
