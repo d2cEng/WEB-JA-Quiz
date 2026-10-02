@@ -1258,7 +1258,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_tapHint:"👆 문제를 눌러 {f} 보기", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
-    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"정답률 90% 미만 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
+    fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"정답률 90% 미만 단어 {n}개를 뒤쪽 일정에 나눠 넣었어요 🔁", toast_reinforceCap:" (하루 분량이 넘치지 않게 {n}개는 다음에)", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
@@ -1458,7 +1458,7 @@ detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
     quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_tapHint:"👆 Tap the question to see the {f}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
-    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} words under 90% accuracy back to later dates 🔁", rq_rate:"Accuracy",
+    fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Spread {n} words under 90% accuracy over later dates 🔁", toast_reinforceCap:" ({n} held back so no day gets overloaded)", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
@@ -5267,27 +5267,48 @@ function rateLabel(id){
   const st=(quiz.jlpt && w0) ? jstatOf(w0) : statOf(id), n=st.o+st.x;
   return n ? Math.round(st.o/n*100)+"% ("+st.o+"/"+n+")" : "–";
 }
+/* 다른 날 재출제가 너무 불어나지 않게:
+   · 날짜마다 보강으로 더할 수 있는 양에 상한을 둔다 — 그날 원래 분량의 30% (최소 3, 최대 20개)
+   · 가까운 REINFORCE_SPAN일 안에서, 보강이 덜 찬 날부터 채운다(내일만 몰리지 않게)
+   · 정답률이 낮은 단어부터 넣고, 자리가 없으면 이번엔 넣지 않는다
+     (정답률 90% 전이면 다음 시험 뒤에 다시 시도되고, 시험 출제 비중은 그대로 높다) */
+const REINFORCE_RATIO=0.3, REINFORCE_MIN=3, REINFORCE_MAX=20, REINFORCE_SPAN=14;
+function reinforceCapOf(d){
+  const ra=state.reinforceAt||{}, ids=state.schedule[d]||[];
+  const base=ids.filter(id=>!ra[d+"|"+id]).length;                 // 원래 분량(보강 제외)
+  const used=ids.length-base;
+  const cap=Math.min(REINFORCE_MAX, Math.max(REINFORCE_MIN, Math.round(base*REINFORCE_RATIO)));
+  return {cap, used, left:Math.max(0, cap-used)};
+}
 function reinforceSchedule(ids){
   const today=todayStr();
-  const future=Object.keys(state.schedule).filter(d=>d>today).sort();
-  if(!future.length) return 0;
-  let n=0;
+  const future=Object.keys(state.schedule).filter(d=>d>today).sort().slice(0, REINFORCE_SPAN);
+  if(!future.length) return {n:0, skipped:0};
   quiz.reinforcedAt=quiz.reinforcedAt||[];
   const now=Date.now();
   state.reinforceAt=state.reinforceAt||{};
-  let k=0;
-  ids.forEach(id=>{
-    if(isExcluded(id)) return;
-    // 이미 뒤쪽 날짜에 잡혀 있으면 그날 다시 나오므로 또 넣지 않는다 (날마다 불어나지 않게)
-    if(future.some(d=>(state.schedule[d]||[]).includes(id))) return;
-    const d=future[(k++) % future.length];         // 뒤쪽 날짜들에 고루 나눠 넣는다
-    const arr=state.schedule[d]||(state.schedule[d]=[]);
+  const allFuture=Object.keys(state.schedule).filter(d=>d>today);
+  // 정답률 낮은 순 → 많이 틀린 순
+  const cand=ids.filter(id=>!isExcluded(id)
+      // 이미 뒤쪽 날짜에 잡혀 있으면 그날 다시 나오므로 또 넣지 않는다 (날마다 불어나지 않게)
+      && !allFuture.some(d=>(state.schedule[d]||[]).includes(id)))
+    .sort((a,b)=>((statRate(a)??1)-(statRate(b)??1)) || (statOf(b).x-statOf(a).x));
+  const room=Object.fromEntries(future.map(d=>[d, reinforceCapOf(d)]));
+  let n=0, skipped=0;
+  cand.forEach(id=>{
+    // 남은 자리가 있는 날 중 보강이 가장 덜 찬(비율) 날, 같으면 가까운 날
+    let best=null;
+    future.forEach(d=>{ const r=room[d]; if(r.left<=0) return;
+      const fill=r.used/r.cap; if(!best || fill<best.fill) best={d, fill}; });
+    if(!best){ skipped++; return; }
+    const d=best.d, arr=state.schedule[d]||(state.schedule[d]=[]);
     arr.push(id); n++;
+    room[d].used++; room[d].left--;
     state.reinforceAt[d+"|"+id]=now;               // 이 시각 이후에 다시 풀어야 그날 완료
     quiz.reinforcedAt.push({d, id});               // 어디에 넣었는지 기억 (맞음 처리로 되돌리기)
   });
   if(n) save();
-  return n;
+  return {n, skipped};
 }
 // 이 시험이 보강으로 넣은 자리에서 그 단어를 뺀다 (맞음 처리로 더는 약하지 않게 된 경우)
 function undoReinforce(id){
@@ -5325,8 +5346,8 @@ function renderQuizResults(){
     quiz.reinforced=true;
     // 이번에 맞혔더라도 누적 정답률이 90% 전이면 다른 날에 다시 나오게 한다
     const answered=[...new Set((quiz.mainList||quiz.list).map(w=>w.id))].filter(id=>quiz.done[id]);
-    const added=reinforceSchedule(answered.filter(needsReview));
-    if(added){ renderSchedule(); toast(t("toast_reinforced",{n:added})); }
+    const r=reinforceSchedule(answered.filter(needsReview));
+    if(r.n){ renderSchedule(); toast(t("toast_reinforced",{n:r.n})+(r.skipped?t("toast_reinforceCap",{n:r.skipped}):"")); }
   }
   // 고르기=내가 고른 답 · 주관식=내가 쓴 답 · 말하기=들린 발음 표시
   const givenMap = isPick?quiz.mcChosen : isSp?quiz.spHeard : quiz.saTyped;
