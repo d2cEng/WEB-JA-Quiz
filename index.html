@@ -284,6 +284,10 @@
   .qprompt.qtap:hover,.qprompt.qtap:focus-visible{background:var(--accent);outline:none}
   .qhint{max-height:0;opacity:0;overflow:hidden;text-align:center;transition:max-height .2s,opacity .2s;font-size:1.02em;color:var(--brand);font-weight:600}
   .qhint.show{max-height:6em;opacity:1;margin:2px 0 4px}
+  .qhint.ok{color:var(--ok)} .qhint.ok .qhint-k{border-color:#9fd8b6;color:var(--ok)}
+  .qhint.bad{color:var(--bad)} .qhint.bad .qhint-k{border-color:#f0b4ac;color:var(--bad)}
+  .qhint.ok,.qhint.bad{display:block;width:fit-content;margin-left:auto;margin-right:auto;padding:3px 12px;border-radius:10px}
+  .qhint.ok{background:var(--ok-bg)} .qhint.bad{background:var(--bad-bg)}
   .qhint-k{font-size:.72em;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px;vertical-align:middle}
   .qtaphelp{text-align:center;font-size:.76em;margin-top:2px}
   .qtaphelp.off{display:none}
@@ -4974,16 +4978,27 @@ $("#goPrintBtn").addEventListener("click",()=>showTab("print"));
 // t(푼 시각)를 반드시 남긴다 — 복습 회차(doneForDate)가 이 값으로 그 날짜의 완료를 가린다.
 // 빠뜨리면 시험을 아무리 풀어도 캘린더·일정 진행률이 갱신되지 않는다.
 function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr(), t:Date.now()}; save(); }
+// 답한 뒤 나머지 필드를 정답(초록)·오답(빨강) 색으로 펼친다.
+// 맞으면 잠시 보였다가 다음 문제로 넘어가며 사라지고, 틀리면 멈춘 화면에 그대로 남는다.
+function revealHint(ok){
+  const h=$("#qHint"); if(!h) return false;
+  h.classList.add("show"); h.classList.remove("ok","bad"); h.classList.add(ok?"ok":"bad");
+  const tp=$("#qTap"); if(tp) tp.setAttribute("aria-expanded","true");
+  const hp=$(".qtaphelp"); if(hp) hp.classList.add("off");
+  return true;
+}
 // 문제 필드 + 터치하면 나오는 '문제·정답에 없는 나머지 필드'
 // (예: 漢字→ひらがな 문제를 누르면 한글 뜻). 정답과 같은 글자가 되면(한자 없는 단어 등) 보여주지 않는다.
-function promptWithHint(w, pf, af, show){
+// rec(이미 푼 문제의 채점)가 있으면 펼친 채로, 정답·오답 색으로 보여준다
+function promptWithHint(w, pf, af, rec){
+  const show=!!rec, tone=rec ? (rec.ok||rec.fixed ? " ok" : " bad") : "";
   const shown=wField(w,pf), ans=wField(w,af);
   const other=["kanji","hira","korean"].find(f=>f!==pf && f!==af && !(f==="kanji" && af==="hira") && !(f==="hira" && af==="kanji"));
   const txt=other ? wField(w,other) : "";
   if(!txt || txt===shown || txt===ans || normAns(txt)===normAns(ans))
     return `<div class="qprompt">${esc(shown)}</div>`;
   return `<button type="button" class="qprompt qtap" id="qTap" aria-expanded="${show?"true":"false"}">${esc(shown)}</button>`
-    + `<div class="qhint${show?" show":""}" id="qHint"><span class="qhint-k">${esc(fieldLabel(other))}</span> <span class="${other==="korean"?"":"jp"}">${esc(txt)}</span></div>`
+    + `<div class="qhint${show?" show"+tone:""}" id="qHint"><span class="qhint-k">${esc(fieldLabel(other))}</span> <span class="${other==="korean"?"":"jp"}">${esc(txt)}</span></div>`
     + `<div class="qtaphelp muted${show?" off":""}">${esc(t("quiz_tapHint",{f:fieldLabel(other)}))}</div>`;
 }
 function renderQuiz(){
@@ -5016,7 +5031,7 @@ function renderQuiz(){
   let html = n2opt
     ? `<div class="n2head"><span class="n2tag">${esc(t("n2_tag_"+n2opt.n2))}</span>${levelBadge(w.level)}</div>`
       + `<p class="muted n2inst">${esc(t("n2_inst_"+n2opt.n2))}</p>${n2opt.q}`
-    : `<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}${promptWithHint(w,pf,af,review)}</div>`;
+    : `<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}${promptWithHint(w,pf,af,rec)}</div>`;
   if(n2opt){
     // 채점·이동은 4지선다와 동일한 구조(.choice + data-i)를 그대로 쓴다
     const sent = n2opt.n2==="yoho";   // 용법은 보기가 문장이라 1열·왼쪽 정렬
@@ -5174,10 +5189,10 @@ $("#quizBody").addEventListener("click",e=>{
   const isN2=quiz.phase==="n2";
   const b=e.target.closest(".choice"); if(!b||quiz.answered||!(quiz.phase==="mc"||isN2)) return;
   quiz.answered=true;
-  const qh=$("#qHint"); if(qh){ qh.classList.add("show"); const hp=$(".qtaphelp"); if(hp) hp.classList.add("off"); }   // 답한 뒤엔 나머지 필드도 보여준다
   const w=quiz.list[quiz.idx];
   const opt=quiz.opts[w.id]||{t:[],k:-1};
   const pick=+b.dataset.i, ok=(pick===opt.k);
+  const hinted=revealHint(ok);   // 답한 뒤엔 나머지 필드도 정답·오답 색으로 보여준다
   $$(".choice").forEach(c=>{
     if(+c.dataset.i===opt.k) c.classList.add("correct");
     else if(c===b) c.classList.add("wrong");
@@ -5194,7 +5209,8 @@ $("#quizBody").addEventListener("click",e=>{
   if(!quiz.jlpt) logEvent(w.id, isN2?"n2":"mc", ok?"o":"x");   // 학습일지는 내 단어장 것만
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans}));   // 약한 단어는 뒤에서 다시
   // 틀렸으면 멈춰서 정답을 보게 하고, 맞게 답했다고 판단하면 바로 '맞음 처리'할 수 있게 한다
-  if(ok) scheduleNext(900); else showFixBtn(w.id);
+  // 나머지 필드가 펼쳐졌으면 읽을 시간을 조금 더 준다
+  if(ok) scheduleNext(hinted?1500:900); else showFixBtn(w.id);
 });
 function submitSA(){
   if(quiz.answered) return;
@@ -5205,6 +5221,7 @@ function submitSA(){
   const accept = acceptFor(w,quiz.curAf);
   const ok=accept.some(a=>normAns(a)===val || (normAns(a).length>1 && normAns(a).includes(val) && val.length>=2));
   $("#qInput").disabled=true; $("#qSubmit").disabled=true;
+  const hinted=revealHint(ok);
   if(ok){ quiz.score++; if(!quiz.jlpt) quizMarkDone(w.id); fb(true,t("fb_correct")); }
   else { quiz.wrong.add(w.id); quiz.saTyped[w.id]=$("#qInput").value.trim(); fb(false,t("fb_answer",{ans:wField(w,quiz.curAf)})); }
   quiz.done[w.id]={ok, given:$("#qInput").value.trim()};
@@ -5212,7 +5229,7 @@ function submitSA(){
   if(quiz.jlpt) jstatAdd(w, ok); else statAdd(w.id, ok);
   if(!quiz.jlpt) logEvent(w.id,"sa",ok?"o":"x");   // 주관식 정/오답을 학습일지에 기록
   if(!ok && requeueWeak(w)) fb(false, t("fb_answerAgain",{ans:wField(w,quiz.curAf)}));
-  if(ok) scheduleNext(1100); else showFixBtn(w.id);
+  if(ok) scheduleNext(hinted?1600:1100); else showFixBtn(w.id);
 }
 // 정답률 WEAK_RATE 이하인 단어를 틀리면 같은 시험 안에서 다시 묻는다.
 // 목록 끝에 덧붙이고 그 자리를 '재출제'로 표시해 둔다 (renderQuiz가 채점을 지운다).
