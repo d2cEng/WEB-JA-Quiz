@@ -279,6 +279,14 @@
   .qcenter{min-height:140px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;margin-bottom:8px}
   .qprompt{font-size:clamp(20px,5vw,30px);font-weight:800;text-align:center;margin:6px 0 4px}
+  .qprompt.qtap{display:block;margin:6px auto 4px;border:none;background:none;color:inherit;font-family:inherit;cursor:pointer;
+    padding:4px 14px;border-radius:12px;border-bottom:2px dashed transparent;-webkit-tap-highlight-color:transparent}
+  .qprompt.qtap:hover,.qprompt.qtap:focus-visible{background:var(--accent);outline:none}
+  .qhint{max-height:0;opacity:0;overflow:hidden;text-align:center;transition:max-height .2s,opacity .2s;font-size:1.02em;color:var(--brand);font-weight:600}
+  .qhint.show{max-height:6em;opacity:1;margin:2px 0 4px}
+  .qhint-k{font-size:.72em;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px;vertical-align:middle}
+  .qtaphelp{text-align:center;font-size:.76em;margin-top:2px}
+  .qtaphelp.off{display:none}
   .qhira{text-align:center;color:var(--brand);font-weight:700;margin-bottom:6px}
   .choices{display:grid;gap:10px;grid-template-columns:1fr}
   @media(min-width:560px){.choices{grid-template-columns:1fr 1fr}}
@@ -1244,7 +1252,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
     toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다",
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_submit:"제출",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_tapHint:"👆 문제를 눌러 {f} 보기", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
     fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"정답률 90% 미만 단어 {n}개를 뒤쪽 일정에 다시 넣었어요 🔁", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
@@ -1444,7 +1452,7 @@ detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
     toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage",
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_submit:"Submit",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_tapHint:"👆 Tap the question to see the {f}", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
     fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Added {n} words under 90% accuracy back to later dates 🔁", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
@@ -4966,6 +4974,18 @@ $("#goPrintBtn").addEventListener("click",()=>showTab("print"));
 // t(푼 시각)를 반드시 남긴다 — 복습 회차(doneForDate)가 이 값으로 그 날짜의 완료를 가린다.
 // 빠뜨리면 시험을 아무리 풀어도 캘린더·일정 진행률이 갱신되지 않는다.
 function quizMarkDone(id){ state.progress[id]={done:true, date:todayStr(), t:Date.now()}; save(); }
+// 문제 필드 + 터치하면 나오는 '문제·정답에 없는 나머지 필드'
+// (예: 漢字→ひらがな 문제를 누르면 한글 뜻). 정답과 같은 글자가 되면(한자 없는 단어 등) 보여주지 않는다.
+function promptWithHint(w, pf, af, show){
+  const shown=wField(w,pf), ans=wField(w,af);
+  const other=["kanji","hira","korean"].find(f=>f!==pf && f!==af && !(f==="kanji" && af==="hira") && !(f==="hira" && af==="kanji"));
+  const txt=other ? wField(w,other) : "";
+  if(!txt || txt===shown || txt===ans || normAns(txt)===normAns(ans))
+    return `<div class="qprompt">${esc(shown)}</div>`;
+  return `<button type="button" class="qprompt qtap" id="qTap" aria-expanded="${show?"true":"false"}">${esc(shown)}</button>`
+    + `<div class="qhint${show?" show":""}" id="qHint"><span class="qhint-k">${esc(fieldLabel(other))}</span> <span class="${other==="korean"?"":"jp"}">${esc(txt)}</span></div>`
+    + `<div class="qtaphelp muted${show?" off":""}">${esc(t("quiz_tapHint",{f:fieldLabel(other)}))}</div>`;
+}
 function renderQuiz(){
   spAbort();   // 문제가 바뀌면 진행 중인 음성 인식 중단
   const w=quiz.list[quiz.idx];
@@ -4996,7 +5016,7 @@ function renderQuiz(){
   let html = n2opt
     ? `<div class="n2head"><span class="n2tag">${esc(t("n2_tag_"+n2opt.n2))}</span>${levelBadge(w.level)}</div>`
       + `<p class="muted n2inst">${esc(t("n2_inst_"+n2opt.n2))}</p>${n2opt.q}`
-    : `<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}<div class="qprompt">${esc(wField(w,pf))}</div></div>`;
+    : `<div class="qcenter">${w.pos||w.level?`<div style="margin-bottom:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${posBadge(w.pos,true)}${levelBadge(w.level)}</div>`:""}${promptWithHint(w,pf,af,review)}</div>`;
   if(n2opt){
     // 채점·이동은 4지선다와 동일한 구조(.choice + data-i)를 그대로 쓴다
     const sent = n2opt.n2==="yoho";   // 용법은 보기가 문장이라 1열·왼쪽 정렬
@@ -5147,11 +5167,14 @@ function startPhaseFresh(ph, base){
   renderQuiz();
 }
 $("#quizBody").addEventListener("click",e=>{
+  const tap=e.target.closest("#qTap");
+  if(tap){ const h=$("#qHint"); if(h){ const on=h.classList.toggle("show"); tap.setAttribute("aria-expanded",on); const hp=$(".qtaphelp"); if(hp) hp.classList.toggle("off",on); } return; }
   const fx=e.target.closest(".fixbtn[data-fix]");
   if(fx){ markCorrectNow(+fx.dataset.fix); return; }
   const isN2=quiz.phase==="n2";
   const b=e.target.closest(".choice"); if(!b||quiz.answered||!(quiz.phase==="mc"||isN2)) return;
   quiz.answered=true;
+  const qh=$("#qHint"); if(qh){ qh.classList.add("show"); const hp=$(".qtaphelp"); if(hp) hp.classList.add("off"); }   // 답한 뒤엔 나머지 필드도 보여준다
   const w=quiz.list[quiz.idx];
   const opt=quiz.opts[w.id]||{t:[],k:-1};
   const pick=+b.dataset.i, ok=(pick===opt.k);
