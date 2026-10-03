@@ -1268,7 +1268,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     mem_complete:"완료 ✓", mem_nextStage:"다음 단계로 ▶", mem_retryStage:"이 단계 다시 외우기 🔀",
     toast_memDone:"암기 완료! 🎉", toast_retryShuffle:"무작위로 다시 시작", toast_firstStage:"첫 단계입니다",
     toast_dropped:"제외함 · 단어 DB에서 복원할 수 있어요", toast_restored:"복원했어요", toast_restoredAll:"전체 복원했어요",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_tapHint:"👆 문제를 눌러 {f} 보기", quiz_submit:"제출",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"진행 {done} / {total}", quiz_inputPh:"{af} 입력", quiz_tapHint:"👆 문제를 눌러 {f} 보기", quiz_tapClue:"💡 문제를 누르면 힌트({f})", quiz_submit:"제출",
     toast_diffFields:"문제와 정답을 서로 다른 항목으로 선택하세요", toast_fewChoices:"단어가 4개 미만이라 보기가 적을 수 있어요",
     fb_correct:"정답!", fb_answer:"정답: {ans}", fb_answerAgain:"정답: {ans} · 뒤에서 다시 나와요 🔁", fb_fixed:"맞음 처리됨 (정답: {ans})", toast_enterAnswer:"답을 입력하세요", toast_reinforced:"정답률 90% 미만 단어 {n}개를 뒤쪽 일정에 나눠 넣었어요 🔁", toast_reinforceCap:" (하루 분량이 넘치지 않게 {n}개는 다음에)", rq_rate:"정답률",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
@@ -1468,7 +1468,7 @@ detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     mem_complete:"Done ✓", mem_nextStage:"Next stage ▶", mem_retryStage:"Review this stage again 🔀",
     toast_memDone:"Memorization complete! 🎉", toast_retryShuffle:"Restarting in random order", toast_firstStage:"This is the first stage",
     toast_dropped:"Excluded · you can restore it in the Words DB", toast_restored:"Restored", toast_restoredAll:"Restored all",
-    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_tapHint:"👆 Tap the question to see the {f}", quiz_submit:"Submit",
+    quiz_phaseFmt:"{phase} · {pf}→{af}", quiz_progress:"Progress {done} / {total}", quiz_inputPh:"Enter {af}", quiz_tapHint:"👆 Tap the question to see the {f}", quiz_tapClue:"💡 Tap the question for a hint ({f})", quiz_submit:"Submit",
     toast_diffFields:"Choose different fields for prompt and answer", toast_fewChoices:"Fewer than 4 words, so there may be few choices",
     fb_correct:"Correct!", fb_answer:"Answer: {ans}", fb_answerAgain:"Answer: {ans} · you'll see this again 🔁", fb_fixed:"Marked correct (answer: {ans})", toast_enterAnswer:"Enter an answer", toast_reinforced:"Spread {n} words under 90% accuracy over later dates 🔁", toast_reinforceCap:" ({n} held back so no day gets overloaded)", rq_rate:"Accuracy",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
@@ -5002,18 +5002,21 @@ function revealHint(ok){
   return true;
 }
 // 문제 필드 + 터치하면 나오는 '문제·정답에 없는 나머지 필드'
-// (예: 漢字→ひらがな 문제를 누르면 한글 뜻). 정답과 같은 글자가 되면(한자 없는 단어 등) 보여주지 않는다.
+// (예: 漢字→ひらがな 문제를 누르면 한글 뜻, 한글 뜻→漢字면 ひらがな).
+// 한글 뜻→漢字·ひらがな처럼 나머지가 정답의 실마리가 되는 경우엔 안내에 '힌트'라고 적는다.
+// 나머지가 정답과 같은 글자이면(한자 없는 단어 등) 보여주지 않는다.
 // rec(이미 푼 문제의 채점)가 있으면 펼친 채로, 정답·오답 색으로 보여준다
 function promptWithHint(w, pf, af, rec){
   const show=!!rec, tone=rec ? (rec.ok||rec.fixed ? " ok" : " bad") : "";
   const shown=wField(w,pf), ans=wField(w,af);
-  const other=["kanji","hira","korean"].find(f=>f!==pf && f!==af && !(f==="kanji" && af==="hira") && !(f==="hira" && af==="kanji"));
+  const other=["kanji","hira","korean"].find(f=>f!==pf && f!==af);
+  const clue=(other==="kanji" && af==="hira") || (other==="hira" && af==="kanji");
   const txt=other ? wField(w,other) : "";
   if(!txt || txt===shown || txt===ans || normAns(txt)===normAns(ans))
     return `<div class="qprompt">${esc(shown)}</div>`;
   return `<button type="button" class="qprompt qtap" id="qTap" aria-expanded="${show?"true":"false"}">${esc(shown)}</button>`
     + `<div class="qhint${show?" show"+tone:""}" id="qHint"><span class="qhint-k">${esc(fieldLabel(other))}</span> <span class="${other==="korean"?"":"jp"}">${esc(txt)}</span></div>`
-    + `<div class="qtaphelp muted${show?" off":""}">${esc(t("quiz_tapHint",{f:fieldLabel(other)}))}</div>`;
+    + `<div class="qtaphelp muted${show?" off":""}">${esc(t(clue?"quiz_tapClue":"quiz_tapHint",{f:fieldLabel(other)}))}</div>`;
 }
 function renderQuiz(){
   spAbort();   // 문제가 바뀌면 진행 중인 음성 인식 중단
