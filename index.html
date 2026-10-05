@@ -278,6 +278,7 @@
   /* 문제는 상하좌우 중앙정렬 */
   .qcenter{min-height:140px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;margin-bottom:8px}
+  .qdirhead{font-size:.8em;font-weight:800;color:var(--brand);margin:10px 2px -4px}
   .qprompt{font-size:clamp(20px,5vw,30px);font-weight:800;text-align:center;margin:6px 0 4px}
   .qprompt.qtap{display:block;margin:6px auto 4px;border:none;background:none;color:inherit;font-family:inherit;cursor:pointer;
     padding:4px 14px;border-radius:12px;border-bottom:2px dashed transparent;-webkit-tap-highlight-color:transparent}
@@ -870,8 +871,8 @@
     <div class="card noprint">
      <div class="bookpick" data-bookpick style="display:none"></div>
      <details id="quizSettings" open>
-      <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·문제/정답)</summary>
-      <p class="sub" data-i18n="quiz_sub">먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.</p>
+      <summary class="setsum" data-i18n="quiz_settingsSummary">⚙️ 퀴즈 설정 (범위·형식·문제/정답)</summary>
+      <p class="sub" data-i18n="quiz_sub">4지선다·주관식·말하기 중 시작할 형식을 고르세요. 풀다가 아래 토글로 다른 형식으로 옮길 수 있고, 4지선다와 주관식은 문제·정답 방향을 따로 정할 수 있어요.</p>
       <div class="tiphint" data-i18n="hint_quiz">💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요.</div>
       <label data-i18n="quiz_scope">출제 범위</label>
       <div class="seg seg-full" id="qScopeSeg">
@@ -881,11 +882,18 @@
         <button type="button" data-v="all" data-i18n="scope_all">전체</button>
       </div>
       <div id="qDateWrap" style="display:none"><label data-i18n="lbl_date">날짜</label><select id="qDate"></select></div>
+      <label data-i18n="quiz_startPhase">시작할 문제 형식</label>
+      <div class="seg seg-full" id="qStartSeg">
+        <button type="button" data-v="mc" class="on" data-i18n="quiz_mc">4지선다</button>
+        <button type="button" data-v="sa" data-i18n="quiz_sa">주관식</button>
+        <button type="button" data-v="speak" data-i18n="quiz_speak">🎤 말하기</button>
+      </div>
       <label data-i18n="quiz_dir">출제 방향</label>
       <div class="seg seg-full" id="qDirSeg">
         <button type="button" data-v="fixed" class="on" data-i18n="quiz_dirFixed">고정</button>
         <button type="button" data-v="random" data-i18n="quiz_dirRandom">무작위 (문제·정답 섞기)</button>
       </div>
+      <div class="qdirhead" data-i18n="quiz_dirMc">4지선다</div>
       <div class="row" style="align-items:flex-end" id="qFieldRow">
         <div><label data-i18n="quiz_promptField">문제 (보여줄 것)</label>
           <select id="qPromptField">
@@ -905,6 +913,24 @@
           </select>
         </div>
       </div>
+      <div class="qdirhead" data-i18n="quiz_dirSa">주관식</div>
+      <label class="chk" style="font-weight:500;margin-top:2px"><input type="checkbox" id="qSaSame" checked> <span data-i18n="quiz_saSame">4지선다와 같은 방향</span></label>
+      <div class="row" style="align-items:flex-end;display:none" id="qSaFieldRow">
+        <div><label data-i18n="quiz_promptField">문제 (보여줄 것)</label>
+          <select id="qSaPrompt">
+            <option value="kanji" data-i18n="field_kanji">漢字</option>
+            <option value="hira" data-i18n="field_hira">ひらがな</option>
+            <option value="korean" data-i18n="field_korean">한글 뜻</option>
+          </select>
+        </div>
+        <div style="flex:0 0 auto"><label>&nbsp;</label>
+          <button class="btn ghost" id="qSaSwap" data-i18n-title="quiz_swapTitle" title="문제↔정답 바꾸기" style="min-width:52px">↔</button>
+        </div>
+        <div><label data-i18n="quiz_answerField">정답 (맞힐 것)</label>
+          <select id="qSaAnswer"></select>
+        </div>
+      </div>
+      <div class="muted" id="qSpeakNote" style="font-size:.8em;margin:4px 2px 0" data-i18n="quiz_speakNote">🎤 말하기는 항상 漢字를 보고 읽기(발음)를 말합니다.</div>
       <label><span data-i18n="quiz_countPre">출제 단어 수: </span><b id="qCountLabel">0</b> / <span id="qCountMax">0</span><span data-i18n="unit_geSuf">개</span></label>
       <input type="range" id="qCount" min="1" max="1" value="1">
       <div class="btnrow"><button class="btn" id="startQuiz" data-i18n="btn_start">시작</button></div>
@@ -1206,9 +1232,9 @@ const I18N = {
     hint_quiz:"💡 <b>무작위</b>를 켜면 단어마다 문제·정답 방향이 달라집니다. 4지선다 뒤 주관식·🎤말하기로 이어지고, 틀린 단어만 다시 풀 수도 있어요. 시작한 뒤 <b>N2 어휘</b> 단계를 누르면 JLPT N2 형식(한자읽기·표기·문맥규정·용법·유의표현)으로 풀 수 있습니다.",
     hint_print:"💡 漢字·ひらがな·뜻 중 한 칸이 줄마다 무작위로 빈칸이 됩니다. <b>정답지</b>도 함께 인쇄할 수 있어요.",
     hint_grammar:"💡 암기·퀴즈의 <b>품사 배지</b>를 누르면 해당 문법 설명이 바로 떠요. 위 칩으로 항목 사이를 빠르게 이동하세요.",
-    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·문제/정답)", quiz_sub:"먼저 4지선다, 통과하면 주관식 → 말하기(발음)로 진행합니다.",
+    quiz_settingsSummary:"⚙️ 퀴즈 설정 (범위·형식·문제/정답)", quiz_sub:"4지선다·주관식·말하기 중 시작할 형식을 고르세요. 풀다가 아래 토글로 다른 형식으로 옮길 수 있고, 4지선다와 주관식은 문제·정답 방향을 따로 정할 수 있어요.",
     quiz_scope:"출제 범위", quiz_dir:"출제 방향", quiz_dirFixed:"고정", quiz_dirRandom:"무작위 (문제·정답 섞기)",
-    quiz_promptField:"문제 (보여줄 것)", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
+    quiz_promptField:"문제 (보여줄 것)", quiz_startPhase:"시작할 문제 형식", quiz_dirMc:"4지선다", quiz_dirSa:"주관식", quiz_saSame:"4지선다와 같은 방향", quiz_speakNote:"🎤 말하기는 항상 漢字를 보고 읽기(발음)를 말합니다.", quiz_answerField:"정답 (맞힐 것)", quiz_swapTitle:"문제↔정답 바꾸기",
     field_kanji:"漢字", field_hira:"ひらがな", field_korean:"한글 뜻",
     quiz_countPre:"출제 단어 수: ", quiz_mc:"4지선다", quiz_sa:"주관식", quiz_speak:"🎤 말하기", quiz_n2:"N2 어휘",
     n2_tag_yomi:"漢字読み", n2_tag_hyoki:"表記", n2_tag_bunmyaku:"文脈規定", n2_tag_yoho:"用法", n2_tag_iikae:"言い換え類義",
@@ -1406,9 +1432,9 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     hint_quiz:"💡 Turn on <b>Random</b> to vary the prompt/answer direction per word. Multiple choice is followed by short answer and 🎤 speaking, and you can retry only the words you missed. Once started, tap the <b>N2 vocabulary</b> stage to practise real JLPT N2 formats (reading, orthography, context, usage, paraphrase).",
     hint_print:"💡 One of 漢字·ひらがな·meaning is randomly blanked per row. You can also print the <b>answer key</b>.",
     hint_grammar:"💡 Tap a <b>part-of-speech badge</b> in Memorize/Quiz to instantly pop up its grammar. Use the chips above to jump between items.",
-    quiz_settingsSummary:"⚙️ Quiz settings (scope · prompt/answer)", quiz_sub:"Multiple choice first, then short-answer → speaking (pronunciation).",
+    quiz_settingsSummary:"⚙️ Quiz settings (scope · format · prompt/answer)", quiz_sub:"Pick the format to start with — multiple choice, typing or speaking. You can switch formats with the toggle while solving, and multiple choice and typing can each have their own prompt/answer direction.",
     quiz_scope:"Scope", quiz_dir:"Prompt direction", quiz_dirFixed:"Fixed", quiz_dirRandom:"Random (shuffle prompt/answer)",
-    quiz_promptField:"Prompt (shown)", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
+    quiz_promptField:"Prompt (shown)", quiz_startPhase:"Start with", quiz_dirMc:"Multiple choice", quiz_dirSa:"Typing", quiz_saSame:"Same direction as multiple choice", quiz_speakNote:"🎤 Speaking always shows the kanji and you say the reading.", quiz_answerField:"Answer (to guess)", quiz_swapTitle:"Swap prompt↔answer",
     field_kanji:"Kanji", field_hira:"Hiragana", field_korean:"Meaning",
     quiz_countPre:"Number of words: ", quiz_mc:"Multiple choice", quiz_sa:"Short answer", quiz_speak:"🎤 Speaking", quiz_n2:"N2 vocabulary",
     n2_tag_yomi:"漢字読み", n2_tag_hyoki:"表記", n2_tag_bunmyaku:"文脈規定", n2_tag_yoho:"用法", n2_tag_iikae:"言い換え類義",
@@ -4011,7 +4037,7 @@ function persistQuiz(){
       v:1, book:books.active, at:Date.now(), phase:quiz.phase,
       mainList:(quiz.mainList||quiz.list).map(w=>w.id),
       prevPhase:quiz.prevPhase||null,
-      pf:quiz.pf, af:quiz.af, dir:quiz.dir, pairById:quiz.pairById||null,
+      pf:quiz.pf, af:quiz.af, saPf:quiz.saPf||null, saAf:quiz.saAf||null, dir:quiz.dir, pairById:quiz.pairById||null,
       scope:quiz.scope||null, scopeDate:quiz.scopeDate||null, count:quiz.count||null,
       cur:packPhase(quiz), saved
     }));
@@ -4032,7 +4058,7 @@ function restorePersistedQuiz(){
   if(!cur||!main){ clearPersistedQuiz(); return false; }
   const saved={}; Object.keys(d.saved||{}).forEach(k=>{ const sv=unpack(d.saved[k]); if(sv) saved[k]=sv; });
   quiz=Object.assign({ mainList:main, phase:d.phase, answered:false, prevPhase:d.prevPhase||null,
-    pf:d.pf, af:d.af, dir:d.dir, pairById:d.pairById, saved,
+    pf:d.pf, af:d.af, saPf:d.saPf||null, saAf:d.saAf||null, dir:d.dir, pairById:d.pairById, saved,
     scope:d.scope||null, scopeDate:d.scopeDate||null, count:d.count||null }, cur);
   $("#quizArea").style.display="block";
   if(cur.finished) renderQuizResults(); else renderQuiz();
@@ -4698,7 +4724,9 @@ function quizAskable(w, pf, af){ return wField(w,pf)!==wField(w,af); }
 function quizPool(){
   const pool=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
   if(segVal("qDirSeg")==="random") return pool;   // 무작위 방향은 단어마다 유효한 쌍을 따로 고른다
-  const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
+  const start=segVal("qStartSeg")||"mc";
+  if(start==="speak") return pool.filter(w=>quizAskable(w,"kanji","hira"));   // 말하기: 漢字를 보고 읽기
+  const [pf,af]= start==="sa" ? saDir() : [$("#qPromptField").value, $("#qAnswerField").value];
   if(pf===af) return pool;                        // 잘못된 설정은 시작할 때 걸러진다
   return pool.filter(w=>quizAskable(w,pf,af));
 }
@@ -4719,6 +4747,7 @@ bindSeg("qDirSeg",()=>{
   const rnd=segVal("qDirSeg")==="random";
   $("#qFieldRow").style.opacity=rnd?".45":"";
   $("#qPromptField").disabled=rnd; $("#qAnswerField").disabled=rnd; $("#qSwap").disabled=rnd;
+  if(typeof refreshQuizDirUi==="function") refreshQuizDirUi();
   updateQuizCount();   // 방향에 따라 출제 가능 단어 수가 달라진다
 });
 // 정답 드롭다운에서 문제로 고른 항목은 제외
@@ -4736,10 +4765,42 @@ $("#qSwap").addEventListener("click",()=>{
   updateQuizCount();
 });
 syncQuizAnswer();
+/* ---- 주관식 방향 — 4지선다와 따로 정할 수 있다 (예: 4지선다 漢字→한글 뜻, 주관식 한글 뜻→ひらがな) ---- */
+function syncSaAnswer(){
+  const pf=$("#qSaPrompt").value, cur=$("#qSaAnswer").value;
+  const opts=[["korean",fieldLabel("korean")],["hira",fieldLabel("hira")],["kanji",fieldLabel("kanji")]].filter(([v])=>v!==pf);
+  $("#qSaAnswer").innerHTML=opts.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("");
+  $("#qSaAnswer").value = opts.some(([v])=>v===cur) ? cur : opts[0][0];
+}
+function saDir(){   // 주관식 방향 [문제, 정답]
+  if($("#qSaSame").checked) return [$("#qPromptField").value, $("#qAnswerField").value];
+  return [$("#qSaPrompt").value, $("#qSaAnswer").value];
+}
+function refreshQuizDirUi(){
+  const rnd=segVal("qDirSeg")==="random", same=$("#qSaSame").checked;
+  $("#qSaFieldRow").style.display = same ? "none" : "";
+  $("#qSaFieldRow").style.opacity = rnd ? ".45" : "";
+  $("#qSaSame").disabled=rnd;
+  ["#qSaPrompt","#qSaAnswer","#qSaSwap"].forEach(id=>$(id).disabled=rnd);
+}
+$("#qSaSame").addEventListener("change",()=>{
+  // 처음 풀 때는 4지선다 방향을 그대로 옮겨 놓고 고치게 한다
+  if(!$("#qSaSame").checked){ $("#qSaPrompt").value=$("#qPromptField").value; syncSaAnswer(); $("#qSaAnswer").value=$("#qAnswerField").value; syncSaAnswer(); }
+  refreshQuizDirUi(); updateQuizCount();
+});
+$("#qSaPrompt").addEventListener("change",()=>{ syncSaAnswer(); updateQuizCount(); });
+$("#qSaAnswer").addEventListener("change",updateQuizCount);
+$("#qSaSwap").addEventListener("click",()=>{
+  const p=$("#qSaPrompt").value, a=$("#qSaAnswer").value;
+  $("#qSaPrompt").value=a; syncSaAnswer(); $("#qSaAnswer").value=p; updateQuizCount();
+});
+bindSeg("qStartSeg",updateQuizCount);
+syncSaAnswer(); refreshQuizDirUi();
 $("#startQuiz").addEventListener("click",()=>{
-  const dir=segVal("qDirSeg")||"fixed";
+  const dir=segVal("qDirSeg")||"fixed", start=segVal("qStartSeg")||"mc";
   const pf=$("#qPromptField").value, af=$("#qAnswerField").value;
-  if(dir==="fixed" && pf===af){ toast(t("toast_diffFields")); return; }
+  const [saPf, saAf]=saDir();
+  if(dir==="fixed" && (pf===af || saPf===saAf)){ toast(t("toast_diffFields")); return; }
   const scoped=wordsForScope(segVal('qScopeSeg'),$("#qDate").value);
   const pool=quizPool();
   if(pool.length<1){ toast(scoped.length?t("toast_noAskable"):t("toast_noPrintWords")); return; }
@@ -4753,7 +4814,7 @@ $("#startQuiz").addEventListener("click",()=>{
   // mainList = 본시험(객관식·주관식 공통) 단어. 재시험은 이 목록을 바꾸지 않는다.
   // scope/count는 N2 어휘용 — N2는 문제·정답 방향을 쓰지 않으므로 방향 필터 없이 범위 전체에서 뽑는다.
   clearAdvance();
-  quiz={list, mainList:list.slice(), idx:0, phase:"mc", score:0, answered:false, finished:false, pf, af, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null, ansIdx:[], reask:[], reasked:{},
+  quiz={list, mainList:list.slice(), idx:0, phase:start, score:0, answered:false, finished:false, pf, af, saPf, saAf, dir, pairById, wrong:new Set(), saTyped:{}, mcChosen:{}, spHeard:{}, isRetry:false, saved:{}, done:{}, opts:{}, prevPhase:null, ansIdx:[], reask:[], reasked:{},
         scope:segVal('qScopeSeg'), scopeDate:$("#qDate").value, count};
   quiz.jlpt=false;
   moveQuizArea("quizHost");        // 시험 화면을 퀴즈 탭으로
@@ -5030,6 +5091,8 @@ function renderQuiz(){
   // 무작위 방향이면 단어별로 정해둔 문제·정답 쌍 사용
   let pf=quiz.pf, af=quiz.af;
   if(quiz.dir==="random"){ const p=(quiz.pairById&&quiz.pairById[w.id])||randPair(w); pf=p.pf; af=p.af; }
+  // 주관식은 따로 정한 방향 (그 단어로 물을 수 없으면 — 한자 없는 단어 등 — 4지선다 방향으로)
+  else if(quiz.phase==="sa" && quiz.saPf && quiz.saAf && quizAskable(w, quiz.saPf, quiz.saAf)){ pf=quiz.saPf; af=quiz.saAf; }
   if(quiz.phase==="speak"){ pf="kanji"; af="hira"; }   // 말하기: 항상 漢字 보고 발음
   quiz.curPf=pf; quiz.curAf=af;
   // N2 어휘는 방향(문제→정답) 대신 유형별 문제를 만든다
@@ -5177,7 +5240,7 @@ function renderQuizChrome(){
 // 단어장을 바꾸면 진행 중이던 시험은 정리한다 (단어 구성이 달라지므로)
 function resetQuizArea(){
   clearAdvance(); spAbort();
-  quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:quiz.pf,af:quiz.af,
+  quiz={list:[],idx:0,phase:"mc",score:0,answered:false,finished:false,pf:quiz.pf,af:quiz.af,saPf:quiz.saPf,saAf:quiz.saAf,
     dir:quiz.dir,wrong:new Set(),saTyped:{},mcChosen:{},spHeard:{},saved:{},done:{},opts:{},
     ansIdx:[],reask:[],reasked:{}};
   quiz.prevPhase=null;
