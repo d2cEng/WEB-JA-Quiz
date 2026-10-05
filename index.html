@@ -278,12 +278,6 @@
   /* 문제는 상하좌우 중앙정렬 */
   .qcenter{min-height:140px;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;margin-bottom:8px}
-  .weakretry{margin:14px 0 4px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--accent)}
-  .weakretry .wrtitle{font-weight:700;font-size:.9em;margin-bottom:8px}
-  .weakretry .wrchips{display:flex;gap:6px;flex-wrap:wrap}
-  .weakretry .lvlchip:disabled{opacity:.4;cursor:default}
-  .weakretry .btnrow{margin-top:10px}
-  .weakretry .btn{background:var(--card);border:1px solid var(--brand);color:var(--brand)}
   .qdirhead{font-size:.8em;font-weight:800;color:var(--brand);margin:10px 2px -4px}
   .qprompt{font-size:clamp(20px,5vw,30px);font-weight:800;text-align:center;margin:6px 0 4px}
   .qprompt.qtap{display:block;margin:6px auto 4px;border:none;background:none;color:inherit;font-family:inherit;cursor:pointer;
@@ -1306,7 +1300,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     alert_mcDone:"4지선다 완료! {score} / {n}\n이어서 주관식 시험을 시작합니다.",
     rq_blank:"(빈칸)", rq_wrongSummary:"❌ 틀린 단어 {n}개 (리스트 보기)",
     rq_wrongHint:"오타나 다른 표기로 틀렸다면 <b>맞음 처리</b>를 눌러 정답으로 고칠 수 있어요.",
-    rq_typed:"내가 쓴 답", rq_chosen:"내가 고른 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기", rq_weakTitle:"🎯 오답률 높은 단어만 다시 시험 (이번 시험 단어 · 누적 기록 기준)", rq_weakTh:"오답률 {th}%↑", rq_weakStart:"오답률 {th}% 이상 {n}개 시험 보기",
+    rq_typed:"내가 쓴 답", rq_chosen:"내가 고른 답", rq_markCorrect:"✅ 맞음 처리", rq_retryWrong:"❌ 틀린 {n}개만 다시 풀기", rq_weakStart:"🎯 오답률 높은 단어 {n}개만 다시 시험",
     mc_examEnd:"객관식 종료 🎉", mc_score:"객관식 점수: <b>{score} / {total}</b>", mc_goSA:"주관식 시험 시작 ▶", mc_goSAFull:"주관식 본시험 시작 (전체 {n}개) ▶",
     rq_allCorrect:"전부 맞혔어요! 🎉", rq_examEnd:"시험 종료 🎉", rq_saScore:"주관식 점수: <b>{score} / {total}</b>", rq_restart:"처음부터 다시",
     toast_markedCorrect:"정답으로 처리했어요", toast_noRetry:"다시 풀 단어가 없습니다",
@@ -1506,7 +1500,7 @@ detail_pastRecord:" · past record", detail_deleteDate:"Delete this date",
     alert_mcDone:"Multiple choice done! {score} / {n}\nNow starting the short-answer test.",
     rq_blank:"(blank)", rq_wrongSummary:"❌ {n} wrong words (view list)",
     rq_wrongHint:"If you missed it due to a typo or a different spelling, press <b>Mark correct</b> to count it as right.",
-    rq_typed:"Your answer", rq_chosen:"Your choice", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones", rq_weakTitle:"🎯 Retest only high-miss words (words from this test · all-time record)", rq_weakTh:"Miss {th}%+", rq_weakStart:"Test {n} words missed {th}%+",
+    rq_typed:"Your answer", rq_chosen:"Your choice", rq_markCorrect:"✅ Mark correct", rq_retryWrong:"❌ Retry the {n} wrong ones", rq_weakStart:"🎯 Retest only the {n} often-missed words",
     mc_examEnd:"Multiple choice finished 🎉", mc_score:"Multiple-choice score: <b>{score} / {total}</b>", mc_goSA:"Start short-answer test ▶", mc_goSAFull:"Start full short-answer test (all {n}) ▶",
     rq_allCorrect:"All correct! 🎉", rq_examEnd:"Test finished 🎉", rq_saScore:"Short-answer score: <b>{score} / {total}</b>", rq_restart:"Start over",
     toast_markedCorrect:"Marked as correct", toast_noRetry:"No words to retry",
@@ -5549,27 +5543,19 @@ function fbReviewHtml(w, rec, ans){
 // 본시험 목록(mainList)은 그대로 유지하므로 재시험이 본시험에 섞이지 않는다.
 function retryWrong(){ startRetry((quiz.finalWrong||[]).map(examWordById).filter(Boolean)); }
 /* ---- 오답률 높은 단어만 다시 시험 ----
-   이번 시험에 나온 단어 중 누적 오답률이 기준 이상인 것만 골라(오답률 높은 순) 재시험한다.
-   이번에 맞혔어도 그동안 자주 틀린 단어는 다시 나온다. */
-const WEAK_RETRY_TH=[20,40,60];   // 기준(오답률 %) 버튼
-let weakRetryTh=40;
+   이번 시험에 나온 단어 중 누적 정답률이 REVIEW_UNTIL(90%) 미만인 것 — 다른 날 재출제와 같은 기준 —
+   만 골라(오답률 높은 순) 재시험한다. 이번에 맞혔어도 그동안 자주 틀린 단어는 들어간다. */
 function weakStat(w){ return quiz.jlpt ? jstatOf(w) : statOf(w.id); }
 function weakMissRate(w){ const st=weakStat(w), n=st.o+st.x; return n ? st.x/n : null; }
-function weakRetryWords(th){
+function weakRetryWords(){
   const base=[...new Map((quiz.mainList||quiz.list).map(w=>[w.id,w])).values()];
-  return base.filter(w=>{ const r=weakMissRate(w); return r!=null && r*100>=th; })
+  return base.filter(w=>{ const r=weakMissRate(w); return r!=null && (1-r)<REVIEW_UNTIL; })
     .sort((a,b)=>(weakMissRate(b)-weakMissRate(a)) || (weakStat(b).x-weakStat(a).x));
 }
 function weakRetryHtml(){
-  const counts=WEAK_RETRY_TH.map(th=>weakRetryWords(th).length);
-  if(!counts[0]) return "";   // 가장 낮은 기준에도 해당 단어가 없으면 숨김
-  if(!WEAK_RETRY_TH.includes(weakRetryTh) || !counts[WEAK_RETRY_TH.indexOf(weakRetryTh)]) weakRetryTh=WEAK_RETRY_TH[0];
-  const n=counts[WEAK_RETRY_TH.indexOf(weakRetryTh)];
-  return `<div class="weakretry">
-    <div class="wrtitle">${esc(t("rq_weakTitle"))}</div>
-    <div class="wrchips">${WEAK_RETRY_TH.map((th,i)=>`<button type="button" class="lvlchip${th===weakRetryTh?" on":""}" onclick="weakRetryTh=${th};renderQuizResults()"${counts[i]?"":" disabled"}>${esc(t("rq_weakTh",{th}))} · ${counts[i]}</button>`).join("")}</div>
-    <div class="btnrow"><button class="btn sec" onclick="startRetry(weakRetryWords(weakRetryTh))">${esc(t("rq_weakStart",{n, th:weakRetryTh}))}</button></div>
-  </div>`;
+  const n=weakRetryWords().length;
+  if(!n) return "";   // 해당 단어가 없으면 숨김
+  return `<div class="btnrow"><button class="btn sec" onclick="startRetry(weakRetryWords())">${esc(t("rq_weakStart",{n}))}</button></div>`;
 }
 function startRetry(list){
   if(!list.length){ toast(t("toast_noRetry")); return; }
