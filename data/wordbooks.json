@@ -86,6 +86,34 @@
       "bytes": 11895
     },
     {
+      "name": "[자격] 統計検定 2級 용어·표현",
+      "file": "cert-stats2.json",
+      "lang": "ko",
+      "bytes": 29797,
+      "rev": "10xp6xk:5806"
+    },
+    {
+      "name": "[자격] 統計検定 準1級 용어·표현",
+      "file": "cert-stats-pre1.json",
+      "lang": "ko",
+      "bytes": 19007,
+      "rev": "4pkt3a:3811"
+    },
+    {
+      "name": "[자격] QC検定 2級 용어·표현",
+      "file": "cert-qc2.json",
+      "lang": "ko",
+      "bytes": 30401,
+      "rev": "pt491k:6132"
+    },
+    {
+      "name": "[자격] 技術士 第一次試験 용어·표현 (基礎·適性·化学/金属)",
+      "file": "cert-gijutsushi1.json",
+      "lang": "ko",
+      "bytes": 40664,
+      "rev": "1ezww3f:7943"
+    },
+    {
       "name": "[샘플] JLPT 단어장 형식 예시",
       "file": "words.sample.json",
       "rev": "130fzd6:881",
