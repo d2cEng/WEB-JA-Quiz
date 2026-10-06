@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "name": "[외래어] 네덜란드어에서 온 말",
+  "words": [
+    {
+      "kanji": "コーヒー",
+      "hiragana": "コーヒー",
+      "korean": "커피 (koffie)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "会議の前に眠気覚ましのコーヒーを飲む。"
+    },
+    {
+      "kanji": "ビール",
+      "hiragana": "ビール",
+      "korean": "맥주 (bier)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "仕事のあとで冷えたビールを一杯飲む。"
+    },
+    {
+      "kanji": "ガラス",
+      "hiragana": "ガラス",
+      "korean": "유리 (glas)",
+      "level": "N4",
+      "pos": "명사",
+      "example": "強い風で窓のガラスが割れた。"
+    },
+    {
+      "kanji": "ゴム",
+      "hiragana": "ゴム",
+      "korean": "고무 (gom)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "長い髪をゴムで後ろに束ねる。"
+    },
+    {
+      "kanji": "ランドセル",
+      "hiragana": "ランドセル",
+      "korean": "초등학생 책가방 (ransel=배낭)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小学校に入学する孫にランドセルを贈る。"
+    },
+    {
+      "kanji": "ペンキ",
+      "hiragana": "ペンキ",
+      "korean": "페인트 (pek)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "古くなった壁に白いペンキを塗る。"
+    },
+    {
+      "kanji": "ポンプ",
+      "hiragana": "ポンプ",
+      "korean": "펌프 (pomp)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "井戸の水をポンプでくみ上げる。"
+    },
+    {
+      "kanji": "オルゴール",
+      "hiragana": "オルゴール",
+      "korean": "오르골 (orgel=오르간)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "オルゴールのやさしい音色を聞くと眠くなる。"
+    },
+    {
+      "kanji": "メス",
+      "hiragana": "メス",
+      "korean": "수술용 칼 (mes=칼)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "医師がメスを使って慎重に手術を進める。"
+    },
+    {
+      "kanji": "ピンセット",
+      "hiragana": "ピンセット",
+      "korean": "핀셋 (pincet)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "細かい部品をピンセットでつまんで取り付ける。"
+    },
+    {
+      "kanji": "アルコール",
+      "hiragana": "アルコール",
+      "korean": "알코올 (alcohol)",
+      "level": "N4",
+      "pos": "명사",
+      "example": "手指の消毒にアルコールを使う。"
+    },
+    {
+      "kanji": "レンズ",
+      "hiragana": "レンズ",
+      "korean": "렌즈 (lens)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "カメラのレンズに指紋がついてしまった。"
+    },
+    {
+      "kanji": "ホース",
+      "hiragana": "ホース",
+      "korean": "호스 (hoos)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "庭の花にホースで水をまく。"
+    },
+    {
+      "kanji": "ブリキ",
+      "hiragana": "ブリキ",
+      "korean": "양철 (blik)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昔のおもちゃはブリキでできたものが多かった。"
+    },
+    {
+      "kanji": "コック",
+      "hiragana": "コック",
+      "korean": "요리사 (kok)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "ホテルのレストランでコックとして働いている。"
+    },
+    {
+      "kanji": "スコップ",
+      "hiragana": "スコップ",
+      "korean": "삽 (schop)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雪かきのためにスコップを用意しておく。"
+    },
+    {
+      "kanji": "ポン酢",
+      "hiragana": "ポンず",
+      "korean": "폰즈 감귤 간장 (pons=과즙 음료)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "鍋料理にはさっぱりしたポン酢が合う。"
+    },
+    {
+      "kanji": "コンパス",
+      "hiragana": "コンパス",
+      "korean": "컴퍼스·나침반 (kompas)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "コンパスを使ってノートに円を描く。"
+    },
+    {
+      "kanji": "ズック",
+      "hiragana": "ズック",
+      "korean": "두꺼운 천·천 운동화 (doek=천)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昔は体育の時間にズックの靴を履いていた。"
+    },
+    {
+      "kanji": "エキス",
+      "hiragana": "エキス",
+      "korean": "진액·추출물 (extract의 줄임)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "朝鮮人参のエキスを使った健康飲料を飲む。"
+    },
+    {
+      "kanji": "ソーダ",
+      "hiragana": "ソーダ",
+      "korean": "소다·탄산수 (soda)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "喫茶店でメロン味のソーダを注文した。"
+    },
+    {
+      "kanji": "カンフル剤",
+      "hiragana": "カンフルざい",
+      "korean": "강심제·(비유) 기사회생책 (kamfer=장뇌)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この補助金は地域経済のカンフル剤になった。"
+    },
+    {
+      "kanji": "タラップ",
+      "hiragana": "タラップ",
+      "korean": "트랩(비행기·배 계단) (trap=계단)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "飛行機のタラップを降りて滑走路に出た。"
+    },
+    {
+      "kanji": "ホック",
+      "hiragana": "ホック",
+      "korean": "후크 단추 (hoek=갈고리)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "スカートのホックが外れていたことに気付いた。"
+    },
+    {
+      "kanji": "レッテルを貼る",
+      "hiragana": "レッテルをはる",
+      "korean": "낙인을 찍다 (letter=문자)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "一度の失敗で無能だとレッテルを貼るのはよくない。"
+    },
+    {
+      "kanji": "メスを入れる",
+      "hiragana": "メスをいれる",
+      "korean": "과감히 손을 대다·개혁에 착수하다 (mes=칼)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "新しい社長は赤字の部門に大胆なメスを入れる。"
+    },
+    {
+      "kanji": "ペンキを塗る",
+      "hiragana": "ペンキをぬる",
+      "korean": "페인트를 칠하다 (pek)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "週末に家族で犬小屋にペンキを塗る。"
+    }
+  ]
+}

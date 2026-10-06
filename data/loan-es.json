@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "name": "[외래어] 스페인어에서 온 말",
+  "words": [
+    {
+      "kanji": "ゲリラ",
+      "hiragana": "ゲリラ",
+      "korean": "게릴라 (guerrilla=작은 전쟁)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "山岳地帯ではゲリラの攻撃が続いていた。"
+    },
+    {
+      "kanji": "ゲリラ豪雨",
+      "hiragana": "ゲリラごうう",
+      "korean": "국지성 집중호우 (guerrilla)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夕方に突然のゲリラ豪雨で道路が水浸しになった。"
+    },
+    {
+      "kanji": "シエスタ",
+      "hiragana": "シエスタ",
+      "korean": "낮잠·시에스타 (siesta)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "スペインではシエスタの時間になると多くの店が閉まる。"
+    },
+    {
+      "kanji": "フィエスタ",
+      "hiragana": "フィエスタ",
+      "korean": "축제·잔치 (fiesta)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "町の広場で夜遅くまでフィエスタが続いた。"
+    },
+    {
+      "kanji": "パエリア",
+      "hiragana": "パエリア",
+      "korean": "파에야 (paella=냄비)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大きな鉄鍋で魚介のパエリアを作る。"
+    },
+    {
+      "kanji": "サングリア",
+      "hiragana": "サングリア",
+      "korean": "상그리아 (sangría)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "赤ワインに果物を漬けてサングリアを作った。"
+    },
+    {
+      "kanji": "チュロス",
+      "hiragana": "チュロス",
+      "korean": "추로스 (churros)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "遊園地で砂糖をまぶしたチュロスを買って食べた。"
+    },
+    {
+      "kanji": "ガスパチョ",
+      "hiragana": "ガスパチョ",
+      "korean": "가스파초(차가운 토마토 수프) (gazpacho)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "暑い日には冷たいガスパチョがおいしい。"
+    },
+    {
+      "kanji": "タコス",
+      "hiragana": "タコス",
+      "korean": "타코 (tacos)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "メキシコ料理の店で牛肉のタコスを注文した。"
+    },
+    {
+      "kanji": "テキーラ",
+      "hiragana": "テキーラ",
+      "korean": "데킬라 (tequila)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "メキシコ土産にテキーラの瓶を買った。"
+    },
+    {
+      "kanji": "ハラペーニョ",
+      "hiragana": "ハラペーニョ",
+      "korean": "할라페뇨 (jalapeño)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "辛いハラペーニョをピザの上にのせる。"
+    },
+    {
+      "kanji": "ハバネロ",
+      "hiragana": "ハバネロ",
+      "korean": "하바네로 고추 (habanero)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ハバネロを使った激辛のスナック菓子が売れている。"
+    },
+    {
+      "kanji": "マタドール",
+      "hiragana": "マタドール",
+      "korean": "투우사 (matador=죽이는 사람)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "闘牛場でマタドールが赤い布を振った。"
+    },
+    {
+      "kanji": "タンゴ",
+      "hiragana": "タンゴ",
+      "korean": "탱고 (tango)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "アルゼンチンの酒場で情熱的なタンゴを踊る。"
+    },
+    {
+      "kanji": "サルサ",
+      "hiragana": "サルサ",
+      "korean": "살사(춤·소스) (salsa=소스)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ダンス教室で週に一回サルサを習っている。"
+    },
+    {
+      "kanji": "カスタネット",
+      "hiragana": "カスタネット",
+      "korean": "캐스터네츠 (castañeta·영어 경유)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "音楽の授業でカスタネットを打ってリズムを取る。"
+    },
+    {
+      "kanji": "ソンブレロ",
+      "hiragana": "ソンブレロ",
+      "korean": "솜브레로(챙 넓은 모자) (sombrero=그늘을 만드는 것)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "メキシコの民族衣装でソンブレロをかぶる。"
+    },
+    {
+      "kanji": "ポンチョ",
+      "hiragana": "ポンチョ",
+      "korean": "판초 우의 (poncho)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "急な雨に備えてリュックにポンチョを入れておく。"
+    },
+    {
+      "kanji": "パティオ",
+      "hiragana": "パティオ",
+      "korean": "안뜰·중정 (patio)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "スペイン風の家には花で飾られたパティオがある。"
+    },
+    {
+      "kanji": "エルニーニョ現象",
+      "hiragana": "エルニーニョげんしょう",
+      "korean": "엘니뇨 현상 (El Niño=남자아이)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "エルニーニョ現象が起きると日本の夏は涼しくなりやすい。"
+    },
+    {
+      "kanji": "ラニーニャ現象",
+      "hiragana": "ラニーニャげんしょう",
+      "korean": "라니냐 현상 (La Niña=여자아이)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ラニーニャ現象の年は冬の寒さが厳しくなる傾向がある。"
+    },
+    {
+      "kanji": "セニョール",
+      "hiragana": "セニョール",
+      "korean": "~씨·신사 (señor)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "スペインのホテルではセニョールと呼ばれて少し照れた。"
+    },
+    {
+      "kanji": "セニョリータ",
+      "hiragana": "セニョリータ",
+      "korean": "아가씨 (señorita)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "店員が若い女性客にセニョリータと声をかけた。"
+    },
+    {
+      "kanji": "アミーゴ",
+      "hiragana": "アミーゴ",
+      "korean": "친구 (amigo)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "旅先で知り合ったメキシコ人と一晩でアミーゴになった。"
+    },
+    {
+      "kanji": "アディオス",
+      "hiragana": "アディオス",
+      "korean": "잘 가요·안녕 (adiós)",
+      "level": "N1",
+      "pos": "감탄사",
+      "example": "空港で友人にアディオスと手を振って別れた。"
+    },
+    {
+      "kanji": "オーレ",
+      "hiragana": "オーレ",
+      "korean": "올레(환호성) (olé)",
+      "level": "N1",
+      "pos": "감탄사",
+      "example": "闘牛場の観客が一斉にオーレと叫んだ。"
+    },
+    {
+      "kanji": "シエスタをとる",
+      "hiragana": "シエスタをとる",
+      "korean": "낮잠을 자다 (siesta)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "暑い国では昼食のあとにシエスタをとる。"
+    },
+    {
+      "kanji": "ゲリラ的",
+      "hiragana": "ゲリラてき",
+      "korean": "게릴라식의·기습적인 (guerrilla)",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "駅前で予告なしのゲリラ的なライブが行われた。"
+    }
+  ]
+}

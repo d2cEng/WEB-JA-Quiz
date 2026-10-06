@@ -86,6 +86,55 @@
       "bytes": 11895
     },
     {
+      "name": "[외래어] 포르투갈어에서 온 말",
+      "file": "loan-pt.json",
+      "lang": "ko",
+      "bytes": 6556,
+      "rev": "wrwxnt:1436"
+    },
+    {
+      "name": "[외래어] 네덜란드어에서 온 말",
+      "file": "loan-nl.json",
+      "lang": "ko",
+      "bytes": 6631,
+      "rev": "8fx1zc:1365"
+    },
+    {
+      "name": "[외래어] 독일어에서 온 말",
+      "file": "loan-de.json",
+      "lang": "ko",
+      "bytes": 10837,
+      "rev": "vijtrx:2418"
+    },
+    {
+      "name": "[외래어] 프랑스어에서 온 말",
+      "file": "loan-fr.json",
+      "lang": "ko",
+      "bytes": 11843,
+      "rev": "5864q5:2610"
+    },
+    {
+      "name": "[외래어] 이탈리아어에서 온 말",
+      "file": "loan-it.json",
+      "lang": "ko",
+      "bytes": 8934,
+      "rev": "eksoxn:1980"
+    },
+    {
+      "name": "[외래어] 스페인어에서 온 말",
+      "file": "loan-es.json",
+      "lang": "ko",
+      "bytes": 7401,
+      "rev": "ac3kw5:1630"
+    },
+    {
+      "name": "[외래어] 러시아어에서 온 말",
+      "file": "loan-ru.json",
+      "lang": "ko",
+      "bytes": 6618,
+      "rev": "14vc0ni:1438"
+    },
+    {
       "name": "[자격] 統計検定 2級 용어·표현",
       "file": "cert-stats2.json",
       "lang": "ko",
