@@ -1174,7 +1174,7 @@ const I18N = {
     db_more:"{n}개 더 보기 (남은 {rest}개)",
     db_selAll:"검색결과 전체선택", db_selNone:"전체해제",
     db_selectedPre:"선택됨 ", db_shownMid:" / 표시 ", db_unitSuf:" 개",
-    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사", th_wrong:"오답률", th_wrongTitle:"오답률 (틀림/푼 횟수) — 퀴즈·말하기 채점 누적", dbst_all:"채점 전체", dbst_tried:"푼 단어", dbst_wrong:"틀린 적 있는 단어", dbst_review:"복습 필요 (정답률 90% 미만)", dbst_new:"아직 안 푼 단어", db_wrTitle:"맞음 {o} · 틀림 {x}",
+    th_kanji:"漢字", th_hira:"ひらがな", th_korean:"한글 뜻", th_level:"레벨", th_pos:"품사", th_wrong:"오답률", th_wrongTitle:"오답률 (틀림/푼 횟수) — 퀴즈·말하기 채점 누적", dbst_all:"채점 전체", dbst_tried:"푼 단어", dbst_wrong:"틀린 적 있는 단어", dbst_review:"복습 필요 (정답률 90% 미만)", dbst_new:"아직 안 푼 단어", db_wrTitle:"맞음 {o} · 틀림 {x}", db_wrStreak:" · 연속 {n}번 맞힘 (그만큼 덜 출제)",
     db_export:"📤 내보내기 (.json)", db_import:"📥 가져오기", db_reset:"초기화(샘플로)", db_wipe:"내부 데이터 전체 삭제",
     db_repoLabel:"저장소에 준비된 단어장 불러오기", db_repoLoad:"📦 불러오기",
     repo_count:"({n}개)",
@@ -1374,7 +1374,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     db_more:"Show {n} more ({rest} left)",
     db_selAll:"Select all results", db_selNone:"Clear all",
     db_selectedPre:"Selected ", db_shownMid:" / Shown ", db_unitSuf:"",
-    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech", th_wrong:"Miss rate", th_wrongTitle:"Miss rate (wrong/attempts) — accumulated from quizzes and speaking", dbst_all:"All scores", dbst_tried:"Attempted", dbst_wrong:"Missed at least once", dbst_review:"Needs review (under 90%)", dbst_new:"Not attempted", db_wrTitle:"Correct {o} · Wrong {x}",
+    th_kanji:"Kanji", th_hira:"Hiragana", th_korean:"Meaning", th_level:"Level", th_pos:"Part of speech", th_wrong:"Miss rate", th_wrongTitle:"Miss rate (wrong/attempts) — accumulated from quizzes and speaking", dbst_all:"All scores", dbst_tried:"Attempted", dbst_wrong:"Missed at least once", dbst_review:"Needs review (under 90%)", dbst_new:"Not attempted", db_wrTitle:"Correct {o} · Wrong {x}", db_wrStreak:" · {n} correct in a row (asked less often)",
     db_export:"📤 Export (.json)", db_import:"📥 Import", db_reset:"Reset (to sample)", db_wipe:"Delete all data",
     db_repoLabel:"Load a built-in wordbook from the repository", db_repoLoad:"📦 Load",
     repo_count:"({n})",
@@ -1655,15 +1655,33 @@ function notExcluded(w){ return !isExcluded(w.id); }
    ② 정답률이 WEAK_RATE 이하인 단어는 같은 시험·같은 일정에서 다시 낸다. */
 const WEAK_RATE=0.5;       // 이 이하면 같은 시험 안에서 다시 묻는다
 const REVIEW_UNTIL=0.9;    // 이 미만이면 뒤쪽 날짜에 다시 넣는다 (90%가 될 때까지 다른 날에도 계속)
+/* ---- 연속 정답 반영 ----
+   기록마다 s(마지막으로 틀린 뒤 연속으로 맞힌 횟수)를 둔다.
+   출제 판단에 쓰는 '실질 오답률' = 누적 오답률 × 0.5^s
+   → 연속으로 맞힐수록 배로 줄어 덜 나오고, 퐁당퐁당 틀리는 단어는 매번 s가 0으로
+     돌아가 누적 오답률 그대로 남아 자주 나온다. (화면의 오답률 % 표시는 누적값 그대로)
+   s가 없는 예전 기록은 0으로 본다(예전과 같은 동작). */
+const STREAK_DECAY=0.5;
+function effMiss(st){ const n=(st.o||0)+(st.x||0); return n ? (st.x/n)*Math.pow(STREAK_DECAY, st.s||0) : null; }
+function effAcc(st){ const m=effMiss(st); return m==null ? null : 1-m; }
+// 채점 한 번을 기록에 반영 — 맞으면 연속 +1, 틀리면 연속을 0으로(맞음 처리로 되돌릴 수 있게 이전 값 보관)
+function bumpStat(r, ok){
+  if(ok){ r.o++; r.s=(r.s||0)+1; }
+  else { r.x++; r.ps=r.s||0; r.s=0; }
+}
+function fixStat(r){   // 직전 오답을 정답으로 되돌림
+  if(r.x>0) r.x--; r.o++;
+  r.s=(r.ps||0)+1; delete r.ps;
+}
 function statOf(id){ return (state.stats||{})[id] || {o:0,x:0}; }
 function statTries(id){ const s=statOf(id); return s.o+s.x; }
-function statRate(id){ const s=statOf(id), n=s.o+s.x; return n ? s.o/n : null; }   // null = 푼 적 없음
+function statRate(id){ return effAcc(statOf(id)); }   // 실질 정답률 (null = 푼 적 없음)
 function isWeak(id){ const r=statRate(id); return r!=null && r<=WEAK_RATE; }
 function needsReview(id){ const r=statRate(id); return r!=null && r<REVIEW_UNTIL; }
 function statAdd(id, ok){
   const st=(state.stats=state.stats||{});
   const r=st[id]||(st[id]={o:0,x:0});
-  if(ok) r.o++; else r.x++;
+  bumpStat(r, ok);
   save();
 }
 /* JLPT 탭은 '내 단어장'이 아닌 [종합] 단어장을 쓰므로, 채점 기록을 state.stats에
@@ -1676,11 +1694,11 @@ function jstatKey(w){ return (w.kanji||"")+"|"+(w.hiragana||""); }
 function jstatOf(w){ return jstatAll()[jstatKey(w)] || {o:0,x:0}; }
 function jstatAdd(w, ok){
   const all=jstatAll(), k=jstatKey(w), r=all[k]||(all[k]={o:0,x:0});
-  if(ok) r.o++; else r.x++;
+  bumpStat(r, ok);
   try{ localStorage.setItem(JSTAT_KEY, JSON.stringify(all)); }catch(e){}
 }
 function jstatFix(w){ const all=jstatAll(), k=jstatKey(w), r=all[k]||(all[k]={o:0,x:0});
-  if(r.x>0) r.x--; r.o++; try{ localStorage.setItem(JSTAT_KEY, JSON.stringify(all)); }catch(e){} }
+  fixStat(r); try{ localStorage.setItem(JSTAT_KEY, JSON.stringify(all)); }catch(e){} }
 
 /* ---- 다른 단어장의 채점 기록 가져오기 ----
    단어장마다 id가 달라서 표기(漢字|かな)로 맞춘다.
@@ -1817,7 +1835,7 @@ function fillStatSources(sel, includeActive, withProgress){
    시도 횟수가 적으면 우연일 수 있어 가중치를 절반만 반영한다. */
 function weightFrom(st){
   const n=st.o+st.x; if(!n) return 1;
-  const r=st.o/n;
+  const r=effAcc(st);   // 연속 정답이면 배로 낮아진 오답률 기준
   const base = r<=WEAK_RATE ? 4 : r<0.7 ? 2 : r<0.9 ? 1 : 0.4;
   return n>=3 ? base : 1+(base-1)*0.5;
 }
@@ -1838,8 +1856,7 @@ function weightedSample(pool, count, srcFn){
 // '맞음 처리'(정정) — 직전의 오답을 정답으로 되돌린다
 function statFix(id){
   const st=(state.stats=state.stats||{}); const r=st[id]||(st[id]={o:0,x:0});
-  if(r.x>0) r.x--;
-  r.o++; save();
+  fixStat(r); save();
 }
 // 학습일지: 학습 활동을 세분화해 기록 (암기/객관식/주관식/정정 + 정오답)
 function logEvent(id, kind, result){
@@ -2576,7 +2593,8 @@ function dbFiltered(){
   const k=dbSort.key, dir=dbSort.dir;
   if(k==="wrong"){
     // 오답률 순. 같은 비율이면 많이 틀린 것 먼저, 안 푼 단어는 방향과 상관없이 맨 뒤
-    const key=w=>{ const r=statOf(w.id), n=r.o+r.x; return n ? [r.x/n, r.x, n] : null; };
+    // 실질 오답률(연속 정답 반영) 순 — 자주·번갈아 틀리는 단어가 위로
+    const key=w=>{ const r=statOf(w.id), n=r.o+r.x; return n ? [effMiss(r), r.x, n] : null; };
     rows=rows.map(w=>[w,key(w)]).sort((A,B)=>{ const a=A[1], b=B[1];
       if(!a||!b) return (a?0:1)-(b?0:1);
       return ((a[0]-b[0]) || (a[1]-b[1]) || (a[2]-b[2]))*dir; }).map(x=>x[0]);
@@ -2593,8 +2611,9 @@ let dbLimit=DB_PAGE;
 function wrongCell(id){
   const r=statOf(id), n=r.o+r.x;
   if(!n) return `<span class="muted">–</span>`;
-  const pct=Math.round(r.x/n*100), cls=pct>=50?"bad":pct>=10?"mid":"good";
-  return `<span class="wr ${cls}" title="${esc(t("db_wrTitle",{o:r.o,x:r.x}))}">${pct}%<small>${r.x}/${n}</small></span>`;
+  const pct=Math.round(r.x/n*100), eff=effMiss(r)*100, cls=eff>=50?"bad":eff>=10?"mid":"good";   // 색은 연속 정답을 반영한 값
+  const sk=r.s||0;
+  return `<span class="wr ${cls}" title="${esc(t("db_wrTitle",{o:r.o,x:r.x})+(sk?t("db_wrStreak",{n:sk}):""))}">${pct}%<small>${r.x}/${n}${sk>=2?` · ✓${sk}`:""}</small></span>`;
 }
 function renderDb(){
   const rows=dbFiltered();
@@ -5319,7 +5338,7 @@ function requeueWeak(w){
   if(quiz.isRetry) return false;                 // 재시험 라운드에선 더 늘리지 않는다
   const st = quiz.jlpt ? jstatOf(w) : statOf(w.id);
   const n=st.o+st.x;
-  if(!n || st.o/n>WEAK_RATE) return false;
+  if(!n || effAcc(st)>WEAK_RATE) return false;
   quiz.reasked=quiz.reasked||{};
   if((quiz.reasked[w.id]||0)>=REASK_MAX) return false;
   quiz.reasked[w.id]=(quiz.reasked[w.id]||0)+1;
@@ -5437,7 +5456,7 @@ function renderQuizResults(){
     ? `<details class="wronglist" open><summary class="setsum" style="color:var(--bad);border-color:var(--bad)">${esc(t("rq_wrongSummary",{n:wrong.length}))}</summary>
         <p class="muted" style="margin:8px 2px 0;font-size:.85em">${t("rq_wrongHint")}</p>
         <div class="tablewrap" style="margin-top:8px"><table><thead><tr><th>${esc(fieldLabel("kanji"))}</th><th>${esc(fieldLabel("hira"))}</th><th>${esc(fieldLabel("korean"))}</th><th>${esc(givenLabel)}</th><th>${esc(t("rq_rate"))}</th><th></th></tr></thead>
-        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td style="white-space:nowrap${(()=>{const st=quiz.jlpt?jstatOf(w):statOf(w.id),n=st.o+st.x;return n&&st.o/n<=WEAK_RATE;})()?';color:var(--bad);font-weight:700':''}">${rateLabel(w.id)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
+        <tbody>${wrong.map(w=>`<tr><td class="jp">${esc(w.kanji)}</td><td class="jp">${esc(w.hiragana)}</td><td>${esc(w.meanings.map(m=>m.korean).join(", "))}</td><td>${given(w)}</td><td style="white-space:nowrap${(()=>{const st=quiz.jlpt?jstatOf(w):statOf(w.id),a=effAcc(st);return a!=null&&a<=WEAK_RATE;})()?';color:var(--bad);font-weight:700':''}">${rateLabel(w.id)}</td><td><button class="btn sec" style="padding:6px 10px;min-height:0;white-space:nowrap" onclick="markCorrect(${w.id})">${esc(t("rq_markCorrect"))}</button></td></tr>`).join("")}</tbody></table></div></details>
       <div class="btnrow"><button class="btn sec" onclick="retryWrong()">${esc(t("rq_retryWrong",{n:wrong.length}))}</button></div>`
     : `<p style="color:var(--ok);font-weight:700">${esc(t("rq_allCorrect"))}</p>`;
   const lv = quiz.jlptLevel||"N2";
@@ -5546,7 +5565,7 @@ function retryWrong(){ startRetry((quiz.finalWrong||[]).map(examWordById).filter
    이번 시험에 나온 단어 중 누적 정답률이 REVIEW_UNTIL(90%) 미만인 것 — 다른 날 재출제와 같은 기준 —
    만 골라(오답률 높은 순) 재시험한다. 이번에 맞혔어도 그동안 자주 틀린 단어는 들어간다. */
 function weakStat(w){ return quiz.jlpt ? jstatOf(w) : statOf(w.id); }
-function weakMissRate(w){ const st=weakStat(w), n=st.o+st.x; return n ? st.x/n : null; }
+function weakMissRate(w){ return effMiss(weakStat(w)); }   // 연속 정답을 반영한 실질 오답률
 function weakRetryWords(){
   const base=[...new Map((quiz.mainList||quiz.list).map(w=>[w.id,w])).values()];
   return base.filter(w=>{ const r=weakMissRate(w); return r!=null && (1-r)<REVIEW_UNTIL; })
