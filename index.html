@@ -583,6 +583,11 @@
         <details id="bookMgr" style="margin-top:6px">
           <summary class="setsum" id="bookMgrSum"></summary>
           <div id="bookMgrList"></div>
+          <details id="snapPanel" style="margin-top:8px">
+            <summary class="setsum" data-i18n="snap_summary">🕘 기록 복구 (자동 백업)</summary>
+            <p class="muted" style="font-size:.82em;margin:8px 2px" data-i18n="snap_hint">단어장을 다시 불러오기·가져오기·업데이트·삭제하거나 클라우드에서 다른 기기의 판으로 바뀌기 직전에, 그때의 단어장과 학습 기록을 이 기기에 자동으로 남겨 둡니다(단어장마다 최근 15개). 원하는 시점으로 되돌릴 수 있어요.</p>
+            <div id="snapList"></div>
+          </details>
           <p class="muted" style="font-size:.8em;margin:6px 2px 0" data-i18n="bm_hint">삭제하면 그 단어장의 단어·진도·일정·학습일지가 이 기기와 클라우드에서 모두 지워집니다. 필요하면 ‘백업 후 삭제’로 파일을 받아 두세요.</p>
         </details>
       </div>
@@ -1182,7 +1187,7 @@ const I18N = {
     repo_loadFail:"⚠️ 단어장 목록을 불러오지 못했어요 ({err}). 인터넷 연결을 확인한 뒤 새로고침해 주세요.",
     repo_noneForLang:"⚠️ 뜻이 한국어로 된 단어장이 아직 저장소에 없어요. 위쪽 <b>한/EN</b>으로 언어를 바꾸거나, 아래 <b>가져오기</b>로 JSON 파일을 직접 넣으세요.",
     hint_repo:"💡 이 앱 저장소에 들어 있는 단어장을 골라 바로 불러올 수 있어요. <b>현재 단어장은 진도째 보관</b>되고, 위의 ‘내 단어장’에서 언제든 다시 전환할 수 있습니다.",
-    confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n현재 단어장은 진도와 함께 보관되며, 단어 DB의 ‘내 단어장’에서 언제든 전환할 수 있습니다. (같은 이름의 단어장이 이미 있으면 그 단어장이 갱신됩니다)",
+    confirm_repoLoad:"‘{name}’ 단어장을 불러올까요?\n(이미 있는 단어장이면 학습 기록은 그대로 두고 단어만 새로 받습니다)\n현재 단어장은 진도와 함께 보관되며, 단어 DB의 ‘내 단어장’에서 언제든 전환할 수 있습니다. (같은 이름의 단어장이 이미 있으면 그 단어장이 갱신됩니다)",
     book_switchLabel:"내 단어장 (각각 진도 별도 보관 · 선택하면 전환)", book_delete:"이 단어장 삭제",
     toast_bookSwitched:"‘{name}’ 단어장으로 전환했어요 (진도 유지)", toast_bookDeleted:"단어장을 삭제했어요",
     confirm_bookDelete:"‘{name}’ 단어장과 그 진도를 삭제할까요?", bm_summary:"🗂️ 불러온 단어장 관리 ({n}개)", bm_hint:"삭제하면 그 단어장의 단어·진도·일정·학습일지가 이 기기와 클라우드에서 모두 지워집니다. 필요하면 ‘백업 후 삭제’로 파일을 받아 두세요.", bm_info:"{w}단어 · 외운 단어 {d}개", bm_current:"사용 중", bm_open:"열기", bm_del:"삭제", bm_backupDel:"백업 후 삭제", bm_last:"마지막 남은 단어장은 삭제할 수 없어요",
@@ -1261,7 +1266,7 @@ const I18N = {
     gram_expandAll:"전부 열기", gram_collapseAll:"전부 접기", gram_tipLabel:"구분법·활용", gram_teDefault:"て형 변환",
     gram_noExplain:"이 품사의 문법 설명은 아직 없어요.", modal_close:"닫기", totop_title:"맨 위로",
     toast_storageFull:"저장 공간 부족", simp_summary:"📦 다른 단어장의 학습 기록 옮겨오기", simp_hint:"같은 단어(漢字·ひらがな가 같은 것)끼리 맞춰, 다른 단어장에서 한 학습을 이 단어장으로 옮겨 옵니다. 원래 단어장은 그대로 남고, 여러 번 눌러도 두 번 쌓이지 않습니다.", simp_btn:"오답 기록만", simp_allBtn:"학습 기록 전체 옮겨오기", simp_schedOpt:"오늘 이후 일정은 가져온 단어장 것으로 바꾸기", simp_allNote:"전체 = 외운 단어·일정·학습일지·오답률·선택·제외 단어", simp_optAll:"{name} — 외운 단어 {d}개 · 푼 단어 {n}개", simp_confirm:"‘{src}’의 학습 기록을 ‘{dst}’로 옮겨 올까요?\n\n· 맞춰지는 단어: {m}개\n· 외운 단어: {d}개 중 {dm}개\n· 이 단어장에 없어 옮길 수 없는 학습 단어: {miss}개\n\n원래 단어장은 그대로 남습니다.", simp_allDone:"옮겨 왔어요 — 외운 단어 {d}개, 일정 {s}일, 학습일지 {l}건, 오답 기록 {x}개 단어", simp_missTitle:"옮기지 못한 단어 ({n}) — 이 단어장에 같은 표기가 없음", simp_jsummary:"📥 내 단어장의 오답 기록을 JLPT에 반영", simp_jhint:"고른 단어장에서 맞음/틀림 기록을 가져와, 같은 단어(漢字·ひらがな)가 JLPT 시험에서 더 자주·다시 나오게 합니다. 다시 반영해도 두 번 쌓이지 않습니다.", simp_jbtn:"반영", simp_none:"기록을 가져올 다른 단어장이 없어요", simp_optStats:"{name} — 푼 단어 {n}개", simp_empty:"‘{name}’에는 채점 기록이 없어요", simp_done:"‘{name}’의 기록 {n}개 단어를 반영했어요 (틀린 적 있는 단어 {x}개)", simp_again:" · 예전에 가져온 기록은 새로 바꿨어요", simp_jdone:"‘{name}’의 기록 {n}개 단어를 JLPT에 반영했어요 (틀린 적 있는 단어 {x}개)", toast_newVersion:"새 버전이 있어요 — 지금 하던 학습을 마치면 자동으로 새로고침됩니다", toast_selAdded:"검색결과를 선택에 추가", toast_exported:"내보내기 완료",
-    toast_imported:"가져오기 완료: {name} · {n}개", toast_badJson:"올바른 JSON 파일이 아닙니다",
+    toast_imported:"가져오기 완료: {name} · {n}개", toast_reloadedKept:"‘{name}’ 단어를 새로 받았어요 ({n}개) — 학습 기록은 그대로 유지됩니다", confirm_importReplace:"‘{name}’ 단어장이 이미 있어요.\n이 파일의 학습 기록으로 바꿀까요?\n(지금 기록은 ‘기록 복구’에 자동 백업됩니다)", snap_summary:"🕘 기록 복구 (자동 백업)", snap_hint:"단어장을 다시 불러오기·가져오기·업데이트·삭제하거나 클라우드에서 다른 기기의 판으로 바뀌기 직전에, 그때의 단어장과 학습 기록을 이 기기에 자동으로 남겨 둡니다(단어장마다 최근 15개). 원하는 시점으로 되돌릴 수 있어요.", snap_none:"아직 자동 백업이 없어요.", snap_info:"외운 단어 {done} · 일정 {days}일 · 학습일지 {logs} · 채점 {tried}단어 · 단어 {words}개", snap_restore:"이 시점으로 복구", snap_download:"파일로 받기", snap_confirm:"‘{name}’ 단어장을 {time} 시점으로 되돌릴까요?\n(외운 단어 {done}개 · 일정 {days}일)\n지금 상태도 자동 백업에 남겨 둡니다.", toast_snapRestored:"복구했어요 — 외운 단어 {done}개. 클라우드에도 올립니다", snap_r_reload:"다시 불러오기 전", snap_r_import:"가져오기 전", snap_r_update:"단어장 업데이트 전", snap_r_delete:"삭제 전", snap_r_reset:"초기화 전", snap_r_wipe:"전체 삭제 전", snap_r_account:"계정 전환 전", snap_r_migrate:"기록 옮겨오기 전", snap_r_pull:"클라우드 판으로 바뀌기 전", snap_r_beforeRestore:"복구 전", sync_shrinkAsk:"‘{name}’ 단어장의 클라우드 기록이 이 기기보다 적어요.\n외운 단어 {ld} → {rd}개 · 일정 {lday} → {rday}일\n\n다른 기기에서 기록이 지워졌을 수 있어요.\n확인: 클라우드 판으로 바꾸기 (이 기기 기록은 자동 백업)\n취소: 이 기기 기록을 유지하고 클라우드로 다시 올리기", toast_badJson:"올바른 JSON 파일이 아닙니다",
     toast_enterTopic:"단어장 주제를 입력하세요", toast_promptCopied:"프롬프트 복사됨 · AI에 붙여넣으세요", toast_copyFail:"복사 실패 · 길게 눌러 직접 복사하세요",
     confirm_reset:"샘플 데이터로 초기화할까요? (가져온 단어·진도 삭제)", toast_reset:"초기화 완료", name_sample:"샘플 데이터",
     confirm_wipe:"내부 데이터를 전부 삭제할까요?\n단어·일정·암기 진도가 모두 지워집니다. (되돌릴 수 없음)", toast_wiped:"전체 삭제 완료",
@@ -1461,7 +1466,7 @@ detail_pastRecord:" · 지난 기록", detail_deleteDate:"이 날짜 삭제",
     gram_expandAll:"Expand all", gram_collapseAll:"Collapse all", gram_tipLabel:"How to tell & conjugate", gram_teDefault:"Te-form change",
     gram_noExplain:"No grammar explanation for this part of speech yet.", modal_close:"Close", totop_title:"To top",
     toast_storageFull:"Storage full", simp_summary:"📦 Move study records from another wordbook", simp_hint:"Matches the same words (same kanji and hiragana) and brings the study done in another wordbook into this one. The other wordbook stays as it is, and pressing again never counts twice.", simp_btn:"Miss records only", simp_allBtn:"Move all study records", simp_schedOpt:"Replace schedule from today on with the source's", simp_allNote:"All = memorized words, schedule, study log, miss rates, selected and excluded words", simp_optAll:"{name} — {d} memorized · {n} attempted", simp_confirm:"Move study records from ‘{src}’ into ‘{dst}’?\n\n· Matched words: {m}\n· Memorized: {dm} of {d}\n· Studied words missing here: {miss}\n\nThe source wordbook is kept.", simp_allDone:"Moved — {d} memorized, {s} schedule days, {l} log entries, miss records for {x} words", simp_missTitle:"Words not moved ({n}) — no same spelling in this wordbook", simp_jsummary:"📥 Apply my wordbook's miss records to JLPT", simp_jhint:"Takes correct/wrong records from the chosen wordbook so the same words (kanji·hiragana) come up more often in JLPT tests. Applying again never counts twice.", simp_jbtn:"Apply", simp_none:"No other wordbook to import from", simp_optStats:"{name} — {n} attempted", simp_empty:"‘{name}’ has no score records", simp_done:"Imported records for {n} words from ‘{name}’ ({x} missed at least once)", simp_again:" · replaced the previous import", simp_jdone:"Applied records for {n} words from ‘{name}’ to JLPT ({x} missed at least once)", toast_newVersion:"A new version is available — the app will refresh when you finish this session", toast_selAdded:"Added results to selection", toast_exported:"Export complete",
-    toast_imported:"Imported: {name} · {n} words", toast_badJson:"Not a valid JSON file",
+    toast_imported:"Imported: {name} · {n} words", toast_reloadedKept:"Refreshed the words of ‘{name}’ ({n}) — your study records are kept", confirm_importReplace:"‘{name}’ already exists.\nReplace it with the study records in this file?\n(The current records are saved in ‘Restore records’)", snap_summary:"🕘 Restore records (auto backup)", snap_hint:"Right before a wordbook is reloaded, imported, updated, deleted, or replaced by another device\'s cloud copy, the wordbook and its study records are saved on this device (last 15 per wordbook). You can roll back to any of them.", snap_none:"No automatic backups yet.", snap_info:"{done} memorized · {days} schedule days · {logs} log · {tried} scored · {words} words", snap_restore:"Restore this", snap_download:"Download", snap_confirm:"Roll ‘{name}’ back to {time}?\n({done} memorized · {days} schedule days)\nThe current state is backed up too.", toast_snapRestored:"Restored — {done} memorized. Uploading to the cloud", snap_r_reload:"before reload", snap_r_import:"before import", snap_r_update:"before update", snap_r_delete:"before delete", snap_r_reset:"before reset", snap_r_wipe:"before wipe", snap_r_account:"before account switch", snap_r_migrate:"before moving records", snap_r_pull:"before cloud replace", snap_r_beforeRestore:"before restore", sync_shrinkAsk:"The cloud copy of ‘{name}’ has fewer records than this device.\nMemorized {ld} → {rd} · schedule {lday} → {rday} days\n\nRecords may have been erased on another device.\nOK: use the cloud copy (this device\'s records are backed up)\nCancel: keep this device\'s records and upload them again", toast_badJson:"Not a valid JSON file",
     toast_enterTopic:"Enter a wordbook topic", toast_promptCopied:"Prompt copied · paste it into an AI", toast_copyFail:"Copy failed · long-press to copy manually",
     confirm_reset:"Reset to sample data? (imported words & progress will be deleted)", toast_reset:"Reset complete", name_sample:"Sample data",
     confirm_wipe:"Delete all internal data?\nWords, schedule and progress will all be erased. (cannot be undone)", toast_wiped:"All data deleted",
@@ -1772,6 +1777,7 @@ function migratePlan(srcId){
 }
 function migrateFrom(srcId, replaceFuture){
   const P=migratePlan(srcId); if(!P) return null;
+  snapshotBook(books.active, "migrate");
   const {S, mapId}=P, today=todayStr(), minTs=(a,b)=>a==null?b:b==null?a:Math.min(a,b);
   // 진도
   let nd=0;
@@ -2716,11 +2722,129 @@ $("#expBtn").addEventListener("click",()=>{
 $("#impBtn").addEventListener("click",()=>$("#impFile").click());
 // 파싱된 단어장 데이터(d)를 새(또는 같은 이름의) 단어장 슬롯에 반영. 파일/저장소/어법 불러오기 공통.
 // 현재 단어장은 진도째 자기 슬롯에 보관되므로 사라지지 않는다. 같은 이름 슬롯이 있으면 그 슬롯을 갱신.
+/* ---- 자동 백업 (기록 보호) ----
+   단어장 슬롯을 덮어쓰거나 지우는 모든 동작(다시 불러오기·가져오기·클라우드에서 받은 판으로 교체·
+   단어장 업데이트·삭제·계정 전환·전체 삭제·기록 옮겨오기·복구) 직전에, 그 단어장을 통째로
+   브라우저 IndexedDB에 남긴다. localStorage(5MB)와 달리 용량이 넉넉하다.
+   단어장마다 최근 15개까지 보관하고, 내용이 바로 앞 백업과 같으면 다시 남기지 않는다.
+   기록할 것이 없는 슬롯(외운 단어·일정·학습일지·채점이 모두 없음)은 남기지 않는다. */
+const SNAP_DB="jaquiz-snapshots", SNAP_KEEP=15;
+let snapDbP=null;
+function snapDb(){
+  if(snapDbP) return snapDbP;
+  snapDbP=new Promise((res,rej)=>{
+    if(!window.indexedDB) return rej(new Error("no indexedDB"));
+    const r=indexedDB.open(SNAP_DB,1);
+    r.onupgradeneeded=()=>{ const st=r.result.createObjectStore("snaps",{keyPath:"k",autoIncrement:true}); st.createIndex("book","book"); };
+    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+  }).catch(e=>{ snapDbP=null; throw e; });
+  return snapDbP;
+}
+function snapSummary(raw){
+  try{ const o=JSON.parse(raw); const st={}; unpackLogInto(st,o);
+    return { name:o.name||"", words:(o.words||[]).length,
+      done:Object.values(o.progress||{}).filter(v=>v&&v.done).length,
+      days:Object.keys(o.schedule||{}).length, logs:st.log.length+Object.keys(st.logSum||{}).length,
+      tried:Object.values(o.stats||{}).filter(v=>v&&(v.o+v.x)).length };
+  }catch(e){ return null; }
+}
+// raw는 지금(덮어쓰기 전에) 동기적으로 읽어 둔다 — 저장은 뒤에서 비동기로
+function snapshotBook(id, reason){
+  let raw=null; try{ raw=localStorage.getItem(bookKey(id)); }catch(e){}
+  if(id===books.active && state && state.words && state.words.length){
+    // 화면의 최신 상태가 아직 저장되지 않았을 수 있다
+    try{ save(); raw=localStorage.getItem(bookKey(id)); }catch(e){}
+  }
+  if(!raw) return Promise.resolve(false);
+  const sum=snapSummary(raw); if(!sum) return Promise.resolve(false);
+  if(!sum.done && !sum.days && !sum.logs && !sum.tried) return Promise.resolve(false);   // 지킬 기록이 없음
+  const h=hashStr(raw);
+  return snapDb().then(db=>new Promise(res=>{
+    const tx=db.transaction("snaps","readwrite"), st=tx.objectStore("snaps");
+    const req=st.index("book").getAll(IDBKeyRange.only(id));
+    req.onsuccess=()=>{
+      const list=(req.result||[]).sort((a,b)=>a.at-b.at);
+      if(list.length && list[list.length-1].hash===h){ res(false); return; }   // 바로 앞 백업과 같음
+      st.add({book:id, at:Date.now(), reason, hash:h, raw, ...sum});
+      list.slice(0, Math.max(0, list.length+1-SNAP_KEEP)).forEach(x=>st.delete(x.k));
+    };
+    tx.oncomplete=()=>res(true); tx.onerror=()=>res(false);
+  })).catch(()=>false);
+}
+function listSnapshots(){
+  return snapDb().then(db=>new Promise(res=>{
+    const req=db.transaction("snaps").objectStore("snaps").getAll();
+    req.onsuccess=()=>res((req.result||[]).sort((a,b)=>b.at-a.at)); req.onerror=()=>res([]);
+  })).catch(()=>[]);
+}
+function getSnapshot(k){
+  return snapDb().then(db=>new Promise(res=>{
+    const req=db.transaction("snaps").objectStore("snaps").get(k);
+    req.onsuccess=()=>res(req.result||null); req.onerror=()=>res(null);
+  })).catch(()=>null);
+}
+// 백업 시점으로 되돌리기 — 지금 상태도 먼저 백업해 두므로 되돌린 것을 다시 되돌릴 수 있다
+async function restoreSnapshot(k){
+  const sn=await getSnapshot(k); if(!sn) return;
+  const b0=books.list.find(x=>x.id===sn.book);
+  if(!confirm(t("snap_confirm",{name:sn.name||(b0&&b0.name)||"", time:new Date(sn.at).toLocaleString(), done:sn.done, days:sn.days}))) return;
+  if(b0) await snapshotBook(sn.book, "beforeRestore");
+  save();
+  try{ localStorage.setItem(bookKey(sn.book), sn.raw); }catch(e){ toast(t("toast_storageFull")); return; }
+  if(!b0) books.list.push({id:sn.book, name:sn.name||""});
+  books.active=sn.book; saveBooksReg();
+  // 되살린 기록을 클라우드에도 올린다 (다른 기기에 퍼지게)
+  try{ const o=JSON.parse(sn.raw); o.updatedAt=Date.now(); localStorage.setItem(bookKey(sn.book), JSON.stringify(o)); }catch(e){}
+  cloudMarkDirty(sn.book);
+  state=blankState(""); load(); resetQuizArea(); refreshAll(); renderSnapList();
+  toast(t("toast_snapRestored",{done:sn.done}));
+}
+function downloadSnapshot(sn){
+  const blob=new Blob([sn.raw],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  const d=new Date(sn.at), ts=fmtDate(d)+"_"+String(d.getHours()).padStart(2,"0")+String(d.getMinutes()).padStart(2,"0");
+  a.download=(sn.name||"jaquiz")+"-backup-"+ts+".json"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+async function renderSnapList(){
+  const box=$("#snapList"); if(!box || !$("#snapPanel").open) return;
+  const list=await listSnapshots();
+  box.innerHTML = list.length ? list.map(sn=>`<div class="bmrow">
+      <div class="bminfo"><b>${esc(sn.name||"")}</b>
+        <div class="muted">${esc(new Date(sn.at).toLocaleString())} · ${esc(t("snap_r_"+sn.reason))}</div>
+        <div class="muted">${esc(t("snap_info",{done:sn.done, days:sn.days, logs:sn.logs, tried:sn.tried, words:sn.words}))}</div></div>
+      <div class="bmacts"><button class="btn sec" data-snaprestore="${sn.k}">${esc(t("snap_restore"))}</button>
+        <button class="btn ghost" data-snapdl="${sn.k}">${esc(t("snap_download"))}</button></div></div>`).join("")
+    : `<p class="muted" style="font-size:.85em;margin:8px 2px">${esc(t("snap_none"))}</p>`;
+}
+
 function applyWordbook(d, fallbackName){
   if(!d || !Array.isArray(d.words)) throw 0;
   const name = d.name || fallbackName || t("name_unnamed");
   save();   // 현재 단어장 보관
   let b=books.list.find(x=>x.name===name);
+  const hasRecords = ["progress","schedule","stats","logz","log","logSum","rounds","reinforceAt","selected","excluded"]
+    .some(k=>d[k] && (Array.isArray(d[k]) ? d[k].length : Object.keys(d[k]).length));
+  if(b && !hasRecords){
+    // 이미 있는 단어장을 단어만 다시 받은 경우(저장소에서 다시 불러오기 등):
+    // 예전엔 기록째 덮어써 학습 기록이 사라졌다. 이제 단어만 갈아 끼우고 기록은 표기(漢字|かな) 기준으로 옮겨 붙인다.
+    snapshotBook(b.id, "reload");
+    books.active=b.id; saveBooksReg();
+    state=blankState(""); load();
+    if(!state.words.length || !Object.keys(state.progress||{}).length && !Object.keys(state.schedule||{}).length && !(state.log||[]).length){
+      state.words=d.words; state.dbName=name; normalizeWords(); save();
+    } else {
+      remapToNewWords(d.words.map(w=>Object.assign({},w)), true);   // 바로 위에서 백업함
+      state.dbName=name; save();
+    }
+    resetQuizArea(); refreshAll(); toast(t("toast_reloadedKept",{name, n:state.words.length}));
+    return;
+  }
+  if(b){
+    // 기록이 든 백업 파일로 이미 있는 단어장을 바꾸는 경우 — 지금 기록은 자동 백업에 남긴다
+    if(!confirm(t("confirm_importReplace",{name}))) return;
+    snapshotBook(b.id, "import");
+  }
   if(!b){ b={id:"b"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name}; books.list.push(b); }
   books.active=b.id; saveBooksReg();
   state=blankState(name);
@@ -2801,8 +2925,9 @@ $("#repoLoadBtn").addEventListener("click",async ()=>{
   try{
     const res=await fetch("data/"+file,{cache:"no-cache"});
     if(!res.ok) throw 0;
-    applyWordbook(await res.json(), label);   // JSON에 name이 없으면 목록의 표시 이름 사용
-    markBookSource(file);                     // 어느 저장소 파일에서 왔는지 기록 → 나중에 업데이트 감지
+    const d=await res.json();
+    applyWordbook(d, label);   // JSON에 name이 없으면 목록의 표시 이름 사용 (같은 이름이 있으면 기록 유지)
+    if(state.dbName===(d.name||label)) markBookSource(file);   // 어느 저장소 파일에서 왔는지 기록 → 나중에 업데이트 감지
   }catch(e){ toast(t("toast_repoFail")); }
 });
 
@@ -2821,7 +2946,8 @@ function markBookSource(file){
 }
 function wordKey(w){ return (w.kanji||"")+"|"+(w.hiragana||""); }
 // 새 단어 목록으로 갈아 끼우되 진도를 표기 기준으로 이어 붙인다
-function remapToNewWords(newWords){
+function remapToNewWords(newWords, noSnap){
+  if(!noSnap) snapshotBook(books.active, "update");
   newWords.forEach((w,i)=>{ if(w.id==null) w.id=i+1; });
   const keyToNew=new Map(); newWords.forEach(w=>keyToNew.set(wordKey(w), w.id));
   const oldById=new Map(state.words.map(w=>[w.id,w]));
@@ -3024,6 +3150,7 @@ $("#dbBody").addEventListener("click",e=>{
 
 $("#resetBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_reset"))) return;
+  snapshotBook(books.active, "reset");
   localStorage.removeItem(bookKey(books.active));   // 현재 단어장 슬롯만 초기화
   state=blankState(t("name_sample")); state.words=SEED.words.slice();
   normalizeWords(); save(); refreshAll(); toast(t("toast_reset"));
@@ -3031,6 +3158,7 @@ $("#resetBtn").addEventListener("click",()=>{
 $("#wipeBtn").addEventListener("click",()=>{
   if(!confirm(t("confirm_wipe"))) return;
   const prevIds=books.list.map(b=>b.id);
+  books.list.forEach(b=>snapshotBook(b.id, "wipe"));
   books.list.forEach(b=>localStorage.removeItem(bookKey(b.id)));   // 모든 단어장 슬롯 삭제
   localStorage.removeItem(BOOKS_KEY);
   books={active:"main", list:[{id:"main", name:""}]};
@@ -3141,6 +3269,7 @@ function deleteBook(id, backup){
   const name=bookSummary(b).name;
   if(!confirm(t("confirm_bookDelete",{name}))) return;
   if(backup && !downloadBook(id)) return;
+  snapshotBook(id, "delete");
   localStorage.removeItem(bookKey(id));
   cloudMarkDeleted(id);   // 클라우드에도 삭제 전파 (tombstone)
   books.list=books.list.filter(x=>x.id!==id);
@@ -3163,6 +3292,11 @@ function renderBookMgr(){
       </div></div>`; }).join("");
 }
 $("#bookMgr").addEventListener("toggle",renderBookMgr);
+$("#snapPanel").addEventListener("toggle",renderSnapList);
+$("#snapList").addEventListener("click",async e=>{
+  const r=e.target.closest("[data-snaprestore]"); if(r){ restoreSnapshot(+r.dataset.snaprestore); return; }
+  const d=e.target.closest("[data-snapdl]"); if(d){ const sn=await getSnapshot(+d.dataset.snapdl); if(sn) downloadSnapshot(sn); }
+});
 $("#bookMgrList").addEventListener("click",e=>{
   const o=e.target.closest("[data-bmopen]"); if(o){ switchBook(o.dataset.bmopen); return; }
   const k=e.target.closest("[data-bmbackup]"); if(k){ deleteBook(k.dataset.bmbackup, true); return; }
@@ -6002,6 +6136,7 @@ async function switchAccount(uid, opts){
       syncMeta.dirty.__registry__=true; saveSyncMeta();
     } else {
       // 기기의 단어장을 비우고 새 계정에서 받는다
+      books.list.forEach(b=>snapshotBook(b.id, "account"));
       books.list.forEach(b=>{ try{ localStorage.removeItem(bookKey(b.id)); }catch(e){} });
       books={active:"main", list:[{id:"main", name:""}]}; saveBooksReg();
       delete syncMeta.dirty.__registry__; saveSyncMeta();
@@ -6122,8 +6257,18 @@ async function pullMerge(){
       }catch(e){}
     } else if(!dirty){
       if(rUp>seen){
-        // 원격이 더 새로움 → 덮어씀
+        // 원격이 더 새로움 → 덮어씀. 단, 원격 기록이 이 기기보다 눈에 띄게 적으면(다른 기기에서 기록이
+        // 지워졌을 수 있다) 묻는다. 거부하면 이 기기 기록을 클라우드로 다시 올려 되살린다.
         await yieldUI();
+        const lraw=localStorage.getItem(bookKey(id));
+        const ls=lraw?snapSummary(lraw):null, rs=snapSummary(payload);
+        const shrink=ls && rs && (ls.done>=10 && rs.done < ls.done*0.8 || ls.days>=3 && rs.days < ls.days*0.5);
+        if(shrink && !confirm(t("sync_shrinkAsk",{name:(books.list.find(x=>x.id===id)||{}).name||r.name||id, ld:ls.done, rd:rs.done, lday:ls.days, rday:rs.days}))){
+          try{ const o=JSON.parse(lraw); o.updatedAt=Date.now(); localStorage.setItem(bookKey(id), JSON.stringify(o)); }catch(e){}
+          m.lastSeen[id]=rUp; m.dirty[id]=true; m.dirty.__registry__=true;
+          continue;
+        }
+        snapshotBook(id, "pull");
         try{
           localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
           m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
@@ -6136,6 +6281,7 @@ async function pullMerge(){
       // 양쪽 모두 변경 — 진짜 충돌만 사용자에게 확인
       const b=books.list.find(x=>x.id===id);
       if(confirm(t("sync_conflict",{name:(b&&b.name)||r.name||id}))){
+        snapshotBook(id, "pull");
         try{
           localStorage.setItem(bookKey(id), payload); m.lastSeen[id]=rUp; m.chunks[id]=r.chunks||1;
           m.parts[id]={w:r.wordsChunks||0, s:r.stateChunks||0, hash:r.wordsHash||""};
