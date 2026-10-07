@@ -1,0 +1,278 @@
+{
+  "version": 1,
+  "name": "[외래어] 이탈리아어에서 온 말",
+  "words": [
+    {
+      "kanji": "パスタ",
+      "hiragana": "パスタ",
+      "korean": "파스타 (pasta=반죽)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "トマトソースのパスタを昼食に作る。"
+    },
+    {
+      "kanji": "ピザ",
+      "hiragana": "ピザ",
+      "korean": "피자 (pizza)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "週末は家族で宅配のピザを頼む。"
+    },
+    {
+      "kanji": "スパゲッティ",
+      "hiragana": "スパゲッティ",
+      "korean": "스파게티 (spaghetti=가는 끈)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "ミートソースのスパゲッティは子どもに人気がある。"
+    },
+    {
+      "kanji": "マカロニ",
+      "hiragana": "マカロニ",
+      "korean": "마카로니 (maccheroni)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ゆでたマカロニを使ってサラダを作る。"
+    },
+    {
+      "kanji": "アルデンテ",
+      "hiragana": "アルデンテ",
+      "korean": "알덴테 (al dente=이에 닿게)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "パスタは芯が少し残るアルデンテにゆでるのがコツだ。"
+    },
+    {
+      "kanji": "ラザニア",
+      "hiragana": "ラザニア",
+      "korean": "라자냐 (lasagna)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ひき肉とチーズを重ねてラザニアを焼く。"
+    },
+    {
+      "kanji": "リゾット",
+      "hiragana": "リゾット",
+      "korean": "리소토 (risotto)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "残ったご飯でキノコのリゾットを作った。"
+    },
+    {
+      "kanji": "ティラミス",
+      "hiragana": "ティラミス",
+      "korean": "티라미수 (tiramisù=나를 끌어올려)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "食後のデザートにティラミスを注文する。"
+    },
+    {
+      "kanji": "ジェラート",
+      "hiragana": "ジェラート",
+      "korean": "젤라토 (gelato)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ローマの街を歩きながらジェラートを食べた。"
+    },
+    {
+      "kanji": "エスプレッソ",
+      "hiragana": "エスプレッソ",
+      "korean": "에스프레소 (espresso)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "食事のあとで濃いエスプレッソを一杯飲む。"
+    },
+    {
+      "kanji": "カプチーノ",
+      "hiragana": "カプチーノ",
+      "korean": "카푸치노 (cappuccino)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "泡のたっぷりのったカプチーノに砂糖を入れる。"
+    },
+    {
+      "kanji": "バリスタ",
+      "hiragana": "バリスタ",
+      "korean": "바리스타 (barista)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "有名なバリスタが入れたコーヒーを味わう。"
+    },
+    {
+      "kanji": "オペラ",
+      "hiragana": "オペラ",
+      "korean": "오페라 (opera=작품)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "ウィーンの劇場で初めて本場のオペラを鑑賞した。"
+    },
+    {
+      "kanji": "プリマドンナ",
+      "hiragana": "プリマドンナ",
+      "korean": "프리마돈나·주연 여가수 (prima donna=첫째 여인)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "劇場のプリマドンナが最後の歌で観客を魅了した。"
+    },
+    {
+      "kanji": "ソプラノ",
+      "hiragana": "ソプラノ",
+      "korean": "소프라노 (soprano)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "合唱部ではソプラノのパートを担当している。"
+    },
+    {
+      "kanji": "テンポ",
+      "hiragana": "テンポ",
+      "korean": "템포·속도 (tempo=시간)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "この曲は途中でテンポが急に速くなる。"
+    },
+    {
+      "kanji": "フィナーレ",
+      "hiragana": "フィナーレ",
+      "korean": "피날레 (finale)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "花火大会のフィナーレは大きな花火で夜空が明るくなった。"
+    },
+    {
+      "kanji": "アカペラ",
+      "hiragana": "アカペラ",
+      "korean": "아카펠라 (a cappella=교회풍으로)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "五人のグループが楽器を使わずにアカペラで歌う。"
+    },
+    {
+      "kanji": "ソナタ",
+      "hiragana": "ソナタ",
+      "korean": "소나타 (sonata=울리는 곡)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "発表会でベートーベンのピアノソナタを弾く。"
+    },
+    {
+      "kanji": "チェロ",
+      "hiragana": "チェロ",
+      "korean": "첼로 (violoncello의 줄임)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "低く温かいチェロの音色が会場に響いた。"
+    },
+    {
+      "kanji": "カルテット",
+      "hiragana": "カルテット",
+      "korean": "사중주 (quartetto)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "弦楽器の四人がカルテットを組んで演奏する。"
+    },
+    {
+      "kanji": "マエストロ",
+      "hiragana": "マエストロ",
+      "korean": "거장·명지휘자 (maestro=스승)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "世界的なマエストロが日本の楽団を指揮する。"
+    },
+    {
+      "kanji": "ブラボー",
+      "hiragana": "ブラボー",
+      "korean": "브라보·잘했다 (bravo)",
+      "level": "N1",
+      "pos": "감탄사",
+      "example": "演奏が終わると客席からブラボーという声が飛んだ。"
+    },
+    {
+      "kanji": "チャオ",
+      "hiragana": "チャオ",
+      "korean": "안녕(만날 때·헤어질 때) (ciao)",
+      "level": "N1",
+      "pos": "감탄사",
+      "example": "イタリア人の友人は別れ際に笑顔でチャオと手を振った。"
+    },
+    {
+      "kanji": "カジノ",
+      "hiragana": "カジノ",
+      "korean": "카지노 (casino=작은 집·프랑스어 경유)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "旅行先のカジノで少しだけルーレットを楽しんだ。"
+    },
+    {
+      "kanji": "ゴンドラ",
+      "hiragana": "ゴンドラ",
+      "korean": "곤돌라 (gondola)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ベネチアの運河をゴンドラに乗って進む。"
+    },
+    {
+      "kanji": "マフィア",
+      "hiragana": "マフィア",
+      "korean": "마피아 (mafia)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "映画はシチリアのマフィアの家族を描いている。"
+    },
+    {
+      "kanji": "パパラッチ",
+      "hiragana": "パパラッチ",
+      "korean": "파파라치 (paparazzi)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "有名人の私生活を追いかけるパパラッチが問題になっている。"
+    },
+    {
+      "kanji": "ゲットー",
+      "hiragana": "ゲットー",
+      "korean": "게토·격리 거주 구역 (ghetto)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "歴史の授業でユダヤ人のゲットーについて学んだ。"
+    },
+    {
+      "kanji": "フレスコ画",
+      "hiragana": "フレスコが",
+      "korean": "프레스코화 (fresco=신선한)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "教会の天井には美しいフレスコ画が描かれている。"
+    },
+    {
+      "kanji": "インフルエンザ",
+      "hiragana": "インフルエンザ",
+      "korean": "인플루엔자·독감 (influenza=별의 영향·영어 경유)",
+      "level": "N4",
+      "pos": "명사",
+      "example": "冬になるとインフルエンザの患者が急に増える。"
+    },
+    {
+      "kanji": "マラリア",
+      "hiragana": "マラリア",
+      "korean": "말라리아 (mal'aria=나쁜 공기·영어 경유)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "熱帯の国へ行く前にマラリアの予防薬をもらった。"
+    },
+    {
+      "kanji": "テンポがいい",
+      "hiragana": "テンポがいい",
+      "korean": "템포(전개)가 좋다 (tempo)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "この映画は話のテンポがいいので最後まで飽きない。"
+    },
+    {
+      "kanji": "パスタをゆでる",
+      "hiragana": "パスタをゆでる",
+      "korean": "파스타를 삶다 (pasta)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "たっぷりのお湯に塩を入れてパスタをゆでる。"
+    }
+  ]
+}

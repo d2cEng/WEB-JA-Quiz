@@ -1,0 +1,334 @@
+{
+  "version": 1,
+  "name": "[외래어] 독일어에서 온 말",
+  "words": [
+    {
+      "kanji": "アルバイト",
+      "hiragana": "アルバイト",
+      "korean": "아르바이트 (Arbeit=노동)",
+      "level": "N4",
+      "pos": "명사",
+      "example": "大学生の時は週末にコンビニでアルバイトをしていた。"
+    },
+    {
+      "kanji": "エネルギー",
+      "hiragana": "エネルギー",
+      "korean": "에너지 (Energie)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "太陽の光を電気のエネルギーに変える。"
+    },
+    {
+      "kanji": "テーマ",
+      "hiragana": "テーマ",
+      "korean": "주제 (Thema)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "卒業論文のテーマを先生と相談して決める。"
+    },
+    {
+      "kanji": "カルテ",
+      "hiragana": "カルテ",
+      "korean": "진료기록부 (Karte=카드)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "医者は患者の症状をカルテに書き込む。"
+    },
+    {
+      "kanji": "ゲレンデ",
+      "hiragana": "ゲレンデ",
+      "korean": "스키장 슬로프 (Gelände=지형)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "週末は雪の積もったゲレンデでスキーを楽しむ。"
+    },
+    {
+      "kanji": "リュックサック",
+      "hiragana": "リュックサック",
+      "korean": "배낭 (Rucksack)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "登山用のリュックサックに水と食料を詰める。"
+    },
+    {
+      "kanji": "ヒュッテ",
+      "hiragana": "ヒュッテ",
+      "korean": "산장 (Hütte=오두막)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "山頂近くのヒュッテで一晩泊まった。"
+    },
+    {
+      "kanji": "ザイル",
+      "hiragana": "ザイル",
+      "korean": "등산용 로프 (Seil=밧줄)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "岩場では仲間とザイルで体をつないで登る。"
+    },
+    {
+      "kanji": "アイゼン",
+      "hiragana": "アイゼン",
+      "korean": "아이젠 (Steigeisen의 줄임)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "凍った雪道を歩くために登山靴にアイゼンを付ける。"
+    },
+    {
+      "kanji": "ピッケル",
+      "hiragana": "ピッケル",
+      "korean": "피켈 (Pickel=곡괭이)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雪山ではピッケルで足場を確保しながら進む。"
+    },
+    {
+      "kanji": "ワクチン",
+      "hiragana": "ワクチン",
+      "korean": "백신 (Vakzin)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "冬が来る前にインフルエンザのワクチンを接種する。"
+    },
+    {
+      "kanji": "ウイルス",
+      "hiragana": "ウイルス",
+      "korean": "바이러스 (Virus·원래 라틴어 virus=독)",
+      "level": "N4",
+      "pos": "명사",
+      "example": "手洗いでウイルスの感染を防ぐ。"
+    },
+    {
+      "kanji": "アレルギー",
+      "hiragana": "アレルギー",
+      "korean": "알레르기 (Allergie)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "花粉のアレルギーで春は目がかゆくなる。"
+    },
+    {
+      "kanji": "ホルモン",
+      "hiragana": "ホルモン",
+      "korean": "호르몬·(요리) 곱창 (Hormon)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "睡眠不足は体のホルモンの働きを乱す。"
+    },
+    {
+      "kanji": "ノイローゼ",
+      "hiragana": "ノイローゼ",
+      "korean": "노이로제 (Neurose)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "仕事の重圧でノイローゼ気味になった。"
+    },
+    {
+      "kanji": "ギプス",
+      "hiragana": "ギプス",
+      "korean": "깁스 (Gips=석고)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "骨折した足をギプスで固定する。"
+    },
+    {
+      "kanji": "ガーゼ",
+      "hiragana": "ガーゼ",
+      "korean": "거즈 (Gaze)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "傷口を消毒してからガーゼを当てる。"
+    },
+    {
+      "kanji": "カプセル",
+      "hiragana": "カプセル",
+      "korean": "캡슐 (Kapsel)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "苦い薬はカプセルに入っているので飲みやすい。"
+    },
+    {
+      "kanji": "ゼミ",
+      "hiragana": "ゼミ",
+      "korean": "대학 세미나 수업 (Seminar의 줄임)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "大学三年から経済学のゼミに所属している。"
+    },
+    {
+      "kanji": "メルヘン",
+      "hiragana": "メルヘン",
+      "korean": "동화·동화 같은 분위기 (Märchen)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "古いお城のある村はまるでメルヘンの世界だった。"
+    },
+    {
+      "kanji": "イデオロギー",
+      "hiragana": "イデオロギー",
+      "korean": "이데올로기 (Ideologie)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "冷戦時代は政治のイデオロギーの対立が激しかった。"
+    },
+    {
+      "kanji": "カテゴリー",
+      "hiragana": "カテゴリー",
+      "korean": "범주·카테고리 (Kategorie)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "集めた資料を内容ごとにカテゴリーに分ける。"
+    },
+    {
+      "kanji": "ベクトル",
+      "hiragana": "ベクトル",
+      "korean": "벡터·(비유) 방향성 (Vektor)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "チーム全員の努力のベクトルを同じ方向に合わせる。"
+    },
+    {
+      "kanji": "ボンベ",
+      "hiragana": "ボンベ",
+      "korean": "가스통·봄베 (Bombe)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ダイビングでは酸素のボンベを背負って潜る。"
+    },
+    {
+      "kanji": "ワッペン",
+      "hiragana": "ワッペン",
+      "korean": "천 패치·와펜 (Wappen=문장)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "制服の胸に学校のワッペンを縫い付ける。"
+    },
+    {
+      "kanji": "グミ",
+      "hiragana": "グミ",
+      "korean": "젤리 과자 (Gummi=고무)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "コンビニで果物味のグミを買った。"
+    },
+    {
+      "kanji": "バウムクーヘン",
+      "hiragana": "バウムクーヘン",
+      "korean": "바움쿠헨 (Baumkuchen=나무 케이크)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "結婚式の引き出物にバウムクーヘンをいただいた。"
+    },
+    {
+      "kanji": "ゲノム",
+      "hiragana": "ゲノム",
+      "korean": "게놈·유전체 (Genom)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "人間のゲノムの解読はすでに完了している。"
+    },
+    {
+      "kanji": "カルテル",
+      "hiragana": "カルテル",
+      "korean": "카르텔·담합 (Kartell)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "価格のカルテルは法律で禁止されている。"
+    },
+    {
+      "kanji": "コンツェルン",
+      "hiragana": "コンツェルン",
+      "korean": "콘체른(기업 결합체) (Konzern)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "戦前の財閥は巨大なコンツェルンを形成していた。"
+    },
+    {
+      "kanji": "ナトリウム",
+      "hiragana": "ナトリウム",
+      "korean": "나트륨 (Natrium)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "塩分をとりすぎると体内のナトリウムが増えすぎるので注意する。"
+    },
+    {
+      "kanji": "カリウム",
+      "hiragana": "カリウム",
+      "korean": "칼륨 (Kalium)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "バナナにはカリウムが多く含まれている。"
+    },
+    {
+      "kanji": "アウフヘーベン",
+      "hiragana": "アウフヘーベン",
+      "korean": "지양 (aufheben=끌어올려 보존하다)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "対立する二つの意見をアウフヘーベンして新しい案を出す。"
+    },
+    {
+      "kanji": "ゲシュタルト崩壊",
+      "hiragana": "ゲシュタルトほうかい",
+      "korean": "게슈탈트 붕괴(글자가 낯설게 보이는 현상) (Gestalt=형태)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "同じ漢字を何度も書いているとゲシュタルト崩壊が起きる。"
+    },
+    {
+      "kanji": "ドッペルゲンガー",
+      "hiragana": "ドッペルゲンガー",
+      "korean": "도플갱어 (Doppelgänger)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夢の中で自分そっくりのドッペルゲンガーに出会った。"
+    },
+    {
+      "kanji": "ヒステリー",
+      "hiragana": "ヒステリー",
+      "korean": "히스테리 (Hysterie)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "思いどおりにならないとヒステリーを起こす人もいる。"
+    },
+    {
+      "kanji": "シュプレヒコール",
+      "hiragana": "シュプレヒコール",
+      "korean": "구호 제창 (Sprechchor)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "デモの参加者が国会の前でシュプレヒコールを上げた。"
+    },
+    {
+      "kanji": "マイスター",
+      "hiragana": "マイスター",
+      "korean": "장인 자격자·마이스터 (Meister)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ドイツでマイスターの資格を取ったパン職人の店に行く。"
+    },
+    {
+      "kanji": "エネルギッシュ",
+      "hiragana": "エネルギッシュ",
+      "korean": "정력적인·에너지 넘치는 (energisch)",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "新しい部長は朝から晩まで働くエネルギッシュな人だ。"
+    },
+    {
+      "kanji": "オブラートに包む",
+      "hiragana": "オブラートにつつむ",
+      "korean": "완곡하게 돌려 말하다 (Oblate·네덜란드어 oblaat=녹말 막)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "相手を傷つけないように厳しい意見をオブラートに包む。"
+    },
+    {
+      "kanji": "テーマを絞る",
+      "hiragana": "テーマをしぼる",
+      "korean": "주제를 좁히다 (Thema)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "発表の時間が短いので一つにテーマを絞る。"
+    }
+  ]
+}

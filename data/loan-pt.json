@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "name": "[외래어] 포르투갈어에서 온 말",
+  "words": [
+    {
+      "kanji": "パン",
+      "hiragana": "パン",
+      "korean": "빵 (pão)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "朝は焼きたてのパンにバターを塗って食べる。"
+    },
+    {
+      "kanji": "タバコ",
+      "hiragana": "タバコ",
+      "korean": "담배 (tabaco)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "駅のホームでタバコを吸うことは禁止されている。"
+    },
+    {
+      "kanji": "合羽",
+      "hiragana": "かっぱ",
+      "korean": "비옷 (capa=망토)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雨が強くなったので合羽を着て自転車に乗る。"
+    },
+    {
+      "kanji": "ボタン",
+      "hiragana": "ボタン",
+      "korean": "단추 (botão)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "シャツのボタンが一つ取れてしまった。"
+    },
+    {
+      "kanji": "カステラ",
+      "hiragana": "カステラ",
+      "korean": "카스텔라 (pão de Castela=카스티야의 빵)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "長崎のお土産にカステラを買って帰る。"
+    },
+    {
+      "kanji": "カルタ",
+      "hiragana": "カルタ",
+      "korean": "카드놀이 가루타 (carta=카드)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "お正月に家族でカルタをして遊ぶ。"
+    },
+    {
+      "kanji": "金平糖",
+      "hiragana": "こんぺいとう",
+      "korean": "별사탕 (confeito=설탕 과자)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小さな瓶に色とりどりの金平糖が入っている。"
+    },
+    {
+      "kanji": "襦袢",
+      "hiragana": "じゅばん",
+      "korean": "기모노 속옷 (gibão=짧은 웃옷)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "着物の下に白い襦袢を着る。"
+    },
+    {
+      "kanji": "ビードロ",
+      "hiragana": "ビードロ",
+      "korean": "유리·유리 공예품 (vidro=유리)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "長崎の土産物店でビードロの置物を見つけた。"
+    },
+    {
+      "kanji": "ビロード",
+      "hiragana": "ビロード",
+      "korean": "벨벳 (veludo)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ビロードのような手触りの布で椅子を張り替えた。"
+    },
+    {
+      "kanji": "如雨露",
+      "hiragana": "じょうろ",
+      "korean": "물뿌리개 (jorro=물줄기)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "毎朝如雨露でベランダの花に水をやる。"
+    },
+    {
+      "kanji": "シャボン玉",
+      "hiragana": "シャボンだま",
+      "korean": "비눗방울 (sabão=비누)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "子どもたちが公園でシャボン玉を飛ばして遊ぶ。"
+    },
+    {
+      "kanji": "オルガン",
+      "hiragana": "オルガン",
+      "korean": "오르간·풍금 (órgão)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "小学校の音楽室には古いオルガンが置いてある。"
+    },
+    {
+      "kanji": "ミイラ",
+      "hiragana": "ミイラ",
+      "korean": "미라 (mirra=몰약)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "博物館で古代エジプトのミイラを見学した。"
+    },
+    {
+      "kanji": "天ぷら",
+      "hiragana": "てんぷら",
+      "korean": "튀김 (tempero=양념 등 여러 설)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "揚げたての天ぷらを塩につけて食べる。"
+    },
+    {
+      "kanji": "カボチャ",
+      "hiragana": "カボチャ",
+      "korean": "호박 (Camboja=캄보디아)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "冬至の日にカボチャを煮て食べる習慣がある。"
+    },
+    {
+      "kanji": "フラスコ",
+      "hiragana": "フラスコ",
+      "korean": "플라스크 (frasco=병)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "理科の実験でフラスコに水を入れて加熱する。"
+    },
+    {
+      "kanji": "キリシタン",
+      "hiragana": "キリシタン",
+      "korean": "일본 초기 그리스도교 신자 (cristão)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "江戸時代にはキリシタンが厳しく取り締まられた。"
+    },
+    {
+      "kanji": "チャルメラ",
+      "hiragana": "チャルメラ",
+      "korean": "차르메라 피리 (charamela)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昔はチャルメラを吹きながら屋台のラーメン屋が回ってきた。"
+    },
+    {
+      "kanji": "バッテラ",
+      "hiragana": "バッテラ",
+      "korean": "고등어 누름초밥 (bateira=작은 배)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大阪名物のバッテラは鯖を使った押し寿司だ。"
+    },
+    {
+      "kanji": "ボーロ",
+      "hiragana": "ボーロ",
+      "korean": "작은 구운 과자 (bolo=케이크)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "赤ちゃんのおやつに卵ボーロを買う。"
+    },
+    {
+      "kanji": "ピンからキリまで",
+      "hiragana": "ピンからキリまで",
+      "korean": "최상급부터 최하급까지 (pinta=점·cruz=십자)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "同じワインでも値段はピンからキリまである。"
+    },
+    {
+      "kanji": "ボタンを掛け違える",
+      "hiragana": "ボタンをかけちがえる",
+      "korean": "첫 단추를 잘못 끼우다·어긋나다 (botão)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "最初の打ち合わせでボタンを掛け違えると計画全体がずれる。"
+    },
+    {
+      "kanji": "天ぷらを揚げる",
+      "hiragana": "てんぷらをあげる",
+      "korean": "튀김을 튀기다 (tempero 등 여러 설)",
+      "level": "N1",
+      "pos": "연어",
+      "example": "祖母は大きな鍋で野菜の天ぷらを揚げる。"
+    },
+    {
+      "kanji": "カナリア",
+      "hiragana": "カナリア",
+      "korean": "카나리아 (canaria=카나리아 제도의 새)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "祖父は黄色いカナリアを鳥かごで飼っている。"
+    }
+  ]
+}

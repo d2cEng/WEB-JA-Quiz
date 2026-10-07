@@ -1,0 +1,374 @@
+{
+  "version": 1,
+  "name": "[외래어] 프랑스어에서 온 말",
+  "words": [
+    {
+      "kanji": "アンケート",
+      "hiragana": "アンケート",
+      "korean": "설문조사 (enquête=조사)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新商品について利用者にアンケートを行う。"
+    },
+    {
+      "kanji": "アトリエ",
+      "hiragana": "アトリエ",
+      "korean": "작업실·화실 (atelier)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "画家のアトリエには描きかけの絵が並んでいた。"
+    },
+    {
+      "kanji": "グルメ",
+      "hiragana": "グルメ",
+      "korean": "미식가·맛있는 음식 (gourmet)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雑誌で紹介された地元のグルメを食べ歩く。"
+    },
+    {
+      "kanji": "クレヨン",
+      "hiragana": "クレヨン",
+      "korean": "크레용 (crayon=연필)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "子どもがクレヨンで家族の絵を描いた。"
+    },
+    {
+      "kanji": "シュークリーム",
+      "hiragana": "シュークリーム",
+      "korean": "슈크림·슈 (chou à la crème=크림 넣은 양배추 모양 과자)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "駅前の洋菓子店でシュークリームを買った。"
+    },
+    {
+      "kanji": "ズボン",
+      "hiragana": "ズボン",
+      "korean": "바지 (jupon=속치마 유래설)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "雨で汚れたズボンを洗濯機に入れる。"
+    },
+    {
+      "kanji": "マロン",
+      "hiragana": "マロン",
+      "korean": "밤 (marron)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "秋限定のマロン味のケーキが発売された。"
+    },
+    {
+      "kanji": "デッサン",
+      "hiragana": "デッサン",
+      "korean": "소묘·데생 (dessin)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "美術大学の受験に向けて毎日デッサンの練習をする。"
+    },
+    {
+      "kanji": "エチケット",
+      "hiragana": "エチケット",
+      "korean": "에티켓·예절 (étiquette)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "電車の中で大声で話さないのはエチケットだ。"
+    },
+    {
+      "kanji": "クロワッサン",
+      "hiragana": "クロワッサン",
+      "korean": "크루아상 (croissant=초승달)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "朝食に焼きたてのクロワッサンとコーヒーを頼む。"
+    },
+    {
+      "kanji": "カフェ",
+      "hiragana": "カフェ",
+      "korean": "카페 (café=커피)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "駅前の静かなカフェで本を読む。"
+    },
+    {
+      "kanji": "ピーマン",
+      "hiragana": "ピーマン",
+      "korean": "피망 (piment=고추)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "子どもの頃は苦いピーマンが苦手だった。"
+    },
+    {
+      "kanji": "バカンス",
+      "hiragana": "バカンス",
+      "korean": "바캉스·장기 휴가 (vacances)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夏には一か月のバカンスを楽しむ国もある。"
+    },
+    {
+      "kanji": "ジャンル",
+      "hiragana": "ジャンル",
+      "korean": "장르 (genre)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "好きな音楽のジャンルは何ですかと聞かれた。"
+    },
+    {
+      "kanji": "コンクール",
+      "hiragana": "コンクール",
+      "korean": "콩쿠르·경연대회 (concours)",
+      "level": "N2",
+      "pos": "명사",
+      "example": "ピアノのコンクールで一位を取った。"
+    },
+    {
+      "kanji": "アンコール",
+      "hiragana": "アンコール",
+      "korean": "앙코르 (encore=다시·영어 경유)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "演奏が終わると観客からアンコールの拍手が起こった。"
+    },
+    {
+      "kanji": "レストラン",
+      "hiragana": "レストラン",
+      "korean": "레스토랑 (restaurant)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "記念日に海の見えるレストランを予約した。"
+    },
+    {
+      "kanji": "ブーケ",
+      "hiragana": "ブーケ",
+      "korean": "부케·꽃다발 (bouquet)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "結婚式で花嫁が投げたブーケを友人が受け取った。"
+    },
+    {
+      "kanji": "オードブル",
+      "hiragana": "オードブル",
+      "korean": "전채 요리 (hors-d'œuvre)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "パーティーの最初にオードブルの盛り合わせが出た。"
+    },
+    {
+      "kanji": "グラタン",
+      "hiragana": "グラタン",
+      "korean": "그라탱 (gratin)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "寒い日はオーブンで熱々のグラタンを焼く。"
+    },
+    {
+      "kanji": "コンソメ",
+      "hiragana": "コンソメ",
+      "korean": "콩소메 수프 (consommé)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "野菜を煮込んでコンソメで味を調える。"
+    },
+    {
+      "kanji": "ポタージュ",
+      "hiragana": "ポタージュ",
+      "korean": "포타주 수프 (potage)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "カボチャを裏ごしして濃厚なポタージュを作る。"
+    },
+    {
+      "kanji": "シルエット",
+      "hiragana": "シルエット",
+      "korean": "실루엣 (silhouette)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夕日の中に山のシルエットが浮かび上がる。"
+    },
+    {
+      "kanji": "ニュアンス",
+      "hiragana": "ニュアンス",
+      "korean": "뉘앙스 (nuance)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "翻訳では言葉の細かなニュアンスを伝えるのが難しい。"
+    },
+    {
+      "kanji": "クーデター",
+      "hiragana": "クーデター",
+      "korean": "쿠데타 (coup d'État)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "軍がクーデターを起こして政権を奪った。"
+    },
+    {
+      "kanji": "レジュメ",
+      "hiragana": "レジュメ",
+      "korean": "발표 요약 자료 (résumé)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ゼミの発表のために二枚のレジュメを用意した。"
+    },
+    {
+      "kanji": "デビュー",
+      "hiragana": "デビュー",
+      "korean": "데뷔 (début=시작)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "十八歳で歌手としてデビューを果たした。"
+    },
+    {
+      "kanji": "ブティック",
+      "hiragana": "ブティック",
+      "korean": "부티크·옷가게 (boutique)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "表参道のブティックで春物のコートを買った。"
+    },
+    {
+      "kanji": "ピエロ",
+      "hiragana": "ピエロ",
+      "korean": "피에로·광대 (pierrot)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "サーカスのピエロが玉乗りをして観客を笑わせた。"
+    },
+    {
+      "kanji": "ベレー帽",
+      "hiragana": "ベレーぼう",
+      "korean": "베레모 (béret)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "画家はいつも黒いベレー帽をかぶっていた。"
+    },
+    {
+      "kanji": "マント",
+      "hiragana": "マント",
+      "korean": "망토 (manteau=외투)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "魔法使いの衣装に長い黒のマントを合わせる。"
+    },
+    {
+      "kanji": "メートル",
+      "hiragana": "メートル",
+      "korean": "미터 (mètre)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "家から駅までは約五百メートルの距離だ。"
+    },
+    {
+      "kanji": "グラム",
+      "hiragana": "グラム",
+      "korean": "그램 (gramme)",
+      "level": "N5",
+      "pos": "명사",
+      "example": "肉屋で豚肉を三百グラム買った。"
+    },
+    {
+      "kanji": "ルポ",
+      "hiragana": "ルポ",
+      "korean": "르포·현지 보도 (reportage의 줄임)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "被災地の現状を伝えるルポを雑誌に書いた。"
+    },
+    {
+      "kanji": "アベック",
+      "hiragana": "アベック",
+      "korean": "(옛말) 남녀 커플 (avec=함께)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昭和の頃は恋人同士をアベックと呼んでいた。"
+    },
+    {
+      "kanji": "エステ",
+      "hiragana": "エステ",
+      "korean": "피부·미용 관리 (esthétique의 줄임)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "誕生日のお祝いに母をエステに連れて行った。"
+    },
+    {
+      "kanji": "アバンギャルド",
+      "hiragana": "アバンギャルド",
+      "korean": "아방가르드·전위 예술 (avant-garde)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "美術館でアバンギャルドの作品展が開かれている。"
+    },
+    {
+      "kanji": "ブルジョア",
+      "hiragana": "ブルジョア",
+      "korean": "부르주아·부유층 (bourgeois)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小説の主人公はパリのブルジョアの家に生まれた。"
+    },
+    {
+      "kanji": "オムレツ",
+      "hiragana": "オムレツ",
+      "korean": "오믈렛 (omelette)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "卵を三つ使ってふわふわのオムレツを作る。"
+    },
+    {
+      "kanji": "ロマン",
+      "hiragana": "ロマン",
+      "korean": "낭만·로망 (roman=소설)",
+      "level": "N3",
+      "pos": "명사",
+      "example": "宇宙の謎を解き明かすことに大きなロマンを感じる。"
+    },
+    {
+      "kanji": "ルージュ",
+      "hiragana": "ルージュ",
+      "korean": "립스틱 (rouge=빨강)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大切な会議の日は赤いルージュを塗って出かける。"
+    },
+    {
+      "kanji": "ランデブー",
+      "hiragana": "ランデブー",
+      "korean": "랑데부·(우주선) 접근 (rendez-vous)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "補給船が宇宙ステーションとのランデブーに成功した。"
+    },
+    {
+      "kanji": "シュール",
+      "hiragana": "シュール",
+      "korean": "초현실적인·기묘한 (surréalisme의 줄임)",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "このマンガは独特でシュールな笑いが魅力だ。"
+    },
+    {
+      "kanji": "シック",
+      "hiragana": "シック",
+      "korean": "세련되고 차분한 (chic)",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "黒と灰色でまとめたシックな服装で式に出る。"
+    },
+    {
+      "kanji": "サボる",
+      "hiragana": "サボる",
+      "korean": "땡땡이치다 (sabotage+る)",
+      "level": "N1",
+      "pos": "1그룹동사",
+      "example": "授業をサボると単位がもらえなくなる。"
+    },
+    {
+      "kanji": "ボンジュール",
+      "hiragana": "ボンジュール",
+      "korean": "안녕하세요 (bonjour)",
+      "level": "N1",
+      "pos": "감탄사",
+      "example": "パリのパン屋では店員にボンジュールと挨拶してから注文する。"
+    }
+  ]
+}
