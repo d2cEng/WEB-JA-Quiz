@@ -16,6 +16,13 @@
       "bytes": 2550803
     },
     {
+      "name": "[시험대비] JLPT N2 복습 (2026.12.6)",
+      "file": "n2-review-1206.json",
+      "lang": "ko",
+      "bytes": 9529,
+      "rev": "gxzrhi:1678"
+    },
+    {
       "name": "[테마] 일본 이자카야·식당 메뉴 읽기",
       "file": "izakaya-menu.json",
       "rev": "1myv297:10299",
