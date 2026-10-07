@@ -39227,7 +39227,7 @@
     {
       "id": 4359,
       "kanji": "混じる",
-      "hiragana": "こんじる",
+      "hiragana": "まじる",
       "korean": "to be mixed in with · to blend with",
       "level": "N2",
       "pos": "Group 2 verb",
@@ -40145,7 +40145,7 @@
     {
       "id": 4461,
       "kanji": "意気込み",
-      "hiragana": "いきこみ",
+      "hiragana": "いきごみ",
       "korean": "ardor · enthusiasm",
       "level": "N2",
       "pos": "noun",
@@ -46238,7 +46238,7 @@
     {
       "id": 5138,
       "kanji": "緩い",
-      "hiragana": "ゆりい",
+      "hiragana": "ゆるい",
       "korean": "lukewarm · tepid · lenient · slow",
       "level": "N2",
       "pos": "i-adjective",
@@ -48371,7 +48371,7 @@
     {
       "id": 5375,
       "kanji": "鉢",
-      "hiragana": "ばち",
+      "hiragana": "はち",
       "korean": "bowl · pot · basin · flowerpot",
       "level": "N2",
       "pos": "noun",
@@ -84331,6 +84331,2589 @@
       "level": "N1",
       "pos": "Group 1 verb",
       "example": "彼女が琴の弦を弾く。"
+    },
+    {
+      "id": 9371,
+      "kanji": "北口",
+      "hiragana": "きたぐち",
+      "korean": "north exit",
+      "level": "N5",
+      "pos": "noun",
+      "example": "駅の北口で友達と待ち合わせをしました。"
+    },
+    {
+      "id": 9372,
+      "kanji": "西口",
+      "hiragana": "にしぐち",
+      "korean": "west exit",
+      "level": "N5",
+      "pos": "noun",
+      "example": "西口を出るとすぐ右に銀行があります。"
+    },
+    {
+      "id": 9373,
+      "kanji": "東口",
+      "hiragana": "ひがしぐち",
+      "korean": "east exit",
+      "level": "N5",
+      "pos": "noun",
+      "example": "バス乗り場は駅の東口にあります。"
+    },
+    {
+      "id": 9374,
+      "kanji": "西側",
+      "hiragana": "にしがわ",
+      "korean": "west side",
+      "level": "N5",
+      "pos": "noun",
+      "example": "公園の西側に新しい図書館ができました。"
+    },
+    {
+      "id": 9375,
+      "kanji": "東側",
+      "hiragana": "ひがしがわ",
+      "korean": "east side",
+      "level": "N5",
+      "pos": "noun",
+      "example": "この部屋は東側に窓があって朝が明るいです。"
+    },
+    {
+      "id": 9376,
+      "kanji": "南側",
+      "hiragana": "みなみがわ",
+      "korean": "south side",
+      "level": "N5",
+      "pos": "noun",
+      "example": "家の南側に小さな庭を作りました。"
+    },
+    {
+      "id": 9377,
+      "kanji": "午前中",
+      "hiragana": "ごぜんちゅう",
+      "korean": "during the morning",
+      "level": "N5",
+      "pos": "noun",
+      "example": "荷物は明日の午前中に届く予定です。"
+    },
+    {
+      "id": 9378,
+      "kanji": "何語",
+      "hiragana": "なにご",
+      "korean": "what language",
+      "level": "N5",
+      "pos": "noun",
+      "example": "あの人は何語を話していますか。"
+    },
+    {
+      "id": 9379,
+      "kanji": "何人",
+      "hiragana": "なんにん",
+      "korean": "how many people",
+      "level": "N5",
+      "pos": "noun",
+      "example": "今日のパーティーには何人来ますか。"
+    },
+    {
+      "id": 9380,
+      "kanji": "ラジカセ",
+      "hiragana": "ラジカセ",
+      "korean": "boombox · radio cassette player",
+      "level": "N5",
+      "pos": "noun",
+      "example": "祖父は古いラジカセで毎朝音楽を聞いています。"
+    },
+    {
+      "id": 9381,
+      "kanji": "暑さ",
+      "hiragana": "あつさ",
+      "korean": "heat · hotness",
+      "level": "N4",
+      "pos": "noun",
+      "example": "今年の夏の暑さは本当に厳しいです。"
+    },
+    {
+      "id": 9382,
+      "kanji": "一般的",
+      "hiragana": "いっぱんてき",
+      "korean": "general · common · typical",
+      "level": "N3",
+      "pos": "na-adjective",
+      "example": "日本では靴を脱いで家に入るのが一般的だ。"
+    },
+    {
+      "id": 9383,
+      "kanji": "朝刊",
+      "hiragana": "ちょうかん",
+      "korean": "morning newspaper",
+      "level": "N3",
+      "pos": "noun",
+      "example": "父は毎朝コーヒーを飲みながら朝刊を読む。"
+    },
+    {
+      "id": 9384,
+      "kanji": "現れる",
+      "hiragana": "あらわれる",
+      "korean": "to appear · to emerge",
+      "level": "N3",
+      "pos": "Group 2 verb",
+      "example": "雲の間から急に太陽が現れる瞬間が好きだ。"
+    },
+    {
+      "id": 9385,
+      "kanji": "お疲れ様",
+      "hiragana": "おつかれさま",
+      "korean": "thank you for your hard work · good work",
+      "level": "N3",
+      "pos": "interjection",
+      "example": "会議が終わると部長が「お疲れ様」と声をかけてくれた。"
+    },
+    {
+      "id": 9386,
+      "kanji": "からから",
+      "hiragana": "からから",
+      "korean": "parched · bone-dry · empty",
+      "level": "N3",
+      "pos": "adverb",
+      "example": "長い間雨が降らず畑の土がからからに乾いている。"
+    },
+    {
+      "id": 9387,
+      "kanji": "がらがら",
+      "hiragana": "がらがら",
+      "korean": "nearly empty · deserted",
+      "level": "N3",
+      "pos": "adverb",
+      "example": "平日の昼間の映画館はがらがらで驚いた。"
+    },
+    {
+      "id": 9388,
+      "kanji": "効果的",
+      "hiragana": "こうかてき",
+      "korean": "effective",
+      "level": "N3",
+      "pos": "na-adjective",
+      "example": "毎日少しずつ復習するのが効果的な勉強法だ。"
+    },
+    {
+      "id": 9389,
+      "kanji": "自動的",
+      "hiragana": "じどうてき",
+      "korean": "automatic",
+      "level": "N3",
+      "pos": "na-adjective",
+      "example": "このドアは人が近づくと自動的に開きます。"
+    },
+    {
+      "id": 9390,
+      "kanji": "搾る",
+      "hiragana": "しぼる",
+      "korean": "to squeeze · to wring",
+      "level": "N3",
+      "pos": "Group 1 verb",
+      "example": "朝食用にオレンジを搾るのが毎日の習慣です。"
+    },
+    {
+      "id": 9391,
+      "kanji": "代表的",
+      "hiragana": "だいひょうてき",
+      "korean": "representative · typical",
+      "level": "N3",
+      "pos": "na-adjective",
+      "example": "寿司は日本の代表的な料理の一つです。"
+    },
+    {
+      "id": 9392,
+      "kanji": "おかしな",
+      "hiragana": "おかしな",
+      "korean": "strange · odd · funny",
+      "level": "N3",
+      "pos": "rentaishi",
+      "example": "夜中に隣の部屋からおかしな音が聞こえた。"
+    },
+    {
+      "id": 9393,
+      "kanji": "なだらか",
+      "hiragana": "なだらか",
+      "korean": "gentle · gently sloping",
+      "level": "N3",
+      "pos": "na-adjective",
+      "example": "この山道はなだらかで子供でも登りやすい。"
+    },
+    {
+      "id": 9394,
+      "kanji": "圧倒的",
+      "hiragana": "あっとうてき",
+      "korean": "overwhelming",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "選挙は現職の候補が圧倒的な差で勝った。"
+    },
+    {
+      "id": 9395,
+      "kanji": "疑い",
+      "hiragana": "うたがい",
+      "korean": "doubt · suspicion",
+      "level": "N2",
+      "pos": "noun",
+      "example": "男は窃盗の疑いで警察に逮捕された。"
+    },
+    {
+      "id": 9396,
+      "kanji": "可能性",
+      "hiragana": "かのうせい",
+      "korean": "possibility · potential",
+      "level": "N2",
+      "pos": "noun",
+      "example": "明日は雪が降る可能性が高いそうです。"
+    },
+    {
+      "id": 9397,
+      "kanji": "賛否",
+      "hiragana": "さんぴ",
+      "korean": "approval or disapproval · pros and cons",
+      "level": "N2",
+      "pos": "noun",
+      "example": "新しい制度には市民の間で賛否が分かれている。"
+    },
+    {
+      "id": 9398,
+      "kanji": "諸国",
+      "hiragana": "しょこく",
+      "korean": "various countries",
+      "level": "N2",
+      "pos": "noun",
+      "example": "首相は来月アジア諸国を訪問する予定だ。"
+    },
+    {
+      "id": 9399,
+      "kanji": "進学率",
+      "hiragana": "しんがくりつ",
+      "korean": "rate of advancement to higher education",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この地域の大学進学率は年々上がっている。"
+    },
+    {
+      "id": 9400,
+      "kanji": "数年",
+      "hiragana": "すうねん",
+      "korean": "several years",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この町はここ数年で大きく変わった。"
+    },
+    {
+      "id": 9401,
+      "kanji": "担当者",
+      "hiragana": "たんとうしゃ",
+      "korean": "person in charge",
+      "level": "N2",
+      "pos": "noun",
+      "example": "詳しいことは担当者から後で連絡します。"
+    },
+    {
+      "id": 9402,
+      "kanji": "抽象的",
+      "hiragana": "ちゅうしょうてき",
+      "korean": "abstract",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "彼の説明は抽象的でよく分からなかった。"
+    },
+    {
+      "id": 9403,
+      "kanji": "仲良く",
+      "hiragana": "なかよく",
+      "korean": "on good terms · harmoniously",
+      "level": "N2",
+      "pos": "adverb",
+      "example": "兄弟で仲良くおもちゃを使いなさい。"
+    },
+    {
+      "id": 9404,
+      "kanji": "熱演",
+      "hiragana": "ねつえん",
+      "korean": "passionate performance",
+      "level": "N2",
+      "pos": "noun",
+      "example": "主演俳優の熱演に観客は大きな拍手を送った。"
+    },
+    {
+      "id": 9405,
+      "kanji": "部分的",
+      "hiragana": "ぶぶんてき",
+      "korean": "partial",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "その計画は部分的に変更されることになった。"
+    },
+    {
+      "id": 9406,
+      "kanji": "両国",
+      "hiragana": "りょうこく",
+      "korean": "both countries",
+      "level": "N2",
+      "pos": "noun",
+      "example": "両国の首脳が経済協力について話し合った。"
+    },
+    {
+      "id": 9407,
+      "kanji": "委員会",
+      "hiragana": "いいんかい",
+      "korean": "committee",
+      "level": "N2",
+      "pos": "noun",
+      "example": "来週の委員会で予算について議論します。"
+    },
+    {
+      "id": 9408,
+      "kanji": "追い越し",
+      "hiragana": "おいこし",
+      "korean": "overtaking · passing",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この道路は追い越し禁止になっています。"
+    },
+    {
+      "id": 9409,
+      "kanji": "革靴",
+      "hiragana": "かわぐつ",
+      "korean": "leather shoes",
+      "level": "N2",
+      "pos": "noun",
+      "example": "面接のために新しい革靴を買いました。"
+    },
+    {
+      "id": 9410,
+      "kanji": "個人的",
+      "hiragana": "こじんてき",
+      "korean": "personal · private",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "個人的には部長のこの案に賛成です。"
+    },
+    {
+      "id": 9411,
+      "kanji": "出版社",
+      "hiragana": "しゅっぱんしゃ",
+      "korean": "publisher · publishing company",
+      "level": "N2",
+      "pos": "noun",
+      "example": "姉は東京の出版社で編集の仕事をしている。"
+    },
+    {
+      "id": 9412,
+      "kanji": "総人口",
+      "hiragana": "そうじんこう",
+      "korean": "total population",
+      "level": "N2",
+      "pos": "noun",
+      "example": "日本の総人口は年々減少している。"
+    },
+    {
+      "id": 9413,
+      "kanji": "典型的",
+      "hiragana": "てんけいてき",
+      "korean": "typical · classic",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "彼は早起きが得意な典型的な朝型人間だ。"
+    },
+    {
+      "id": 9414,
+      "kanji": "福祉",
+      "hiragana": "ふくし",
+      "korean": "welfare",
+      "level": "N2",
+      "pos": "noun",
+      "example": "市は高齢者の福祉に力を入れている。"
+    },
+    {
+      "id": 9415,
+      "kanji": "皆",
+      "hiragana": "みな",
+      "korean": "everyone · all",
+      "level": "N2",
+      "pos": "noun",
+      "example": "クラスの皆で先生に花を贈った。"
+    },
+    {
+      "id": 9416,
+      "kanji": "柔らか",
+      "hiragana": "やわらか",
+      "korean": "soft · tender · gentle",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "春の柔らかな日差しが窓から入ってくる。"
+    },
+    {
+      "id": 9417,
+      "kanji": "悪影響",
+      "hiragana": "あくえいきょう",
+      "korean": "bad influence · adverse effect",
+      "level": "N2",
+      "pos": "noun",
+      "example": "睡眠不足は健康に悪影響を与える。"
+    },
+    {
+      "id": 9418,
+      "kanji": "医学界",
+      "hiragana": "いがくかい",
+      "korean": "medical community",
+      "level": "N2",
+      "pos": "noun",
+      "example": "その新しい治療法は医学界で注目されている。"
+    },
+    {
+      "id": 9419,
+      "kanji": "一日おき",
+      "hiragana": "いちにちおき",
+      "korean": "every other day",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この植物には一日おきに水をやってください。"
+    },
+    {
+      "id": 9420,
+      "kanji": "異文化",
+      "hiragana": "いぶんか",
+      "korean": "different culture · foreign culture",
+      "level": "N2",
+      "pos": "noun",
+      "example": "留学して異文化に触れる貴重な経験をした。"
+    },
+    {
+      "id": 9421,
+      "kanji": "異分野",
+      "hiragana": "いぶんや",
+      "korean": "different field",
+      "level": "N2",
+      "pos": "noun",
+      "example": "異分野の専門家と協力して研究を進める。"
+    },
+    {
+      "id": 9422,
+      "kanji": "応援団",
+      "hiragana": "おうえんだん",
+      "korean": "cheering squad · supporters' club",
+      "level": "N2",
+      "pos": "noun",
+      "example": "応援団の大きな声が球場に響いた。"
+    },
+    {
+      "id": 9423,
+      "kanji": "親子連れ",
+      "hiragana": "おやこづれ",
+      "korean": "parents with their children",
+      "level": "N2",
+      "pos": "noun",
+      "example": "週末の動物園は親子連れでにぎわっていた。"
+    },
+    {
+      "id": 9424,
+      "kanji": "会員制",
+      "hiragana": "かいいんせい",
+      "korean": "membership system · members-only",
+      "level": "N2",
+      "pos": "noun",
+      "example": "このジムは会員制なので予約が必要です。"
+    },
+    {
+      "id": 9425,
+      "kanji": "学年別",
+      "hiragana": "がくねんべつ",
+      "korean": "by school year · by grade",
+      "level": "N2",
+      "pos": "noun",
+      "example": "試験の結果は学年別に発表される。"
+    },
+    {
+      "id": 9426,
+      "kanji": "風邪気味",
+      "hiragana": "かぜぎみ",
+      "korean": "slight cold · touch of a cold",
+      "level": "N2",
+      "pos": "noun",
+      "example": "今日は風邪気味なので早めに寝ます。"
+    },
+    {
+      "id": 9427,
+      "kanji": "家族連れ",
+      "hiragana": "かぞくづれ",
+      "korean": "family group · with one's family",
+      "level": "N2",
+      "pos": "noun",
+      "example": "夏休みの海は家族連れで混雑していた。"
+    },
+    {
+      "id": 9428,
+      "kanji": "壁際",
+      "hiragana": "かべぎわ",
+      "korean": "by the wall · against the wall",
+      "level": "N2",
+      "pos": "noun",
+      "example": "机を壁際に移動して部屋を広くした。"
+    },
+    {
+      "id": 9429,
+      "kanji": "仮採用",
+      "hiragana": "かりさいよう",
+      "korean": "provisional employment · probationary hiring",
+      "level": "N2",
+      "pos": "noun",
+      "example": "彼は三か月の仮採用の後に正社員になった。"
+    },
+    {
+      "id": 9430,
+      "kanji": "仮登録",
+      "hiragana": "かりとうろく",
+      "korean": "provisional registration",
+      "level": "N2",
+      "pos": "noun",
+      "example": "メールアドレスを入力すると仮登録が完了します。"
+    },
+    {
+      "id": 9431,
+      "kanji": "管理下",
+      "hiragana": "かんりか",
+      "korean": "under the control of · under management",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この施設は市の管理下に置かれている。"
+    },
+    {
+      "id": 9432,
+      "kanji": "期限切れ",
+      "hiragana": "きげんぎれ",
+      "korean": "expiration · being past the deadline",
+      "level": "N2",
+      "pos": "noun",
+      "example": "冷蔵庫の牛乳が期限切れになっていた。"
+    },
+    {
+      "id": 9433,
+      "kanji": "旧制度",
+      "hiragana": "きゅうせいど",
+      "korean": "old system",
+      "level": "N2",
+      "pos": "noun",
+      "example": "旧制度では申請に一か月もかかった。"
+    },
+    {
+      "id": 9434,
+      "kanji": "クリーム状",
+      "hiragana": "クリームじょう",
+      "korean": "creamy consistency",
+      "level": "N2",
+      "pos": "noun",
+      "example": "バターと砂糖をクリーム状になるまで混ぜる。"
+    },
+    {
+      "id": 9435,
+      "kanji": "結婚観",
+      "hiragana": "けっこんかん",
+      "korean": "view of marriage",
+      "level": "N2",
+      "pos": "noun",
+      "example": "若者の結婚観は時代とともに変化している。"
+    },
+    {
+      "id": 9436,
+      "kanji": "現実離れ",
+      "hiragana": "げんじつばなれ",
+      "korean": "being unrealistic · divorced from reality",
+      "level": "N2",
+      "pos": "noun",
+      "example": "その計画は少し現実離れしている。"
+    },
+    {
+      "id": 9437,
+      "kanji": "現段階",
+      "hiragana": "げんだんかい",
+      "korean": "present stage",
+      "level": "N2",
+      "pos": "noun",
+      "example": "現段階では詳しいことは言えません。"
+    },
+    {
+      "id": 9438,
+      "kanji": "高収入",
+      "hiragana": "こうしゅうにゅう",
+      "korean": "high income",
+      "level": "N2",
+      "pos": "noun",
+      "example": "高収入の仕事が必ずしも幸せにつながるとは限らない。"
+    },
+    {
+      "id": 9439,
+      "kanji": "高水準",
+      "hiragana": "こうすいじゅん",
+      "korean": "high level · high standard",
+      "level": "N2",
+      "pos": "noun",
+      "example": "株価は今年に入って高水準で推移している。"
+    },
+    {
+      "id": 9440,
+      "kanji": "高性能",
+      "hiragana": "こうせいのう",
+      "korean": "high performance",
+      "level": "N2",
+      "pos": "noun",
+      "example": "このカメラは小さいのに高性能だ。"
+    },
+    {
+      "id": 9441,
+      "kanji": "国際色",
+      "hiragana": "こくさいしょく",
+      "korean": "international flavor",
+      "level": "N2",
+      "pos": "noun",
+      "example": "このクラスは留学生が多く国際色が豊かだ。"
+    },
+    {
+      "id": 9442,
+      "kanji": "子供連れ",
+      "hiragana": "こどもづれ",
+      "korean": "with children",
+      "level": "N2",
+      "pos": "noun",
+      "example": "子供連れでも入りやすいレストランを探している。"
+    },
+    {
+      "id": 9443,
+      "kanji": "再開発",
+      "hiragana": "さいかいはつ",
+      "korean": "redevelopment",
+      "level": "N2",
+      "pos": "noun",
+      "example": "駅前の再開発で新しいビルが建った。"
+    },
+    {
+      "id": 9444,
+      "kanji": "再提出",
+      "hiragana": "さいていしゅつ",
+      "korean": "resubmission",
+      "level": "N2",
+      "pos": "noun",
+      "example": "書類に間違いがあったので再提出を求められた。"
+    },
+    {
+      "id": 9445,
+      "kanji": "再放送",
+      "hiragana": "さいほうそう",
+      "korean": "rerun · rebroadcast",
+      "level": "N2",
+      "pos": "noun",
+      "example": "昨日は懐かしいドラマの再放送を見た。"
+    },
+    {
+      "id": 9446,
+      "kanji": "最有力",
+      "hiragana": "さいゆうりょく",
+      "korean": "most promising · front-runner",
+      "level": "N2",
+      "pos": "noun",
+      "example": "彼女は次の社長の最有力候補だ。"
+    },
+    {
+      "id": 9447,
+      "kanji": "作品集",
+      "hiragana": "さくひんしゅう",
+      "korean": "collection of works · anthology",
+      "level": "N2",
+      "pos": "noun",
+      "example": "好きな画家の作品集を本屋で買った。"
+    },
+    {
+      "id": 9448,
+      "kanji": "写真付き",
+      "hiragana": "しゃしんつき",
+      "korean": "with a photo · illustrated",
+      "level": "N2",
+      "pos": "noun",
+      "example": "写真付きの身分証明書を持ってきてください。"
+    },
+    {
+      "id": 9449,
+      "kanji": "就職率",
+      "hiragana": "しゅうしょくりつ",
+      "korean": "job placement rate",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この大学は卒業生の就職率が高いことで有名だ。"
+    },
+    {
+      "id": 9450,
+      "kanji": "住宅街",
+      "hiragana": "じゅうたくがい",
+      "korean": "residential area",
+      "level": "N2",
+      "pos": "noun",
+      "example": "静かな住宅街に小さなカフェがオープンした。"
+    },
+    {
+      "id": 9451,
+      "kanji": "集中力",
+      "hiragana": "しゅうちゅうりょく",
+      "korean": "concentration · ability to focus",
+      "level": "N2",
+      "pos": "noun",
+      "example": "寝不足だと仕事中に集中力が続かない。"
+    },
+    {
+      "id": 9452,
+      "kanji": "準決勝",
+      "hiragana": "じゅんけっしょう",
+      "korean": "semifinal",
+      "level": "N2",
+      "pos": "noun",
+      "example": "日本代表は準決勝で強豪チームに敗れた。"
+    },
+    {
+      "id": 9453,
+      "kanji": "準優勝",
+      "hiragana": "じゅんゆうしょう",
+      "korean": "runner-up · second place",
+      "level": "N2",
+      "pos": "noun",
+      "example": "弟のチームは全国大会で準優勝した。"
+    },
+    {
+      "id": 9454,
+      "kanji": "商店街",
+      "hiragana": "しょうてんがい",
+      "korean": "shopping street · shopping district",
+      "level": "N2",
+      "pos": "noun",
+      "example": "週末になると商店街は買い物客でにぎわう。"
+    },
+    {
+      "id": 9455,
+      "kanji": "諸外国",
+      "hiragana": "しょがいこく",
+      "korean": "foreign countries",
+      "level": "N2",
+      "pos": "noun",
+      "example": "政府は諸外国との関係を重視している。"
+    },
+    {
+      "id": 9456,
+      "kanji": "食器類",
+      "hiragana": "しょっきるい",
+      "korean": "tableware · dishes",
+      "level": "N2",
+      "pos": "noun",
+      "example": "引っ越しの前に食器類を新聞紙で包んだ。"
+    },
+    {
+      "id": 9457,
+      "kanji": "諸手続き",
+      "hiragana": "しょてつづき",
+      "korean": "various procedures · formalities",
+      "level": "N2",
+      "pos": "noun",
+      "example": "入学の諸手続きは来週までに済ませてください。"
+    },
+    {
+      "id": 9458,
+      "kanji": "初年度",
+      "hiragana": "しょねんど",
+      "korean": "first year",
+      "level": "N2",
+      "pos": "noun",
+      "example": "新しい店は初年度から黒字になった。"
+    },
+    {
+      "id": 9459,
+      "kanji": "諸問題",
+      "hiragana": "しょもんだい",
+      "korean": "various problems · various issues",
+      "level": "N2",
+      "pos": "noun",
+      "example": "会議では環境に関する諸問題が話し合われた。"
+    },
+    {
+      "id": 9460,
+      "kanji": "スキー場",
+      "hiragana": "スキーじょう",
+      "korean": "ski resort · ski area",
+      "level": "N2",
+      "pos": "noun",
+      "example": "冬休みに家族でスキー場へ行った。"
+    },
+    {
+      "id": 9461,
+      "kanji": "成功率",
+      "hiragana": "せいこうりつ",
+      "korean": "success rate",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この手術の成功率は九割を超えている。"
+    },
+    {
+      "id": 9462,
+      "kanji": "政治色",
+      "hiragana": "せいじしょく",
+      "korean": "political color · political tinge",
+      "level": "N2",
+      "pos": "noun",
+      "example": "そのイベントは政治色が強いと批判された。"
+    },
+    {
+      "id": 9463,
+      "kanji": "前社長",
+      "hiragana": "ぜんしゃちょう",
+      "korean": "former company president",
+      "level": "N2",
+      "pos": "noun",
+      "example": "前社長の時代に会社は大きく成長した。"
+    },
+    {
+      "id": 9464,
+      "kanji": "副社長",
+      "hiragana": "ふくしゃちょう",
+      "korean": "executive vice president",
+      "level": "N2",
+      "pos": "noun",
+      "example": "副社長が来月から新しい社長に就任する。"
+    },
+    {
+      "id": 9465,
+      "kanji": "副大臣",
+      "hiragana": "ふくだいじん",
+      "korean": "senior vice minister",
+      "level": "N2",
+      "pos": "noun",
+      "example": "外務副大臣が来日した代表団と会談した。"
+    },
+    {
+      "id": 9466,
+      "kanji": "線路沿い",
+      "hiragana": "せんろぞい",
+      "korean": "along the railway tracks",
+      "level": "N2",
+      "pos": "noun",
+      "example": "線路沿いの道を毎朝ジョギングしている。"
+    },
+    {
+      "id": 9467,
+      "kanji": "総売上",
+      "hiragana": "そううりあげ",
+      "korean": "total sales",
+      "level": "N2",
+      "pos": "noun",
+      "example": "今年の総売上は去年を大きく上回った。"
+    },
+    {
+      "id": 9468,
+      "kanji": "送信元",
+      "hiragana": "そうしんもと",
+      "korean": "sender · source of transmission",
+      "level": "N2",
+      "pos": "noun",
+      "example": "送信元が不明なメールは開かないでください。"
+    },
+    {
+      "id": 9469,
+      "kanji": "食べ頃",
+      "hiragana": "たべごろ",
+      "korean": "best time to eat · ripeness",
+      "level": "N2",
+      "pos": "noun",
+      "example": "庭の柿がそろそろ食べ頃を迎えた。"
+    },
+    {
+      "id": 9470,
+      "kanji": "低価格",
+      "hiragana": "ていかかく",
+      "korean": "low price",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この店は低価格で質の良い家具を売っている。"
+    },
+    {
+      "id": 9471,
+      "kanji": "低カロリー",
+      "hiragana": "ていカロリー",
+      "korean": "low calorie",
+      "level": "N2",
+      "pos": "noun",
+      "example": "ダイエット中なので低カロリーの食事を選んでいる。"
+    },
+    {
+      "id": 9472,
+      "kanji": "電車賃",
+      "hiragana": "でんしゃちん",
+      "korean": "train fare",
+      "level": "N2",
+      "pos": "noun",
+      "example": "通勤の電車賃は毎月会社から支給される。"
+    },
+    {
+      "id": 9473,
+      "kanji": "同意見",
+      "hiragana": "どういけん",
+      "korean": "same opinion",
+      "level": "N2",
+      "pos": "noun",
+      "example": "その点については私も部長と同意見です。"
+    },
+    {
+      "id": 9474,
+      "kanji": "投票率",
+      "hiragana": "とうひょうりつ",
+      "korean": "voter turnout",
+      "level": "N2",
+      "pos": "noun",
+      "example": "今回の選挙は若者の投票率が低かった。"
+    },
+    {
+      "id": 9475,
+      "kanji": "都会育ち",
+      "hiragana": "とかいそだち",
+      "korean": "city-bred · raised in the city",
+      "level": "N2",
+      "pos": "noun",
+      "example": "都会育ちの彼は田舎の静かな生活に驚いた。"
+    },
+    {
+      "id": 9476,
+      "kanji": "夏休み明け",
+      "hiragana": "なつやすみあけ",
+      "korean": "right after summer break",
+      "level": "N2",
+      "pos": "noun",
+      "example": "夏休み明けは学校に行きたがらない子供が増える。"
+    },
+    {
+      "id": 9477,
+      "kanji": "日本式",
+      "hiragana": "にほんしき",
+      "korean": "Japanese style · Japanese method",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この工場では日本式の品質管理を導入している。"
+    },
+    {
+      "id": 9478,
+      "kanji": "日本風",
+      "hiragana": "にほんふう",
+      "korean": "Japanese style · Japanese flavor",
+      "level": "N2",
+      "pos": "noun",
+      "example": "海外で日本風の庭園が人気を集めている。"
+    },
+    {
+      "id": 9479,
+      "kanji": "年代順",
+      "hiragana": "ねんだいじゅん",
+      "korean": "chronological order",
+      "level": "N2",
+      "pos": "noun",
+      "example": "博物館では資料が年代順に展示されている。"
+    },
+    {
+      "id": 9480,
+      "kanji": "半透明",
+      "hiragana": "はんとうめい",
+      "korean": "translucent · semi-transparent",
+      "level": "N2",
+      "pos": "noun",
+      "example": "燃えるゴミは半透明の袋に入れて出してください。"
+    },
+    {
+      "id": 9481,
+      "kanji": "非公式",
+      "hiragana": "ひこうしき",
+      "korean": "unofficial · informal",
+      "level": "N2",
+      "pos": "noun",
+      "example": "両国の首脳が非公式に会談したと報じられた。"
+    },
+    {
+      "id": 9482,
+      "kanji": "不正確",
+      "hiragana": "ふせいかく",
+      "korean": "inaccurate · incorrect",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "不正確な情報をネットで広めてはいけない。"
+    },
+    {
+      "id": 9483,
+      "kanji": "二人連れ",
+      "hiragana": "ふたりづれ",
+      "korean": "party of two · pair",
+      "level": "N2",
+      "pos": "noun",
+      "example": "閉店間際の店に二人連れの客が入ってきた。"
+    },
+    {
+      "id": 9484,
+      "kanji": "文学賞",
+      "hiragana": "ぶんがくしょう",
+      "korean": "literary prize",
+      "level": "N2",
+      "pos": "noun",
+      "example": "彼女のデビュー作が有名な文学賞を受賞した。"
+    },
+    {
+      "id": 9485,
+      "kanji": "勉強漬け",
+      "hiragana": "べんきょうづけ",
+      "korean": "immersed in study · nonstop studying",
+      "level": "N2",
+      "pos": "noun",
+      "example": "試験前の一か月は毎日勉強漬けだった。"
+    },
+    {
+      "id": 9486,
+      "kanji": "真新しい",
+      "hiragana": "まあたらしい",
+      "korean": "brand-new",
+      "level": "N2",
+      "pos": "i-adjective",
+      "example": "入学式の日に真新しい制服を着て写真を撮った。"
+    },
+    {
+      "id": 9487,
+      "kanji": "真後ろ",
+      "hiragana": "まうしろ",
+      "korean": "right behind · directly behind",
+      "level": "N2",
+      "pos": "noun",
+      "example": "映画館で子供が私の真後ろの席に座った。"
+    },
+    {
+      "id": 9488,
+      "kanji": "未経験",
+      "hiragana": "みけいけん",
+      "korean": "inexperience · no prior experience",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この仕事は未経験の方でも応募できます。"
+    },
+    {
+      "id": 9489,
+      "kanji": "未使用",
+      "hiragana": "みしよう",
+      "korean": "unused",
+      "level": "N2",
+      "pos": "noun",
+      "example": "未使用の切手を郵便局で交換してもらった。"
+    },
+    {
+      "id": 9490,
+      "kanji": "無回答",
+      "hiragana": "むかいとう",
+      "korean": "no answer · no response",
+      "level": "N2",
+      "pos": "noun",
+      "example": "アンケートでは三割の人が無回答だった。"
+    },
+    {
+      "id": 9491,
+      "kanji": "無責任",
+      "hiragana": "むせきにん",
+      "korean": "irresponsible",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "途中で仕事を投げ出すのは無責任だ。"
+    },
+    {
+      "id": 9492,
+      "kanji": "予約制",
+      "hiragana": "よやくせい",
+      "korean": "reservation system · by appointment only",
+      "level": "N2",
+      "pos": "noun",
+      "example": "この美容院は完全予約制になっている。"
+    },
+    {
+      "id": 9493,
+      "kanji": "来学期",
+      "hiragana": "らいがっき",
+      "korean": "next semester · next term",
+      "level": "N2",
+      "pos": "noun",
+      "example": "来学期から新しい先生が数学を担当する。"
+    },
+    {
+      "id": 9494,
+      "kanji": "別れ際",
+      "hiragana": "わかれぎわ",
+      "korean": "moment of parting",
+      "level": "N2",
+      "pos": "noun",
+      "example": "別れ際に彼女は小さな声でお礼を言った。"
+    },
+    {
+      "id": 9495,
+      "kanji": "温厚",
+      "hiragana": "おんこう",
+      "korean": "gentle · mild-mannered",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "祖父は温厚な性格で誰からも好かれていた。"
+    },
+    {
+      "id": 9496,
+      "kanji": "劇的",
+      "hiragana": "げきてき",
+      "korean": "dramatic",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "新しい薬で患者の症状が劇的に改善した。"
+    },
+    {
+      "id": 9497,
+      "kanji": "時間をつぶす",
+      "hiragana": "じかんをつぶす",
+      "korean": "to kill time",
+      "level": "N2",
+      "pos": "collocation",
+      "example": "待ち合わせまで本屋で時間をつぶすことにした。"
+    },
+    {
+      "id": 9498,
+      "kanji": "不安定",
+      "hiragana": "ふあんてい",
+      "korean": "unstable · insecure",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "最近は天気が不安定で傘が手放せない。"
+    },
+    {
+      "id": 9499,
+      "kanji": "耳にする",
+      "hiragana": "みみにする",
+      "korean": "to hear · to happen to hear",
+      "level": "N2",
+      "pos": "idiom",
+      "example": "最近その店の悪い噂をよく耳にする。"
+    },
+    {
+      "id": 9500,
+      "kanji": "割に",
+      "hiragana": "わりに",
+      "korean": "relatively · comparatively",
+      "level": "N2",
+      "pos": "adverb",
+      "example": "今日の数学の試験は割に簡単だった。"
+    },
+    {
+      "id": 9501,
+      "kanji": "頭にくる",
+      "hiragana": "あたまにくる",
+      "korean": "to get angry · to be infuriated",
+      "level": "N2",
+      "pos": "idiom",
+      "example": "約束を何度も破られて本当に頭にくる。"
+    },
+    {
+      "id": 9502,
+      "kanji": "お勘定",
+      "hiragana": "おかんじょう",
+      "korean": "bill · check",
+      "level": "N2",
+      "pos": "noun",
+      "example": "食事が終わったので店員にお勘定を頼んだ。"
+    },
+    {
+      "id": 9503,
+      "kanji": "概要",
+      "hiragana": "がいよう",
+      "korean": "outline · summary",
+      "level": "N2",
+      "pos": "noun",
+      "example": "会議の前に計画の概要を説明します。"
+    },
+    {
+      "id": 9504,
+      "kanji": "欠かせない",
+      "hiragana": "かかせない",
+      "korean": "indispensable · essential",
+      "level": "N2",
+      "pos": "collocation",
+      "example": "毎朝のコーヒーは私の生活に欠かせない。"
+    },
+    {
+      "id": 9505,
+      "kanji": "かかりつけ",
+      "hiragana": "かかりつけ",
+      "korean": "regular doctor · family doctor",
+      "level": "N2",
+      "pos": "noun",
+      "example": "熱が出たのでかかりつけの医者に診てもらった。"
+    },
+    {
+      "id": 9506,
+      "kanji": "差し支えない",
+      "hiragana": "さしつかえない",
+      "korean": "no problem · acceptable",
+      "level": "N2",
+      "pos": "collocation",
+      "example": "この書類は鉛筆で書いても差し支えない。"
+    },
+    {
+      "id": 9507,
+      "kanji": "自分勝手",
+      "hiragana": "じぶんかって",
+      "korean": "selfish · self-centered",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "彼の自分勝手な行動にチーム全員が困っている。"
+    },
+    {
+      "id": 9508,
+      "kanji": "精一杯",
+      "hiragana": "せいいっぱい",
+      "korean": "with all one's might · to the best of one's ability",
+      "level": "N2",
+      "pos": "adverb",
+      "example": "結果はどうあれ試合では精一杯戦いたい。"
+    },
+    {
+      "id": 9509,
+      "kanji": "暮れ",
+      "hiragana": "くれ",
+      "korean": "end of the year · dusk",
+      "level": "N2",
+      "pos": "noun",
+      "example": "年の暮れになると街が急に忙しくなる。"
+    },
+    {
+      "id": 9510,
+      "kanji": "多彩",
+      "hiragana": "たさい",
+      "korean": "diverse · varied",
+      "level": "N2",
+      "pos": "na-adjective",
+      "example": "この祭りでは多彩なイベントが行われる。"
+    },
+    {
+      "id": 9511,
+      "kanji": "悪癖",
+      "hiragana": "あくへき",
+      "korean": "bad habit · vice",
+      "level": "N1",
+      "pos": "noun",
+      "example": "夜更かしという悪癖をなかなか直せない。"
+    },
+    {
+      "id": 9512,
+      "kanji": "侮る",
+      "hiragana": "あなどる",
+      "korean": "to despise · to look down on",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "相手を侮ると思わぬ失敗をする。"
+    },
+    {
+      "id": 9513,
+      "kanji": "遺憾",
+      "hiragana": "いかん",
+      "korean": "regret · regrettable",
+      "level": "N1",
+      "pos": "noun",
+      "example": "政府は今回の事件について遺憾の意を表明した。"
+    },
+    {
+      "id": 9514,
+      "kanji": "憤り",
+      "hiragana": "いきどおり",
+      "korean": "indignation · resentment",
+      "level": "N1",
+      "pos": "noun",
+      "example": "不公平な判決に多くの市民が憤りを感じた。"
+    },
+    {
+      "id": 9515,
+      "kanji": "憩い",
+      "hiragana": "いこい",
+      "korean": "rest · relaxation",
+      "level": "N1",
+      "pos": "noun",
+      "example": "この公園は地域住民の憩いの場となっている。"
+    },
+    {
+      "id": 9516,
+      "kanji": "依然として",
+      "hiragana": "いぜんとして",
+      "korean": "still · as yet",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "事故の原因は依然として分かっていない。"
+    },
+    {
+      "id": 9517,
+      "kanji": "否めない",
+      "hiragana": "いなめない",
+      "korean": "undeniable",
+      "level": "N1",
+      "pos": "collocation",
+      "example": "今回の失敗は準備不足だったことが否めない。"
+    },
+    {
+      "id": 9518,
+      "kanji": "表向き",
+      "hiragana": "おもてむき",
+      "korean": "ostensibly · on the surface",
+      "level": "N1",
+      "pos": "noun",
+      "example": "表向きの理由は体調不良だが本当は違うらしい。"
+    },
+    {
+      "id": 9519,
+      "kanji": "回顧",
+      "hiragana": "かいこ",
+      "korean": "retrospection · looking back",
+      "level": "N1",
+      "pos": "noun",
+      "example": "引退した選手が現役時代を回顧する番組を見た。"
+    },
+    {
+      "id": 9520,
+      "kanji": "画一的",
+      "hiragana": "かくいつてき",
+      "korean": "uniform · standardized",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "画一的な教育では個性が育たないという意見がある。"
+    },
+    {
+      "id": 9521,
+      "kanji": "既婚者",
+      "hiragana": "きこんしゃ",
+      "korean": "married person",
+      "level": "N1",
+      "pos": "noun",
+      "example": "この調査の対象者の半数は既婚者だった。"
+    },
+    {
+      "id": 9522,
+      "kanji": "凝縮",
+      "hiragana": "ぎょうしゅく",
+      "korean": "condensation · concentration",
+      "level": "N1",
+      "pos": "noun",
+      "example": "この短い映画には監督の思いが凝縮されている。"
+    },
+    {
+      "id": 9523,
+      "kanji": "驚嘆",
+      "hiragana": "きょうたん",
+      "korean": "wonder · admiration",
+      "level": "N1",
+      "pos": "noun",
+      "example": "職人の見事な技に観客は驚嘆の声を上げた。"
+    },
+    {
+      "id": 9524,
+      "kanji": "緊迫",
+      "hiragana": "きんぱく",
+      "korean": "tension · strain",
+      "level": "N1",
+      "pos": "noun",
+      "example": "両国の国境付近で緊迫した状況が続いている。"
+    },
+    {
+      "id": 9525,
+      "kanji": "草花",
+      "hiragana": "くさばな",
+      "korean": "flowering plants · flowers",
+      "level": "N1",
+      "pos": "noun",
+      "example": "母は庭で季節の草花を育てている。"
+    },
+    {
+      "id": 9526,
+      "kanji": "朽ち果てる",
+      "hiragana": "くちはてる",
+      "korean": "to rot away · to decay completely",
+      "level": "N1",
+      "pos": "Group 2 verb",
+      "example": "手入れをしないと古い家はやがて朽ち果てる。"
+    },
+    {
+      "id": 9527,
+      "kanji": "嫌悪感",
+      "hiragana": "けんおかん",
+      "korean": "sense of disgust · aversion",
+      "level": "N1",
+      "pos": "noun",
+      "example": "差別的な発言に強い嫌悪感を覚えた。"
+    },
+    {
+      "id": 9528,
+      "kanji": "厳正",
+      "hiragana": "げんせい",
+      "korean": "strict · impartial",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "応募作品は厳正な審査を経て選ばれます。"
+    },
+    {
+      "id": 9529,
+      "kanji": "顕著",
+      "hiragana": "けんちょ",
+      "korean": "remarkable · conspicuous",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "少子化の影響は地方で特に顕著だ。"
+    },
+    {
+      "id": 9530,
+      "kanji": "豪快",
+      "hiragana": "ごうかい",
+      "korean": "bold · hearty",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "彼は大きな口を開けて豪快に笑った。"
+    },
+    {
+      "id": 9531,
+      "kanji": "行楽地",
+      "hiragana": "こうらくち",
+      "korean": "holiday resort · tourist spot",
+      "level": "N1",
+      "pos": "noun",
+      "example": "連休中はどこの行楽地も人でいっぱいだった。"
+    },
+    {
+      "id": 9532,
+      "kanji": "枯渇",
+      "hiragana": "こかつ",
+      "korean": "depletion · drying up",
+      "level": "N1",
+      "pos": "noun",
+      "example": "このままでは世界の地下資源が枯渇するおそれがある。"
+    },
+    {
+      "id": 9533,
+      "kanji": "克明",
+      "hiragana": "こくめい",
+      "korean": "detailed · meticulous",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "祖母は毎日の出来事を日記に克明に記録していた。"
+    },
+    {
+      "id": 9534,
+      "kanji": "拒む",
+      "hiragana": "こばむ",
+      "korean": "to refuse · to reject",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "彼は記者の取材を拒む態度を崩さなかった。"
+    },
+    {
+      "id": 9535,
+      "kanji": "自粛",
+      "hiragana": "じしゅく",
+      "korean": "self-restraint",
+      "level": "N1",
+      "pos": "noun",
+      "example": "大雨の影響で外出の自粛が呼びかけられた。"
+    },
+    {
+      "id": 9536,
+      "kanji": "祝賀会",
+      "hiragana": "しゅくがかい",
+      "korean": "celebration party",
+      "level": "N1",
+      "pos": "noun",
+      "example": "優勝を記念してホテルで祝賀会が開かれた。"
+    },
+    {
+      "id": 9537,
+      "kanji": "遂行",
+      "hiragana": "すいこう",
+      "korean": "execution · accomplishment",
+      "level": "N1",
+      "pos": "noun",
+      "example": "任務の遂行には全員の協力が必要だ。"
+    },
+    {
+      "id": 9538,
+      "kanji": "施錠",
+      "hiragana": "せじょう",
+      "korean": "locking",
+      "level": "N1",
+      "pos": "noun",
+      "example": "最後に帰る人は事務所の施錠を忘れないでください。"
+    },
+    {
+      "id": 9539,
+      "kanji": "騒然",
+      "hiragana": "そうぜん",
+      "korean": "uproar · commotion",
+      "level": "N1",
+      "pos": "noun",
+      "example": "突然の停電で会場は騒然となった。"
+    },
+    {
+      "id": 9540,
+      "kanji": "治癒",
+      "hiragana": "ちゆ",
+      "korean": "healing · cure",
+      "level": "N1",
+      "pos": "noun",
+      "example": "傷が完全に治癒するまで運動は控えてください。"
+    },
+    {
+      "id": 9541,
+      "kanji": "償い",
+      "hiragana": "つぐない",
+      "korean": "atonement · compensation",
+      "level": "N1",
+      "pos": "noun",
+      "example": "彼は罪の償いとして被害者に謝罪を続けている。"
+    },
+    {
+      "id": 9542,
+      "kanji": "伝統的",
+      "hiragana": "でんとうてき",
+      "korean": "traditional",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "この村では今も伝統的な方法で酒を造っている。"
+    },
+    {
+      "id": 9543,
+      "kanji": "踏襲",
+      "hiragana": "とうしゅう",
+      "korean": "following · adherence to precedent",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新社長は前任者の経営方針を踏襲すると述べた。"
+    },
+    {
+      "id": 9544,
+      "kanji": "督促",
+      "hiragana": "とくそく",
+      "korean": "demand for payment · urging",
+      "level": "N1",
+      "pos": "noun",
+      "example": "家賃を滞納して大家から督促の電話が来た。"
+    },
+    {
+      "id": 9545,
+      "kanji": "泥沼",
+      "hiragana": "どろぬま",
+      "korean": "quagmire · bog",
+      "level": "N1",
+      "pos": "noun",
+      "example": "両社の対立は泥沼の状態に陥っている。"
+    },
+    {
+      "id": 9546,
+      "kanji": "粘膜",
+      "hiragana": "ねんまく",
+      "korean": "mucous membrane",
+      "level": "N1",
+      "pos": "noun",
+      "example": "乾燥した空気は鼻の粘膜を傷つけやすい。"
+    },
+    {
+      "id": 9547,
+      "kanji": "廃棄物",
+      "hiragana": "はいきぶつ",
+      "korean": "waste · refuse",
+      "level": "N1",
+      "pos": "noun",
+      "example": "工場から出る廃棄物の処理が問題になっている。"
+    },
+    {
+      "id": 9548,
+      "kanji": "被害者",
+      "hiragana": "ひがいしゃ",
+      "korean": "victim",
+      "level": "N1",
+      "pos": "noun",
+      "example": "警察は事件の被害者から詳しく話を聞いた。"
+    },
+    {
+      "id": 9549,
+      "kanji": "披露",
+      "hiragana": "ひろう",
+      "korean": "showing · announcement",
+      "level": "N1",
+      "pos": "noun",
+      "example": "結婚式で友人たちが歌を披露してくれた。"
+    },
+    {
+      "id": 9550,
+      "kanji": "不平等",
+      "hiragana": "ふびょうどう",
+      "korean": "inequality · unequal",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "男女の賃金が不平等な状況はまだ残っている。"
+    },
+    {
+      "id": 9551,
+      "kanji": "足の踏み場もない",
+      "hiragana": "あしのふみばもない",
+      "korean": "no room to step · cluttered",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "息子の部屋は物が散らかって足の踏み場もない。"
+    },
+    {
+      "id": 9552,
+      "kanji": "滅ぶ",
+      "hiragana": "ほろぶ",
+      "korean": "to perish · to be ruined",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "環境を守らなければ人類もいつか滅ぶだろう。"
+    },
+    {
+      "id": 9553,
+      "kanji": "奔放",
+      "hiragana": "ほんぽう",
+      "korean": "free-spirited · uninhibited",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "彼女は自由奔放な生き方で知られている。"
+    },
+    {
+      "id": 9554,
+      "kanji": "無条件",
+      "hiragana": "むじょうけん",
+      "korean": "unconditional",
+      "level": "N1",
+      "pos": "noun",
+      "example": "親は子供を無条件に愛するものだ。"
+    },
+    {
+      "id": 9555,
+      "kanji": "巡り",
+      "hiragana": "めぐり",
+      "korean": "tour · circulation",
+      "level": "N1",
+      "pos": "noun",
+      "example": "休日に友人と京都の寺巡りを楽しんだ。"
+    },
+    {
+      "id": 9556,
+      "kanji": "躍進",
+      "hiragana": "やくしん",
+      "korean": "rapid progress · advance",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新党が今回の選挙で大きな躍進を遂げた。"
+    },
+    {
+      "id": 9557,
+      "kanji": "装う",
+      "hiragana": "よそおう",
+      "korean": "to dress up · to pretend",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "犯人は客を装う手口で店に入ったらしい。"
+    },
+    {
+      "id": 9558,
+      "kanji": "倫理的",
+      "hiragana": "りんりてき",
+      "korean": "ethical",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "遺伝子研究には倫理的な問題も多い。"
+    },
+    {
+      "id": 9559,
+      "kanji": "枠内",
+      "hiragana": "わくない",
+      "korean": "within the limits · within the framework",
+      "level": "N1",
+      "pos": "noun",
+      "example": "今年度の予算の枠内で新しい機械を購入した。"
+    },
+    {
+      "id": 9560,
+      "kanji": "頭打ち",
+      "hiragana": "あたまうち",
+      "korean": "leveling off · reaching a ceiling",
+      "level": "N1",
+      "pos": "noun",
+      "example": "国内の売上は数年前から頭打ちの状態だ。"
+    },
+    {
+      "id": 9561,
+      "kanji": "一任",
+      "hiragana": "いちにん",
+      "korean": "entrusting · leaving entirely to",
+      "level": "N1",
+      "pos": "noun",
+      "example": "最終的な判断は社長に一任することになった。"
+    },
+    {
+      "id": 9562,
+      "kanji": "一環",
+      "hiragana": "いっかん",
+      "korean": "part of · link in a chain",
+      "level": "N1",
+      "pos": "noun",
+      "example": "この活動は地域貢献の一環として行われている。"
+    },
+    {
+      "id": 9563,
+      "kanji": "うなぎのぼり",
+      "hiragana": "うなぎのぼり",
+      "korean": "skyrocketing · soaring",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新商品の人気はうなぎのぼりで生産が追いつかない。"
+    },
+    {
+      "id": 9564,
+      "kanji": "優雅",
+      "hiragana": "ゆうが",
+      "korean": "elegant · graceful",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "彼女は休日に優雅なティータイムを楽しんでいる。"
+    },
+    {
+      "id": 9565,
+      "kanji": "旺盛",
+      "hiragana": "おうせい",
+      "korean": "vigorous · lively",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "祖父は八十歳を過ぎても食欲が旺盛だ。"
+    },
+    {
+      "id": 9566,
+      "kanji": "おおまか",
+      "hiragana": "おおまか",
+      "korean": "rough · approximate",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "まずはおおまかな予算を部長に伝えておこう。"
+    },
+    {
+      "id": 9567,
+      "kanji": "おおらか",
+      "hiragana": "おおらか",
+      "korean": "easygoing · broad-minded",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "新しい上司はおおらかな性格で部下に慕われている。"
+    },
+    {
+      "id": 9568,
+      "kanji": "改訂版",
+      "hiragana": "かいていばん",
+      "korean": "revised edition",
+      "level": "N1",
+      "pos": "noun",
+      "example": "来月に辞書の改訂版が発売される予定だ。"
+    },
+    {
+      "id": 9569,
+      "kanji": "顔が広い",
+      "hiragana": "かおがひろい",
+      "korean": "to know many people · well-connected",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "田中さんは顔が広いので業界の人をよく紹介してくれる。"
+    },
+    {
+      "id": 9570,
+      "kanji": "画期的",
+      "hiragana": "かっきてき",
+      "korean": "groundbreaking · epoch-making",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "この会社は画期的な電池技術を開発した。"
+    },
+    {
+      "id": 9571,
+      "kanji": "稼働",
+      "hiragana": "かどう",
+      "korean": "operation · running",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新しい工場は来年四月から本格的に稼働する予定だ。"
+    },
+    {
+      "id": 9572,
+      "kanji": "かみ合う",
+      "hiragana": "かみあう",
+      "korean": "to mesh · to engage",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "議論がかみ合うまでにはかなり時間がかかった。"
+    },
+    {
+      "id": 9573,
+      "kanji": "気に障る",
+      "hiragana": "きにさわる",
+      "korean": "to offend · to get on one's nerves",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "何か気に障ることを言ったなら謝りたい。"
+    },
+    {
+      "id": 9574,
+      "kanji": "却下",
+      "hiragana": "きゃっか",
+      "korean": "rejection · dismissal",
+      "level": "N1",
+      "pos": "noun",
+      "example": "私の提案は会議であっさり却下された。"
+    },
+    {
+      "id": 9575,
+      "kanji": "急遽",
+      "hiragana": "きゅうきょ",
+      "korean": "hastily · at short notice",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "台風の接近で試合は急遽中止になった。"
+    },
+    {
+      "id": 9576,
+      "kanji": "口が堅い",
+      "hiragana": "くちがかたい",
+      "korean": "tight-lipped · able to keep a secret",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "彼は口が堅いから秘密を話しても大丈夫だ。"
+    },
+    {
+      "id": 9577,
+      "kanji": "堅実",
+      "hiragana": "けんじつ",
+      "korean": "steady · sound",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "兄は堅実な投資で少しずつ資産を増やしている。"
+    },
+    {
+      "id": 9578,
+      "kanji": "交錯",
+      "hiragana": "こうさく",
+      "korean": "mingling · intermingling",
+      "level": "N1",
+      "pos": "noun",
+      "example": "合格の知らせを聞いて期待と不安が交錯した。"
+    },
+    {
+      "id": 9579,
+      "kanji": "こみ上げる",
+      "hiragana": "こみあげる",
+      "korean": "to well up · to surge",
+      "level": "N1",
+      "pos": "Group 2 verb",
+      "example": "卒業式では涙がこみ上げるのを必死にこらえた。"
+    },
+    {
+      "id": 9580,
+      "kanji": "これといった",
+      "hiragana": "これといった",
+      "korean": "particular · notable",
+      "level": "N1",
+      "pos": "rentaishi",
+      "example": "今のところこれといった問題は見つかっていない。"
+    },
+    {
+      "id": 9581,
+      "kanji": "さじを投げる",
+      "hiragana": "さじをなげる",
+      "korean": "to give up as hopeless · to throw in the towel",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "医者がさじを投げるほどの重い病気だった。"
+    },
+    {
+      "id": 9582,
+      "kanji": "遮断",
+      "hiragana": "しゃだん",
+      "korean": "blocking · cutoff",
+      "level": "N1",
+      "pos": "noun",
+      "example": "事故の影響で駅前の道路が遮断されている。"
+    },
+    {
+      "id": 9583,
+      "kanji": "ずっしり",
+      "hiragana": "ずっしり",
+      "korean": "heavily · weightily",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "買い物袋に野菜を詰めたらずっしり重くなった。"
+    },
+    {
+      "id": 9584,
+      "kanji": "精力的",
+      "hiragana": "せいりょくてき",
+      "korean": "energetic · vigorous",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "新市長は就任後も精力的に地域を回っている。"
+    },
+    {
+      "id": 9585,
+      "kanji": "摂取",
+      "hiragana": "せっしゅ",
+      "korean": "intake · ingestion",
+      "level": "N1",
+      "pos": "noun",
+      "example": "夏場はこまめな水分の摂取が大切だ。"
+    },
+    {
+      "id": 9586,
+      "kanji": "絶大",
+      "hiragana": "ぜつだい",
+      "korean": "immense · tremendous",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "その歌手は若者から絶大な人気を集めている。"
+    },
+    {
+      "id": 9587,
+      "kanji": "多角的",
+      "hiragana": "たかくてき",
+      "korean": "multifaceted · from various angles",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "問題を多角的に分析することが必要だ。"
+    },
+    {
+      "id": 9588,
+      "kanji": "直感的",
+      "hiragana": "ちょっかんてき",
+      "korean": "intuitive",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "このアプリは直感的に操作できるので便利だ。"
+    },
+    {
+      "id": 9589,
+      "kanji": "使いこなす",
+      "hiragana": "つかいこなす",
+      "korean": "to master · to make full use of",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "新しいソフトを使いこなすには練習が必要だ。"
+    },
+    {
+      "id": 9590,
+      "kanji": "撤去",
+      "hiragana": "てっきょ",
+      "korean": "removal · dismantling",
+      "level": "N1",
+      "pos": "noun",
+      "example": "駅前に放置された自転車が撤去された。"
+    },
+    {
+      "id": 9591,
+      "kanji": "長い目で見る",
+      "hiragana": "ながいめでみる",
+      "korean": "to take the long view",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "若手の成長は長い目で見ることが大切だ。"
+    },
+    {
+      "id": 9592,
+      "kanji": "波に乗る",
+      "hiragana": "なみにのる",
+      "korean": "to ride the wave · to go with the trend",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "あの会社は健康ブームの波に乗る形で売上を伸ばした。"
+    },
+    {
+      "id": 9593,
+      "kanji": "荷が重い",
+      "hiragana": "にがおもい",
+      "korean": "to be too heavy a burden",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "新人の私にはこの仕事は荷が重い。"
+    },
+    {
+      "id": 9594,
+      "kanji": "抜粋",
+      "hiragana": "ばっすい",
+      "korean": "excerpt · extract",
+      "level": "N1",
+      "pos": "noun",
+      "example": "会議では報告書の抜粋だけを配布した。"
+    },
+    {
+      "id": 9595,
+      "kanji": "鼻をつく",
+      "hiragana": "はなをつく",
+      "korean": "to assail the nose · to be pungent",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "部屋に入ると鼻をつく臭いがした。"
+    },
+    {
+      "id": 9596,
+      "kanji": "フォロー",
+      "hiragana": "フォロー",
+      "korean": "support · follow-up",
+      "level": "N1",
+      "pos": "noun",
+      "example": "先輩のフォローのおかげで発表は無事に終わった。"
+    },
+    {
+      "id": 9597,
+      "kanji": "払拭",
+      "hiragana": "ふっしょく",
+      "korean": "wiping out · dispelling",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新社長は社員の不安を払拭するために説明会を開いた。"
+    },
+    {
+      "id": 9598,
+      "kanji": "へとへと",
+      "hiragana": "へとへと",
+      "korean": "exhausted · worn out",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "一日中歩き回ってへとへとになった。"
+    },
+    {
+      "id": 9599,
+      "kanji": "満場一致",
+      "hiragana": "まんじょういっち",
+      "korean": "unanimity",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新しい規則は満場一致で可決された。"
+    },
+    {
+      "id": 9600,
+      "kanji": "みっちり",
+      "hiragana": "みっちり",
+      "korean": "thoroughly · intensively",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "試験前の一か月はみっちり勉強するつもりだ。"
+    },
+    {
+      "id": 9601,
+      "kanji": "無計画",
+      "hiragana": "むけいかく",
+      "korean": "unplanned · haphazard",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "無計画な買い物を続けると貯金は増えない。"
+    },
+    {
+      "id": 9602,
+      "kanji": "無謀",
+      "hiragana": "むぼう",
+      "korean": "reckless · rash",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "装備なしで冬山に登るのは無謀だ。"
+    },
+    {
+      "id": 9603,
+      "kanji": "めど",
+      "hiragana": "めど",
+      "korean": "prospect · outlook",
+      "level": "N1",
+      "pos": "noun",
+      "example": "工事完了のめどはまだ立っていない。"
+    },
+    {
+      "id": 9604,
+      "kanji": "面倒を見る",
+      "hiragana": "めんどうをみる",
+      "korean": "to look after · to take care of",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "週末は祖母が孫の面倒を見ることになっている。"
+    },
+    {
+      "id": 9605,
+      "kanji": "綿密",
+      "hiragana": "めんみつ",
+      "korean": "meticulous · detailed",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "旅行の前に綿密な計画を立てておいた。"
+    },
+    {
+      "id": 9606,
+      "kanji": "焼け石に水",
+      "hiragana": "やけいしにみず",
+      "korean": "a drop in the bucket",
+      "level": "N1",
+      "pos": "proverb",
+      "example": "この程度の節約では焼け石に水だ。"
+    },
+    {
+      "id": 9607,
+      "kanji": "行き届く",
+      "hiragana": "いきとどく",
+      "korean": "to be thorough · to be attentive to every detail",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "掃除が隅々まで行き届く部屋は気持ちがいい。"
+    },
+    {
+      "id": 9608,
+      "kanji": "楽観的",
+      "hiragana": "らっかんてき",
+      "korean": "optimistic",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "専門家は景気の先行きに楽観的な見方を示した。"
+    },
+    {
+      "id": 9609,
+      "kanji": "理性的",
+      "hiragana": "りせいてき",
+      "korean": "rational",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "怒っているときこそ理性的に話し合うべきだ。"
+    },
+    {
+      "id": 9610,
+      "kanji": "安堵",
+      "hiragana": "あんど",
+      "korean": "relief",
+      "level": "N1",
+      "pos": "noun",
+      "example": "全員無事だと聞いて家族は安堵の表情を見せた。"
+    },
+    {
+      "id": 9611,
+      "kanji": "うすうす",
+      "hiragana": "うすうす",
+      "korean": "vaguely · dimly",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "彼の嘘にはうすうす気づいていた。"
+    },
+    {
+      "id": 9612,
+      "kanji": "うやむや",
+      "hiragana": "うやむや",
+      "korean": "vague · noncommittal",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "事故の責任はうやむやにされたままだ。"
+    },
+    {
+      "id": 9613,
+      "kanji": "億劫",
+      "hiragana": "おっくう",
+      "korean": "troublesome · bothersome",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "寒い雨の日は外に出るのが億劫だ。"
+    },
+    {
+      "id": 9614,
+      "kanji": "お詫び",
+      "hiragana": "おわび",
+      "korean": "apology",
+      "level": "N1",
+      "pos": "noun",
+      "example": "ご迷惑をおかけしたことを心からお詫び申し上げます。"
+    },
+    {
+      "id": 9615,
+      "kanji": "回想",
+      "hiragana": "かいそう",
+      "korean": "recollection · reminiscence",
+      "level": "N1",
+      "pos": "noun",
+      "example": "祖父は戦後の暮らしを回想して語ってくれた。"
+    },
+    {
+      "id": 9616,
+      "kanji": "格段",
+      "hiragana": "かくだん",
+      "korean": "remarkable · marked",
+      "level": "N1",
+      "pos": "noun",
+      "example": "新型の機種は性能が格段に向上した。"
+    },
+    {
+      "id": 9617,
+      "kanji": "かたくな",
+      "hiragana": "かたくな",
+      "korean": "stubborn · obstinate",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "父はかたくなに病院へ行くことを拒んでいる。"
+    },
+    {
+      "id": 9618,
+      "kanji": "寡黙",
+      "hiragana": "かもく",
+      "korean": "taciturn · reticent",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "寡黙な職人が黙々と作業を続けている。"
+    },
+    {
+      "id": 9619,
+      "kanji": "拮抗",
+      "hiragana": "きっこう",
+      "korean": "rivalry · being evenly matched",
+      "level": "N1",
+      "pos": "noun",
+      "example": "両チームの実力は拮抗している。"
+    },
+    {
+      "id": 9620,
+      "kanji": "気まま",
+      "hiragana": "きまま",
+      "korean": "carefree · self-indulgent",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "退職後は気ままな一人旅を楽しみたい。"
+    },
+    {
+      "id": 9621,
+      "kanji": "凝視",
+      "hiragana": "ぎょうし",
+      "korean": "stare · fixed gaze",
+      "level": "N1",
+      "pos": "noun",
+      "example": "彼はモニターの数字をじっと凝視していた。"
+    },
+    {
+      "id": 9622,
+      "kanji": "些細",
+      "hiragana": "ささい",
+      "korean": "trivial · minor",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "些細なことで親友と口論になってしまった。"
+    },
+    {
+      "id": 9623,
+      "kanji": "殺到",
+      "hiragana": "さっとう",
+      "korean": "rush · flood",
+      "level": "N1",
+      "pos": "noun",
+      "example": "発売初日から注文が殺到している。"
+    },
+    {
+      "id": 9624,
+      "kanji": "端的",
+      "hiragana": "たんてき",
+      "korean": "direct · plain",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "彼の発言は会社の問題を端的に表している。"
+    },
+    {
+      "id": 9625,
+      "kanji": "丹念",
+      "hiragana": "たんねん",
+      "korean": "painstaking · elaborate",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "祖母は丹念に手入れした庭を自慢している。"
+    },
+    {
+      "id": 9626,
+      "kanji": "撤回",
+      "hiragana": "てっかい",
+      "korean": "withdrawal · retraction",
+      "level": "N1",
+      "pos": "noun",
+      "example": "大臣は問題発言を撤回して謝罪した。"
+    },
+    {
+      "id": 9627,
+      "kanji": "入念",
+      "hiragana": "にゅうねん",
+      "korean": "careful · thorough",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "本番の前に機材を入念に点検した。"
+    },
+    {
+      "id": 9628,
+      "kanji": "粘り強い",
+      "hiragana": "ねばりづよい",
+      "korean": "persistent · tenacious",
+      "level": "N1",
+      "pos": "i-adjective",
+      "example": "粘り強い交渉の末に契約がまとまった。"
+    },
+    {
+      "id": 9629,
+      "kanji": "不用意",
+      "hiragana": "ふようい",
+      "korean": "careless · imprudent",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "不用意な発言で相手を傷つけてしまった。"
+    },
+    {
+      "id": 9630,
+      "kanji": "不慮",
+      "hiragana": "ふりょ",
+      "korean": "unforeseen · accidental",
+      "level": "N1",
+      "pos": "noun",
+      "example": "彼は不慮の事故で入院することになった。"
+    },
+    {
+      "id": 9631,
+      "kanji": "紛糾",
+      "hiragana": "ふんきゅう",
+      "korean": "complication · turmoil",
+      "level": "N1",
+      "pos": "noun",
+      "example": "予算をめぐって議会が紛糾している。"
+    },
+    {
+      "id": 9632,
+      "kanji": "没頭",
+      "hiragana": "ぼっとう",
+      "korean": "immersion · absorption",
+      "level": "N1",
+      "pos": "noun",
+      "example": "弟は新しいゲームに没頭して食事も忘れている。"
+    },
+    {
+      "id": 9633,
+      "kanji": "競い合う",
+      "hiragana": "きそいあう",
+      "korean": "to compete with each other",
+      "level": "N1",
+      "pos": "Group 1 verb",
+      "example": "各社が新しい技術を競い合う時代になった。"
+    },
+    {
+      "id": 9634,
+      "kanji": "まばら",
+      "hiragana": "まばら",
+      "korean": "sparse · scattered",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "平日の昼間は店内の客がまばらだ。"
+    },
+    {
+      "id": 9635,
+      "kanji": "無償",
+      "hiragana": "むしょう",
+      "korean": "free of charge · gratis",
+      "level": "N1",
+      "pos": "noun",
+      "example": "故障した部品は無償で交換してもらえる。"
+    },
+    {
+      "id": 9636,
+      "kanji": "落胆",
+      "hiragana": "らくたん",
+      "korean": "disappointment · discouragement",
+      "level": "N1",
+      "pos": "noun",
+      "example": "不合格の通知を受けて彼は落胆の色を隠せなかった。"
+    },
+    {
+      "id": 9637,
+      "kanji": "歴然",
+      "hiragana": "れきぜん",
+      "korean": "evident · obvious",
+      "level": "N1",
+      "pos": "noun",
+      "example": "両者の実力の差は歴然としている。"
+    },
+    {
+      "id": 9638,
+      "kanji": "ロス",
+      "hiragana": "ロス",
+      "korean": "loss · waste",
+      "level": "N1",
+      "pos": "noun",
+      "example": "食品ロスを減らすために買い物を見直した。"
+    },
+    {
+      "id": 9639,
+      "kanji": "やせ衰える",
+      "hiragana": "やせおとろえる",
+      "korean": "to become emaciated · to waste away",
+      "level": "N1",
+      "pos": "Group 2 verb",
+      "example": "長い入院生活で祖父がやせ衰えるのを見るのはつらかった。"
+    },
+    {
+      "id": 9640,
+      "kanji": "閑静",
+      "hiragana": "かんせい",
+      "korean": "quiet · peaceful",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "駅から少し離れた閑静な住宅街に住んでいる。"
+    },
+    {
+      "id": 9641,
+      "kanji": "拠点",
+      "hiragana": "きょてん",
+      "korean": "base · hub",
+      "level": "N1",
+      "pos": "noun",
+      "example": "その企業は大阪を拠点に事業を展開している。"
+    },
+    {
+      "id": 9642,
+      "kanji": "均等",
+      "hiragana": "きんとう",
+      "korean": "equality · evenness",
+      "level": "N1",
+      "pos": "noun",
+      "example": "利益は参加者全員に均等に分けられた。"
+    },
+    {
+      "id": 9643,
+      "kanji": "緊密",
+      "hiragana": "きんみつ",
+      "korean": "close · tight",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "両国は経済面で緊密な関係を築いている。"
+    },
+    {
+      "id": 9644,
+      "kanji": "くじける",
+      "hiragana": "くじける",
+      "korean": "to be discouraged · to lose heart",
+      "level": "N1",
+      "pos": "Group 2 verb",
+      "example": "彼は一度の失敗でくじけるような人ではない。"
+    },
+    {
+      "id": 9645,
+      "kanji": "広大",
+      "hiragana": "こうだい",
+      "korean": "vast · extensive",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "北海道には広大な牧場がいくつもある。"
+    },
+    {
+      "id": 9646,
+      "kanji": "痛烈",
+      "hiragana": "つうれつ",
+      "korean": "scathing · severe",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "新聞はその政策を痛烈に批判した。"
+    },
+    {
+      "id": 9647,
+      "kanji": "腹が立つ",
+      "hiragana": "はらがたつ",
+      "korean": "to get angry",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "約束を守らない人には本当に腹が立つ。"
+    },
+    {
+      "id": 9648,
+      "kanji": "煩雑",
+      "hiragana": "はんざつ",
+      "korean": "complicated · cumbersome",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "役所の手続きは煩雑で時間がかかる。"
+    },
+    {
+      "id": 9649,
+      "kanji": "ひたむき",
+      "hiragana": "ひたむき",
+      "korean": "earnest · single-minded",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "夢に向かってひたむきに努力する姿に感動した。"
+    },
+    {
+      "id": 9650,
+      "kanji": "拍子",
+      "hiragana": "ひょうし",
+      "korean": "rhythm · the moment when",
+      "level": "N1",
+      "pos": "noun",
+      "example": "転んだ拍子に眼鏡を落としてしまった。"
+    },
+    {
+      "id": 9651,
+      "kanji": "ぼつぼつ",
+      "hiragana": "ぼつぼつ",
+      "korean": "little by little · gradually",
+      "level": "N1",
+      "pos": "adverb",
+      "example": "そろそろ時間だからぼつぼつ帰る準備をしよう。"
+    },
+    {
+      "id": 9652,
+      "kanji": "補填",
+      "hiragana": "ほてん",
+      "korean": "compensation · covering a shortfall",
+      "level": "N1",
+      "pos": "noun",
+      "example": "赤字の補填のために予算が追加された。"
+    },
+    {
+      "id": 9653,
+      "kanji": "ほどける",
+      "hiragana": "ほどける",
+      "korean": "to come undone · to come loose",
+      "level": "N1",
+      "pos": "Group 2 verb",
+      "example": "歩いていると靴ひもがほどけることがよくある。"
+    },
+    {
+      "id": 9654,
+      "kanji": "満喫",
+      "hiragana": "まんきつ",
+      "korean": "full enjoyment",
+      "level": "N1",
+      "pos": "noun",
+      "example": "休暇中は南の島で海を満喫した。"
+    },
+    {
+      "id": 9655,
+      "kanji": "無造作",
+      "hiragana": "むぞうさ",
+      "korean": "casual · careless",
+      "level": "N1",
+      "pos": "na-adjective",
+      "example": "机の上に書類が無造作に置かれていた。"
+    },
+    {
+      "id": 9656,
+      "kanji": "目が冴える",
+      "hiragana": "めがさえる",
+      "korean": "to be wide awake · unable to sleep",
+      "level": "N1",
+      "pos": "idiom",
+      "example": "夜にコーヒーを飲むと目が冴えることがある。"
+    },
+    {
+      "id": 9657,
+      "kanji": "連携",
+      "hiragana": "れんけい",
+      "korean": "cooperation · coordination",
+      "level": "N1",
+      "pos": "noun",
+      "example": "市は地元企業と連携して観光客を増やしている。"
     }
   ]
 }

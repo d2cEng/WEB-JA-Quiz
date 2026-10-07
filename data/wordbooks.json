@@ -4,16 +4,16 @@
     {
       "name": "[종합] JLPT N5–N1 단어장 (일본어–한국어)",
       "file": "words.ko.json",
-      "rev": "2uugjr:365853",
+      "rev": "yz0kah:377975",
       "lang": "ko",
-      "bytes": 2021676
+      "bytes": 2086759
     },
     {
       "name": "[종합] JLPT N5–N1 Vocabulary (Japanese–English)",
       "file": "words.en.json",
-      "rev": "18ytk3t:698216",
+      "rev": "1fiyj11:716346",
       "lang": "en",
-      "bytes": 2416428
+      "bytes": 2491211
     },
     {
       "name": "[테마] 일본 이자카야·식당 메뉴 읽기",
