@@ -1,0 +1,1942 @@
+{
+  "version": 1,
+  "name": "[테마] 초등 국어 어휘력 1200 (小学生の語彙力アップ)",
+  "words": [
+    {
+      "kanji": "練習",
+      "hiragana": "れんしゅう",
+      "korean": "연습",
+      "level": "N1",
+      "pos": "명사",
+      "example": "コンクールの前は毎日ピアノの練習を欠かさない。"
+    },
+    {
+      "kanji": "衣類",
+      "hiragana": "いるい",
+      "korean": "의류",
+      "level": "N1",
+      "pos": "명사",
+      "example": "季節が変わったので衣類を整理して箱にしまった。"
+    },
+    {
+      "kanji": "思いやり",
+      "hiragana": "おもいやり",
+      "korean": "배려·남을 생각하는 마음",
+      "level": "N1",
+      "pos": "명사",
+      "example": "困っている人に声をかける思いやりを大切にしたい。"
+    },
+    {
+      "kanji": "現実",
+      "hiragana": "げんじつ",
+      "korean": "현실",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夢だけでなく現実の問題にも目を向ける必要がある。"
+    },
+    {
+      "kanji": "資料",
+      "hiragana": "しりょう",
+      "korean": "자료",
+      "level": "N1",
+      "pos": "명사",
+      "example": "会議で使う資料を前日までに準備しておく。"
+    },
+    {
+      "kanji": "開発",
+      "hiragana": "かいはつ",
+      "korean": "개발",
+      "level": "N1",
+      "pos": "명사",
+      "example": "会社は新しい薬の開発に十年をかけた。"
+    },
+    {
+      "kanji": "親友",
+      "hiragana": "しんゆう",
+      "korean": "친한 친구(절친)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小学校からの親友とは今でも毎週電話で話す。"
+    },
+    {
+      "kanji": "先頭",
+      "hiragana": "せんとう",
+      "korean": "선두·맨 앞",
+      "level": "N1",
+      "pos": "명사",
+      "example": "マラソンで日本の選手が先頭を走っている。"
+    },
+    {
+      "kanji": "合間",
+      "hiragana": "あいま",
+      "korean": "틈·짬",
+      "level": "N1",
+      "pos": "명사",
+      "example": "仕事の合間に少しだけ日本語の単語を覚える。"
+    },
+    {
+      "kanji": "主張",
+      "hiragana": "しゅちょう",
+      "korean": "주장",
+      "level": "N1",
+      "pos": "명사",
+      "example": "相手の主張を最後まで聞いてから意見を言う。"
+    },
+    {
+      "kanji": "持参",
+      "hiragana": "じさん",
+      "korean": "지참",
+      "level": "N1",
+      "pos": "명사",
+      "example": "遠足には水筒と弁当を持参すること。"
+    },
+    {
+      "kanji": "温存",
+      "hiragana": "おんぞん",
+      "korean": "(힘·전력을) 아껴 둠",
+      "level": "N1",
+      "pos": "명사",
+      "example": "決勝に備えてエースの体力を温存しておく。"
+    },
+    {
+      "kanji": "早期",
+      "hiragana": "そうき",
+      "korean": "조기",
+      "level": "N1",
+      "pos": "명사",
+      "example": "病気は早期に見つければ治りやすい。"
+    },
+    {
+      "kanji": "正午",
+      "hiragana": "しょうご",
+      "korean": "정오",
+      "level": "N1",
+      "pos": "명사",
+      "example": "式典は正午ちょうどに始まった。"
+    },
+    {
+      "kanji": "直後",
+      "hiragana": "ちょくご",
+      "korean": "직후",
+      "level": "N1",
+      "pos": "명사",
+      "example": "家を出た直後に雨が降り出した。"
+    },
+    {
+      "kanji": "全身",
+      "hiragana": "ぜんしん",
+      "korean": "전신·온몸",
+      "level": "N1",
+      "pos": "명사",
+      "example": "久しぶりに走ったので翌日は全身が痛かった。"
+    },
+    {
+      "kanji": "前進",
+      "hiragana": "ぜんしん",
+      "korean": "전진",
+      "level": "N1",
+      "pos": "명사",
+      "example": "話し合いのおかげで計画が一歩前進した。"
+    },
+    {
+      "kanji": "強化",
+      "hiragana": "きょうか",
+      "korean": "강화",
+      "level": "N1",
+      "pos": "명사",
+      "example": "台風に備えて堤防の強化工事が進められている。"
+    },
+    {
+      "kanji": "大差",
+      "hiragana": "たいさ",
+      "korean": "큰 차이",
+      "level": "N1",
+      "pos": "명사",
+      "example": "決勝戦はホームのチームが大差で勝った。"
+    },
+    {
+      "kanji": "室温",
+      "hiragana": "しつおん",
+      "korean": "실온",
+      "level": "N1",
+      "pos": "명사",
+      "example": "このバターは室温に戻してから使ってください。"
+    },
+    {
+      "kanji": "助言",
+      "hiragana": "じょげん",
+      "korean": "조언",
+      "level": "N1",
+      "pos": "명사",
+      "example": "先輩の助言のおかげで面接がうまくいった。"
+    },
+    {
+      "kanji": "あらすじ",
+      "hiragana": "あらすじ",
+      "korean": "줄거리",
+      "level": "N1",
+      "pos": "명사",
+      "example": "映画を見る前にあらすじを読んでおいた。"
+    },
+    {
+      "kanji": "反省",
+      "hiragana": "はんせい",
+      "korean": "반성",
+      "level": "N1",
+      "pos": "명사",
+      "example": "試合のあと全員で自分たちのプレーを反省した。"
+    },
+    {
+      "kanji": "正体",
+      "hiragana": "しょうたい",
+      "korean": "정체",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夜中に聞こえた音の正体は庭に来た猫だった。"
+    },
+    {
+      "kanji": "進化",
+      "hiragana": "しんか",
+      "korean": "진화",
+      "level": "N1",
+      "pos": "명사",
+      "example": "スマートフォンの機能は毎年のように進化している。"
+    },
+    {
+      "kanji": "深夜",
+      "hiragana": "しんや",
+      "korean": "심야",
+      "level": "N1",
+      "pos": "명사",
+      "example": "深夜までゲームをしていたので朝起きられなかった。"
+    },
+    {
+      "kanji": "信用",
+      "hiragana": "しんよう",
+      "korean": "신용·신뢰",
+      "level": "N1",
+      "pos": "명사",
+      "example": "約束を何度も破ると周りの人の信用を失う。"
+    },
+    {
+      "kanji": "体温",
+      "hiragana": "たいおん",
+      "korean": "체온",
+      "level": "N1",
+      "pos": "명사",
+      "example": "毎朝出かける前に体温を測る。"
+    },
+    {
+      "kanji": "視力",
+      "hiragana": "しりょく",
+      "korean": "시력",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夜遅くまで画面を見ていたら視力が落ちた。"
+    },
+    {
+      "kanji": "出身",
+      "hiragana": "しゅっしん",
+      "korean": "출신",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しく来た先生は北海道の出身だそうだ。"
+    },
+    {
+      "kanji": "直進",
+      "hiragana": "ちょくしん",
+      "korean": "직진",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この交差点では右折できないので直進してください。"
+    },
+    {
+      "kanji": "真相",
+      "hiragana": "しんそう",
+      "korean": "진상",
+      "level": "N1",
+      "pos": "명사",
+      "example": "記者は事件の真相を明らかにしようと取材を続けた。"
+    },
+    {
+      "kanji": "快晴",
+      "hiragana": "かいせい",
+      "korean": "쾌청",
+      "level": "N1",
+      "pos": "명사",
+      "example": "運動会の日は雲一つない快晴になった。"
+    },
+    {
+      "kanji": "上京",
+      "hiragana": "じょうきょう",
+      "korean": "상경(도쿄로 감)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大学に入るために十八歳で上京した。"
+    },
+    {
+      "kanji": "食後",
+      "hiragana": "しょくご",
+      "korean": "식후",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この薬は一日三回食後に飲んでください。"
+    },
+    {
+      "kanji": "先月",
+      "hiragana": "せんげつ",
+      "korean": "지난달",
+      "level": "N1",
+      "pos": "명사",
+      "example": "先月から近所のスポーツジムに通い始めた。"
+    },
+    {
+      "kanji": "調理",
+      "hiragana": "ちょうり",
+      "korean": "조리",
+      "level": "N1",
+      "pos": "명사",
+      "example": "学校の家庭科の授業で魚の調理を習った。"
+    },
+    {
+      "kanji": "協力",
+      "hiragana": "きょうりょく",
+      "korean": "협력",
+      "level": "N1",
+      "pos": "명사",
+      "example": "地域の人たちの協力で祭りが無事に終わった。"
+    },
+    {
+      "kanji": "糸口",
+      "hiragana": "いとぐち",
+      "korean": "실마리·단서",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小さな証拠が事件を解決する糸口になった。"
+    },
+    {
+      "kanji": "他人",
+      "hiragana": "たにん",
+      "korean": "타인·남",
+      "level": "N1",
+      "pos": "명사",
+      "example": "他人の悪口を言うと自分の評判も下がる。"
+    },
+    {
+      "kanji": "歴代",
+      "hiragana": "れきだい",
+      "korean": "역대",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この記録は球団の歴代一位である。"
+    },
+    {
+      "kanji": "平等",
+      "hiragana": "びょうどう",
+      "korean": "평등",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "お菓子を兄弟で平等に分けた。"
+    },
+    {
+      "kanji": "開通",
+      "hiragana": "かいつう",
+      "korean": "개통",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しいトンネルの開通で通勤時間が短くなった。"
+    },
+    {
+      "kanji": "助走",
+      "hiragana": "じょそう",
+      "korean": "도움닫기",
+      "level": "N1",
+      "pos": "명사",
+      "example": "走り幅跳びでは助走の速さが記録を左右する。"
+    },
+    {
+      "kanji": "言動",
+      "hiragana": "げんどう",
+      "korean": "언동·말과 행동",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大人の言動は子どもに大きな影響を与える。"
+    },
+    {
+      "kanji": "強がり",
+      "hiragana": "つよがり",
+      "korean": "허세·센 척",
+      "level": "N1",
+      "pos": "명사",
+      "example": "平気だと言ったのはただの強がりだった。"
+    },
+    {
+      "kanji": "同時",
+      "hiragana": "どうじ",
+      "korean": "동시",
+      "level": "N1",
+      "pos": "명사",
+      "example": "二人が同時にゴールしたので写真で判定した。"
+    },
+    {
+      "kanji": "日中",
+      "hiragana": "にっちゅう",
+      "korean": "낮 동안",
+      "level": "N1",
+      "pos": "명사",
+      "example": "日中は暑いので散歩は夕方にしている。"
+    },
+    {
+      "kanji": "うつぶせ",
+      "hiragana": "うつぶせ",
+      "korean": "엎드림",
+      "level": "N1",
+      "pos": "명사",
+      "example": "赤ちゃんがうつぶせのまま眠ってしまった。"
+    },
+    {
+      "kanji": "長所",
+      "hiragana": "ちょうしょ",
+      "korean": "장점",
+      "level": "N1",
+      "pos": "명사",
+      "example": "自分の長所と短所を面接で聞かれた。"
+    },
+    {
+      "kanji": "ちゅうちょ",
+      "hiragana": "ちゅうちょ",
+      "korean": "주저·망설임",
+      "level": "N1",
+      "pos": "명사",
+      "example": "困っている人がいたらちゅうちょせず声をかけたい。"
+    },
+    {
+      "kanji": "印象",
+      "hiragana": "いんしょう",
+      "korean": "인상",
+      "level": "N1",
+      "pos": "명사",
+      "example": "初めて会った社長は穏やかな印象の人だった。"
+    },
+    {
+      "kanji": "過去",
+      "hiragana": "かこ",
+      "korean": "과거",
+      "level": "N1",
+      "pos": "명사",
+      "example": "過去の失敗から多くのことを学んだ。"
+    },
+    {
+      "kanji": "本来",
+      "hiragana": "ほんらい",
+      "korean": "본래",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この部屋は本来倉庫として作られたものだ。"
+    },
+    {
+      "kanji": "所属",
+      "hiragana": "しょぞく",
+      "korean": "소속",
+      "level": "N1",
+      "pos": "명사",
+      "example": "弟は学校のサッカー部に所属している。"
+    },
+    {
+      "kanji": "加速",
+      "hiragana": "かそく",
+      "korean": "가속",
+      "level": "N1",
+      "pos": "명사",
+      "example": "坂道を下るとき自転車が急に加速した。"
+    },
+    {
+      "kanji": "自力",
+      "hiragana": "じりき",
+      "korean": "자력·스스로의 힘",
+      "level": "N1",
+      "pos": "명사",
+      "example": "けがをした登山者は自力で山小屋まで歩いた。"
+    },
+    {
+      "kanji": "人口",
+      "hiragana": "じんこう",
+      "korean": "인구",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この町の人口は二十年で半分に減った。"
+    },
+    {
+      "kanji": "人工",
+      "hiragana": "じんこう",
+      "korean": "인공",
+      "level": "N1",
+      "pos": "명사",
+      "example": "冬の間は人工の雪でスキー場を営業している。"
+    },
+    {
+      "kanji": "全開",
+      "hiragana": "ぜんかい",
+      "korean": "완전히 엶·풀가동",
+      "level": "N1",
+      "pos": "명사",
+      "example": "暑いので部屋の窓を全開にした。"
+    },
+    {
+      "kanji": "前回",
+      "hiragana": "ぜんかい",
+      "korean": "지난번",
+      "level": "N1",
+      "pos": "명사",
+      "example": "前回の会議で決まったことを最初に確認する。"
+    },
+    {
+      "kanji": "通院",
+      "hiragana": "つういん",
+      "korean": "통원",
+      "level": "N1",
+      "pos": "명사",
+      "example": "骨折したので週に一度整形外科に通院している。"
+    },
+    {
+      "kanji": "気まぐれ",
+      "hiragana": "きまぐれ",
+      "korean": "변덕스러움",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "山の天気は気まぐれなので雨具を持っていく。"
+    },
+    {
+      "kanji": "全員",
+      "hiragana": "ぜんいん",
+      "korean": "전원·모두",
+      "level": "N1",
+      "pos": "명사",
+      "example": "クラスの全員が無事に試験に合格した。"
+    },
+    {
+      "kanji": "停止",
+      "hiragana": "ていし",
+      "korean": "정지",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大雪の影響で電車の運転が一時停止した。"
+    },
+    {
+      "kanji": "願望",
+      "hiragana": "がんぼう",
+      "korean": "소망·바람",
+      "level": "N1",
+      "pos": "명사",
+      "example": "いつか海外で働きたいという願望がある。"
+    },
+    {
+      "kanji": "手順",
+      "hiragana": "てじゅん",
+      "korean": "순서·절차",
+      "level": "N1",
+      "pos": "명사",
+      "example": "機械を使う前に操作の手順をよく確認する。"
+    },
+    {
+      "kanji": "消費",
+      "hiragana": "しょうひ",
+      "korean": "소비",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夏はエアコンで電気の消費が増える。"
+    },
+    {
+      "kanji": "工夫",
+      "hiragana": "くふう",
+      "korean": "궁리·고안",
+      "level": "N1",
+      "pos": "명사",
+      "example": "少ない材料でもおいしく作れるよう料理を工夫する。"
+    },
+    {
+      "kanji": "交代",
+      "hiragana": "こうたい",
+      "korean": "교대",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夜勤の看護師と朝八時に交代する。"
+    },
+    {
+      "kanji": "年末",
+      "hiragana": "ねんまつ",
+      "korean": "연말",
+      "level": "N1",
+      "pos": "명사",
+      "example": "年末は大掃除をしてから実家に帰る。"
+    },
+    {
+      "kanji": "外見",
+      "hiragana": "がいけん",
+      "korean": "외견·겉모습",
+      "level": "N1",
+      "pos": "명사",
+      "example": "人を外見だけで判断してはいけない。"
+    },
+    {
+      "kanji": "加減",
+      "hiragana": "かげん",
+      "korean": "가감·조절 정도",
+      "level": "N1",
+      "pos": "명사",
+      "example": "火の加減を見ながらスープを煮込む。"
+    },
+    {
+      "kanji": "本音",
+      "hiragana": "ほんね",
+      "korean": "본심·속내",
+      "level": "N1",
+      "pos": "명사",
+      "example": "親しい友人には本音を話せる。"
+    },
+    {
+      "kanji": "取材",
+      "hiragana": "しゅざい",
+      "korean": "취재",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新聞記者が地元の祭りを取材しに来た。"
+    },
+    {
+      "kanji": "空回り",
+      "hiragana": "からまわり",
+      "korean": "헛돎·헛수고",
+      "level": "N1",
+      "pos": "명사",
+      "example": "やる気ばかりが空回りして結果が出なかった。"
+    },
+    {
+      "kanji": "使い捨て",
+      "hiragana": "つかいすて",
+      "korean": "일회용",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ごみを減らすために使い捨ての容器を使わないようにする。"
+    },
+    {
+      "kanji": "平日",
+      "hiragana": "へいじつ",
+      "korean": "평일",
+      "level": "N1",
+      "pos": "명사",
+      "example": "平日は仕事なので買い物は週末にまとめてする。"
+    },
+    {
+      "kanji": "活用",
+      "hiragana": "かつよう",
+      "korean": "활용",
+      "level": "N1",
+      "pos": "명사",
+      "example": "図書館の資料を活用して自由研究をまとめた。"
+    },
+    {
+      "kanji": "不運",
+      "hiragana": "ふうん",
+      "korean": "불운",
+      "level": "N1",
+      "pos": "명사",
+      "example": "試合の前日にけがをするとは不運だった。"
+    },
+    {
+      "kanji": "宿泊",
+      "hiragana": "しゅくはく",
+      "korean": "숙박",
+      "level": "N1",
+      "pos": "명사",
+      "example": "旅行の宿泊先は駅に近いホテルにした。"
+    },
+    {
+      "kanji": "身内",
+      "hiragana": "みうち",
+      "korean": "가족·친척(집안사람)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "結婚式には身内だけを招いた。"
+    },
+    {
+      "kanji": "無断",
+      "hiragana": "むだん",
+      "korean": "무단",
+      "level": "N1",
+      "pos": "명사",
+      "example": "無断で他人の写真をネットに載せてはいけない。"
+    },
+    {
+      "kanji": "一人前",
+      "hiragana": "いちにんまえ",
+      "korean": "어엿한 어른·1인분",
+      "level": "N1",
+      "pos": "명사",
+      "example": "十年修業してようやく一人前の職人になった。"
+    },
+    {
+      "kanji": "第三者",
+      "hiragana": "だいさんしゃ",
+      "korean": "제3자",
+      "level": "N1",
+      "pos": "명사",
+      "example": "けんかの原因を第三者の立場から冷静に考える。"
+    },
+    {
+      "kanji": "観賞",
+      "hiragana": "かんしょう",
+      "korean": "감상(보며 즐김)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "庭の池で泳ぐ金魚を観賞する。"
+    },
+    {
+      "kanji": "直前",
+      "hiragana": "ちょくぜん",
+      "korean": "직전",
+      "level": "N1",
+      "pos": "명사",
+      "example": "試験の直前になって慌てて教科書を開いた。"
+    },
+    {
+      "kanji": "平和",
+      "hiragana": "へいわ",
+      "korean": "평화",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "戦争のない平和な世界を願う。"
+    },
+    {
+      "kanji": "正反対",
+      "hiragana": "せいはんたい",
+      "korean": "정반대",
+      "level": "N1",
+      "pos": "명사",
+      "example": "兄と弟は性格が正反対だ。"
+    },
+    {
+      "kanji": "口調",
+      "hiragana": "くちょう",
+      "korean": "어조·말투",
+      "level": "N1",
+      "pos": "명사",
+      "example": "先生は落ち着いた口調で事故の経緯を説明した。"
+    },
+    {
+      "kanji": "新旧",
+      "hiragana": "しんきゅう",
+      "korean": "신구·새것과 옛것",
+      "level": "N1",
+      "pos": "명사",
+      "example": "会議には新旧の役員がそろって出席した。"
+    },
+    {
+      "kanji": "低温",
+      "hiragana": "ていおん",
+      "korean": "저온",
+      "level": "N1",
+      "pos": "명사",
+      "example": "野菜を低温の倉庫で保存すると長持ちする。"
+    },
+    {
+      "kanji": "四六時中",
+      "hiragana": "しろくじちゅう",
+      "korean": "하루 종일·늘",
+      "level": "N1",
+      "pos": "부사",
+      "example": "弟は四六時中ゲームのことばかり考えている。"
+    },
+    {
+      "kanji": "かんかん照り",
+      "hiragana": "かんかんでり",
+      "korean": "쨍쨍 내리쬠",
+      "level": "N1",
+      "pos": "명사",
+      "example": "かんかん照りの中で草取りをして汗だくになった。"
+    },
+    {
+      "kanji": "効率",
+      "hiragana": "こうりつ",
+      "korean": "효율",
+      "level": "N1",
+      "pos": "명사",
+      "example": "作業の順番を変えたら効率が上がった。"
+    },
+    {
+      "kanji": "雨具",
+      "hiragana": "あまぐ",
+      "korean": "우비·우산 등 비를 막는 도구",
+      "level": "N1",
+      "pos": "명사",
+      "example": "天気予報を見て雨具をかばんに入れた。"
+    },
+    {
+      "kanji": "観点",
+      "hiragana": "かんてん",
+      "korean": "관점",
+      "level": "N1",
+      "pos": "명사",
+      "example": "安全の観点から公園の遊具を点検した。"
+    },
+    {
+      "kanji": "再生",
+      "hiragana": "さいせい",
+      "korean": "재생",
+      "level": "N1",
+      "pos": "명사",
+      "example": "古い紙を再生して作ったノートを使っている。"
+    },
+    {
+      "kanji": "真実",
+      "hiragana": "しんじつ",
+      "korean": "진실",
+      "level": "N1",
+      "pos": "명사",
+      "example": "裁判で真実を話すことを誓った。"
+    },
+    {
+      "kanji": "良心",
+      "hiragana": "りょうしん",
+      "korean": "양심",
+      "level": "N1",
+      "pos": "명사",
+      "example": "友達に嘘をついたことで良心が痛んだ。"
+    },
+    {
+      "kanji": "贅沢",
+      "hiragana": "ぜいたく",
+      "korean": "사치·호사",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "誕生日くらいは贅沢な食事をしたい。"
+    },
+    {
+      "kanji": "調和",
+      "hiragana": "ちょうわ",
+      "korean": "조화",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しい建物は周りの景色とよく調和している。"
+    },
+    {
+      "kanji": "気配り",
+      "hiragana": "きくばり",
+      "korean": "배려·세심한 신경",
+      "level": "N1",
+      "pos": "명사",
+      "example": "お客様への細かい気配りが店の評判を高めた。"
+    },
+    {
+      "kanji": "親近感",
+      "hiragana": "しんきんかん",
+      "korean": "친근감",
+      "level": "N1",
+      "pos": "명사",
+      "example": "同じ町の出身だと聞いて親近感がわいた。"
+    },
+    {
+      "kanji": "達成",
+      "hiragana": "たっせい",
+      "korean": "달성",
+      "level": "N1",
+      "pos": "명사",
+      "example": "一年かけて売上の目標を達成した。"
+    },
+    {
+      "kanji": "包囲",
+      "hiragana": "ほうい",
+      "korean": "포위",
+      "level": "N1",
+      "pos": "명사",
+      "example": "警察が犯人の隠れている建物を包囲した。"
+    },
+    {
+      "kanji": "安全",
+      "hiragana": "あんぜん",
+      "korean": "안전",
+      "level": "N1",
+      "pos": "명사",
+      "example": "道路を渡るときは左右の安全を確かめる。"
+    },
+    {
+      "kanji": "気力",
+      "hiragana": "きりょく",
+      "korean": "기력",
+      "level": "N1",
+      "pos": "명사",
+      "example": "熱が続いて勉強する気力もわかない。"
+    },
+    {
+      "kanji": "悪気",
+      "hiragana": "わるぎ",
+      "korean": "악의·나쁜 뜻",
+      "level": "N1",
+      "pos": "명사",
+      "example": "弟に悪気はなかったので許してあげた。"
+    },
+    {
+      "kanji": "風習",
+      "hiragana": "ふうしゅう",
+      "korean": "풍습",
+      "level": "N1",
+      "pos": "명사",
+      "example": "地域によってお正月の風習が違う。"
+    },
+    {
+      "kanji": "期限",
+      "hiragana": "きげん",
+      "korean": "기한",
+      "level": "N1",
+      "pos": "명사",
+      "example": "図書館の本を返す期限が明日までだ。"
+    },
+    {
+      "kanji": "進行",
+      "hiragana": "しんこう",
+      "korean": "진행",
+      "level": "N1",
+      "pos": "명사",
+      "example": "司会者が会議の進行を担当する。"
+    },
+    {
+      "kanji": "親交",
+      "hiragana": "しんこう",
+      "korean": "친교",
+      "level": "N1",
+      "pos": "명사",
+      "example": "二つの町は姉妹都市として長年親交を深めてきた。"
+    },
+    {
+      "kanji": "方角",
+      "hiragana": "ほうがく",
+      "korean": "방향·방위",
+      "level": "N1",
+      "pos": "명사",
+      "example": "太陽の位置から北の方角を確かめた。"
+    },
+    {
+      "kanji": "放課後",
+      "hiragana": "ほうかご",
+      "korean": "방과 후",
+      "level": "N1",
+      "pos": "명사",
+      "example": "放課後は校庭でサッカーをして遊ぶ。"
+    },
+    {
+      "kanji": "気兼ね",
+      "hiragana": "きがね",
+      "korean": "눈치를 봄·어려워함",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ここは自分の家だと思って気兼ねなくくつろいでください。"
+    },
+    {
+      "kanji": "結末",
+      "hiragana": "けつまつ",
+      "korean": "결말",
+      "level": "N1",
+      "pos": "명사",
+      "example": "小説の意外な結末に驚いた。"
+    },
+    {
+      "kanji": "あおむけ",
+      "hiragana": "あおむけ",
+      "korean": "위를 보고 누움",
+      "level": "N1",
+      "pos": "명사",
+      "example": "芝生の上にあおむけに寝て星を眺めた。"
+    },
+    {
+      "kanji": "治安",
+      "hiragana": "ちあん",
+      "korean": "치안",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この地域は治安が良いので夜も安心して歩ける。"
+    },
+    {
+      "kanji": "期待",
+      "hiragana": "きたい",
+      "korean": "기대",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新人選手の活躍に監督も大きな期待を寄せている。"
+    },
+    {
+      "kanji": "的中",
+      "hiragana": "てきちゅう",
+      "korean": "적중",
+      "level": "N1",
+      "pos": "명사",
+      "example": "天気予報が的中して午後から雨になった。"
+    },
+    {
+      "kanji": "手際",
+      "hiragana": "てぎわ",
+      "korean": "솜씨·일 처리 능력",
+      "level": "N1",
+      "pos": "명사",
+      "example": "料理人は手際よく野菜を刻んでいった。"
+    },
+    {
+      "kanji": "方言",
+      "hiragana": "ほうげん",
+      "korean": "방언·사투리",
+      "level": "N1",
+      "pos": "명사",
+      "example": "祖母は関西の方言で話す。"
+    },
+    {
+      "kanji": "上達",
+      "hiragana": "じょうたつ",
+      "korean": "숙달·실력이 늚",
+      "level": "N1",
+      "pos": "명사",
+      "example": "毎日練習したので英会話がずいぶん上達した。"
+    },
+    {
+      "kanji": "運転",
+      "hiragana": "うんてん",
+      "korean": "운전",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雪の日の車の運転には十分注意する。"
+    },
+    {
+      "kanji": "交互",
+      "hiragana": "こうご",
+      "korean": "교대로·번갈아",
+      "level": "N1",
+      "pos": "명사",
+      "example": "左右の足を交互に出してゆっくり歩く。"
+    },
+    {
+      "kanji": "尊敬",
+      "hiragana": "そんけい",
+      "korean": "존경",
+      "level": "N1",
+      "pos": "명사",
+      "example": "困難に負けない父を心から尊敬している。"
+    },
+    {
+      "kanji": "衣食住",
+      "hiragana": "いしょくじゅう",
+      "korean": "의식주",
+      "level": "N1",
+      "pos": "명사",
+      "example": "災害のときにはまず衣食住の確保が必要になる。"
+    },
+    {
+      "kanji": "動機",
+      "hiragana": "どうき",
+      "korean": "동기",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この仕事を選んだ動機を面接で聞かれた。"
+    },
+    {
+      "kanji": "追加",
+      "hiragana": "ついか",
+      "korean": "추가",
+      "level": "N1",
+      "pos": "명사",
+      "example": "人数が増えたので料理を追加で注文した。"
+    },
+    {
+      "kanji": "急行",
+      "hiragana": "きゅうこう",
+      "korean": "급행",
+      "level": "N1",
+      "pos": "명사",
+      "example": "急行に乗れば次の駅を通過して早く着く。"
+    },
+    {
+      "kanji": "同一",
+      "hiragana": "どういつ",
+      "korean": "동일",
+      "level": "N1",
+      "pos": "명사",
+      "example": "二つの事件の犯人は同一人物だと分かった。"
+    },
+    {
+      "kanji": "放出",
+      "hiragana": "ほうしゅつ",
+      "korean": "방출",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ダムから大量の水が放出された。"
+    },
+    {
+      "kanji": "重点",
+      "hiragana": "じゅうてん",
+      "korean": "중점",
+      "level": "N1",
+      "pos": "명사",
+      "example": "今年は英語の勉強に重点を置く。"
+    },
+    {
+      "kanji": "休養",
+      "hiragana": "きゅうよう",
+      "korean": "휴양·휴식",
+      "level": "N1",
+      "pos": "명사",
+      "example": "疲れがたまっているので週末は家で休養する。"
+    },
+    {
+      "kanji": "いとこ",
+      "hiragana": "いとこ",
+      "korean": "사촌",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夏休みに大阪のいとこが遊びに来た。"
+    },
+    {
+      "kanji": "西洋",
+      "hiragana": "せいよう",
+      "korean": "서양",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この美術館では西洋の絵画を多く展示している。"
+    },
+    {
+      "kanji": "急転",
+      "hiragana": "きゅうてん",
+      "korean": "급변·갑자기 바뀜",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しい証拠が見つかり事態は急転した。"
+    },
+    {
+      "kanji": "急病",
+      "hiragana": "きゅうびょう",
+      "korean": "급병",
+      "level": "N1",
+      "pos": "명사",
+      "example": "運転手が急病で倒れてバスが止まった。"
+    },
+    {
+      "kanji": "同行",
+      "hiragana": "どうこう",
+      "korean": "동행",
+      "level": "N1",
+      "pos": "명사",
+      "example": "社長の海外出張に秘書が同行する。"
+    },
+    {
+      "kanji": "動向",
+      "hiragana": "どうこう",
+      "korean": "동향",
+      "level": "N1",
+      "pos": "명사",
+      "example": "経済の動向を見ながら投資を判断する。"
+    },
+    {
+      "kanji": "放送",
+      "hiragana": "ほうそう",
+      "korean": "방송",
+      "level": "N1",
+      "pos": "명사",
+      "example": "その試合はテレビで全国に放送された。"
+    },
+    {
+      "kanji": "やる気",
+      "hiragana": "やるき",
+      "korean": "의욕",
+      "level": "N1",
+      "pos": "명사",
+      "example": "先生にほめられて勉強のやる気が出た。"
+    },
+    {
+      "kanji": "達人",
+      "hiragana": "たつじん",
+      "korean": "달인",
+      "level": "N1",
+      "pos": "명사",
+      "example": "祖父は将棋の達人として町で知られている。"
+    },
+    {
+      "kanji": "往復",
+      "hiragana": "おうふく",
+      "korean": "왕복",
+      "level": "N1",
+      "pos": "명사",
+      "example": "駅から会社までは往復で一時間かかる。"
+    },
+    {
+      "kanji": "参照",
+      "hiragana": "さんしょう",
+      "korean": "참조",
+      "level": "N1",
+      "pos": "명사",
+      "example": "詳しい手順は説明書の十ページを参照してください。"
+    },
+    {
+      "kanji": "自信",
+      "hiragana": "じしん",
+      "korean": "자신감",
+      "level": "N1",
+      "pos": "명사",
+      "example": "練習を重ねたので本番には自信がある。"
+    },
+    {
+      "kanji": "着席",
+      "hiragana": "ちゃくせき",
+      "korean": "착석",
+      "level": "N1",
+      "pos": "명사",
+      "example": "チャイムが鳴ったら生徒は全員着席する。"
+    },
+    {
+      "kanji": "独り占め",
+      "hiragana": "ひとりじめ",
+      "korean": "독차지",
+      "level": "N1",
+      "pos": "명사",
+      "example": "弟がおもちゃを独り占めして貸してくれない。"
+    },
+    {
+      "kanji": "保管",
+      "hiragana": "ほかん",
+      "korean": "보관",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大切な書類は金庫に保管している。"
+    },
+    {
+      "kanji": "予約",
+      "hiragana": "よやく",
+      "korean": "예약",
+      "level": "N1",
+      "pos": "명사",
+      "example": "人気の店なので一か月前に席を予約した。"
+    },
+    {
+      "kanji": "史上",
+      "hiragana": "しじょう",
+      "korean": "사상(역사상)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "彼は史上最年少で名人のタイトルを取った。"
+    },
+    {
+      "kanji": "絆",
+      "hiragana": "きずな",
+      "korean": "유대·인연",
+      "level": "N1",
+      "pos": "명사",
+      "example": "苦しい練習を共にしてチームの絆が強くなった。"
+    },
+    {
+      "kanji": "待望",
+      "hiragana": "たいぼう",
+      "korean": "대망·고대함",
+      "level": "N1",
+      "pos": "명사",
+      "example": "地元の駅に待望の急行が止まるようになった。"
+    },
+    {
+      "kanji": "一流",
+      "hiragana": "いちりゅう",
+      "korean": "일류",
+      "level": "N1",
+      "pos": "명사",
+      "example": "一流の料理人が作ったスープを味わう。"
+    },
+    {
+      "kanji": "心当たり",
+      "hiragana": "こころあたり",
+      "korean": "짚이는 데",
+      "level": "N1",
+      "pos": "명사",
+      "example": "財布をなくしたが落とした場所に心当たりがない。"
+    },
+    {
+      "kanji": "新種",
+      "hiragana": "しんしゅ",
+      "korean": "신종",
+      "level": "N1",
+      "pos": "명사",
+      "example": "深海の調査で魚の新種が発見された。"
+    },
+    {
+      "kanji": "人見知り",
+      "hiragana": "ひとみしり",
+      "korean": "낯가림",
+      "level": "N1",
+      "pos": "명사",
+      "example": "娘は人見知りで初めて会う人の前では黙ってしまう。"
+    },
+    {
+      "kanji": "母国",
+      "hiragana": "ぼこく",
+      "korean": "모국",
+      "level": "N1",
+      "pos": "명사",
+      "example": "留学生は卒業後に母国へ帰って教師になった。"
+    },
+    {
+      "kanji": "予定",
+      "hiragana": "よてい",
+      "korean": "예정",
+      "level": "N1",
+      "pos": "명사",
+      "example": "週末は家族で温泉に行く予定だ。"
+    },
+    {
+      "kanji": "前のめり",
+      "hiragana": "まえのめり",
+      "korean": "앞으로 쏠림·(비유) 의욕 과잉",
+      "level": "N1",
+      "pos": "명사",
+      "example": "石につまずいて前のめりに倒れた。"
+    },
+    {
+      "kanji": "帰国",
+      "hiragana": "きこく",
+      "korean": "귀국",
+      "level": "N1",
+      "pos": "명사",
+      "example": "三年間の海外勤務を終えて来月帰国する。"
+    },
+    {
+      "kanji": "過言",
+      "hiragana": "かごん",
+      "korean": "과언",
+      "level": "N1",
+      "pos": "명사",
+      "example": "彼がチームを救ったと言っても過言ではない。"
+    },
+    {
+      "kanji": "おせっかい",
+      "hiragana": "おせっかい",
+      "korean": "오지랖·쓸데없는 참견",
+      "level": "N1",
+      "pos": "な형용사",
+      "example": "近所のおばさんはおせっかいだが根は優しい。"
+    },
+    {
+      "kanji": "経由",
+      "hiragana": "けいゆ",
+      "korean": "경유",
+      "level": "N1",
+      "pos": "명사",
+      "example": "ソウル経由でヨーロッパへ向かう便を予約した。"
+    },
+    {
+      "kanji": "重視",
+      "hiragana": "じゅうし",
+      "korean": "중시",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この会社は学歴より人柄を重視して採用する。"
+    },
+    {
+      "kanji": "最低",
+      "hiragana": "さいてい",
+      "korean": "최저",
+      "level": "N1",
+      "pos": "명사",
+      "example": "今朝は今年の最低気温を記録した。"
+    },
+    {
+      "kanji": "特技",
+      "hiragana": "とくぎ",
+      "korean": "특기",
+      "level": "N1",
+      "pos": "명사",
+      "example": "妹の特技は一度聞いた曲をピアノで弾くことだ。"
+    },
+    {
+      "kanji": "最小",
+      "hiragana": "さいしょう",
+      "korean": "최소(크기)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "これは世界最小のカメラだと宣伝されている。"
+    },
+    {
+      "kanji": "最少",
+      "hiragana": "さいしょう",
+      "korean": "최소(수량)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "今年の入学者は過去最少の人数だった。"
+    },
+    {
+      "kanji": "仕草",
+      "hiragana": "しぐさ",
+      "korean": "몸짓·행동거지",
+      "level": "N1",
+      "pos": "명사",
+      "example": "赤ちゃんのかわいい仕草に家族全員が笑った。"
+    },
+    {
+      "kanji": "根底",
+      "hiragana": "こんてい",
+      "korean": "근저·밑바탕",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この問題の根底には人手不足がある。"
+    },
+    {
+      "kanji": "強運",
+      "hiragana": "きょううん",
+      "korean": "강운·좋은 운",
+      "level": "N1",
+      "pos": "명사",
+      "example": "宝くじに二回も当たるとは強運の持ち主だ。"
+    },
+    {
+      "kanji": "多数決",
+      "hiragana": "たすうけつ",
+      "korean": "다수결",
+      "level": "N1",
+      "pos": "명사",
+      "example": "クラスの出し物は多数決で劇に決まった。"
+    },
+    {
+      "kanji": "特集",
+      "hiragana": "とくしゅう",
+      "korean": "특집",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雑誌の今月号は京都の紅葉を特集している。"
+    },
+    {
+      "kanji": "日差し",
+      "hiragana": "ひざし",
+      "korean": "햇살·햇볕",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夏の強い日差しを避けて木陰で休む。"
+    },
+    {
+      "kanji": "前触れ",
+      "hiragana": "まえぶれ",
+      "korean": "전조·조짐",
+      "level": "N1",
+      "pos": "명사",
+      "example": "強い風は嵐が来る前触れかもしれない。"
+    },
+    {
+      "kanji": "夜行性",
+      "hiragana": "やこうせい",
+      "korean": "야행성",
+      "level": "N1",
+      "pos": "명사",
+      "example": "フクロウは夜行性の鳥で夜に獲物を探す。"
+    },
+    {
+      "kanji": "最短",
+      "hiragana": "さいたん",
+      "korean": "최단",
+      "level": "N1",
+      "pos": "명사",
+      "example": "地図アプリで駅までの最短の道を調べた。"
+    },
+    {
+      "kanji": "終始",
+      "hiragana": "しゅうし",
+      "korean": "시종·처음부터 끝까지",
+      "level": "N1",
+      "pos": "부사",
+      "example": "試合は終始こちらのペースで進んだ。"
+    },
+    {
+      "kanji": "野生",
+      "hiragana": "やせい",
+      "korean": "야생",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この島では野生のシカをよく見かける。"
+    },
+    {
+      "kanji": "かなた",
+      "hiragana": "かなた",
+      "korean": "저편·저 멀리",
+      "level": "N1",
+      "pos": "명사",
+      "example": "水平線のかなたに船が小さく見える。"
+    },
+    {
+      "kanji": "救助",
+      "hiragana": "きゅうじょ",
+      "korean": "구조",
+      "level": "N1",
+      "pos": "명사",
+      "example": "山で遭難した人がヘリコプターで救助された。"
+    },
+    {
+      "kanji": "議題",
+      "hiragana": "ぎだい",
+      "korean": "의제",
+      "level": "N1",
+      "pos": "명사",
+      "example": "今日の会議の議題は来年度の予算だ。"
+    },
+    {
+      "kanji": "内心",
+      "hiragana": "ないしん",
+      "korean": "내심",
+      "level": "N1",
+      "pos": "명사",
+      "example": "笑顔で答えたが内心はとても緊張していた。"
+    },
+    {
+      "kanji": "負け惜しみ",
+      "hiragana": "まけおしみ",
+      "korean": "억지 부림·지고도 인정 안 함",
+      "level": "N1",
+      "pos": "명사",
+      "example": "負けたのに本気じゃなかったと言うのは負け惜しみだ。"
+    },
+    {
+      "kanji": "洋食",
+      "hiragana": "ようしょく",
+      "korean": "양식(서양 요리)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昼はハンバーグなどの洋食が食べたい。"
+    },
+    {
+      "kanji": "新品",
+      "hiragana": "しんぴん",
+      "korean": "신품·새것",
+      "level": "N1",
+      "pos": "명사",
+      "example": "入学に合わせて新品のランドセルを買った。"
+    },
+    {
+      "kanji": "初歩",
+      "hiragana": "しょほ",
+      "korean": "초보·기초",
+      "level": "N1",
+      "pos": "명사",
+      "example": "プログラミングの初歩から教えてくれる講座に通う。"
+    },
+    {
+      "kanji": "きっかけ",
+      "hiragana": "きっかけ",
+      "korean": "계기",
+      "level": "N1",
+      "pos": "명사",
+      "example": "旅行をきっかけに日本語の勉強を始めた。"
+    },
+    {
+      "kanji": "副作用",
+      "hiragana": "ふくさよう",
+      "korean": "부작용",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この薬には眠くなる副作用がある。"
+    },
+    {
+      "kanji": "強調",
+      "hiragana": "きょうちょう",
+      "korean": "강조",
+      "level": "N1",
+      "pos": "명사",
+      "example": "先生は試験に出る部分を何度も強調した。"
+    },
+    {
+      "kanji": "昨夜",
+      "hiragana": "さくや",
+      "korean": "어젯밤",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昨夜の大雨で川の水が増えている。"
+    },
+    {
+      "kanji": "水深",
+      "hiragana": "すいしん",
+      "korean": "수심",
+      "level": "N1",
+      "pos": "명사",
+      "example": "このプールは水深が二メートルあるので注意する。"
+    },
+    {
+      "kanji": "野鳥",
+      "hiragana": "やちょう",
+      "korean": "야생 조류",
+      "level": "N1",
+      "pos": "명사",
+      "example": "早朝の森で双眼鏡を使って野鳥を観察した。"
+    },
+    {
+      "kanji": "仲直り",
+      "hiragana": "なかなおり",
+      "korean": "화해",
+      "level": "N1",
+      "pos": "명사",
+      "example": "けんかした友達と翌日には仲直りした。"
+    },
+    {
+      "kanji": "満開",
+      "hiragana": "まんかい",
+      "korean": "만개",
+      "level": "N1",
+      "pos": "명사",
+      "example": "公園の桜が満開になり花見客でにぎわった。"
+    },
+    {
+      "kanji": "心身",
+      "hiragana": "しんしん",
+      "korean": "심신·몸과 마음",
+      "level": "N1",
+      "pos": "명사",
+      "example": "温泉に入って心身ともにリラックスできた。"
+    },
+    {
+      "kanji": "速度",
+      "hiragana": "そくど",
+      "korean": "속도",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雨の日は車の速度を落として走る。"
+    },
+    {
+      "kanji": "全力",
+      "hiragana": "ぜんりょく",
+      "korean": "전력·온 힘",
+      "level": "N1",
+      "pos": "명사",
+      "example": "最後の百メートルを全力で走った。"
+    },
+    {
+      "kanji": "共有",
+      "hiragana": "きょうゆう",
+      "korean": "공유",
+      "level": "N1",
+      "pos": "명사",
+      "example": "会議の資料をチーム全員で共有する。"
+    },
+    {
+      "kanji": "変形",
+      "hiragana": "へんけい",
+      "korean": "변형",
+      "level": "N1",
+      "pos": "명사",
+      "example": "熱でプラスチックの容器が変形してしまった。"
+    },
+    {
+      "kanji": "用心",
+      "hiragana": "ようじん",
+      "korean": "조심·경계",
+      "level": "N1",
+      "pos": "명사",
+      "example": "最近は空き巣が多いので用心して戸締まりをしっかりする。"
+    },
+    {
+      "kanji": "東洋",
+      "hiragana": "とうよう",
+      "korean": "동양",
+      "level": "N1",
+      "pos": "명사",
+      "example": "この博物館には東洋の古い陶器が並んでいる。"
+    },
+    {
+      "kanji": "朝刊",
+      "hiragana": "ちょうかん",
+      "korean": "조간",
+      "level": "N1",
+      "pos": "명사",
+      "example": "毎朝コーヒーを飲みながら朝刊を読む。"
+    },
+    {
+      "kanji": "交通",
+      "hiragana": "こうつう",
+      "korean": "교통",
+      "level": "N1",
+      "pos": "명사",
+      "example": "事故の影響で駅前の交通が混乱している。"
+    },
+    {
+      "kanji": "事典",
+      "hiragana": "じてん",
+      "korean": "사전(사물·사항을 설명)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "昆虫の事典で珍しいチョウの名前を調べた。"
+    },
+    {
+      "kanji": "辞典",
+      "hiragana": "じてん",
+      "korean": "사전(말의 뜻을 설명)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "分からない言葉は国語の辞典で引く。"
+    },
+    {
+      "kanji": "次点",
+      "hiragana": "じてん",
+      "korean": "차점",
+      "level": "N1",
+      "pos": "명사",
+      "example": "作文コンクールで惜しくも次点に終わった。"
+    },
+    {
+      "kanji": "偶然",
+      "hiragana": "ぐうぜん",
+      "korean": "우연",
+      "level": "N1",
+      "pos": "명사",
+      "example": "駅で偶然昔の同級生に会った。"
+    },
+    {
+      "kanji": "生死",
+      "hiragana": "せいし",
+      "korean": "생사",
+      "level": "N1",
+      "pos": "명사",
+      "example": "事故で大けがをした選手は一時生死の境をさまよった。"
+    },
+    {
+      "kanji": "多方面",
+      "hiragana": "たほうめん",
+      "korean": "다방면",
+      "level": "N1",
+      "pos": "명사",
+      "example": "彼女は音楽や絵など多方面で才能を発揮している。"
+    },
+    {
+      "kanji": "未定",
+      "hiragana": "みてい",
+      "korean": "미정",
+      "level": "N1",
+      "pos": "명사",
+      "example": "次の会議の日時はまだ未定だ。"
+    },
+    {
+      "kanji": "労力",
+      "hiragana": "ろうりょく",
+      "korean": "노동력·수고(들인 힘)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "機械を入れたので農作業の労力が大きく減った。"
+    },
+    {
+      "kanji": "名案",
+      "hiragana": "めいあん",
+      "korean": "명안·좋은 생각",
+      "level": "N1",
+      "pos": "명사",
+      "example": "みんなで考えているうちに妹が名案を思いついた。"
+    },
+    {
+      "kanji": "図星",
+      "hiragana": "ずぼし",
+      "korean": "정곡",
+      "level": "N1",
+      "pos": "명사",
+      "example": "本当は寂しいんでしょうと言われて図星を指された。"
+    },
+    {
+      "kanji": "気がかり",
+      "hiragana": "きがかり",
+      "korean": "걱정·마음에 걸림",
+      "level": "N1",
+      "pos": "명사",
+      "example": "一人暮らしの母の体調が気がかりだ。"
+    },
+    {
+      "kanji": "原因",
+      "hiragana": "げんいん",
+      "korean": "원인",
+      "level": "N1",
+      "pos": "명사",
+      "example": "火事の原因はたばこの火の不始末だった。"
+    },
+    {
+      "kanji": "周知",
+      "hiragana": "しゅうち",
+      "korean": "주지·널리 알림",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しい規則を社員全員に周知する。"
+    },
+    {
+      "kanji": "ため息",
+      "hiragana": "ためいき",
+      "korean": "한숨",
+      "level": "N1",
+      "pos": "명사",
+      "example": "テストの点数を見て思わずため息をついた。"
+    },
+    {
+      "kanji": "苦心",
+      "hiragana": "くしん",
+      "korean": "고심·애씀",
+      "level": "N1",
+      "pos": "명사",
+      "example": "苦心して作った模型が展覧会で賞を取った。"
+    },
+    {
+      "kanji": "ぬかるみ",
+      "hiragana": "ぬかるみ",
+      "korean": "진창",
+      "level": "N1",
+      "pos": "명사",
+      "example": "雨上がりのぬかるみに足を取られて転んだ。"
+    },
+    {
+      "kanji": "見所",
+      "hiragana": "みどころ",
+      "korean": "볼만한 곳·볼거리",
+      "level": "N1",
+      "pos": "명사",
+      "example": "このドラマの見所は最終回の大どんでん返しだ。"
+    },
+    {
+      "kanji": "感想",
+      "hiragana": "かんそう",
+      "korean": "감상·소감",
+      "level": "N1",
+      "pos": "명사",
+      "example": "読んだ本の感想を作文にまとめる。"
+    },
+    {
+      "kanji": "希望",
+      "hiragana": "きぼう",
+      "korean": "희망",
+      "level": "N1",
+      "pos": "명사",
+      "example": "将来は医療の仕事に就くことを希望している。"
+    },
+    {
+      "kanji": "計画",
+      "hiragana": "けいかく",
+      "korean": "계획",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夏休みの旅行の計画を家族で立てた。"
+    },
+    {
+      "kanji": "路地",
+      "hiragana": "ろじ",
+      "korean": "골목",
+      "level": "N1",
+      "pos": "명사",
+      "example": "大通りから一本入った路地に小さな喫茶店がある。"
+    },
+    {
+      "kanji": "記入",
+      "hiragana": "きにゅう",
+      "korean": "기입",
+      "level": "N1",
+      "pos": "명사",
+      "example": "申込書に名前と住所を記入して提出する。"
+    },
+    {
+      "kanji": "細部",
+      "hiragana": "さいぶ",
+      "korean": "세부",
+      "level": "N1",
+      "pos": "명사",
+      "example": "設計図の細部まで丁寧に確認した。"
+    },
+    {
+      "kanji": "次回",
+      "hiragana": "じかい",
+      "korean": "다음번",
+      "level": "N1",
+      "pos": "명사",
+      "example": "今日の続きは次回の授業で説明します。"
+    },
+    {
+      "kanji": "多目的",
+      "hiragana": "たもくてき",
+      "korean": "다목적",
+      "level": "N1",
+      "pos": "명사",
+      "example": "新しい体育館には多目的ホールもある。"
+    },
+    {
+      "kanji": "見晴らし",
+      "hiragana": "みはらし",
+      "korean": "전망·조망",
+      "level": "N1",
+      "pos": "명사",
+      "example": "山頂からの見晴らしは最高だった。"
+    },
+    {
+      "kanji": "共通",
+      "hiragana": "きょうつう",
+      "korean": "공통",
+      "level": "N1",
+      "pos": "명사",
+      "example": "二人には釣りという共通の趣味がある。"
+    },
+    {
+      "kanji": "愛着",
+      "hiragana": "あいちゃく",
+      "korean": "애착",
+      "level": "N1",
+      "pos": "명사",
+      "example": "十年使った自転車には愛着がある。"
+    },
+    {
+      "kanji": "会計",
+      "hiragana": "かいけい",
+      "korean": "회계·계산",
+      "level": "N1",
+      "pos": "명사",
+      "example": "食事が終わったのでレジで会計を済ませた。"
+    },
+    {
+      "kanji": "向上心",
+      "hiragana": "こうじょうしん",
+      "korean": "더 나아지려는 마음(향상심)",
+      "level": "N1",
+      "pos": "명사",
+      "example": "彼女は向上心が強く毎日新しいことに挑戦している。"
+    },
+    {
+      "kanji": "天敵",
+      "hiragana": "てんてき",
+      "korean": "천적",
+      "level": "N1",
+      "pos": "명사",
+      "example": "カエルの天敵はヘビである。"
+    },
+    {
+      "kanji": "産地",
+      "hiragana": "さんち",
+      "korean": "산지·생산지",
+      "level": "N1",
+      "pos": "명사",
+      "example": "このリンゴの産地は青森県だ。"
+    },
+    {
+      "kanji": "放置",
+      "hiragana": "ほうち",
+      "korean": "방치",
+      "level": "N1",
+      "pos": "명사",
+      "example": "駅前に自転車を放置すると撤去される。"
+    },
+    {
+      "kanji": "人通り",
+      "hiragana": "ひとどおり",
+      "korean": "사람의 왕래",
+      "level": "N1",
+      "pos": "명사",
+      "example": "夜になるとこの道は人通りが少なくなる。"
+    },
+    {
+      "kanji": "予習",
+      "hiragana": "よしゅう",
+      "korean": "예습",
+      "level": "N1",
+      "pos": "명사",
+      "example": "明日の授業に備えて教科書の予習をした。"
+    },
+    {
+      "kanji": "経験",
+      "hiragana": "けいけん",
+      "korean": "경험",
+      "level": "N1",
+      "pos": "명사",
+      "example": "海外で働いた経験が今の仕事に役立っている。"
+    }
+  ]
+}
