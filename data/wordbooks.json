@@ -19,8 +19,29 @@
       "name": "[시험대비] JLPT N2 복습 (2026.12.6)",
       "file": "n2-review-1206.json",
       "lang": "ko",
-      "bytes": 19285,
-      "rev": "ljttim:3700"
+      "bytes": 19288,
+      "rev": "14abczv:3706"
+    },
+    {
+      "name": "[문법] JLPT N5 문법·어법 (한권으로 끝내기)",
+      "file": "grammar-n5.json",
+      "lang": "ko",
+      "bytes": 83259,
+      "rev": "1xeu7yw:15452"
+    },
+    {
+      "name": "[문법] JLPT N4 문법·어법 (한권으로 끝내기)",
+      "file": "grammar-n4.json",
+      "lang": "ko",
+      "bytes": 83512,
+      "rev": "1t6590r:16644"
+    },
+    {
+      "name": "[문법] JLPT N3 문법·어법 (한권으로 끝내기)",
+      "file": "grammar-n3.json",
+      "lang": "ko",
+      "bytes": 84190,
+      "rev": "153fhu3:17042"
     },
     {
       "name": "[테마] 일본 이자카야·식당 메뉴 읽기",
@@ -124,8 +145,8 @@
       "name": "[외래어] 프랑스어에서 온 말",
       "file": "loan-fr.json",
       "lang": "ko",
-      "bytes": 11843,
-      "rev": "5864q5:2610"
+      "bytes": 11853,
+      "rev": "13wtgqn:2614"
     },
     {
       "name": "[외래어] 이탈리아어에서 온 말",
